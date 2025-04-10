@@ -1,0 +1,391 @@
+<<<<<<< HEAD
+{% extends 'master.html' %}
+{% load static %}
+{% block head %}
+<title>DELETE/ARCHIVE - CIIS</title>
+
+
+{% endblock head %}
+
+
+
+
+
+{% block body %}
+{% if display == "yes" and found_student == "yes" %}
+<div class="delete-archive-student pages-body-bg-color py-5">
+  <section class="delete-section mx-3">
+              
+    <div class="row">
+        <div class="col-12">
+          <div class="outer-rectangle">
+            <div class="inner-block px-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="box-title pt-4 ">
+                            <h5 class="font-18 text-uppercase font-bold text-purewhite">Delete / Archive Student</h5>
+                        </div>
+                        
+                    </div>
+                </div>
+                {% for data in student %}
+                <div class="select-options py-4">
+                  <div class="row">
+                    <div class="col-12">
+                  
+                      <table class="table format-table details-table text-left width-50 m-auto">
+                          <tbody>
+                            <tr>
+                              <th class="text-left width-40">Name :</th>
+                              <td class="text-left">{{data.first_name}} {{data.middle_name}} {{data.last_name}} </td>
+                            </tr>
+                            <tr>
+                              <th class="text-left ">Email</th>
+                              <td class="text-left">{{data.email}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Mobile</th>
+                              <td class="text-left">{{data.mobile}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Date Of Birth</th>
+                              <td class="text-left">{{data.dateofbirth}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Course</th>
+                              <td class="text-left">{{data.course}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Stream</th>
+                              <td class="text-left">{{data.stream}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Study Pattern</th>
+                              <td class="text-left">{{data.course_pattern}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Session</th>
+                              <td class="text-left">{{data.session}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Entry Mode</th>
+                              <td class="text-left">{{data.entry_mode}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Total Semester / Year</th>
+                              <td class="text-left">{{data.total_semyear}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Current Semester / Year</th>
+                              <td class="text-left">{{data.current_semyear}}</td>
+                            </tr>
+                            
+                          </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+ 
+                      <div class="detail-block py-4 text-center">
+                        <input type="text" id="student_id" value="{{data.id}}" >
+
+                        <input type="text" id="student_enrollment_id" value="{{data.enrollment_id}}" >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3 offset-3">
+                      <div class="detail-block py-2">
+                        {% if data.archive == False %}
+                        <button class="save-btn" onclick="Archive('yes')">Archive</button>
+                   {% else %}
+                    <button class="save-btn" onclick="Archive('no')">Un-Archive</button>
+                  {% endif %}
+                      </div>
+                     
+                    </div>
+                    <div class="col-3">
+                      <div class="detail-block py-2">
+                        <button class="save-btn" onclick="Delete()">Delete</button>
+                      </div>
+                    </div>
+
+                  </div>
+                </div> 
+                
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+            
+
+
+</section>
+</div>
+
+  
+
+
+{% else %}
+<div class="no-student py-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-center font-22 text-darkblue">Student Not Found</h1>
+    </div>
+  
+  </div>
+</div>
+
+{% endif %}
+
+<script>
+    function Archive(archive){
+      var student_id = $('#student_id').val()
+      var url = "https://erp.ciisindia.in/deletearchive/" + student_id+"/"
+      $.ajax({
+          type: "POST",
+          url: url,
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          data: {
+            'archive': archive,
+            'student_id':student_id
+          },
+          success: function (response) {
+            var student_enrollment_id = $('#student_enrollment_id').val()
+            if(response.archived == "yes"){
+              var urlchange = "https://erp.ciisindia.in/deletearchive/" + student_enrollment_id+"/"
+              window.location = "{% url 'overview' %}";
+            }
+          }
+            });
+    }
+
+    function Delete(){
+      var student_id = $('#student_id').val()
+      let confirmAction = confirm("Are You Sure You want to Delete This Student ? Cannot Revert This Task.");
+        if (confirmAction) {
+          var url = "https://erp.ciisindia.in/deletearchive/" + student_id+"/"
+          $.ajax({
+              type: "POST",
+              url: url,
+              headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+              data: {
+                'delete': 'yes',
+                'delete_student_id':student_id
+              },
+              success: function (response) {
+                console.log("delete request sent");
+                console.log(response);
+                if(response.deleted == "yes"){
+                  window.location = "{% url 'overview' %}";
+                }
+              }
+            });
+        }
+    }
+
+</script>
+
+{% endblock body %}
+
+
+
+
+=======
+{% extends 'master.html' %}
+{% load static %}
+{% block head %}
+<title>DELETE/ARCHIVE - CIIS</title>
+
+
+{% endblock head %}
+
+
+
+
+
+{% block body %}
+{% if display == "yes" and found_student == "yes" %}
+<div class="delete-archive-student pages-body-bg-color py-5">
+  <section class="delete-section mx-3">
+              
+    <div class="row">
+        <div class="col-12">
+          <div class="outer-rectangle">
+            <div class="inner-block px-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="box-title pt-4 ">
+                            <h5 class="font-18 text-uppercase font-bold text-purewhite">Delete / Archive Student</h5>
+                        </div>
+                        
+                    </div>
+                </div>
+                {% for data in student %}
+                <div class="select-options py-4">
+                  <div class="row">
+                    <div class="col-12">
+                  
+                      <table class="table format-table details-table text-left width-50 m-auto">
+                          <tbody>
+                            <tr>
+                              <th class="text-left width-40">Name :</th>
+                              <td class="text-left">{{data.first_name}} {{data.middle_name}} {{data.last_name}} </td>
+                            </tr>
+                            <tr>
+                              <th class="text-left ">Email</th>
+                              <td class="text-left">{{data.email}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Mobile</th>
+                              <td class="text-left">{{data.mobile}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Date Of Birth</th>
+                              <td class="text-left">{{data.dateofbirth}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Course</th>
+                              <td class="text-left">{{data.course}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Stream</th>
+                              <td class="text-left">{{data.stream}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Study Pattern</th>
+                              <td class="text-left">{{data.course_pattern}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Session</th>
+                              <td class="text-left">{{data.session}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Entry Mode</th>
+                              <td class="text-left">{{data.entry_mode}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Total Semester / Year</th>
+                              <td class="text-left">{{data.total_semyear}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left">Current Semester / Year</th>
+                              <td class="text-left">{{data.current_semyear}}</td>
+                            </tr>
+                            
+                          </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+ 
+                      <div class="detail-block py-4 text-center">
+                        <input type="text" id="student_id" value="{{data.id}}" >
+
+                        <input type="text" id="student_enrollment_id" value="{{data.enrollment_id}}" >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3 offset-3">
+                      <div class="detail-block py-2">
+                        {% if data.archive == False %}
+                        <button class="save-btn" onclick="Archive('yes')">Archive</button>
+                   {% else %}
+                    <button class="save-btn" onclick="Archive('no')">Un-Archive</button>
+                  {% endif %}
+                      </div>
+                     
+                    </div>
+                    <div class="col-3">
+                      <div class="detail-block py-2">
+                        <button class="save-btn" onclick="Delete()">Delete</button>
+                      </div>
+                    </div>
+
+                  </div>
+                </div> 
+                
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+            
+
+
+</section>
+</div>
+
+  
+
+
+{% else %}
+<div class="no-student py-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-center font-22 text-darkblue">Student Not Found</h1>
+    </div>
+  
+  </div>
+</div>
+
+{% endif %}
+
+<script>
+    function Archive(archive){
+      var student_id = $('#student_id').val()
+      var url = "https://erp.ciisindia.in/deletearchive/" + student_id+"/"
+      $.ajax({
+          type: "POST",
+          url: url,
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          data: {
+            'archive': archive,
+            'student_id':student_id
+          },
+          success: function (response) {
+            var student_enrollment_id = $('#student_enrollment_id').val()
+            if(response.archived == "yes"){
+              var urlchange = "https://erp.ciisindia.in/deletearchive/" + student_enrollment_id+"/"
+              window.location = "{% url 'overview' %}";
+            }
+          }
+            });
+    }
+
+    function Delete(){
+      var student_id = $('#student_id').val()
+      let confirmAction = confirm("Are You Sure You want to Delete This Student ? Cannot Revert This Task.");
+        if (confirmAction) {
+          var url = "https://erp.ciisindia.in/deletearchive/" + student_id+"/"
+          $.ajax({
+              type: "POST",
+              url: url,
+              headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+              data: {
+                'delete': 'yes',
+                'delete_student_id':student_id
+              },
+              success: function (response) {
+                console.log("delete request sent");
+                console.log(response);
+                if(response.deleted == "yes"){
+                  window.location = "{% url 'overview' %}";
+                }
+              }
+            });
+        }
+    }
+
+</script>
+
+{% endblock body %}
+
+
+
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049

@@ -1,0 +1,82 @@
+<<<<<<< HEAD
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'dict/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'dict/css/google_fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'dict/css/style_homepage.css' %}" />
+    <link href="{% static 'dict/css/jquery.dataTables.min.css' %}" rel="stylesheet"  crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'dict/css/buttons.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dict/css/fontawesome.5.11.2.css' %}">
+    <script src="{% static 'dict/js/jquery.min.js' %}"></script>
+    <title>{% block title %} {% endblock title %}</title>
+
+    <script>
+      $(document).ready(function(){
+        $("#toggle").click(function(){
+
+          $("#maincontent").toggleClass(" col-md-12 col-lg-12");
+          $("#navigation-bar").toggleClass("sm-hide-nav d-lg-none");
+        });
+      });
+    </script>
+      
+    {% block head %}
+        
+    {% endblock head %}
+
+</head>
+<body>
+
+    {% block body %}
+
+    {% endblock body %}
+    <script src="{% static 'dict/js/jquery.dataTables.min.js' %}" crossorigin="anonymous"></script>
+    <script src="{% static 'dict/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+=======
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'dict/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'dict/css/google_fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'dict/css/style_homepage.css' %}" />
+    <link href="{% static 'dict/css/jquery.dataTables.min.css' %}" rel="stylesheet"  crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'dict/css/buttons.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dict/css/fontawesome.5.11.2.css' %}">
+    <script src="{% static 'dict/js/jquery.min.js' %}"></script>
+    <title>{% block title %} {% endblock title %}</title>
+
+    <script>
+      $(document).ready(function(){
+        $("#toggle").click(function(){
+
+          $("#maincontent").toggleClass(" col-md-12 col-lg-12");
+          $("#navigation-bar").toggleClass("sm-hide-nav d-lg-none");
+        });
+      });
+    </script>
+      
+    {% block head %}
+        
+    {% endblock head %}
+
+</head>
+<body>
+
+    {% block body %}
+
+    {% endblock body %}
+    <script src="{% static 'dict/js/jquery.dataTables.min.js' %}" crossorigin="anonymous"></script>
+    <script src="{% static 'dict/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+</html>

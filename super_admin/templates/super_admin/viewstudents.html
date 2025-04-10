@@ -1,0 +1,79 @@
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>View Quick Registered Students</title>
+
+
+
+{% endblock head %}
+{% block body %}
+
+{% if request.user.is_superuser or request.user.is_data_entry %}
+<div class="overview-page pages-body-bg-color pt-5">
+   
+    <section class="overview-table-section pt-4">
+      <h3 class="font-20 text-darkblue font-bold">{{title}}</h3>
+      <div class="main-table">
+    
+        <table class="table details-table format-table zebra-table" id = "quick-student-table">
+          <thead>
+            <tr>
+              <th scope="col">Sr.No</th>
+              <th scope="col">Name</th>
+              <th scope="col">Mobile</th>
+              <th scope="col">Email</th>
+              <th scope="col">Enrollment ID</th>
+              <th scope="col">Registration ID</th>
+              <th scope="col">Enrolled</th>
+              <th scope="col">View / Edit</th>
+              <th scope="col">Delete / Archive</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in students %}
+            <tr>
+              <th scope="row">{{forloop.counter}}</th>
+              <td class=" text-left font-14 font-bold text-extralightgray">{{i.name}}</td>
+              <td class="text-left font-14 font-bold text-extralightgray">{{i.mobile}}</td>
+              <td class="text-left font-14 font-bold text-extralightgray">{{i.email}}</td>
+              <td class="text-left font-14 font-bold text-extralightgray">{{i.enrollment_id}}</td>
+              <td class="text-left font-14 font-bold text-extralightgray">{{i.registration_id}}</td>
+              <!--td class="text-left font-14 font-bold text-extralightgray">{% if i.verified == True %} <i class="fas fa-check"></i> {% else %} <i class="fas fa-times"></i> {% endif %}</td-->
+              <td class="text-left font-14 font-bold text-extralightgray">{% if i.is_enrolled == True %} <i class="fas fa-check"></i> {% else %} <i class="fas fa-times"></i> {% endif %}</td>
+              <td class="text-left font-14 font-bold text-extralightgray"> <a href="{% url 'editstudent' i.enrollment_id %}" class="btn btn-danger bg-red">View/Edit</a></td>
+              <td class="text-left font-14 font-bold text-extralightgray"> <a href="{% url 'deletearchive' i.enrollment_id %}" class="btn btn-danger bg-red">Delete/Archive</a></td>
+              
+              
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+    </section>
+   
+   
+  
+  </div>
+    
+  
+  
+  
+  
+  
+  
+  {% else %}
+  <h1 class="text-center">Restricted</h1>
+  {% endif %}
+{% endblock body %}
+{% block script %}
+<script>
+    $(document).ready( function () {
+      $('#quick-student-table').DataTable();
+      msg = '{{msg}}';
+      if (msg !== undefined && msg !== '') {
+        alert(msg);
+      }
+  } );
+</script
+{% endblock script %}

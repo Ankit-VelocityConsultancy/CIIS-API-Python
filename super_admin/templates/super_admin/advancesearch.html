@@ -1,0 +1,1357 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>ADVANCE SEARCH - CIIS</title>
+
+</style>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+{% endblock head %}
+
+
+{% block nav %}
+
+{% include 'sidebar.html' %}
+
+{% endblock nav%}
+
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+
+<div class="advance-search">
+  <section class="semester-fees   ">
+      <div class="row">
+          <div class="col-12">
+              <div class="section-header">
+                  <h1 class="font-26 font-bold text-black text-uppercase">Search Student</h1>
+
+              </div>
+              <div class="outer-rectangle">
+                 
+                      <div class="options mx-5 select-padding">
+                          <div class="row">
+                            <div class="col-12 col-sm-6">
+                              <div class="detail-block py-2">
+                                <input name="enrollid" id="enroll_id" class="  width-100 font-14 font-bold text-lightgray" placeholder="Enrollment ID/ Email/ Mobile">
+                              </div>
+                               
+                            
+                            </div>
+                            <div class="col-12 col-sm-6 ">
+                              <div class="detail-block py-2">
+                                <input type="text" name="enrollid" class="  width-100 font-14 font-bold text-lightgray" id="name" placeholder="First Name/ Middle Name/ Last Name">
+                              </div>
+                             
+                            </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-12 col-sm-3">
+                                <div class="detail-block py-2">
+                                  <select name="university" id="university" class="  width-100 font-14 font-bold text-lightgray">
+                                    <option value="" selected>Select university</option>
+                                    {% for i in university %}
+                                    <option value="{{i.registrationID}}">{{i.university_name}}</option>
+                                    {% endfor %}
+                                  </select> 
+                                </div>
+                             
+                            
+                          
+                        </div>
+                        <div class="col-12 col-sm-3">
+                          <div class="detail-block py-2">
+                            <select name="course_year" id="course_year" class="  width-100 font-14 font-bold text-lightgray">
+                              <option value="">Course Year</option> </select>
+                          </div>
+                           
+                        </div>
+                        <div class="col-12 col-sm-3">
+                          <div class="detail-block py-2">
+                            <select name="course" id="course" class="  width-100 font-14 font-bold text-lightgray">
+                              <option value="">Course</option> </select>
+                          </div>
+                           
+                        </div>
+                        <div class="col-12 col-sm-3">
+                          <div class="detail-block py-2">
+                            <select name="stream" id="stream" class="  width-100 font-14 font-bold text-lightgray">
+                              <option value="">Stream</option> </select>
+                          </div>
+                          
+                        </div>
+                          </div>
+                          <div class="row mt-3">
+                            <div class="col-sm-4 col-12">
+                              <div class="detail-block py-2">
+                                <input type="number" id="registration_year" min="1900" max="2099" step="1" class="  width-100 font-14 font-bold text-lightgray" placeholder="Registration Year"/>
+                              </div>
+                             
+                            </div>
+                            <div class="col-sm-4 col-12" style="display:none;">
+                              <div class="form-check form-switch py-2">
+                                <input class="form-check-input" type="checkbox" role="switch" id="paid_fees_switch">
+                                <label class=" font-14 font-bold text-black" for="paid_fees_switch">Paid Fees</label>
+                              </div>
+                              <div class="form-check form-switch py-2">
+                                <input class="form-check-input" type="checkbox" role="switch" id="pending_fees_switch">
+                                <label class=" font-14 font-bold text-black" for="pending_fees_switch">Pending Fees</label>
+                              </div>
+                            
+                            </div>
+                            <div class="col-sm-4 col-12">
+                              <div class="detail-block py-2">
+                                <button class="save-btn search-btn yellow-btn" onclick="Search()">Search</button>
+                              </div>
+                           
+                            </div>
+                          </div>
+
+                              
+                        </div>
+                   
+              </div>
+              
+          </div>
+      </div>
+     
+
+  </section>
+
+<section class="show-data-section px-3 pt-4">
+  <div class="hiddendata" id="hiddendata" style="visibility: visible;">
+            
+  </div>
+</section>
+  
+ <section class="export-data-section px-3">
+  <div class="export" style="display: none;">
+    <div class="row">
+      <div class="col-12">
+        <input type="text" id="exported_student_ids" style="display: none;" class="  width-100 font-14 font-bold text-lightgray">
+      </div>
+    </div>
+    <div class="row pt-3">
+      <div class="col-sm-3 col-4">
+        <button  class="edit-btn   width-100" onclick="export_excel()" id="export_excel_btn">Export EXCEL</button> 
+      </div>
+      <div class="col-sm-3 col-4">
+        <button class="edit-btn   width-100" id="export_pdf_btn" onclick="export_pdf()">Export PDF</button>
+      </div>
+    </div>
+  </div>
+ </section>       
+      
+</div>
+
+
+
+
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+<script language="JavaScript">
+  $('#enroll_id').on('input',function(e){
+    var x = $(this).val();
+    if(x.length > 0){
+      // console.log(x);
+      document.getElementById("name").disabled = true;
+    }
+    else{
+      // console.log("empty");
+      document.getElementById("name").disabled = false;
+    }
+  });
+
+  $('#name').on('input',function(e){
+    var x = $(this).val();
+    if(x.length > 0){
+      // console.log(x);
+      document.getElementById("enroll_id").disabled = true;
+    }
+    else{
+      // console.log("empty");
+      document.getElementById("enroll_id").disabled = false;
+    }
+  });
+  // $(document).on("keypress", "#enroll_id", function(e){
+  //   var inputVal = $(this).val();
+  //   console.log(e.which , inputVal)
+    
+  //   // document.getElementById("name").disabled = true;
+  //   });
+
+//   $("#registration_year").on('change keydown paste input', function(){
+//       console.log($('#registration_year').val())
+      
+//       $.ajax
+//       ({ 
+//           data: {
+//             'term': $('#registration_year').val()
+//           }, 
+//           type: 'GET', 
+//           headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+//           url: "{% url 'advancesearch' %}",
+//         success: function (response) 
+//         { 
+//           console.log(response);
+//           var data = response.student;
+//           if(data){
+//             $('#hiddendata').empty();
+//             $('#hiddendata').css('visibility','visible')
+//             $('#hiddendata').append(`
+//             <div class="container" >
+//               <div class="row" id="student_cards">
+//               </div>
+//             </div>
+//             `);
+//             data.forEach(myFunction3);
+//             function myFunction3(item){
+//               console.log(item)
+//               $('#student_cards').append(`
+//                 <div class="col-sm-3>
+//                   <div class="card" style="width: 33%;border-style:double;" >
+//                     <div class="card-body">
+//                       <h5 class="card-title">${item.name}</h5>
+//                       <h6 class="card-subtitle mb-2 text-muted">${item.email}</h6>
+//                       <h6 class="card-subtitle mb-2 text-muted">${item.mobile}</h6>
+//                       <p class="card-text"></p>
+//                       <a href="#" class="card-link">Card link</a>
+//                       <a href="#" class="card-link">Another link</a>
+//                     </div>
+//                   </div>
+//                 </div>
+//               `);
+//             }
+//           }
+//         }
+//       });
+// });
+
+
+function Search(){
+  var enroll_id = $('#enroll_id').val();
+  var university = $('#university').val();
+  var course = $('#course').val();
+  var stream = $('#stream').val();
+  var name = $('#name').val();
+  var registration_year = $('#registration_year').val()
+  var paid_fees_switch = $('#paid_fees_switch').is(':checked')
+  var pending_fees_switch = $('#pending_fees_switch').is(':checked')
+  // console.log(enroll_id , university , course , stream , name , registration_year , paid_fees_switch , pending_fees_switch)
+  $.ajax({ // create an AJAX call...
+        data: {
+          'search_enroll_id': enroll_id ,
+          'search_university': university ,
+          'search_course': course ,
+          'search_stream':stream,
+          'search_name':name,
+          'search_registration_year':registration_year,
+          'search_paid_fees_switch':paid_fees_switch,
+          'search_pending_fees_switch':pending_fees_switch
+        }, // get the form data
+        type: 'POST', // GET or POST
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'advancesearch' %}", // the file to call
+        success: function (response) { 
+          $('#hiddendata').empty();
+          $('#exported_student_ids').val('')
+          // console.log(response)
+          var data = response.student_data;
+          // console.log(data)
+
+          if(data.length > 0) {
+
+            $('.export').css('display', 'block');
+             
+              $('#hiddendata').append(`
+              <table class="table format-table details-table" id="student-table">
+                <thead>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Name</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Mobile</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Email</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Course</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Stream</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Total Semester/Year</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Current Semester/Year</th>
+                   
+
+                  </tr>
+                </thead>
+                <tbody id="student-table-body">
+                    
+                </tbody>
+              </table>
+              `);
+          data.forEach(myFunction);
+          $(document).ready( function () {
+              $('#student-table').DataTable();
+              $('#dashboard-collapse').addClass("show");
+              $("#advance_search_link").removeClass("link-dark");
+              $('#advance_search_link').addClass("link-primary");
+          } );
+          
+          function myFunction(item){
+            var add_values = $('#exported_student_ids').val();
+            if(add_values.length <= 0){
+              $('#exported_student_ids').val( item.student_id )
+            }
+            else{
+              $('#exported_student_ids').val($('#exported_student_ids').val() + "," + item.student_id )
+            }
+              // console.log(item);
+              $('#student-table-body').append(`
+                <tr class="bottom-border-grey line-height-35">
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.name} </td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.mobile}</td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.email}</td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.course}</td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.stream}</td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.total_semyear}</td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.current_semyear}</td>
+                    
+                </tr>
+                `);
+          }
+        
+          
+        
+        }
+          else{
+            $('.export').css('display', 'none');
+          }
+      }
+
+      });
+    // if($('#enroll_id').val()){
+        // $.ajax({ // create an AJAX call...
+        // data: {
+        //   'enroll_id': $('#enroll_id').val()
+        // }, // get the form data
+        // type: 'POST', // GET or POST
+        // headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        // url: "{% url 'advancesearch' %}", // the file to call
+        // success: function (response) { 
+          // var data = response.student_data;
+          // // console.log(data)
+          // if(data){
+          //     $('#hiddendata').empty();
+          // }
+          // $('#hiddendata').append(`
+          // <table class="table" id="student-table">
+          //   <thead>
+          //     <tr>
+          //       <th scope="col">Name</th>
+          //       <th scope="col">Mobile</th>
+          //       <th scope="col">Email</th>
+          //       <th scope="col">Course</th>
+          //       <th scope="col">Stream</th>
+          //       <th scope="col">Total Semester/Year</th>
+          //       <th scope="col">Current Semester/Year</th>
+          //       <th scope="col">Action</th>
+
+          //     </tr>
+          //   </thead>
+          //   <tbody id="student-table-body">
+                
+          //   </tbody>
+          // </table>
+          // `);
+          // data.forEach(myFunction);
+          // $(document).ready( function () {
+          //     $('#student-table').DataTable();
+          // } );
+          
+          // function myFunction(item){
+          //     console.log(item);
+          //     $('#student-table-body').append(`
+          //       <tr>
+          //           <td scope="col">${item.name} </td>
+          //           <td scope="col">${item.mobile}</td>
+          //           <td scope="col">${item.email}</td>
+          //           <td scope="col">${item.course}</td>
+          //           <td scope="col">${item.stream}</td>
+          //           <td scope="col">${item.total_semyear}</td>
+          //           <td scope="col">${item.current_semyear}</td>
+          //           <td scope="col"><button onclick="redirectpage(${item.enrollment_id})" class="btn btn-success" >View</button></td>
+          //       </tr>
+          //       `);
+          // }
+    //         }
+    //     });
+        
+    // }
+
+    // if($('#name').val()){
+    //     $.ajax({ // create an AJAX call...
+    //     data: {
+    //       'name': $('#name').val()
+    //     }, // get the form data
+    //     type: 'POST', // GET or POST
+    //     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    //     url: "{% url 'advancesearch' %}", // the file to call
+    //     success: function (response) { 
+    //       var data = response.student_data;
+    //       // console.log(data)
+    //       if(data){
+    //           $('#hiddendata').empty();
+    //       }
+    //       $('#hiddendata').append(`
+    //       <table class="table" id="student-table">
+    //         <thead>
+    //           <tr>
+    //             <th scope="col">Name</th>
+    //             <th scope="col">Mobile</th>
+    //             <th scope="col">Email</th>
+    //             <th scope="col">Course</th>
+    //             <th scope="col">Stream</th>
+    //             <th scope="col">Total Semester/Year</th>
+    //             <th scope="col">Current Semester/Year</th>
+    //             <th scope="col">Action</th>
+
+    //           </tr>
+    //         </thead>
+    //         <tbody id="student-table-body">
+                
+    //         </tbody>
+    //       </table>
+    //       `);
+    //       data.forEach(myFunction);
+    //       $(document).ready( function () {
+    //           $('#student-table').DataTable();
+    //       } );
+          
+    //       function myFunction(item){
+    //           console.log(item);
+    //           $('#student-table-body').append(`
+    //             <tr>
+    //                 <td scope="col">${item.name} </td>
+    //                 <td scope="col">${item.mobile}</td>
+    //                 <td scope="col">${item.email}</td>
+    //                 <td scope="col">${item.course}</td>
+    //                 <td scope="col">${item.stream}</td>
+    //                 <td scope="col">${item.total_semyear}</td>
+    //                 <td scope="col">${item.current_semyear}</td>
+    //                 <td scope="col"><button onclick="redirectpage(${item.enrollment_id})" class="btn btn-success" >View</button></td>
+    //             </tr>
+    //             `);
+    //       }
+    //         }
+    //     });
+    // }
+    
+}
+document.getElementById("university").onchange = function () {
+  var university = this.value;
+        if (university == "Select University") {
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_course':university
+                },
+                success: function (response) {
+                    $('#course_year').empty()
+                    $('#course_year').append('<option  value="">Select Course Year</option>')
+                    
+                    // console.log(response)
+                    if(response.distinct_years){
+                        var data = response.distinct_years
+                        data.forEach(myFunction);
+                        function myFunction(item){
+                        // console.log(item)
+                        $('#course_year').append(`
+                            <option  value="${item}">${item}</option>
+                        `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+
+}
+document.getElementById("course_year").onchange = function () {
+  // console.log("yes")
+  var course_year = this.value;
+    if(course_year == "Select course_year"){
+
+    }
+    else{
+      $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'addstudent' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+              'get_course_name':course_year,
+              'get_course_university':$('#university').val()
+
+            },
+            success: function(response) {
+              // console.log(response)
+              $('#course').empty()
+              $('#course').append('<option  value="">Select Course</option>')
+              
+              // console.log(response);
+              if(response.course){
+                var data = response.course
+                data.forEach(myFunction);
+                function myFunction(item){
+                  // console.log(item)
+                  $('#course').append(`
+                    <option  value="${item.id}">${item.name}</option>
+                  `);
+                }
+
+              }
+            }
+          });
+          
+    }
+
+}
+
+document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        // console.log(coursename);
+        $.ajax({
+            type: "GET",
+            url: "{% url 'addstudent' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'selected_course': coursename
+            },
+            success: function (response) {
+              // console.log(response)
+                var data = response.data
+                $('#stream').empty();
+                $('#stream').append('<option value=""  selected>Select Stream</option>');
+                data.forEach(myFunction);
+
+                function myFunction(item) {
+                    duration = item.sem
+                    $('#stream').append(`<option value='${item.id}'>  ${item.name} ${item.year} </option>`);
+                }
+              }
+            });
+          };
+
+
+document.getElementById("stream").onchange = function () {
+    var stream = this.value;
+    // console.log(stream)
+    var course_id = $('#course').val();
+    // console.log(course_id)
+    // console.log(stream)
+    // $.ajax
+    // ({ 
+    //     data: {
+    //       'course_id': course_id,
+    //       'stream_id':stream
+    //     }, 
+    //     type: 'POST', 
+    //     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    //     url: "{% url 'advancesearch' %}",
+    //     success: function (response) 
+    //     { 
+    //       // console.log(response)
+    //       var data = response.student_data;
+    //       console.log(data)
+    //       if(data){
+    //           $('#hiddendata').empty();
+    //       }
+    //       $('#hiddendata').append(`
+    //       <table class="table" id="student-table">
+    //         <thead>
+    //           <tr>
+    //             <th scope="col">Name</th>
+    //             <th scope="col">Mobile</th>
+    //             <th scope="col">Email</th>
+    //             <th scope="col">Course</th>
+    //             <th scope="col">Stream</th>
+    //             <th scope="col">Total Semester/Year</th>
+    //             <th scope="col">Current Semester/Year</th>
+    //             <th scope="col">Action</th>
+
+    //           </tr>
+    //         </thead>
+    //         <tbody id="student-table-body">
+                
+    //         </tbody>
+    //       </table>
+    //       `);
+    //       data.forEach(myFunction);
+    //       $(document).ready( function () {
+    //           $('#student-table').DataTable();
+    //       } );
+          
+    //       function myFunction(item){
+    //           console.log(item);
+    //           $('#student-table-body').append(`
+    //             <tr>
+    //                 <td scope="col">${item.name} </td>
+    //                 <td scope="col">${item.mobile}</td>
+    //                 <td scope="col">${item.email}</td>
+    //                 <td scope="col">${item.course}</td>
+    //                 <td scope="col">${item.stream}</td>
+    //                 <td scope="col">${item.total_semyear}</td>
+    //                 <td scope="col">${item.current_semyear}</td>
+    //                 <td scope="col"><button onclick="redirectpage(${item.enrollment_id})" class="btn btn-success" >View</button></td>
+    //             </tr>
+    //             `);
+    //       }
+    //         // $('#student-table-body').empty();
+    //         // $('#student-table').css('visibility','visible')
+    //         // console.log(response)
+    //         // var data = response.student_data;
+    //         // data.forEach(myFunction);
+            
+    //         // function myFunction(item) {
+    //             // $('#student-table-body').append(`
+    //             // <tr>
+    //             //     <td scope="col">${item.name} </td>
+    //             //     <td scope="col">${item.mobile}</td>
+    //             //     <td scope="col">${item.email}</td>
+    //             //     <td scope="col">${item.course}</td>
+    //             //     <td scope="col">${item.stream}</td>
+    //             //     <td scope="col">${item.total_semyear}</td>
+    //             //     <td scope="col">${item.current_semyear}</td>
+    //             //     <td scope="col"><button onclick="redirectpage(${item.enrollment_id})" class="btn btn-success" >View</button></td>
+    //             // </tr>
+    //             // `);
+    //         //     }
+    //     }
+    // });
+} 
+$(document).ready( function () {
+  $('#student-table').DataTable();
+  $('#dashboard-collapse').addClass("show");
+  $("#advance_search_link").removeClass("link-dark");
+  $('#advance_search_link').addClass("link-primary");
+});
+function redirectpage(enroll_id){
+  // console.log(enroll_id)
+  $.ajax
+    ({ 
+        data: {
+          "search_enrollment_id":enroll_id
+        }, 
+        type: 'POST', 
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'advancesearch' %}",
+        success: function (response) 
+        { 
+          // console.log("sent enroll_id")
+        }
+      });
+
+}
+
+
+function export_excel()
+{
+  window.location = `https://erp.ciisindia.in/export_excel/${$('#exported_student_ids').val()}`
+}
+
+function export_pdf()
+{
+  window.location = `https://erp.ciisindia.in/export_pdf/${$('#exported_student_ids').val()}`
+}
+
+</script>
+
+
+
+
+{% endblock body %}
+
+
+
+
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>ADVANCE SEARCH - CIIS</title>
+
+</style>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+{% endblock head %}
+
+
+{% block nav %}
+
+{% include 'sidebar.html' %}
+
+{% endblock nav%}
+
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+
+<div class="advance-search">
+  <section class="semester-fees   ">
+      <div class="row">
+          <div class="col-12">
+              <div class="section-header">
+                  <h1 class="font-26 font-bold text-black text-uppercase">Search Student</h1>
+
+              </div>
+              <div class="outer-rectangle">
+                 
+                      <div class="options mx-5 select-padding">
+                          <div class="row">
+                            <div class="col-12 col-sm-6">
+                              <div class="detail-block py-2">
+                                <input name="enrollid" id="enroll_id" class="  width-100 font-14 font-bold text-lightgray" placeholder="Enrollment ID/ Email/ Mobile">
+                              </div>
+                               
+                            
+                            </div>
+                            <div class="col-12 col-sm-6 ">
+                              <div class="detail-block py-2">
+                                <input type="text" name="enrollid" class="  width-100 font-14 font-bold text-lightgray" id="name" placeholder="First Name/ Middle Name/ Last Name">
+                              </div>
+                             
+                            </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-12 col-sm-3">
+                                <div class="detail-block py-2">
+                                  <select name="university" id="university" class="  width-100 font-14 font-bold text-lightgray">
+                                    <option value="" selected>Select university</option>
+                                    {% for i in university %}
+                                    <option value="{{i.registrationID}}">{{i.university_name}}</option>
+                                    {% endfor %}
+                                  </select> 
+                                </div>
+                             
+                            
+                          
+                        </div>
+                        <div class="col-12 col-sm-3">
+                          <div class="detail-block py-2">
+                            <select name="course_year" id="course_year" class="  width-100 font-14 font-bold text-lightgray">
+                              <option value="">Course Year</option> </select>
+                          </div>
+                           
+                        </div>
+                        <div class="col-12 col-sm-3">
+                          <div class="detail-block py-2">
+                            <select name="course" id="course" class="  width-100 font-14 font-bold text-lightgray">
+                              <option value="">Course</option> </select>
+                          </div>
+                           
+                        </div>
+                        <div class="col-12 col-sm-3">
+                          <div class="detail-block py-2">
+                            <select name="stream" id="stream" class="  width-100 font-14 font-bold text-lightgray">
+                              <option value="">Stream</option> </select>
+                          </div>
+                          
+                        </div>
+                          </div>
+                          <div class="row mt-3">
+                            <div class="col-sm-4 col-12">
+                              <div class="detail-block py-2">
+                                <input type="number" id="registration_year" min="1900" max="2099" step="1" class="  width-100 font-14 font-bold text-lightgray" placeholder="Registration Year"/>
+                              </div>
+                             
+                            </div>
+                            <div class="col-sm-4 col-12" style="display:none;">
+                              <div class="form-check form-switch py-2">
+                                <input class="form-check-input" type="checkbox" role="switch" id="paid_fees_switch">
+                                <label class=" font-14 font-bold text-black" for="paid_fees_switch">Paid Fees</label>
+                              </div>
+                              <div class="form-check form-switch py-2">
+                                <input class="form-check-input" type="checkbox" role="switch" id="pending_fees_switch">
+                                <label class=" font-14 font-bold text-black" for="pending_fees_switch">Pending Fees</label>
+                              </div>
+                            
+                            </div>
+                            <div class="col-sm-4 col-12">
+                              <div class="detail-block py-2">
+                                <button class="save-btn search-btn yellow-btn" onclick="Search()">Search</button>
+                              </div>
+                           
+                            </div>
+                          </div>
+
+                              
+                        </div>
+                   
+              </div>
+              
+          </div>
+      </div>
+     
+
+  </section>
+
+<section class="show-data-section px-3 pt-4">
+  <div class="hiddendata" id="hiddendata" style="visibility: visible;">
+            
+  </div>
+</section>
+  
+ <section class="export-data-section px-3">
+  <div class="export" style="display: none;">
+    <div class="row">
+      <div class="col-12">
+        <input type="text" id="exported_student_ids" style="display: none;" class="  width-100 font-14 font-bold text-lightgray">
+      </div>
+    </div>
+    <div class="row pt-3">
+      <div class="col-sm-3 col-4">
+        <button  class="edit-btn   width-100" onclick="export_excel()" id="export_excel_btn">Export EXCEL</button> 
+      </div>
+      <div class="col-sm-3 col-4">
+        <button class="edit-btn   width-100" id="export_pdf_btn" onclick="export_pdf()">Export PDF</button>
+      </div>
+    </div>
+  </div>
+ </section>       
+      
+</div>
+
+
+
+
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+<script language="JavaScript">
+  $('#enroll_id').on('input',function(e){
+    var x = $(this).val();
+    if(x.length > 0){
+      // console.log(x);
+      document.getElementById("name").disabled = true;
+    }
+    else{
+      // console.log("empty");
+      document.getElementById("name").disabled = false;
+    }
+  });
+
+  $('#name').on('input',function(e){
+    var x = $(this).val();
+    if(x.length > 0){
+      // console.log(x);
+      document.getElementById("enroll_id").disabled = true;
+    }
+    else{
+      // console.log("empty");
+      document.getElementById("enroll_id").disabled = false;
+    }
+  });
+  // $(document).on("keypress", "#enroll_id", function(e){
+  //   var inputVal = $(this).val();
+  //   console.log(e.which , inputVal)
+    
+  //   // document.getElementById("name").disabled = true;
+  //   });
+
+//   $("#registration_year").on('change keydown paste input', function(){
+//       console.log($('#registration_year').val())
+      
+//       $.ajax
+//       ({ 
+//           data: {
+//             'term': $('#registration_year').val()
+//           }, 
+//           type: 'GET', 
+//           headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+//           url: "{% url 'advancesearch' %}",
+//         success: function (response) 
+//         { 
+//           console.log(response);
+//           var data = response.student;
+//           if(data){
+//             $('#hiddendata').empty();
+//             $('#hiddendata').css('visibility','visible')
+//             $('#hiddendata').append(`
+//             <div class="container" >
+//               <div class="row" id="student_cards">
+//               </div>
+//             </div>
+//             `);
+//             data.forEach(myFunction3);
+//             function myFunction3(item){
+//               console.log(item)
+//               $('#student_cards').append(`
+//                 <div class="col-sm-3>
+//                   <div class="card" style="width: 33%;border-style:double;" >
+//                     <div class="card-body">
+//                       <h5 class="card-title">${item.name}</h5>
+//                       <h6 class="card-subtitle mb-2 text-muted">${item.email}</h6>
+//                       <h6 class="card-subtitle mb-2 text-muted">${item.mobile}</h6>
+//                       <p class="card-text"></p>
+//                       <a href="#" class="card-link">Card link</a>
+//                       <a href="#" class="card-link">Another link</a>
+//                     </div>
+//                   </div>
+//                 </div>
+//               `);
+//             }
+//           }
+//         }
+//       });
+// });
+
+
+function Search(){
+  var enroll_id = $('#enroll_id').val();
+  var university = $('#university').val();
+  var course = $('#course').val();
+  var stream = $('#stream').val();
+  var name = $('#name').val();
+  var registration_year = $('#registration_year').val()
+  var paid_fees_switch = $('#paid_fees_switch').is(':checked')
+  var pending_fees_switch = $('#pending_fees_switch').is(':checked')
+  // console.log(enroll_id , university , course , stream , name , registration_year , paid_fees_switch , pending_fees_switch)
+  $.ajax({ // create an AJAX call...
+        data: {
+          'search_enroll_id': enroll_id ,
+          'search_university': university ,
+          'search_course': course ,
+          'search_stream':stream,
+          'search_name':name,
+          'search_registration_year':registration_year,
+          'search_paid_fees_switch':paid_fees_switch,
+          'search_pending_fees_switch':pending_fees_switch
+        }, // get the form data
+        type: 'POST', // GET or POST
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'advancesearch' %}", // the file to call
+        success: function (response) { 
+          $('#hiddendata').empty();
+          $('#exported_student_ids').val('')
+          // console.log(response)
+          var data = response.student_data;
+          // console.log(data)
+
+          if(data.length > 0) {
+
+            $('.export').css('display', 'block');
+             
+              $('#hiddendata').append(`
+              <table class="table format-table details-table" id="student-table">
+                <thead>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Name</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Mobile</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Email</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Course</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Stream</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Total Semester/Year</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Current Semester/Year</th>
+                   
+
+                  </tr>
+                </thead>
+                <tbody id="student-table-body">
+                    
+                </tbody>
+              </table>
+              `);
+          data.forEach(myFunction);
+          $(document).ready( function () {
+              $('#student-table').DataTable();
+              $('#dashboard-collapse').addClass("show");
+              $("#advance_search_link").removeClass("link-dark");
+              $('#advance_search_link').addClass("link-primary");
+          } );
+          
+          function myFunction(item){
+            var add_values = $('#exported_student_ids').val();
+            if(add_values.length <= 0){
+              $('#exported_student_ids').val( item.student_id )
+            }
+            else{
+              $('#exported_student_ids').val($('#exported_student_ids').val() + "," + item.student_id )
+            }
+              // console.log(item);
+              $('#student-table-body').append(`
+                <tr class="bottom-border-grey line-height-35">
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.name} </td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.mobile}</td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.email}</td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.course}</td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.stream}</td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.total_semyear}</td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.current_semyear}</td>
+                    
+                </tr>
+                `);
+          }
+        
+          
+        
+        }
+          else{
+            $('.export').css('display', 'none');
+          }
+      }
+
+      });
+    // if($('#enroll_id').val()){
+        // $.ajax({ // create an AJAX call...
+        // data: {
+        //   'enroll_id': $('#enroll_id').val()
+        // }, // get the form data
+        // type: 'POST', // GET or POST
+        // headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        // url: "{% url 'advancesearch' %}", // the file to call
+        // success: function (response) { 
+          // var data = response.student_data;
+          // // console.log(data)
+          // if(data){
+          //     $('#hiddendata').empty();
+          // }
+          // $('#hiddendata').append(`
+          // <table class="table" id="student-table">
+          //   <thead>
+          //     <tr>
+          //       <th scope="col">Name</th>
+          //       <th scope="col">Mobile</th>
+          //       <th scope="col">Email</th>
+          //       <th scope="col">Course</th>
+          //       <th scope="col">Stream</th>
+          //       <th scope="col">Total Semester/Year</th>
+          //       <th scope="col">Current Semester/Year</th>
+          //       <th scope="col">Action</th>
+
+          //     </tr>
+          //   </thead>
+          //   <tbody id="student-table-body">
+                
+          //   </tbody>
+          // </table>
+          // `);
+          // data.forEach(myFunction);
+          // $(document).ready( function () {
+          //     $('#student-table').DataTable();
+          // } );
+          
+          // function myFunction(item){
+          //     console.log(item);
+          //     $('#student-table-body').append(`
+          //       <tr>
+          //           <td scope="col">${item.name} </td>
+          //           <td scope="col">${item.mobile}</td>
+          //           <td scope="col">${item.email}</td>
+          //           <td scope="col">${item.course}</td>
+          //           <td scope="col">${item.stream}</td>
+          //           <td scope="col">${item.total_semyear}</td>
+          //           <td scope="col">${item.current_semyear}</td>
+          //           <td scope="col"><button onclick="redirectpage(${item.enrollment_id})" class="btn btn-success" >View</button></td>
+          //       </tr>
+          //       `);
+          // }
+    //         }
+    //     });
+        
+    // }
+
+    // if($('#name').val()){
+    //     $.ajax({ // create an AJAX call...
+    //     data: {
+    //       'name': $('#name').val()
+    //     }, // get the form data
+    //     type: 'POST', // GET or POST
+    //     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    //     url: "{% url 'advancesearch' %}", // the file to call
+    //     success: function (response) { 
+    //       var data = response.student_data;
+    //       // console.log(data)
+    //       if(data){
+    //           $('#hiddendata').empty();
+    //       }
+    //       $('#hiddendata').append(`
+    //       <table class="table" id="student-table">
+    //         <thead>
+    //           <tr>
+    //             <th scope="col">Name</th>
+    //             <th scope="col">Mobile</th>
+    //             <th scope="col">Email</th>
+    //             <th scope="col">Course</th>
+    //             <th scope="col">Stream</th>
+    //             <th scope="col">Total Semester/Year</th>
+    //             <th scope="col">Current Semester/Year</th>
+    //             <th scope="col">Action</th>
+
+    //           </tr>
+    //         </thead>
+    //         <tbody id="student-table-body">
+                
+    //         </tbody>
+    //       </table>
+    //       `);
+    //       data.forEach(myFunction);
+    //       $(document).ready( function () {
+    //           $('#student-table').DataTable();
+    //       } );
+          
+    //       function myFunction(item){
+    //           console.log(item);
+    //           $('#student-table-body').append(`
+    //             <tr>
+    //                 <td scope="col">${item.name} </td>
+    //                 <td scope="col">${item.mobile}</td>
+    //                 <td scope="col">${item.email}</td>
+    //                 <td scope="col">${item.course}</td>
+    //                 <td scope="col">${item.stream}</td>
+    //                 <td scope="col">${item.total_semyear}</td>
+    //                 <td scope="col">${item.current_semyear}</td>
+    //                 <td scope="col"><button onclick="redirectpage(${item.enrollment_id})" class="btn btn-success" >View</button></td>
+    //             </tr>
+    //             `);
+    //       }
+    //         }
+    //     });
+    // }
+    
+}
+document.getElementById("university").onchange = function () {
+  var university = this.value;
+        if (university == "Select University") {
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_course':university
+                },
+                success: function (response) {
+                    $('#course_year').empty()
+                    $('#course_year').append('<option  value="">Select Course Year</option>')
+                    
+                    // console.log(response)
+                    if(response.distinct_years){
+                        var data = response.distinct_years
+                        data.forEach(myFunction);
+                        function myFunction(item){
+                        // console.log(item)
+                        $('#course_year').append(`
+                            <option  value="${item}">${item}</option>
+                        `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+
+}
+document.getElementById("course_year").onchange = function () {
+  // console.log("yes")
+  var course_year = this.value;
+    if(course_year == "Select course_year"){
+
+    }
+    else{
+      $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'addstudent' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+              'get_course_name':course_year,
+              'get_course_university':$('#university').val()
+
+            },
+            success: function(response) {
+              // console.log(response)
+              $('#course').empty()
+              $('#course').append('<option  value="">Select Course</option>')
+              
+              // console.log(response);
+              if(response.course){
+                var data = response.course
+                data.forEach(myFunction);
+                function myFunction(item){
+                  // console.log(item)
+                  $('#course').append(`
+                    <option  value="${item.id}">${item.name}</option>
+                  `);
+                }
+
+              }
+            }
+          });
+          
+    }
+
+}
+
+document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        // console.log(coursename);
+        $.ajax({
+            type: "GET",
+            url: "{% url 'addstudent' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'selected_course': coursename
+            },
+            success: function (response) {
+              // console.log(response)
+                var data = response.data
+                $('#stream').empty();
+                $('#stream').append('<option value=""  selected>Select Stream</option>');
+                data.forEach(myFunction);
+
+                function myFunction(item) {
+                    duration = item.sem
+                    $('#stream').append(`<option value='${item.id}'>  ${item.name} ${item.year} </option>`);
+                }
+              }
+            });
+          };
+
+
+document.getElementById("stream").onchange = function () {
+    var stream = this.value;
+    // console.log(stream)
+    var course_id = $('#course').val();
+    // console.log(course_id)
+    // console.log(stream)
+    // $.ajax
+    // ({ 
+    //     data: {
+    //       'course_id': course_id,
+    //       'stream_id':stream
+    //     }, 
+    //     type: 'POST', 
+    //     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    //     url: "{% url 'advancesearch' %}",
+    //     success: function (response) 
+    //     { 
+    //       // console.log(response)
+    //       var data = response.student_data;
+    //       console.log(data)
+    //       if(data){
+    //           $('#hiddendata').empty();
+    //       }
+    //       $('#hiddendata').append(`
+    //       <table class="table" id="student-table">
+    //         <thead>
+    //           <tr>
+    //             <th scope="col">Name</th>
+    //             <th scope="col">Mobile</th>
+    //             <th scope="col">Email</th>
+    //             <th scope="col">Course</th>
+    //             <th scope="col">Stream</th>
+    //             <th scope="col">Total Semester/Year</th>
+    //             <th scope="col">Current Semester/Year</th>
+    //             <th scope="col">Action</th>
+
+    //           </tr>
+    //         </thead>
+    //         <tbody id="student-table-body">
+                
+    //         </tbody>
+    //       </table>
+    //       `);
+    //       data.forEach(myFunction);
+    //       $(document).ready( function () {
+    //           $('#student-table').DataTable();
+    //       } );
+          
+    //       function myFunction(item){
+    //           console.log(item);
+    //           $('#student-table-body').append(`
+    //             <tr>
+    //                 <td scope="col">${item.name} </td>
+    //                 <td scope="col">${item.mobile}</td>
+    //                 <td scope="col">${item.email}</td>
+    //                 <td scope="col">${item.course}</td>
+    //                 <td scope="col">${item.stream}</td>
+    //                 <td scope="col">${item.total_semyear}</td>
+    //                 <td scope="col">${item.current_semyear}</td>
+    //                 <td scope="col"><button onclick="redirectpage(${item.enrollment_id})" class="btn btn-success" >View</button></td>
+    //             </tr>
+    //             `);
+    //       }
+    //         // $('#student-table-body').empty();
+    //         // $('#student-table').css('visibility','visible')
+    //         // console.log(response)
+    //         // var data = response.student_data;
+    //         // data.forEach(myFunction);
+            
+    //         // function myFunction(item) {
+    //             // $('#student-table-body').append(`
+    //             // <tr>
+    //             //     <td scope="col">${item.name} </td>
+    //             //     <td scope="col">${item.mobile}</td>
+    //             //     <td scope="col">${item.email}</td>
+    //             //     <td scope="col">${item.course}</td>
+    //             //     <td scope="col">${item.stream}</td>
+    //             //     <td scope="col">${item.total_semyear}</td>
+    //             //     <td scope="col">${item.current_semyear}</td>
+    //             //     <td scope="col"><button onclick="redirectpage(${item.enrollment_id})" class="btn btn-success" >View</button></td>
+    //             // </tr>
+    //             // `);
+    //         //     }
+    //     }
+    // });
+} 
+$(document).ready( function () {
+  $('#student-table').DataTable();
+  $('#dashboard-collapse').addClass("show");
+  $("#advance_search_link").removeClass("link-dark");
+  $('#advance_search_link').addClass("link-primary");
+});
+function redirectpage(enroll_id){
+  // console.log(enroll_id)
+  $.ajax
+    ({ 
+        data: {
+          "search_enrollment_id":enroll_id
+        }, 
+        type: 'POST', 
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'advancesearch' %}",
+        success: function (response) 
+        { 
+          // console.log("sent enroll_id")
+        }
+      });
+
+}
+
+
+function export_excel()
+{
+  window.location = `https://erp.ciisindia.in/export_excel/${$('#exported_student_ids').val()}`
+}
+
+function export_pdf()
+{
+  window.location = `https://erp.ciisindia.in/export_pdf/${$('#exported_student_ids').val()}`
+}
+
+</script>
+
+
+
+
+{% endblock body %}
+
+
+
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049

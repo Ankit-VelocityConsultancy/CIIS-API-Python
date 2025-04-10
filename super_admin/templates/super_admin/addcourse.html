@@ -1,0 +1,801 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+
+{% block head %}
+<title>MY COURSES - CIIS</title>
+<script>
+$(document).ready(function(){
+      
+      $("#importdata").change(function(){
+          $("#uploaded-file").text(this.files[0].name);
+      });
+});
+</script>
+
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+<div class="pages-body-bg-color">
+  <section class="my-course mx-3">
+      <div class="row">
+          <div class="col-12">
+              <div class="outer-rectangle">
+                  <div class="inner-block px-4 pb-4">
+                      <div class="row">
+                          <div class="col-12">
+                              <div class="box-title pt-4 ">
+                                <div class="section-header">
+                                  <h1 class="font-26 font-bold text-black text-uppercase">Add Course</h1>
+                
+                              </div>
+                              </div>
+                              <div class="box-text">
+                                  <p class="font-16 font-medium text-light-gray">Select a university and save it</p>
+                              </div>
+                          </div>
+                      </div>
+                      <form action="" method="POST" id="course_form">
+                        {% csrf_token %}
+                      <div class="select-options pt-4">
+                          <div class="row">
+                           
+                              <div class="col-12 col-sm-5 col-md-4">
+                                  <label for="university" class="labelrequired">University</label>
+                                  <select name="university" id="add_university" class="  width-100  font-14 text-extralightgray" required>
+                                      <option value="" >Select </option>
+                                      {% for i in university %}
+                                      <option value="{{i.id}}">{{i.university_name}}</option>
+                                      {% endfor %}
+                                     </select>
+                              </div>
+                              <div class="col-12 col-sm-5 col-md-4 mt-3 mt-sm-0">
+                              
+                                <label for="course" class="labelrequired">Course</label>
+                                  <input name="course" id="add_coursename" class="  width-100  font-14 text-extralightgray" placeholder="" required>
+                                      
+                                     
+                              </div>
+                              <!--div class=" col-4 col-sm-2 col-md-2 mt-3 mt-sm-0">
+                                <label for="course_year" class="labelrequired">Course Duration (in years)</label>
+                                <input type="number" class="  width-100  font-14 text-extralightgray" placeholder="" name="course_year" id="course_year" required>
+                            </div>
+                              <div class=" col-4 col-sm-2 col-md-2 mt-3 mt-sm-0">
+                                  <input type="submit" value="Save" class=" yellow-btn font-18 font-bold">
+                              </div>
+                          
+                          </div-->
+                        </form>
+                      
+                      </div>
+                      <div class="file-upload pt-4">
+                        <div class="row">
+                            <div class="col-12 col-sm-10">
+                              
+                                        <div class="button-wrapper ">
+                                            <label for="importdata" class="text-extralightgray file-btn font-14">Choose File for Importing Data</label>                                    
+                                             <input type="file" id="importdata" style="display:none"> 
+                                             <label id="uploaded-file" class="text-extralightgray font-14 px-3">No files chosen</label>
+                                        </div>
+                                        
+                               
+                            </div>
+                            <div class="col-4 mt-3 mt-sm-0 col-sm-2">
+                                <input type="submit" value="Save" class="save-btn yellow-btn font-18 font-bold">
+                            </div>
+                        </div>
+                    </div>
+                      
+                  </div>
+                
+               
+              </div>
+        </div>
+  </section>
+     
+
+  
+  <section class="my-course-entries my-3 mx-3">
+      <div class="row">
+          <div class="col-12">
+              <div class="white-box">
+                  <div class="inner-block px-4">
+                      <div class="row">
+                          <div class="col-12">
+                              <div class="box-title pt-4 ">
+                                  <h5 class="font-18  font-bold text-black">Entries</h5>
+                              </div>
+                              <div class="box-text  ">
+                                  <p class="font-16 text-xlightgray">List of entries made with ID and email address</p>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="entries-table pt-4 pb-5">
+                          <table class="format-table" id="course_table">
+                              <thead class="bottom-border-grey">
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2">Sr. No.</th>
+                                  <th class="font-14 font-bold text-darkgray width-40 px-2">University Name</th>
+                                  <th class="font-14 font-bold text-darkgray px-2">Course</th>
+                              </thead>
+                              <tbody id="course_table_body">
+                                {% for i in main %}
+                                <tr class="line-height-35 bottom-border-grey">
+                                  <td class="font-14 font-bold text-light-yellow light-yellow-circle set-posn px-2">{{ forloop.counter }}</td>
+                                  <td class="font-14 text-extragray text-left text-uppercase px-2">{{i.university_name}}</td>
+                                  <td class="font-12 font-bold text-blue text-left px-2">{% for j in i.course_name %} <span class="blue-bg">
+                                    {{j.name}}</span>{% endfor %}</td>
+                                </tr>
+                                {% endfor %}
+                              </tbody>
+                        </table>
+                      </div>
+              </div>
+          </div>
+      </div>
+
+
+  </section>
+
+  <!-- <section class="import-data mx-3 pb-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="outer-rectangle">
+          <div class="inner-block px-4 pt-4">
+              <div class="row">
+                  <div class="col-12">
+                    
+                      <div class="box-text  ">
+                          <p class="font-16 text-purewhite">Import Data (.xlsx)</p>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <form action="" method="POST" id="import" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="file-upload pt-4 pb-5">
+                        <div class="row">
+                            <div class="col-12 col-sm-8">
+                              
+                                        <div class="button-wrapper ">
+                                            <label for="importdata"  class="text-extralightgray file-btn font-14">Choose File for Importing Data</label>                                    
+                                             <input type="file" id="importdata" style="display:none"> 
+                                             <label id="uploaded-file" class="text-extralightgray font-14 px-3">No files chosen</label>
+                                        </div>
+                                        
+                               
+                            </div>
+                            <div class="col-4 mt-3 mt-sm-0">
+                                <input type="submit" value="Save" class="save-btn  font-18 font-bold">
+                            </div>
+                        </div>
+                    </div>
+                   </form>
+                </div>
+              </div>
+      </div>
+    </div>
+
+  </section> -->
+
+</div>
+
+
+<!-- <section>
+  <div class="container">
+    <table class="table" id="course_table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">ID</th>
+          <th scope="col">Course Name</th>
+        </tr>
+      </thead>
+      <tbody id="course_table_body">
+        {% for i in courses %}
+        <tr>utut
+          <td>{{ forloop.counter }}</td>
+          <td>{{i.id}}</td>
+          <td>{{i.name}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</section> -->
+
+
+<div class="modal fade" id="CourseModal" tabindex="-1" aria-labelledby="CourseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="CourseModalLabel">Course Update / Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container" id="course_update_delete">
+          
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+{% endblock body %}
+{% block script %}
+<script language="JavaScript">
+  $(document).ready(function() {
+    /* added by Avani on 07/08.. course year should be added by default as the current year */
+    const currentYear = new Date().getFullYear();
+        $('#course-collapse').addClass("show");
+        $("#add_course_link").removeClass("link-dark");
+        $('#add_course_link').addClass("link-primary");
+      $('#course_form').submit(function() { // catch the form's submit event
+          $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'addcourse' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'add_coursename': $('#add_coursename').val(),
+              'add_university': $('#add_university').val(),
+              'course_year':currentYear,
+            },
+              success: function(response) { // on success..
+                  console.log(response);
+                  if(response.course){
+                    window.location = "{% url 'addcourse' %}"
+                  }
+                  else if(response.redirect == "yes"){
+                    window.location = "{% url 'addcourse' %}"
+                  }
+              }
+          });
+          return false;
+      });
+  });
+</script>
+
+<script>
+ $(document).ready(function () {
+    var table =   $('#course_table').DataTable({
+      scrollX:false
+  });
+  $('#course_table').on('click', 'tr', function () {
+          var name = $('td', this).eq(1).text();
+          console.log(name)
+          var data = table.row( this ).data();
+          // $('#exampleModal').modal("show");
+          $.ajax({
+          type: "POST",
+          url: "{% url 'addcourse' %}",
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: {
+            'university_name': name // from form
+          },
+          success: function(result){
+            console.log(result);
+            $('#course_update_delete').empty();
+            
+            if(result.course != 0){
+              $('#CourseModal').modal('show');
+              var data = result.course;
+              data.forEach(myfunction);
+              
+              function myfunction(item){
+                $('#course_update_delete').append(`
+                <div class="row">
+                  <div class="col-sm-5">
+                    <div class="mb-3">
+                      <input type="text" id="course_name_${item.id}" value="${item.name}" class="format-cell">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="mb-3">
+                      <input type="text" id="course_year_${item.id}" value="${item.year}" class="format-cell">
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div class="mb-3">
+                      <input type="text" id="course_id" class="format-cell" value="${item.id}" style="visibility:hidden;">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="mb-3">
+                      <button class="blue-bg text-blue font-bold font-12 no-border" onclick="updateCourse('${item.id}')">Update</button>
+                    </div>
+                  </div>
+                  
+                  
+                </div>
+              `);
+              }
+              
+            }
+          }
+        });
+      });
+    });
+
+    function updateCourse(id){
+      var course_id = id;
+      var course_name = $(`#course_name_${id}`).val();
+      var course_year = $(`#course_year_${id}`).val();
+      if(course_id && course_name){
+        $.ajax({
+          type: "POST",
+          url: "{% url 'addcourse' %}",
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: {
+            "update_course_id":course_id,
+            'update_course_name': course_name, // from form
+            'update_course_year': course_year,
+          },
+          success: function(result){
+            console.log(result)
+            if(result.updated == "yes"){
+              
+              $('#CourseModal').modal('hide');
+              $('#course_output').append(`
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Course Updated Successfully</strong> 
+                    <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `);
+              
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 1000);
+                setTimeout(() => {
+                  window.location = "{% url 'addcourse' %}"
+                }, 1000);
+                
+                  
+            }
+          }
+        });
+      }
+    }
+
+    function deleteCourse(){
+      var course_id = $('#course_id').val();
+      if (course_id){
+        $.ajax({
+          type: "POST",
+          url: "{% url 'addcourse' %}",
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: {
+            "delete_course_id":course_id,
+          },
+          success: function(result){
+            console.log(result)
+            if(result.deleted == "yes"){
+              $('#CourseModal').modal('hide');
+              $('#course_output').append(`
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Course Deleted Successfully</strong> 
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `);
+              
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 1000);
+                setTimeout(() => {
+                  window.location = "{% url 'addcourse' %}"
+                }, 1000);
+            }
+          }
+        });
+      }
+    }
+</script>
+{% endblock script %}
+=======
+{% extends 'includes/master.html' %}
+
+{% block head %}
+<title>MY COURSES - CIIS</title>
+<script>
+$(document).ready(function(){
+      
+      $("#importdata").change(function(){
+          $("#uploaded-file").text(this.files[0].name);
+      });
+});
+</script>
+
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+<div class="pages-body-bg-color">
+  <section class="my-course mx-3">
+      <div class="row">
+          <div class="col-12">
+              <div class="outer-rectangle">
+                  <div class="inner-block px-4 pb-4">
+                      <div class="row">
+                          <div class="col-12">
+                              <div class="box-title pt-4 ">
+                                <div class="section-header">
+                                  <h1 class="font-26 font-bold text-black text-uppercase">Add Course</h1>
+                
+                              </div>
+                              </div>
+                              <div class="box-text">
+                                  <p class="font-16 font-medium text-light-gray">Select a university and save it</p>
+                              </div>
+                          </div>
+                      </div>
+                      <form action="" method="POST" id="course_form">
+                        {% csrf_token %}
+                      <div class="select-options pt-4">
+                          <div class="row">
+                           
+                              <div class="col-12 col-sm-5 col-md-4">
+                                  <label for="university" class="labelrequired">University</label>
+                                  <select name="university" id="add_university" class="  width-100  font-14 text-extralightgray" required>
+                                      <option value="" >Select </option>
+                                      {% for i in university %}
+                                      <option value="{{i.id}}">{{i.university_name}}</option>
+                                      {% endfor %}
+                                     </select>
+                              </div>
+                              <div class="col-12 col-sm-5 col-md-4 mt-3 mt-sm-0">
+                              
+                                <label for="course" class="labelrequired">Course</label>
+                                  <input name="course" id="add_coursename" class="  width-100  font-14 text-extralightgray" placeholder="" required>
+                                      
+                                     
+                              </div>
+                              <!--div class=" col-4 col-sm-2 col-md-2 mt-3 mt-sm-0">
+                                <label for="course_year" class="labelrequired">Course Duration (in years)</label>
+                                <input type="number" class="  width-100  font-14 text-extralightgray" placeholder="" name="course_year" id="course_year" required>
+                            </div>
+                              <div class=" col-4 col-sm-2 col-md-2 mt-3 mt-sm-0">
+                                  <input type="submit" value="Save" class=" yellow-btn font-18 font-bold">
+                              </div>
+                          
+                          </div-->
+                        </form>
+                      
+                      </div>
+                      <div class="file-upload pt-4">
+                        <div class="row">
+                            <div class="col-12 col-sm-10">
+                              
+                                        <div class="button-wrapper ">
+                                            <label for="importdata" class="text-extralightgray file-btn font-14">Choose File for Importing Data</label>                                    
+                                             <input type="file" id="importdata" style="display:none"> 
+                                             <label id="uploaded-file" class="text-extralightgray font-14 px-3">No files chosen</label>
+                                        </div>
+                                        
+                               
+                            </div>
+                            <div class="col-4 mt-3 mt-sm-0 col-sm-2">
+                                <input type="submit" value="Save" class="save-btn yellow-btn font-18 font-bold">
+                            </div>
+                        </div>
+                    </div>
+                      
+                  </div>
+                
+               
+              </div>
+        </div>
+  </section>
+     
+
+  
+  <section class="my-course-entries my-3 mx-3">
+      <div class="row">
+          <div class="col-12">
+              <div class="white-box">
+                  <div class="inner-block px-4">
+                      <div class="row">
+                          <div class="col-12">
+                              <div class="box-title pt-4 ">
+                                  <h5 class="font-18  font-bold text-black">Entries</h5>
+                              </div>
+                              <div class="box-text  ">
+                                  <p class="font-16 text-xlightgray">List of entries made with ID and email address</p>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="entries-table pt-4 pb-5">
+                          <table class="format-table" id="course_table">
+                              <thead class="bottom-border-grey">
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2">Sr. No.</th>
+                                  <th class="font-14 font-bold text-darkgray width-40 px-2">University Name</th>
+                                  <th class="font-14 font-bold text-darkgray px-2">Course</th>
+                              </thead>
+                              <tbody id="course_table_body">
+                                {% for i in main %}
+                                <tr class="line-height-35 bottom-border-grey">
+                                  <td class="font-14 font-bold text-light-yellow light-yellow-circle set-posn px-2">{{ forloop.counter }}</td>
+                                  <td class="font-14 text-extragray text-left text-uppercase px-2">{{i.university_name}}</td>
+                                  <td class="font-12 font-bold text-blue text-left px-2">{% for j in i.course_name %} <span class="blue-bg">
+                                    {{j.name}}</span>{% endfor %}</td>
+                                </tr>
+                                {% endfor %}
+                              </tbody>
+                        </table>
+                      </div>
+              </div>
+          </div>
+      </div>
+
+
+  </section>
+
+  <!-- <section class="import-data mx-3 pb-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="outer-rectangle">
+          <div class="inner-block px-4 pt-4">
+              <div class="row">
+                  <div class="col-12">
+                    
+                      <div class="box-text  ">
+                          <p class="font-16 text-purewhite">Import Data (.xlsx)</p>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <form action="" method="POST" id="import" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="file-upload pt-4 pb-5">
+                        <div class="row">
+                            <div class="col-12 col-sm-8">
+                              
+                                        <div class="button-wrapper ">
+                                            <label for="importdata"  class="text-extralightgray file-btn font-14">Choose File for Importing Data</label>                                    
+                                             <input type="file" id="importdata" style="display:none"> 
+                                             <label id="uploaded-file" class="text-extralightgray font-14 px-3">No files chosen</label>
+                                        </div>
+                                        
+                               
+                            </div>
+                            <div class="col-4 mt-3 mt-sm-0">
+                                <input type="submit" value="Save" class="save-btn  font-18 font-bold">
+                            </div>
+                        </div>
+                    </div>
+                   </form>
+                </div>
+              </div>
+      </div>
+    </div>
+
+  </section> -->
+
+</div>
+
+
+<!-- <section>
+  <div class="container">
+    <table class="table" id="course_table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">ID</th>
+          <th scope="col">Course Name</th>
+        </tr>
+      </thead>
+      <tbody id="course_table_body">
+        {% for i in courses %}
+        <tr>utut
+          <td>{{ forloop.counter }}</td>
+          <td>{{i.id}}</td>
+          <td>{{i.name}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</section> -->
+
+
+<div class="modal fade" id="CourseModal" tabindex="-1" aria-labelledby="CourseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="CourseModalLabel">Course Update / Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container" id="course_update_delete">
+          
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+{% endblock body %}
+{% block script %}
+<script language="JavaScript">
+  $(document).ready(function() {
+    /* added by Avani on 07/08.. course year should be added by default as the current year */
+    const currentYear = new Date().getFullYear();
+        $('#course-collapse').addClass("show");
+        $("#add_course_link").removeClass("link-dark");
+        $('#add_course_link').addClass("link-primary");
+      $('#course_form').submit(function() { // catch the form's submit event
+          $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'addcourse' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'add_coursename': $('#add_coursename').val(),
+              'add_university': $('#add_university').val(),
+              'course_year':currentYear,
+            },
+              success: function(response) { // on success..
+                  console.log(response);
+                  if(response.course){
+                    window.location = "{% url 'addcourse' %}"
+                  }
+                  else if(response.redirect == "yes"){
+                    window.location = "{% url 'addcourse' %}"
+                  }
+              }
+          });
+          return false;
+      });
+  });
+</script>
+
+<script>
+ $(document).ready(function () {
+    var table =   $('#course_table').DataTable({
+      scrollX:false
+  });
+  $('#course_table').on('click', 'tr', function () {
+          var name = $('td', this).eq(1).text();
+          console.log(name)
+          var data = table.row( this ).data();
+          // $('#exampleModal').modal("show");
+          $.ajax({
+          type: "POST",
+          url: "{% url 'addcourse' %}",
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: {
+            'university_name': name // from form
+          },
+          success: function(result){
+            console.log(result);
+            $('#course_update_delete').empty();
+            
+            if(result.course != 0){
+              $('#CourseModal').modal('show');
+              var data = result.course;
+              data.forEach(myfunction);
+              
+              function myfunction(item){
+                $('#course_update_delete').append(`
+                <div class="row">
+                  <div class="col-sm-5">
+                    <div class="mb-3">
+                      <input type="text" id="course_name_${item.id}" value="${item.name}" class="format-cell">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="mb-3">
+                      <input type="text" id="course_year_${item.id}" value="${item.year}" class="format-cell">
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div class="mb-3">
+                      <input type="text" id="course_id" class="format-cell" value="${item.id}" style="visibility:hidden;">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="mb-3">
+                      <button class="blue-bg text-blue font-bold font-12 no-border" onclick="updateCourse('${item.id}')">Update</button>
+                    </div>
+                  </div>
+                  
+                  
+                </div>
+              `);
+              }
+              
+            }
+          }
+        });
+      });
+    });
+
+    function updateCourse(id){
+      var course_id = id;
+      var course_name = $(`#course_name_${id}`).val();
+      var course_year = $(`#course_year_${id}`).val();
+      if(course_id && course_name){
+        $.ajax({
+          type: "POST",
+          url: "{% url 'addcourse' %}",
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: {
+            "update_course_id":course_id,
+            'update_course_name': course_name, // from form
+            'update_course_year': course_year,
+          },
+          success: function(result){
+            console.log(result)
+            if(result.updated == "yes"){
+              
+              $('#CourseModal').modal('hide');
+              $('#course_output').append(`
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Course Updated Successfully</strong> 
+                    <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `);
+              
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 1000);
+                setTimeout(() => {
+                  window.location = "{% url 'addcourse' %}"
+                }, 1000);
+                
+                  
+            }
+          }
+        });
+      }
+    }
+
+    function deleteCourse(){
+      var course_id = $('#course_id').val();
+      if (course_id){
+        $.ajax({
+          type: "POST",
+          url: "{% url 'addcourse' %}",
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: {
+            "delete_course_id":course_id,
+          },
+          success: function(result){
+            console.log(result)
+            if(result.deleted == "yes"){
+              $('#CourseModal').modal('hide');
+              $('#course_output').append(`
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Course Deleted Successfully</strong> 
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `);
+              
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 1000);
+                setTimeout(() => {
+                  window.location = "{% url 'addcourse' %}"
+                }, 1000);
+            }
+          }
+        });
+      }
+    }
+</script>
+{% endblock script %}
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049

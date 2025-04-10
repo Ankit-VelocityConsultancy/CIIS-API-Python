@@ -1,0 +1,836 @@
+<<<<<<< HEAD
+{% extends 'master.html' %}
+
+{% block head %}
+<title>MY STREAM - CIIS</title>
+
+{% endblock head %}
+
+
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<div class="pages-body-bg-color pt-5">
+  <section class="my-course mx-3">
+      <div class="row">
+          <div class="col-12">
+              <div class="section-header">
+                  <h1 class="font-26 font-bold text-black text-uppercase">My Stream</h1>
+
+              </div>
+              <div class="outer-rectangle">
+                  <div class="inner-block px-4">
+                    
+                      <form action="" method="POST" id="stream_add_table">
+                        {% csrf_token %}
+                      <div class="select-options pt-4">
+                          <div class="row pb-4">
+                           
+                              <div class="col-12 col-sm-6 ">
+                                  <select name="selectuniversity" id="selectuniversity" class="  width-100 select-mycourse font-14 text-extralightgray">
+                                      <option value="0" >Select University</option>
+                                      {% for i in university %}
+                                      <option value="{{i.id}}">{{i.university_name}}</option>
+                                      {% endfor %}
+                                     </select>
+                              </div>
+                              <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                              
+           
+                                  <select name="coursename" id="selectcourse" class="  width-100 select-mycourse font-14 text-extralightgray">
+                                      <option value="0">Select Course</option> 
+                                     </select>
+                                     
+                              </div>
+
+                              <div class="col-12 col-sm-6 col-md-4 mt-3">
+                                
+                                <input class="  width-100 select-mycourse font-14 text-extralightgray" required name="specialization" list="datalistOptions" id="specialization"
+                                  placeholder="Enter Specialisation Example :- IT/CS">
+                                <datalist id="datalistOptions">
+                        
+                                </datalist>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 mt-3">
+                                
+                                  
+                                  <input type="number" required class="  width-100 select-mycourse font-14 text-extralightgray" name="duration" id="duration"
+                                    placeholder=" Enter Course Duration (in Years) Example :- 3">
+                                
+                              </div>
+
+
+
+                              <div class=" col-4 col-sm-2 col-md-4 mt-3">
+                                  <input type="submit" value="Save" class="save-btn select-mycourse font-18 font-bold">
+                              </div>
+                          
+                          </div>
+                        </form>
+                        
+                         
+                      </div>
+                      
+                  </div>
+                
+               
+              </div>
+          </div>
+      </div>
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div id="stream_output"></div>
+    </div>
+  </div>
+ 
+<div class="container">
+
+
+  <table class="format-table" id="course_table">
+    <thead class="bottom-border-grey">
+      <tr>
+        <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">#</th>
+        <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">University Name</th>
+        <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Course</th>
+        
+      </tr>
+    </thead>
+    <tbody id="course_table_body">
+      {% for i in maindata %}
+      <tr class="line-height-35 bottom-border-grey">
+        <td class="font-14 font-bold text-light-yellow light-yellow-circle set-posn  px-2">{{ forloop.counter }}</td>
+        <td class="font-14 text-extragray text-uppercase px-2">{{i.university_name}}</td>
+        <td class="font-12 font-bold text-blue px-2">{% for j in i.course_name %} <span class="blue-bg">
+          {{j.name}}</span>{% endfor %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+
+
+
+<div class="modal fade" id="CourseModal" tabindex="-1" aria-labelledby="CourseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="CourseModalLabel">Stream</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container" id="course_update_delete">
+          
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="StreamModal" tabindex="-1" aria-labelledby="StreamModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="StreamModalLabel">Stream <input type="text" id="stream_count" ></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container" id="streamContainer">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col"></th>
+                <th scope="col">Stream Name</th>
+                
+                
+              </tr>
+            </thead>
+            <tbody id="stream_table_body">
+              
+            </tbody>
+          </table>
+          <button class="blue-bg text-blue font-bold font-12 no-border" id="save_stream_button" style="visibility: hidden;" onclick="updateStream()">Save</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+
+<script language="JavaScript">
+
+document.getElementById("selectuniversity").onchange = function () {
+    var university = this.value;
+    if(university == "Select University"){
+
+    }
+    else{
+      $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'addstream' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'get_course':university
+            },
+            success: function(response) {
+              console.log(response)
+              if(response.course){
+                var data = response.course
+                data.forEach(myFunction);
+
+                function myFunction(item){
+                  $('#selectcourse').append(`
+                    <option value="${item.id}">${item.name}</option>
+                  `);
+                }
+
+              }
+            }
+          });
+          
+    }
+}
+
+
+
+
+  $(document).ready(function() {
+        $('#course-collapse').addClass("show");
+        $("#add_stream_link").removeClass("link-dark");
+        $('#add_stream_link').addClass("link-primary");
+      $('#stream_add_table').submit(function() {
+          $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'addstream' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'add_selectcourse': $('#selectcourse').val(),
+              'add_specialization': $('#specialization').val(),
+              'add_duration': $('#duration').val()
+              
+            },
+              success: function(response) { // on success..
+                  console.log(response);
+                  if(response.added == "yes"){
+                    $('#stream_output').append(`
+                    <div class="alert outer-rectangle text-purewhite mt-2 alert-dismissible fade show" role="alert">
+                        <strong>Stream Added Successfully</strong> 
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    `);
+                  
+                    setTimeout(() => {
+                        $('.alert').alert('close');
+                    }, 1000);
+                    setTimeout(() => {
+                      window.location.replace("{% url 'addstream' %}");
+                    }, 1000);
+                  }
+                  
+              }
+          });
+          return false;
+      });
+  });
+</script>
+
+
+
+<script type="text/javascript">
+   $(document).ready(function () {
+    var table =   $('#course_table').DataTable({
+      scrollX:false
+  });
+  $('#course_table').on('click', 'tr', function () {
+          var name = $('td', this).eq(1).text();
+          console.log(name)
+          var data = table.row( this ).data();
+          // $('#exampleModal').modal("show");
+          $.ajax({
+          type: "POST",
+          url: "{% url 'addcourse' %}",
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: {
+            'university_name': name // from form
+          },
+          success: function(result){
+            console.log(result);
+            $('#course_update_delete').empty();
+            
+            if(result.course != 0){
+              $('#CourseModal').modal('show');
+              var data = result.course;
+              data.forEach(myfunction);
+              
+              function myfunction(item){
+                $('#course_update_delete').append(`
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="mb-3">
+                      <button class="blue-bg text-blue font-bold font-12 no-border" onclick="showStream(${item.id})">${item.name}</button>
+                    </div>
+                  </div>
+                  
+                </div>
+              `);
+              }
+              
+            }
+          }
+        });
+      });
+    });
+
+    function showStream(id){
+      $.ajax({
+          type: "POST",
+          url: "{% url 'addstream' %}",
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: {
+            'course_id': id // from form
+          },
+          success: function(result){
+            $('#stream_table_body').empty();
+            console.log(result)
+            if(result.stream == "yes"){
+              $('#stream_count').val(result.streamcount)
+              $('#save_stream_button').css('visibility','visible')
+              var data = result.data;
+              data.forEach(myFunction);
+              var count = 0;
+              function myFunction(item,count){
+                count = count + 1;
+                $('#stream_table_body').append(`
+                <tr>
+                  <th scope="row">${count}</th>
+                  <th scope="row"><input type="text" class="form-control" id="stream_id${count}" style="width:50px;visibility:hidden;  " ></th>
+                  <td><input type="text" class="form-control" id="stream${count}"></td>
+                </tr>
+                `);
+                $('#stream_id'+count).val(item.id);
+                $('#stream'+count).val(item.name);
+              }
+
+              $('#StreamModal').modal('show')
+            }
+          }
+        });
+    }
+
+    function updateStream(){
+      var stream_count = $('#stream_count').val();
+      var jsonStr = '{"data":[]}';
+      var obj = JSON.parse(jsonStr);
+
+      for (var i=1;i<=stream_count;i++){
+        obj['data'].push({"stream_id":$('#stream_id'+i).val(),"stream_name":$('#stream'+i).val()});
+      }
+      console.log(obj);
+      const myJSON = JSON.stringify(obj);
+      $.ajax({ // create an AJAX call...
+            data: {
+                'streamchange': myJSON
+            }, // get the form data
+            type: 'POST', // GET or POST
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            url: "{% url 'addstream' %}", // the file to call
+            success: function (response) {
+              console.log(response)
+              if(response.updated == "yes"){
+                $('#StreamModal').modal('hide');
+                $('#stream_output').append(`
+                <div class="alert outer-rectangle text-purewhite mt-2 alert-dismissible fade show" role="alert">
+                    <strong>Stream Updated Successfully</strong> 
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `);
+              
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 1000);
+                setTimeout(() => {
+                  window.location.replace("{% url 'addstream' %}");
+                }, 1000);
+              }
+            }
+          });
+    }
+
+    function deleteStream(id){
+      console.log("deleted : ",id);
+      $.ajax({ // create an AJAX call...
+            data: {
+                'stream_delete_id': id
+            }, // get the form data
+            type: 'POST', // GET or POST
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            url: "{% url 'addstream' %}", // the file to call
+            success: function (response) {
+              console.log(response);
+              if(response.deleted == "yes"){
+                $('#StreamModal').modal('hide');
+                $('#stream_output').append(`
+                <div class="alert outer-rectangle text-purewhite mt-2 alert-dismissible fade show" role="alert">
+                    <strong>Stream Deleted Successfully</strong> 
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `);
+              
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 1000);
+                setTimeout(() => {
+                  window.location.replace("{% url 'addstream' %}");
+                }, 1000);
+              }
+            }
+          });
+      // $('#StreamModal').modal('hide');
+
+    }
+
+
+  
+</script>
+=======
+{% extends 'master.html' %}
+
+{% block head %}
+<title>MY STREAM - CIIS</title>
+
+{% endblock head %}
+
+
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<div class="pages-body-bg-color pt-5">
+  <section class="my-course mx-3">
+      <div class="row">
+          <div class="col-12">
+              <div class="section-header">
+                  <h1 class="font-26 font-bold text-black text-uppercase">My Stream</h1>
+
+              </div>
+              <div class="outer-rectangle">
+                  <div class="inner-block px-4">
+                    
+                      <form action="" method="POST" id="stream_add_table">
+                        {% csrf_token %}
+                      <div class="select-options pt-4">
+                          <div class="row pb-4">
+                           
+                              <div class="col-12 col-sm-6 ">
+                                  <select name="selectuniversity" id="selectuniversity" class="  width-100 select-mycourse font-14 text-extralightgray">
+                                      <option value="0" >Select University</option>
+                                      {% for i in university %}
+                                      <option value="{{i.id}}">{{i.university_name}}</option>
+                                      {% endfor %}
+                                     </select>
+                              </div>
+                              <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                              
+           
+                                  <select name="coursename" id="selectcourse" class="  width-100 select-mycourse font-14 text-extralightgray">
+                                      <option value="0">Select Course</option> 
+                                     </select>
+                                     
+                              </div>
+
+                              <div class="col-12 col-sm-6 col-md-4 mt-3">
+                                
+                                <input class="  width-100 select-mycourse font-14 text-extralightgray" required name="specialization" list="datalistOptions" id="specialization"
+                                  placeholder="Enter Specialisation Example :- IT/CS">
+                                <datalist id="datalistOptions">
+                        
+                                </datalist>
+                              </div>
+                              <div class="col-12 col-sm-6 col-md-4 mt-3">
+                                
+                                  
+                                  <input type="number" required class="  width-100 select-mycourse font-14 text-extralightgray" name="duration" id="duration"
+                                    placeholder=" Enter Course Duration (in Years) Example :- 3">
+                                
+                              </div>
+
+
+
+                              <div class=" col-4 col-sm-2 col-md-4 mt-3">
+                                  <input type="submit" value="Save" class="save-btn select-mycourse font-18 font-bold">
+                              </div>
+                          
+                          </div>
+                        </form>
+                        
+                         
+                      </div>
+                      
+                  </div>
+                
+               
+              </div>
+          </div>
+      </div>
+
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div id="stream_output"></div>
+    </div>
+  </div>
+ 
+<div class="container">
+
+
+  <table class="format-table" id="course_table">
+    <thead class="bottom-border-grey">
+      <tr>
+        <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">#</th>
+        <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">University Name</th>
+        <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Course</th>
+        
+      </tr>
+    </thead>
+    <tbody id="course_table_body">
+      {% for i in maindata %}
+      <tr class="line-height-35 bottom-border-grey">
+        <td class="font-14 font-bold text-light-yellow light-yellow-circle set-posn  px-2">{{ forloop.counter }}</td>
+        <td class="font-14 text-extragray text-uppercase px-2">{{i.university_name}}</td>
+        <td class="font-12 font-bold text-blue px-2">{% for j in i.course_name %} <span class="blue-bg">
+          {{j.name}}</span>{% endfor %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+
+
+
+<div class="modal fade" id="CourseModal" tabindex="-1" aria-labelledby="CourseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="CourseModalLabel">Stream</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container" id="course_update_delete">
+          
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="StreamModal" tabindex="-1" aria-labelledby="StreamModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="StreamModalLabel">Stream <input type="text" id="stream_count" ></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container" id="streamContainer">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col"></th>
+                <th scope="col">Stream Name</th>
+                
+                
+              </tr>
+            </thead>
+            <tbody id="stream_table_body">
+              
+            </tbody>
+          </table>
+          <button class="blue-bg text-blue font-bold font-12 no-border" id="save_stream_button" style="visibility: hidden;" onclick="updateStream()">Save</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+
+<script language="JavaScript">
+
+document.getElementById("selectuniversity").onchange = function () {
+    var university = this.value;
+    if(university == "Select University"){
+
+    }
+    else{
+      $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'addstream' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'get_course':university
+            },
+            success: function(response) {
+              console.log(response)
+              if(response.course){
+                var data = response.course
+                data.forEach(myFunction);
+
+                function myFunction(item){
+                  $('#selectcourse').append(`
+                    <option value="${item.id}">${item.name}</option>
+                  `);
+                }
+
+              }
+            }
+          });
+          
+    }
+}
+
+
+
+
+  $(document).ready(function() {
+        $('#course-collapse').addClass("show");
+        $("#add_stream_link").removeClass("link-dark");
+        $('#add_stream_link').addClass("link-primary");
+      $('#stream_add_table').submit(function() {
+          $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'addstream' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'add_selectcourse': $('#selectcourse').val(),
+              'add_specialization': $('#specialization').val(),
+              'add_duration': $('#duration').val()
+              
+            },
+              success: function(response) { // on success..
+                  console.log(response);
+                  if(response.added == "yes"){
+                    $('#stream_output').append(`
+                    <div class="alert outer-rectangle text-purewhite mt-2 alert-dismissible fade show" role="alert">
+                        <strong>Stream Added Successfully</strong> 
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    `);
+                  
+                    setTimeout(() => {
+                        $('.alert').alert('close');
+                    }, 1000);
+                    setTimeout(() => {
+                      window.location.replace("{% url 'addstream' %}");
+                    }, 1000);
+                  }
+                  
+              }
+          });
+          return false;
+      });
+  });
+</script>
+
+
+
+<script type="text/javascript">
+   $(document).ready(function () {
+    var table =   $('#course_table').DataTable({
+      scrollX:false
+  });
+  $('#course_table').on('click', 'tr', function () {
+          var name = $('td', this).eq(1).text();
+          console.log(name)
+          var data = table.row( this ).data();
+          // $('#exampleModal').modal("show");
+          $.ajax({
+          type: "POST",
+          url: "{% url 'addcourse' %}",
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: {
+            'university_name': name // from form
+          },
+          success: function(result){
+            console.log(result);
+            $('#course_update_delete').empty();
+            
+            if(result.course != 0){
+              $('#CourseModal').modal('show');
+              var data = result.course;
+              data.forEach(myfunction);
+              
+              function myfunction(item){
+                $('#course_update_delete').append(`
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="mb-3">
+                      <button class="blue-bg text-blue font-bold font-12 no-border" onclick="showStream(${item.id})">${item.name}</button>
+                    </div>
+                  </div>
+                  
+                </div>
+              `);
+              }
+              
+            }
+          }
+        });
+      });
+    });
+
+    function showStream(id){
+      $.ajax({
+          type: "POST",
+          url: "{% url 'addstream' %}",
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: {
+            'course_id': id // from form
+          },
+          success: function(result){
+            $('#stream_table_body').empty();
+            console.log(result)
+            if(result.stream == "yes"){
+              $('#stream_count').val(result.streamcount)
+              $('#save_stream_button').css('visibility','visible')
+              var data = result.data;
+              data.forEach(myFunction);
+              var count = 0;
+              function myFunction(item,count){
+                count = count + 1;
+                $('#stream_table_body').append(`
+                <tr>
+                  <th scope="row">${count}</th>
+                  <th scope="row"><input type="text" class="form-control" id="stream_id${count}" style="width:50px;visibility:hidden;  " ></th>
+                  <td><input type="text" class="form-control" id="stream${count}"></td>
+                </tr>
+                `);
+                $('#stream_id'+count).val(item.id);
+                $('#stream'+count).val(item.name);
+              }
+
+              $('#StreamModal').modal('show')
+            }
+          }
+        });
+    }
+
+    function updateStream(){
+      var stream_count = $('#stream_count').val();
+      var jsonStr = '{"data":[]}';
+      var obj = JSON.parse(jsonStr);
+
+      for (var i=1;i<=stream_count;i++){
+        obj['data'].push({"stream_id":$('#stream_id'+i).val(),"stream_name":$('#stream'+i).val()});
+      }
+      console.log(obj);
+      const myJSON = JSON.stringify(obj);
+      $.ajax({ // create an AJAX call...
+            data: {
+                'streamchange': myJSON
+            }, // get the form data
+            type: 'POST', // GET or POST
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            url: "{% url 'addstream' %}", // the file to call
+            success: function (response) {
+              console.log(response)
+              if(response.updated == "yes"){
+                $('#StreamModal').modal('hide');
+                $('#stream_output').append(`
+                <div class="alert outer-rectangle text-purewhite mt-2 alert-dismissible fade show" role="alert">
+                    <strong>Stream Updated Successfully</strong> 
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `);
+              
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 1000);
+                setTimeout(() => {
+                  window.location.replace("{% url 'addstream' %}");
+                }, 1000);
+              }
+            }
+          });
+    }
+
+    function deleteStream(id){
+      console.log("deleted : ",id);
+      $.ajax({ // create an AJAX call...
+            data: {
+                'stream_delete_id': id
+            }, // get the form data
+            type: 'POST', // GET or POST
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            url: "{% url 'addstream' %}", // the file to call
+            success: function (response) {
+              console.log(response);
+              if(response.deleted == "yes"){
+                $('#StreamModal').modal('hide');
+                $('#stream_output').append(`
+                <div class="alert outer-rectangle text-purewhite mt-2 alert-dismissible fade show" role="alert">
+                    <strong>Stream Deleted Successfully</strong> 
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `);
+              
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 1000);
+                setTimeout(() => {
+                  window.location.replace("{% url 'addstream' %}");
+                }, 1000);
+              }
+            }
+          });
+      // $('#StreamModal').modal('hide');
+
+    }
+
+
+  
+</script>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

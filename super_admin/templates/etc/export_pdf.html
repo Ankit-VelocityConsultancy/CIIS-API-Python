@@ -1,0 +1,324 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+  <link rel="stylesheet" href="{% static 'dict/#css/bootstrap.min.css' %}" />
+  <!-- <link rel="stylesheet" href="{% static 'dict/css1/admin.css' %}" />
+  <link rel="stylesheet" href="{% static 'dict/css1/styles.css' %}" /> -->
+  <link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet"  crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.1.0/css/buttons.dataTables.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+  
+ <style>
+   td,tr{
+    text-align: center;
+   }
+ </style>
+ <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2022.2.802/styles/kendo.default-ocean-blue.min.css">
+
+ <script src="https://kendo.cdn.telerik.com/2022.2.802/js/jquery.min.js"></script>
+ <script src="https://kendo.cdn.telerik.com/2022.2.802/js/jszip.min.js"></script>
+ <script src="https://kendo.cdn.telerik.com/2022.2.802/js/kendo.all.min.js"></script>
+</head>
+
+<body>
+  
+  <main>
+
+    <div  class="page-content container print_form mt-3" id="main-content">
+        <div class="header1">
+            <h1>Student's Data</h1>
+            <hr>
+        </div>
+        <table class="table table-striped" id="student-table">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Mobile</th>
+                <th scope="col">Email</th>
+                <th scope="col">Course</th>
+                <th scope="col">Stream</th>
+                <th scope="col">Total Semester/Year</th>
+                <th scope="col">Current Semester/Year</th>
+              </tr>
+            </thead>
+            <tbody id="student-table-body">
+                {% for i in data %}
+                <tr>
+                    <td scope="col">{{i.name}} </td>
+                    <td scope="col">{{i.mobile}}</td>
+                    <td scope="col">{{i.email}}</td>
+                    <td scope="col">{{i.course}}</td>
+                    <td scope="col">{{i.stream}}</td>
+                    <td scope="col">{{i.total_semyear}}</td>
+                    <td scope="col">{{i.current_semyear}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+   
+  </main>
+  <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="{% static 'dict/#js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    const downloadFile = (blob, fileName) => {
+        const link = document.createElement('a');
+        // create a blobURI pointing to our Blob
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        // some browser needs the anchor to be in the doc
+        document.body.append(link);
+        link.click();
+        link.remove();
+        // in case the Blob uses a lot of memory
+        setTimeout(() => URL.revokeObjectURL(link.href), 7000);
+    };
+    function dataURItoBlob(dataURI) {
+        // convert base64/URLEncoded data component to raw binary data held in a string
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(dataURI.split(',')[1]);
+        else
+            byteString = unescape(dataURI.split(',')[1]);
+    
+        // separate out the mime component
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    
+        // write the bytes of the string to a typed array
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+    
+        return new Blob([ia], {type:mimeString});
+    }
+            console.log('{{url}}')
+            //     $(".export-pdf").click(function() {
+            //     // Convert the DOM element to a drawing using kendo.drawing.drawDOM
+               
+            // });
+            kendo.drawing.drawDOM($("#main-content"))
+                .then(function(group) {
+                    // Render the result as a PDF file
+                    return kendo.drawing.exportPDF(group, {
+                        paperSize: "auto",
+                        margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
+                    });
+                })
+                .done(function(data) {
+    
+                    var file=dataURItoBlob(data)
+                        console.log(file)
+                        downloadFile(file,"Invoice.pdf")
+                    // Save the PDF file
+                    var pdfFile= new FormData()
+                    pdfFile.append("file",file)
+                    pdfFile.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+                    console.log(pdfFile)
+                    var url = '{{url}}'
+                    // $.ajax({ // create an AJAX call...
+                    //     data: 
+                    //         pdfFile,
+                    //     // get the form data
+                    //     type: 'POST', // GET or POST
+                    //     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    //     url: `/getinvoice/${url}`, // the file to call
+                    //     success: function (response) {  
+                    //         console.log("jds")
+                    //     }
+                    //     });
+                    $.ajax({
+                        method: "POST",
+                        url: `/getinvoice/${url}`,
+                        processData: false,
+                        contentType: false,
+                        mimeType: "multipart/form-data",
+                        data: pdfFile,
+                        success: function (res) {
+                            console.log("sent")
+                        }
+                    });
+    
+    
+                    // kendo.saveAs({
+                    //     dataURI: data,
+                    //     fileName: "HR-Dashboard.pdf",
+                    //     proxyURL: "https://demos.telerik.com/kendo-ui/service/export"
+                    // });
+                });
+                
+            </script>
+</body>
+
+=======
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+  <link rel="stylesheet" href="{% static 'dict/#css/bootstrap.min.css' %}" />
+  <!-- <link rel="stylesheet" href="{% static 'dict/css1/admin.css' %}" />
+  <link rel="stylesheet" href="{% static 'dict/css1/styles.css' %}" /> -->
+  <link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet"  crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.1.0/css/buttons.dataTables.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+  
+ <style>
+   td,tr{
+    text-align: center;
+   }
+ </style>
+ <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2022.2.802/styles/kendo.default-ocean-blue.min.css">
+
+ <script src="https://kendo.cdn.telerik.com/2022.2.802/js/jquery.min.js"></script>
+ <script src="https://kendo.cdn.telerik.com/2022.2.802/js/jszip.min.js"></script>
+ <script src="https://kendo.cdn.telerik.com/2022.2.802/js/kendo.all.min.js"></script>
+</head>
+
+<body>
+  
+  <main>
+
+    <div  class="page-content container print_form mt-3" id="main-content">
+        <div class="header1">
+            <h1>Student's Data</h1>
+            <hr>
+        </div>
+        <table class="table table-striped" id="student-table">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Mobile</th>
+                <th scope="col">Email</th>
+                <th scope="col">Course</th>
+                <th scope="col">Stream</th>
+                <th scope="col">Total Semester/Year</th>
+                <th scope="col">Current Semester/Year</th>
+              </tr>
+            </thead>
+            <tbody id="student-table-body">
+                {% for i in data %}
+                <tr>
+                    <td scope="col">{{i.name}} </td>
+                    <td scope="col">{{i.mobile}}</td>
+                    <td scope="col">{{i.email}}</td>
+                    <td scope="col">{{i.course}}</td>
+                    <td scope="col">{{i.stream}}</td>
+                    <td scope="col">{{i.total_semyear}}</td>
+                    <td scope="col">{{i.current_semyear}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+   
+  </main>
+  <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="{% static 'dict/#js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    const downloadFile = (blob, fileName) => {
+        const link = document.createElement('a');
+        // create a blobURI pointing to our Blob
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        // some browser needs the anchor to be in the doc
+        document.body.append(link);
+        link.click();
+        link.remove();
+        // in case the Blob uses a lot of memory
+        setTimeout(() => URL.revokeObjectURL(link.href), 7000);
+    };
+    function dataURItoBlob(dataURI) {
+        // convert base64/URLEncoded data component to raw binary data held in a string
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(dataURI.split(',')[1]);
+        else
+            byteString = unescape(dataURI.split(',')[1]);
+    
+        // separate out the mime component
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    
+        // write the bytes of the string to a typed array
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+    
+        return new Blob([ia], {type:mimeString});
+    }
+            console.log('{{url}}')
+            //     $(".export-pdf").click(function() {
+            //     // Convert the DOM element to a drawing using kendo.drawing.drawDOM
+               
+            // });
+            kendo.drawing.drawDOM($("#main-content"))
+                .then(function(group) {
+                    // Render the result as a PDF file
+                    return kendo.drawing.exportPDF(group, {
+                        paperSize: "auto",
+                        margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
+                    });
+                })
+                .done(function(data) {
+    
+                    var file=dataURItoBlob(data)
+                        console.log(file)
+                        downloadFile(file,"Invoice.pdf")
+                    // Save the PDF file
+                    var pdfFile= new FormData()
+                    pdfFile.append("file",file)
+                    pdfFile.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+                    console.log(pdfFile)
+                    var url = '{{url}}'
+                    // $.ajax({ // create an AJAX call...
+                    //     data: 
+                    //         pdfFile,
+                    //     // get the form data
+                    //     type: 'POST', // GET or POST
+                    //     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    //     url: `/getinvoice/${url}`, // the file to call
+                    //     success: function (response) {  
+                    //         console.log("jds")
+                    //     }
+                    //     });
+                    $.ajax({
+                        method: "POST",
+                        url: `/getinvoice/${url}`,
+                        processData: false,
+                        contentType: false,
+                        mimeType: "multipart/form-data",
+                        data: pdfFile,
+                        success: function (res) {
+                            console.log("sent")
+                        }
+                    });
+    
+    
+                    // kendo.saveAs({
+                    //     dataURI: data,
+                    //     fileName: "HR-Dashboard.pdf",
+                    //     proxyURL: "https://demos.telerik.com/kendo-ui/service/export"
+                    // });
+                });
+                
+            </script>
+</body>
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+</html>

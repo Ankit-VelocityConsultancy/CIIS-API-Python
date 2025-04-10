@@ -1,0 +1,92 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+  <link rel="stylesheet" href="{% static 'dict/#css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'dict/css1/admin.css' %}" />
+  <link rel="stylesheet" href="{% static 'dict/css1/styles.css' %}" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.1.0/css/buttons.dataTables.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+  
+  
+  {% block head %}
+    
+  {% endblock head %}
+</head>
+
+<body>
+  {% block nav %}
+
+  {% endblock nav %}
+  <main style="margin-top: 58px">
+    {% block body %}
+
+    {% endblock body %}
+   
+  </main>
+  <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="{% static 'dict/#js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    document.addEventListener("wheel", function(event){
+    if(document.activeElement.type === "number"){
+        document.activeElement.blur();
+    }
+});
+  </script>
+</body>
+
+=======
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+  <link rel="stylesheet" href="{% static 'dict/#css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'dict/css1/admin.css' %}" />
+  <link rel="stylesheet" href="{% static 'dict/css1/styles.css' %}" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.1.0/css/buttons.dataTables.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+  
+  
+  {% block head %}
+    
+  {% endblock head %}
+</head>
+
+<body>
+  {% block nav %}
+
+  {% endblock nav %}
+  <main style="margin-top: 58px">
+    {% block body %}
+
+    {% endblock body %}
+   
+  </main>
+  <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="{% static 'dict/#js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    document.addEventListener("wheel", function(event){
+    if(document.activeElement.type === "number"){
+        document.activeElement.blur();
+    }
+});
+  </script>
+</body>
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+</html>

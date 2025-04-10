@@ -1,0 +1,233 @@
+
+{% load static %}
+{% block head %}
+<title>Student Details</title>
+
+<link rel="stylesheet" href="{% static 'dict/css/google_fonts.css' %}">
+<link rel="stylesheet" href="{% static 'dict/css/style_homepage.css' %}" />
+<link rel="stylesheet" href="{% static 'dict/css/bootstrap.min.css' %}" />
+
+
+{% endblock head %}
+
+
+{% block body %}
+<div class="container">
+    <div class="row my-3">
+        <div class="col-3">
+            <button id="save" class="edit-btn user-btn red-btn font-jakarta font-semibold font-14">Save as PDF</button>
+        </div>
+    </div>  
+    <div class="document-section">
+        <table class=" w-100 format-table " id="pdftable">
+            <thead>
+                <tr><td colspan="5" class="py-2 red-bg font-28 text-uppercase text-black text-center light-gray-bg">Documents Summary Information</td></tr>
+                <tr>
+                    <td class="border text-left py-2 font-20 fw-bold">Document Type</td>
+                    <td class=" border text-left py-2 font-20 fw-bold">View/Replace</td>
+                  
+                </tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                    <td class="border py-2 text-left text-uppercase font-20 text-black px-2">Secondary</td>
+                  
+                    <td class="border py-2 text-left font-18 text-black px-2">
+                        {% if qualificationdocs.secondary != '' and qualificationdocs.secondary != '/media/False' %}
+                        
+                        
+                        <a href="javascript:void()" onclick="ShowDocument('{{qualificationdocs.secondary}}')">View </a>
+                        {% endif %}
+
+                    </td>
+                </tr>
+             
+                <tr>
+                    <td class="border py-2 text-left text-uppercase font-20 text-black px-2">Sr. Secondary</td>
+                   
+                    <td class="border py-2 text-left font-18 text-black px-2">
+                        {% if qualificationdocs.sr != '' and qualificationdocs.sr != '/media/False'%}
+                       
+                        <a href="javascript:void()" onclick="ShowDocument('{{qualificationdocs.sr}}')">View </a>
+                        {% endif %}
+                        
+                    </td>
+                </tr>
+             
+                <tr>
+                    <td class="border py-2 text-left text-uppercase font-20 text-black px-2">Graduation</td>
+                  
+                    <td class="border py-2 text-left font-18 text-black px-2">
+                        {% if qualificationdocs.under != '' and qualificationdocs.under != '/media/False' %}
+                        
+                        <a href="javascript:void()" onclick="ShowDocument('{{qualificationdocs.under}}')">View </a>
+                        {% endif %}
+                        
+                    </td>
+                </tr>
+               
+                <tr>
+                    <td class="border py-2 text-left text-uppercase font-20 text-black px-2">Post Graduation</td>
+                   
+                    <td class="border py-2 text-left font-18 text-black px-2">
+                        {% if qualificationdocs.post != '' and qualificationdocs.post != '/media/False'%}
+                        
+                        <a href="javascript:void()" onclick="ShowDocument('{{qualificationdocs.post}}')">View</a>
+                        {% endif %}
+                        
+                    </td>
+                </tr>
+             
+                <tr>
+                    <td class="border py-2 text-left text-uppercase font-20 text-black px-2">Eng. Diploma / ITI</td>
+                   
+                    <td class="border py-2 text-left font-18 text-black px-2">
+                        {% if qualificationdocs.mphil != '/media/False' and qualificationdocs.mphil != '' %}
+                        
+                        <a href="javascript:void()" onclick="ShowDocument('{{qualificationdocs.mphil}}')">View</a>
+                        {% endif %}
+                        
+                    </td>
+                </tr>
+                {% for i in qualificationdocs.others   %}
+                {% if i.doctype != '' %}
+                <tr>
+                    <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{i.doctype}}</td>
+                   
+                    <td class="border py-2 text-left font-18 text-black px-2">
+                        {% if i.file_path != 'None' %}
+                        
+                        <a href="javascript:void()" onclick="ShowDocument('/media/{{i.file_path}}')">View</a>
+                        {% endif %}
+                        
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% if personaldocs != '' %}
+                {% for i in personaldocs %}
+              
+                {% if i.document_image_front != 'False' and i.document_image_front != '' or i.document_image_back != 'False' and i.document_image_back != '' %}
+                <tr>
+                    <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{i.document}}</td>
+                   
+                    <td class="border py-2 text-left font-18 text-black px-2">
+                       
+                        <a href="javascript:void()" onclick="viewBasicDocuments('{{i.document_image_front}}','{{i.document_image_back}}')">View</a>
+                        
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+               {% endif %}
+
+            </tbody>
+        </table>
+        <div class="modal fade" id="documentUploaded" tabindex="-1" aria-labelledby="documentUploadedLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-20 text-darkblue font-bold" id="documentUploadedLabel">Document Uploaded</h5>
+                        <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="document_body">
+                        <!--embed id="document_data" frameborder="0" type="application/pdf" width="100%" height="400px"-->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="blue-bg text-blueblue-bg text-blue font-bold font-12 no-border font-bold font-12 no-border " data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal fade" id="ShowBasicDocumentsModal" tabindex="-1" aria-labelledby="ShowBasicDocumentsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl d-block">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-20 text-darkblue font-bold" id="ShowBasicDocumentsModalLabel">Basic Documents <input type="text" id="enroll_next_semester_student_id" style="visibility:hidden;"> </h5>
+                        <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container" id="show_basic_documents_modal">
+                            
+                        </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="blue-bg text-blueblue-bg text-blue font-bold font-12 no-border font-bold font-12 no-border " data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+    
+</div>
+
+{% endblock body %}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script language="JavaScript">
+function viewBasicDocuments(front,back){
+        $('#show_basic_documents_modal').empty()
+        console.log(front,back);
+        $('#ShowBasicDocumentsModal').modal('show');
+        if(front.length > 0){
+            var iframe = $("<iframe>", {
+                src: `/media/${front}`,
+                width: "600",
+                height: "400",
+                frameborder: "0"
+            });
+
+            $("#show_basic_documents_modal").append(iframe);
+        }
+        if(back.length > 0){
+            if (back != 'False'){
+            var iframe2 = $("<iframe>", {
+                src: back,
+                width: "600",
+                height: "400",
+                frameborder: "0"
+            });
+
+            $("#show_basic_documents_modal").append(iframe2);
+            }
+        }
+         
+        }
+
+</script>
+<script>
+    $(document).ready(function() {
+    //$('#ShowBasicDocumentsModal').modal('show');
+});
+
+function ShowDocument(link) {
+    
+        $('#documentUploaded').modal('show');
+        if (link) {
+
+            const fileUrl = link; // Replace with your actual file URL
+            const fileContainer = document.getElementById('document_body');
+            const fileExtension = fileUrl.split('.').pop().toLowerCase();
+
+    if (fileExtension === 'pdf') {
+        fileContainer.innerHTML = `<embed src="${fileUrl}" frameborder="0" type="application/pdf" width="100%" height="400px">`;
+    } else if (fileExtension === 'pptx') {
+        fileContainer.innerHTML = `<iframe src="${fileUrl}" frameborder="0" width="100%" height="400px"></iframe>`;
+    } else if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+        fileContainer.innerHTML = `<img src="${fileUrl}" width="100%" height="400px" alt="Document Image">`;
+    } else {
+        fileContainer.innerHTML = 'Unsupported file type';
+    }
+            //$('#document_data').attr("src", link)
+        }
+        else {
+            $('#document_data').html('<h6 class="font-18 text-darkblue">No Document Present</h6>')
+        }
+
+    }
+</script>
+{% endblock script %}

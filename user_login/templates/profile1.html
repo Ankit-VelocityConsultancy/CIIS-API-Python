@@ -1,0 +1,1439 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>OVERVIEW - CIIS</title>
+
+
+
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_student %}
+<div class="pages-body-bg-color py-5">
+  <section class="overview-section mx-3">
+    <div class="row">
+      <div class="col-md-4 col-lg-5  offset-lg-0 col-xl-4">
+        <div class="outer-rectangle">
+          <div class="p-4 d-flex justify-content-between ">
+            <div class="image1 px-2 ">
+              <img class="font-18 text-extralightgray" src="/media/{{student.image}}" alt="Profile picture" class="rounded-circle" width="150">
+            </div>
+            <div class="detail-block px-2">
+              <h5 class="text-extralightgray font-22 font-bold">  {{student.name}}</h5>
+             
+            </div>
+          </div>
+       </div>
+       <div class="outer-rectangle px-3 py-3 mt-4">
+  
+        <div class="row">
+         <div class="col-12">
+           <div class="heading-block px-3 px-xl-5 ">
+             <h4 class="text-extralightgray font-22 font-bold text-center">Enrollment Details</h4>
+           </div>
+         </div>
+        </div>
+        <div class="row">
+         <div class=" col-6">
+           <span class="text-extralightgray font-16 font-bold">Course Name</span>
+         </div>
+         <div class=" col-6"><span class="text-extralightgray font-16">{{student.course_name}}</span></div>
+        </div>
+         <div class="row">
+           <div class=" col-6">
+             <span class="text-extralightgray font-16 font-bold">Stream Name</span>
+           </div>
+           <div class=" col-6">
+             <span class="text-extralightgray font-16 ">{{student.stream_name}}</span>
+           </div>
+         </div>
+         <div class="row">
+           <div class=" col-6">
+             <span class="text-extralightgray font-16 font-bold">Study Pattern</span>
+           </div>
+           <div class=" col-6">
+             <span class="text-extralightgray font-16">{{student.course_pattern}}</span>
+           </div>
+         </div>
+           <div class="row">
+             <div class=" col-6">
+               <span class="text-extralightgray font-16 font-bold">Current Semester</span>
+             </div>
+             <div class=" col-6">
+               <span class="text-extralightgray font-16">Semester - {{student.current_semester}}</span>
+             </div>
+           </div>
+      
+          
+         
+    </div>
+    </div>
+   
+   <div class="col-md-8 col-lg-7 col-xl-8">
+    
+    <div class="outer-rectangle px-3 py-4 mt-4 mt-md-0">
+      <div class="row">
+        <div class="col-2">
+          <span class="text-extralightgray font-16 font-bold">Full Name</span>
+        </div>
+        <div class="col-10">
+          <span class="font-16 text-extralightgray"> {{student.name}}</span>
+        </div>
+      </div>
+       <div class="row">
+        <div class="col-2">
+          <span class="text-extralightgray font-16 font-bold">Email</span>
+        </div>
+        <div class="col-10">
+          <span class="font-16 text-extralightgray">  {{student.email}}</span>
+        </div>
+       </div>  
+       <div class="row">
+        <div class="col-2">
+          <span class="text-extralightgray font-16 font-bold">Mobile</span>
+        </div>
+        <div class="col-10">
+          <span class="font-16 text-extralightgray">  {{student.mobile}}</span>
+        </div>
+       </div> 
+       <div class="row">
+        <div class="col-2">
+          <span class="text-extralightgray font-16 font-bold">Address</span>
+        </div>
+        <div class="col-10">
+          <span class="font-16 text-extralightgray">    {{student.address}} , {{student.city}} , {{student.state}} , {{student.pincode}}</span>
+        </div>
+       </div> 
+       
+   </div>
+   <div class="row">
+    <div class="col-sm-6">
+      <div class="outer-rectangle px-3 py-4 mt-4">
+      
+          <div class="title-block text-center">
+            <span class="font-22 text-extralightgray font-bold"><span class="font-italic">assignment</span> Project Status</span>
+            </div>
+            <div class="content-block">
+              <span class="font-16 text-extralightgray">Web Design</span>
+            <div class="progress mb-3" style="height: 5px">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+           
+            </div>
+            </div>
+            
+            <div class="content-block">
+              <span class="font-16 text-extralightgray">Web Design</span>
+            <div class="progress mb-3" style="height: 5px">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+           
+            </div>
+            </div>
+            <div class="content-block">
+              <span class="font-16 text-extralightgray">Website Markup</span>
+            <div class="progress mb-3" style="height: 5px">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+           
+            </div>
+            </div>
+            <div class="content-block">
+              <span class="font-16 text-extralightgray">One Page</span>
+            <div class="progress mb-3" style="height: 5px">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+           
+            </div>
+            </div>
+            <div class="content-block">
+              <span class="font-16 text-extralightgray">Mobile Template</span>
+            <div class="progress mb-3" style="height: 5px">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+           
+            </div>
+            </div>
+            <div class="content-block">
+              <span class="font-16 text-extralightgray">Backend API</span>
+            <div class="progress mb-3" style="height: 5px">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+           
+            </div>
+            </div>
+            
+          
+      </div>
+      
+     </div>
+    <div class="col-sm-6">
+      <div class="outer-rectangle px-3 py-4 mt-4">
+        
+          <div class="btn-block">
+            <a  href="https://erp.ciisindia.in/study_materials/" >
+              <button class="w-100 green-button user-button"> Study Materials</button>
+             </a>
+          </div>
+          <div class="btn-block pt-3">
+           
+              <button class="w-100 yellow-button user-button" onclick="getpayment()"> Payment History</button>
+             
+          </div>
+          <div class="btn-block pt-3">
+           
+            <button class="w-100 green-button user-button" onclick="PaymentGateway()"> Pay Fees</button>
+           
+        </div>
+        <div class="btn-block pt-3">
+           <a href="{% url 'giveexamination' %}">
+          <button class="w-100 yellow-button user-button" onclick="PaymentGateway()"> Examination</button>
+         </a>
+    
+        </div>
+      </div>
+   
+      
+      
+       
+       
+      
+    </div>
+    </div>
+   </div>
+   
+   </div>
+  
+  
+  </section>
+
+   
+</div>
+<div class="profile-modals">
+  <div class="modal fade" id="StudyMaterials" tabindex="-1" aria-labelledby="StudyMaterialsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title font-18 font-bold text-black" id="StudyMaterialsLabel">Study Material</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+            <table class="format-table">
+              <thead class="bottom-border-grey">
+                <tr>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 ps-5 pe-2 text-left">#</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Name</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td class="font-14 text-extragray text-uppercase px-2">ASSESSMENT FOR LEARNING</td>
+                  <td class="font-14 text-extragray text-uppercase px-2"><a href="/media/studentsyllabus/b-ed-study-material/ASSESSMENT FOR LEARNING.pdf" target="_blank">View</a></td>
+                </tr>
+                
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class=" btn blue-btn" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+   
+  <div class="modal fade" id="SyllabusModal" tabindex="-1" aria-labelledby="SyllabusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title font-18 font-bold text-black" id="SyllabusModalLabel">Syllabus</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+  
+  
+            <table class="format-table">
+              <thead class="bottom-border-grey">
+                  <tr>
+                      <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Semester</th>
+                      <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Syllabus</th>
+                  </tr>
+              </thead>
+              <tbody id="StudentSyllabusModaldata">
+  
+              </tbody>
+          </table>
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class=" btn blue-btn" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>  
+  
+  <div class="modal fade" id="feespaidmodal" tabindex="-1" aria-labelledby="feespaidmodalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-18 font-bold text-black" id="feespaidmodalLabel">Paid Fees</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container" id="feesmodaldata">
+                    <table class="format-table">
+                        <thead id="fees_modal_head" class="bottom-border-grey">
+  
+                        </thead>
+                        <tbody id="table_body">
+  
+  
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class=" btn blue-btn" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="modal fade" id="reciept_modal" tabindex="-1" aria-labelledby="reciept_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-18 font-bold text-black" id="reciept_modalLabel">Reciept <span><button class="btn bg-white btn-light mx-1px text-95 print_button" data-title="Print" onclick="print_reciept()">
+                    <i class="mr-1 fa fa-print text-primary-m1 text-120 w-2"></i>
+                    Print
+                </button></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container" id="reciept_modal_body">
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class=" btn blue-btn" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  
+  <div class="modal fade" id="PaymentGatewayModal" tabindex="-1" aria-labelledby="PaymentGatewayModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title font-18 font-bold text-black" id="PaymentGatewayModalLabel">Payment Gateway</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="modal-body">
+                  <div class="container" id="PaymentGatewayModaldata">
+  
+                      <div class="form">
+                          <form action='https://test.payu.in/_payment' method='post'>
+                              <input type="hidden" name="key" id="key" value="" />
+                              <input type="hidden" name="txnid" id="txnid" value="" />
+                              <input type="hidden" name="productinfo" id="productinfo" value="" />
+                              <input type="hidden" name="amount" id="amount" value="" />
+                              <input type="hidden" name="email" id="email" value="" />
+                              <input type="hidden" name="firstname" id="firstname" value="" />
+                              <input type="hidden" name="lastname" id="lastname" value="" />
+                              <input type="hidden" name="surl" id="surl" value="" />
+                              <input type="hidden" name="furl" id="furl" value="" />
+                              <input type="hidden" name="phone" id="phone" value="">
+  
+                              <input type="hidden" name="hash" id="hash" value="" />
+                              <input type="submit" class="btn btn-success" value="Pay">
+                          </form>
+                      </div>
+  
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class=" btn blue-btn" data-bs-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  <div class="modal fade" id="PendingPaymentGatewayModal" tabindex="-1" aria-labelledby="PendingPaymentGatewayModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title font-18 font-bold text-black" id="PendingPaymentGatewayModalLabel">Payment Gateway</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="modal-body">
+                  <div class="container" id="PendingPaymentGatewayModaldata">
+                      <h1 class="pending" id="pending_amount_label"></h1>
+                      <div class="form" id="hiddenform">
+                          <form action='https://test.payu.in/_payment' method='post'>
+                              <input type="hidden" name="key" id="pending_key" value="" />
+                              <input type="hidden" name="txnid" id="pending_txnid" value="" />
+                              <input type="hidden" name="productinfo" id="pending_productinfo" value="" />
+                              <input type="hidden" name="amount" id="pending_amount" value="" />
+                              <input type="hidden" name="email" id="pending_email" value="" />
+                              <input type="hidden" name="firstname" id="pending_firstname" value="" />
+                              <input type="hidden" name="lastname" id="pending_lastname" value="" />
+                              <input type="hidden" name="surl" id="pending_surl" value="" />
+                              <input type="hidden" name="furl" id="pending_furl" value="" />
+                              <input type="hidden" name="phone" id="pending_phone" value="">
+  
+                              <input type="hidden" name="hash" id="pending_hash" value="" />
+                              <input type="submit" class="btn btn-success" value="Pay">
+                          </form>
+                      </div>
+  
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class=" btn blue-btn" data-bs-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  <div class="modal fade" id="error_modal" tabindex="-1" aria-labelledby="error_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title font-18 font-bold text-black text-center" id="error_modalModalLabel" style="width:100%;">Examination data already present..!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            
+        </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+{% endblock body %}
+
+{% block script %}
+<script>
+    function getsyllabus(){
+        $.ajax({
+            type: "POST",
+            url: "{% url 'studentdashboard' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'button':'getsyllabus'
+                },
+        success: function (response) {
+            console.log(response);
+            if(response.openmodal == "yes"){
+              $('#StudentSyllabusModaldata').empty();
+              $('#StudentSyllabusModaldata').append(`
+              <tr>
+                  <td class="font-14 text-extragray text-uppercase px-2">${response.data.semester}</td>
+                  <td class="font-14 text-extragray text-uppercase px-2"><a href="${response.data.pdf}" class="btn blue-btn" target="_blank">View</a></td>
+              </tr>
+              `);
+              $('#SyllabusModal').modal('show');
+            }
+        }
+    });
+    }
+  
+    function getpayment(){
+      $.ajax({
+            type: "POST",
+            url: "{% url 'studentdashboard' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'button':'getpaymentinvoice'
+                },
+        success: function (response) {
+          console.log(response)
+          if(response.data == "yes"){
+            var fees = response.fees
+  
+                      if (fees) {
+                          $('#fees_modal_head').empty();
+                          $('#fees_modal_head').append(`
+                          
+                              <tr>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 ps-5 pe-2 text-left">Sr.No</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Year/Sem</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Session</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Transaction Date</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Transaction ID</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Mode</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Mode</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">No</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Paid Amount</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Pending Amount</th>
+                                  <th scopt="col" class="font-14 font-bold text-darkgray width-10 px-2">View Reciept</th>
+                              </tr>
+  
+                          `);
+  
+                          $('#table_body').empty();
+                          fees.forEach(myFunction);
+                          var count = 0;
+                          function myFunction(item, count) {
+                              console.log(item)
+                              count = count + 1;
+                              if (item.paymentmode == "Cheque") {
+                                  $('#table_body').append(`
+                                  <tr>
+                                      <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">${count}</th>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.semyear}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2"> ${item.session} </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.transaction_date}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.transactionID}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.paymentmode}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.cheque_no}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.paidamount}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.pendingamount}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  <button class="btn blue-btn" onclick="viewPaymentReciept(${item.id})" >View</button>  </td>                                   
+                                  </tr>`)
+                              }
+                              else {
+                                  $('#table_body').append(`
+                                  <tr>
+                                      <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">${count}</th>
+                                      <td>  ${item.semyear}  </td>
+                                      <td> ${item.session} </td>
+                                      <td>  ${item.transaction_date}  </td>
+                                      <td>  ${item.transactionID}  </td>
+                                      <td>  ${item.paymentmode}  </td>
+                                      <td>  NA </td>
+                                      <td>  ${item.paidamount}  </td>
+                                      <td>  ${item.pendingamount}  </td>
+                                      <td>  <button class="btn blue-btn" onclick="viewPaymentReciept(${item.id})" >View</button>  </td> 
+                                  </tr>`)
+                              }
+  
+                          }
+         
+                        }
+                        $('#feespaidmodal').modal('show');
+                      }
+        }
+      });
+    }
+    
+    function getexamination(){
+      console.log("examination button clicked");
+      $.ajax({
+        data: {
+            'button': "examination"
+        },
+        type: 'POST',
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'studentdashboard' %}",
+        success: function (response) {
+          console.log(response);
+          if(response.can_give_exam == "yes"){
+            console.log("result not found")
+            window.location = "{% url 'giveexamination' %}"
+          }
+          else{
+            console.log("examination already given.. cant change data..")
+            $('#error_modal').modal('show');
+          }
+        }
+      });
+  
+    }
+    
+    
+    function viewPaymentReciept(id){
+          $.ajax({ // create an AJAX call...
+                  data: {
+                      'getpayment_reciept': id
+                  }, // get the form data
+                  type: 'POST', // GET or POST
+                  headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                  url: "{% url 'studentdashboard' %}", // the file to call
+                  success: function (response) {  
+                      console.log(response)
+                      // console.log("View Payment Reciept :",id)
+                      $('#reciept_modal_body').empty();
+                      
+                      $('#reciept_modal_body').html(`
+                      <div class="page-content container print_form">
+                          <div class="page-header text-blue-d2">
+                              <h1 class="page-title text-secondary-d1">
+                                  Reciept
+                                  <small class="page-info">
+                                      <i class="fa fa-angle-double-right text-80"></i>
+                                      ID: `+response.view_reciept.transactionID+`
+                                  </small>
+                              </h1>
+  
+                              
+                          </div>
+  
+                          <div class="container px-0">
+                              <div class="row mt-4">
+                                  <div class="col-12 col-lg-12">
+  
+                                      <div class="row">
+                                          <div class="col-sm-6">
+                                              <div>
+                                                  <span class="text-sm text-grey-m2 align-middle">To:</span>
+                                                  <span class="text-600 text-110 text-blue align-middle">`+response.personal.name + `</span>
+                                              </div>
+                                              <div class="text-grey-m2">
+                                                  <div class="my-1">
+                                                      `+response.personal.address + ', ' + response.personal.city +`
+                                                  </div>
+                                                  <div class="my-1">
+                                                      `+response.personal.state + ', ' + response.personal.country +`
+                                                  </div>
+                                                  <div class="my-1"><i class="fa fa-phone fa-flip-horizontal text-secondary"></i> <b class="text-600">`+response.personal.mobile+`</b></div>
+                                                  <div class="my-1"><i class="fas fa-envelope  text-secondary"></i> <b class="text-600">`+response.personal.email+`</b></div>
+                                              </div>
+                                          </div>
+                                          <!-- /.col -->
+  
+                                          <div class="text-95 col-sm-6 align-self-start d-sm-flex justify-content-end">
+                                              <hr class="d-sm-none" />
+                                              <div class="text-grey-m2">
+                                                  <div class="mt-1 mb-2 text-secondary-m1 text-600 text-125">
+                                                      Invoice
+                                                  </div>
+  
+                                                  <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">ID:</span> #`+response.view_reciept.transactionID+`</div>
+  
+                                                  <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Issue Date:</span> `+response.view_reciept.transaction_date+`</div>
+  
+                                                  <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> Paid </div>
+                                              </div>
+                                          </div>
+                                          <!-- /.col -->
+                                      </div>
+  
+                                      <div class="mt-4">
+                                          <div class="row text-600 text-white bgc-default-tp1 py-25">
+                                              <div class="d-none d-sm-block col-2">Semester</div>
+                                              <div class="col-9 col-sm-3">Paid Amount</div>
+                                              <div class="col-9 col-sm-3">Pending Amount</div>
+                                              <div class="d-none d-sm-block col-3 col-sm-2">Transaction Date</div>
+                                              <div class="d-none d-sm-block col-sm-2">Mode</div>
+                                          </div>
+  
+                                          <div class="text-95 text-secondary-d3">
+                                              <div class="row mb-2 mb-sm-0 py-25">
+                                                  <div class="d-none d-sm-block col-2">`+response.view_reciept.semyear+`</div>
+                                                  <div class="col-9 col-sm-3">`+response.view_reciept.paidamount+`</div>
+                                                  <div class="col-9 col-sm-3">`+response.view_reciept.pendingamount+`</div>
+                                                  <div class="d-none d-sm-block col-2">`+response.view_reciept.transaction_date+`</div>
+                                                  <div class="d-none d-sm-block col-2 text-95">`+response.view_reciept.paymentmode+`</div>
+                                              </div>
+  
+                                              
+                                          </div>
+  
+                                          <div class="row border-b-2 brc-default-l2"></div>
+  
+                                    
+  
+                                          <hr />
+  
+                                          <div>
+                                              <span class="text-secondary-d1 text-105">Thank you for your Payment</span>  
+                                          </div>
+  
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+  
+                      `);
+                      $('#reciept_modal').modal('show');
+                  }
+              });
+      }
+      function print_reciept(){
+          window.print();
+      }
+  
+  
+    function PaymentGateway() {
+      $.ajax({ // create an AJAX call...
+          data: {
+              'button': 'payment_gateway'
+          }, // get the form data
+          type: 'POST', // GET or POST
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          url: "{% url 'studentdashboard' %}", // the file to call
+          success: function (response) {
+            console.log(response)
+              if(response.pending == "yes"){
+                  console.log(response)
+                  $('#pending_amount_label').html(`Rs. ${response.amount} is Pending.`);
+                  $('#pending_key').val(response.transactionData.key);
+                  $('#pending_txnid').val(response.transactionData.txnid);
+                  $('#pending_productinfo').val(response.transactionData.productinfo);
+                  $('#pending_amount').val(response.transactionData.amount);
+                  $('#pending_email').val(response.transactionData.email);
+                  $('#pending_firstname').val(response.transactionData.firstname);
+                  $('#pending_lastname').val(response.transactionData.lastname);
+                  $('#pending_surl').val(response.transactionData.surl);
+                  $('#pending_furl').val(response.transactionData.furl);
+                  $('#pending_phone').val(response.transactionData.phone);
+                  $('#pending_hash').val(response.transactionData.hashh);
+                  $('#PendingPaymentGatewayModal').modal('show');
+              }
+              else if(response.pending == "no"){
+                  $('#pending_amount_label').html(`No Pending Amount Remaining. You can Enroll Student to next Semester/Year`);
+                  $('#hiddenform').css('visibility','hidden');
+                  $('#PendingPaymentGatewayModal').modal('show');
+              }
+              else{
+              console.log(response)
+              $('#key').val(response.transactionData.key);
+              $('#txnid').val(response.transactionData.txnid);
+              $('#productinfo').val(response.transactionData.productinfo);
+              $('#amount').val(response.transactionData.amount);
+              $('#email').val(response.transactionData.email);
+              $('#firstname').val(response.transactionData.firstname);
+              $('#lastname').val(response.transactionData.lastname);
+              $('#surl').val(response.transactionData.surl);
+              $('#furl').val(response.transactionData.furl);
+              $('#phone').val(response.transactionData.phone);
+              $('#hash').val(response.transactionData.hashh);
+  
+              // $('#PaymentGatewayModal').modal('show');
+              }
+          }
+        });
+      }
+  
+  </script>
+{% endblock script %}
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>OVERVIEW - CIIS</title>
+
+
+
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_student %}
+<div class="pages-body-bg-color py-5">
+  <section class="overview-section mx-3">
+    <div class="row">
+      <div class="col-md-4 col-lg-5  offset-lg-0 col-xl-4">
+        <div class="outer-rectangle">
+          <div class="p-4 d-flex justify-content-between ">
+            <div class="image1 px-2 ">
+              <img class="font-18 text-extralightgray" src="/media/{{student.image}}" alt="Profile picture" class="rounded-circle" width="150">
+            </div>
+            <div class="detail-block px-2">
+              <h5 class="text-extralightgray font-22 font-bold">  {{student.name}}</h5>
+             
+            </div>
+          </div>
+       </div>
+       <div class="outer-rectangle px-3 py-3 mt-4">
+  
+        <div class="row">
+         <div class="col-12">
+           <div class="heading-block px-3 px-xl-5 ">
+             <h4 class="text-extralightgray font-22 font-bold text-center">Enrollment Details</h4>
+           </div>
+         </div>
+        </div>
+        <div class="row">
+         <div class=" col-6">
+           <span class="text-extralightgray font-16 font-bold">Course Name</span>
+         </div>
+         <div class=" col-6"><span class="text-extralightgray font-16">{{student.course_name}}</span></div>
+        </div>
+         <div class="row">
+           <div class=" col-6">
+             <span class="text-extralightgray font-16 font-bold">Stream Name</span>
+           </div>
+           <div class=" col-6">
+             <span class="text-extralightgray font-16 ">{{student.stream_name}}</span>
+           </div>
+         </div>
+         <div class="row">
+           <div class=" col-6">
+             <span class="text-extralightgray font-16 font-bold">Study Pattern</span>
+           </div>
+           <div class=" col-6">
+             <span class="text-extralightgray font-16">{{student.course_pattern}}</span>
+           </div>
+         </div>
+           <div class="row">
+             <div class=" col-6">
+               <span class="text-extralightgray font-16 font-bold">Current Semester</span>
+             </div>
+             <div class=" col-6">
+               <span class="text-extralightgray font-16">Semester - {{student.current_semester}}</span>
+             </div>
+           </div>
+      
+          
+         
+    </div>
+    </div>
+   
+   <div class="col-md-8 col-lg-7 col-xl-8">
+    
+    <div class="outer-rectangle px-3 py-4 mt-4 mt-md-0">
+      <div class="row">
+        <div class="col-2">
+          <span class="text-extralightgray font-16 font-bold">Full Name</span>
+        </div>
+        <div class="col-10">
+          <span class="font-16 text-extralightgray"> {{student.name}}</span>
+        </div>
+      </div>
+       <div class="row">
+        <div class="col-2">
+          <span class="text-extralightgray font-16 font-bold">Email</span>
+        </div>
+        <div class="col-10">
+          <span class="font-16 text-extralightgray">  {{student.email}}</span>
+        </div>
+       </div>  
+       <div class="row">
+        <div class="col-2">
+          <span class="text-extralightgray font-16 font-bold">Mobile</span>
+        </div>
+        <div class="col-10">
+          <span class="font-16 text-extralightgray">  {{student.mobile}}</span>
+        </div>
+       </div> 
+       <div class="row">
+        <div class="col-2">
+          <span class="text-extralightgray font-16 font-bold">Address</span>
+        </div>
+        <div class="col-10">
+          <span class="font-16 text-extralightgray">    {{student.address}} , {{student.city}} , {{student.state}} , {{student.pincode}}</span>
+        </div>
+       </div> 
+       
+   </div>
+   <div class="row">
+    <div class="col-sm-6">
+      <div class="outer-rectangle px-3 py-4 mt-4">
+      
+          <div class="title-block text-center">
+            <span class="font-22 text-extralightgray font-bold"><span class="font-italic">assignment</span> Project Status</span>
+            </div>
+            <div class="content-block">
+              <span class="font-16 text-extralightgray">Web Design</span>
+            <div class="progress mb-3" style="height: 5px">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+           
+            </div>
+            </div>
+            
+            <div class="content-block">
+              <span class="font-16 text-extralightgray">Web Design</span>
+            <div class="progress mb-3" style="height: 5px">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+           
+            </div>
+            </div>
+            <div class="content-block">
+              <span class="font-16 text-extralightgray">Website Markup</span>
+            <div class="progress mb-3" style="height: 5px">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+           
+            </div>
+            </div>
+            <div class="content-block">
+              <span class="font-16 text-extralightgray">One Page</span>
+            <div class="progress mb-3" style="height: 5px">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+           
+            </div>
+            </div>
+            <div class="content-block">
+              <span class="font-16 text-extralightgray">Mobile Template</span>
+            <div class="progress mb-3" style="height: 5px">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+           
+            </div>
+            </div>
+            <div class="content-block">
+              <span class="font-16 text-extralightgray">Backend API</span>
+            <div class="progress mb-3" style="height: 5px">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+           
+            </div>
+            </div>
+            
+          
+      </div>
+      
+     </div>
+    <div class="col-sm-6">
+      <div class="outer-rectangle px-3 py-4 mt-4">
+        
+          <div class="btn-block">
+            <a  href="https://erp.ciisindia.in/study_materials/" >
+              <button class="w-100 green-button user-button"> Study Materials</button>
+             </a>
+          </div>
+          <div class="btn-block pt-3">
+           
+              <button class="w-100 yellow-button user-button" onclick="getpayment()"> Payment History</button>
+             
+          </div>
+          <div class="btn-block pt-3">
+           
+            <button class="w-100 green-button user-button" onclick="PaymentGateway()"> Pay Fees</button>
+           
+        </div>
+        <div class="btn-block pt-3">
+           <a href="{% url 'giveexamination' %}">
+          <button class="w-100 yellow-button user-button" onclick="PaymentGateway()"> Examination</button>
+         </a>
+    
+        </div>
+      </div>
+   
+      
+      
+       
+       
+      
+    </div>
+    </div>
+   </div>
+   
+   </div>
+  
+  
+  </section>
+
+   
+</div>
+<div class="profile-modals">
+  <div class="modal fade" id="StudyMaterials" tabindex="-1" aria-labelledby="StudyMaterialsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title font-18 font-bold text-black" id="StudyMaterialsLabel">Study Material</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+            <table class="format-table">
+              <thead class="bottom-border-grey">
+                <tr>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 ps-5 pe-2 text-left">#</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Name</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td class="font-14 text-extragray text-uppercase px-2">ASSESSMENT FOR LEARNING</td>
+                  <td class="font-14 text-extragray text-uppercase px-2"><a href="/media/studentsyllabus/b-ed-study-material/ASSESSMENT FOR LEARNING.pdf" target="_blank">View</a></td>
+                </tr>
+                
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class=" btn blue-btn" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+   
+  <div class="modal fade" id="SyllabusModal" tabindex="-1" aria-labelledby="SyllabusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title font-18 font-bold text-black" id="SyllabusModalLabel">Syllabus</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+  
+  
+            <table class="format-table">
+              <thead class="bottom-border-grey">
+                  <tr>
+                      <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Semester</th>
+                      <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Syllabus</th>
+                  </tr>
+              </thead>
+              <tbody id="StudentSyllabusModaldata">
+  
+              </tbody>
+          </table>
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class=" btn blue-btn" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>  
+  
+  <div class="modal fade" id="feespaidmodal" tabindex="-1" aria-labelledby="feespaidmodalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-18 font-bold text-black" id="feespaidmodalLabel">Paid Fees</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container" id="feesmodaldata">
+                    <table class="format-table">
+                        <thead id="fees_modal_head" class="bottom-border-grey">
+  
+                        </thead>
+                        <tbody id="table_body">
+  
+  
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class=" btn blue-btn" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="modal fade" id="reciept_modal" tabindex="-1" aria-labelledby="reciept_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-18 font-bold text-black" id="reciept_modalLabel">Reciept <span><button class="btn bg-white btn-light mx-1px text-95 print_button" data-title="Print" onclick="print_reciept()">
+                    <i class="mr-1 fa fa-print text-primary-m1 text-120 w-2"></i>
+                    Print
+                </button></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container" id="reciept_modal_body">
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class=" btn blue-btn" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  
+  <div class="modal fade" id="PaymentGatewayModal" tabindex="-1" aria-labelledby="PaymentGatewayModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title font-18 font-bold text-black" id="PaymentGatewayModalLabel">Payment Gateway</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="modal-body">
+                  <div class="container" id="PaymentGatewayModaldata">
+  
+                      <div class="form">
+                          <form action='https://test.payu.in/_payment' method='post'>
+                              <input type="hidden" name="key" id="key" value="" />
+                              <input type="hidden" name="txnid" id="txnid" value="" />
+                              <input type="hidden" name="productinfo" id="productinfo" value="" />
+                              <input type="hidden" name="amount" id="amount" value="" />
+                              <input type="hidden" name="email" id="email" value="" />
+                              <input type="hidden" name="firstname" id="firstname" value="" />
+                              <input type="hidden" name="lastname" id="lastname" value="" />
+                              <input type="hidden" name="surl" id="surl" value="" />
+                              <input type="hidden" name="furl" id="furl" value="" />
+                              <input type="hidden" name="phone" id="phone" value="">
+  
+                              <input type="hidden" name="hash" id="hash" value="" />
+                              <input type="submit" class="btn btn-success" value="Pay">
+                          </form>
+                      </div>
+  
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class=" btn blue-btn" data-bs-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  <div class="modal fade" id="PendingPaymentGatewayModal" tabindex="-1" aria-labelledby="PendingPaymentGatewayModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title font-18 font-bold text-black" id="PendingPaymentGatewayModalLabel">Payment Gateway</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="modal-body">
+                  <div class="container" id="PendingPaymentGatewayModaldata">
+                      <h1 class="pending" id="pending_amount_label"></h1>
+                      <div class="form" id="hiddenform">
+                          <form action='https://test.payu.in/_payment' method='post'>
+                              <input type="hidden" name="key" id="pending_key" value="" />
+                              <input type="hidden" name="txnid" id="pending_txnid" value="" />
+                              <input type="hidden" name="productinfo" id="pending_productinfo" value="" />
+                              <input type="hidden" name="amount" id="pending_amount" value="" />
+                              <input type="hidden" name="email" id="pending_email" value="" />
+                              <input type="hidden" name="firstname" id="pending_firstname" value="" />
+                              <input type="hidden" name="lastname" id="pending_lastname" value="" />
+                              <input type="hidden" name="surl" id="pending_surl" value="" />
+                              <input type="hidden" name="furl" id="pending_furl" value="" />
+                              <input type="hidden" name="phone" id="pending_phone" value="">
+  
+                              <input type="hidden" name="hash" id="pending_hash" value="" />
+                              <input type="submit" class="btn btn-success" value="Pay">
+                          </form>
+                      </div>
+  
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class=" btn blue-btn" data-bs-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  <div class="modal fade" id="error_modal" tabindex="-1" aria-labelledby="error_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title font-18 font-bold text-black text-center" id="error_modalModalLabel" style="width:100%;">Examination data already present..!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            
+        </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+{% endblock body %}
+
+{% block script %}
+<script>
+    function getsyllabus(){
+        $.ajax({
+            type: "POST",
+            url: "{% url 'studentdashboard' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'button':'getsyllabus'
+                },
+        success: function (response) {
+            console.log(response);
+            if(response.openmodal == "yes"){
+              $('#StudentSyllabusModaldata').empty();
+              $('#StudentSyllabusModaldata').append(`
+              <tr>
+                  <td class="font-14 text-extragray text-uppercase px-2">${response.data.semester}</td>
+                  <td class="font-14 text-extragray text-uppercase px-2"><a href="${response.data.pdf}" class="btn blue-btn" target="_blank">View</a></td>
+              </tr>
+              `);
+              $('#SyllabusModal').modal('show');
+            }
+        }
+    });
+    }
+  
+    function getpayment(){
+      $.ajax({
+            type: "POST",
+            url: "{% url 'studentdashboard' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'button':'getpaymentinvoice'
+                },
+        success: function (response) {
+          console.log(response)
+          if(response.data == "yes"){
+            var fees = response.fees
+  
+                      if (fees) {
+                          $('#fees_modal_head').empty();
+                          $('#fees_modal_head').append(`
+                          
+                              <tr>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 ps-5 pe-2 text-left">Sr.No</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Year/Sem</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Session</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Transaction Date</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Transaction ID</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Mode</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Mode</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">No</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Paid Amount</th>
+                                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Pending Amount</th>
+                                  <th scopt="col" class="font-14 font-bold text-darkgray width-10 px-2">View Reciept</th>
+                              </tr>
+  
+                          `);
+  
+                          $('#table_body').empty();
+                          fees.forEach(myFunction);
+                          var count = 0;
+                          function myFunction(item, count) {
+                              console.log(item)
+                              count = count + 1;
+                              if (item.paymentmode == "Cheque") {
+                                  $('#table_body').append(`
+                                  <tr>
+                                      <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">${count}</th>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.semyear}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2"> ${item.session} </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.transaction_date}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.transactionID}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.paymentmode}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.cheque_no}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.paidamount}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  ${item.pendingamount}  </td>
+                                      <td class="font-14 text-extragray text-uppercase px-2">  <button class="btn blue-btn" onclick="viewPaymentReciept(${item.id})" >View</button>  </td>                                   
+                                  </tr>`)
+                              }
+                              else {
+                                  $('#table_body').append(`
+                                  <tr>
+                                      <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">${count}</th>
+                                      <td>  ${item.semyear}  </td>
+                                      <td> ${item.session} </td>
+                                      <td>  ${item.transaction_date}  </td>
+                                      <td>  ${item.transactionID}  </td>
+                                      <td>  ${item.paymentmode}  </td>
+                                      <td>  NA </td>
+                                      <td>  ${item.paidamount}  </td>
+                                      <td>  ${item.pendingamount}  </td>
+                                      <td>  <button class="btn blue-btn" onclick="viewPaymentReciept(${item.id})" >View</button>  </td> 
+                                  </tr>`)
+                              }
+  
+                          }
+         
+                        }
+                        $('#feespaidmodal').modal('show');
+                      }
+        }
+      });
+    }
+    
+    function getexamination(){
+      console.log("examination button clicked");
+      $.ajax({
+        data: {
+            'button': "examination"
+        },
+        type: 'POST',
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'studentdashboard' %}",
+        success: function (response) {
+          console.log(response);
+          if(response.can_give_exam == "yes"){
+            console.log("result not found")
+            window.location = "{% url 'giveexamination' %}"
+          }
+          else{
+            console.log("examination already given.. cant change data..")
+            $('#error_modal').modal('show');
+          }
+        }
+      });
+  
+    }
+    
+    
+    function viewPaymentReciept(id){
+          $.ajax({ // create an AJAX call...
+                  data: {
+                      'getpayment_reciept': id
+                  }, // get the form data
+                  type: 'POST', // GET or POST
+                  headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                  url: "{% url 'studentdashboard' %}", // the file to call
+                  success: function (response) {  
+                      console.log(response)
+                      // console.log("View Payment Reciept :",id)
+                      $('#reciept_modal_body').empty();
+                      
+                      $('#reciept_modal_body').html(`
+                      <div class="page-content container print_form">
+                          <div class="page-header text-blue-d2">
+                              <h1 class="page-title text-secondary-d1">
+                                  Reciept
+                                  <small class="page-info">
+                                      <i class="fa fa-angle-double-right text-80"></i>
+                                      ID: `+response.view_reciept.transactionID+`
+                                  </small>
+                              </h1>
+  
+                              
+                          </div>
+  
+                          <div class="container px-0">
+                              <div class="row mt-4">
+                                  <div class="col-12 col-lg-12">
+  
+                                      <div class="row">
+                                          <div class="col-sm-6">
+                                              <div>
+                                                  <span class="text-sm text-grey-m2 align-middle">To:</span>
+                                                  <span class="text-600 text-110 text-blue align-middle">`+response.personal.name + `</span>
+                                              </div>
+                                              <div class="text-grey-m2">
+                                                  <div class="my-1">
+                                                      `+response.personal.address + ', ' + response.personal.city +`
+                                                  </div>
+                                                  <div class="my-1">
+                                                      `+response.personal.state + ', ' + response.personal.country +`
+                                                  </div>
+                                                  <div class="my-1"><i class="fa fa-phone fa-flip-horizontal text-secondary"></i> <b class="text-600">`+response.personal.mobile+`</b></div>
+                                                  <div class="my-1"><i class="fas fa-envelope  text-secondary"></i> <b class="text-600">`+response.personal.email+`</b></div>
+                                              </div>
+                                          </div>
+                                          <!-- /.col -->
+  
+                                          <div class="text-95 col-sm-6 align-self-start d-sm-flex justify-content-end">
+                                              <hr class="d-sm-none" />
+                                              <div class="text-grey-m2">
+                                                  <div class="mt-1 mb-2 text-secondary-m1 text-600 text-125">
+                                                      Invoice
+                                                  </div>
+  
+                                                  <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">ID:</span> #`+response.view_reciept.transactionID+`</div>
+  
+                                                  <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Issue Date:</span> `+response.view_reciept.transaction_date+`</div>
+  
+                                                  <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> Paid </div>
+                                              </div>
+                                          </div>
+                                          <!-- /.col -->
+                                      </div>
+  
+                                      <div class="mt-4">
+                                          <div class="row text-600 text-white bgc-default-tp1 py-25">
+                                              <div class="d-none d-sm-block col-2">Semester</div>
+                                              <div class="col-9 col-sm-3">Paid Amount</div>
+                                              <div class="col-9 col-sm-3">Pending Amount</div>
+                                              <div class="d-none d-sm-block col-3 col-sm-2">Transaction Date</div>
+                                              <div class="d-none d-sm-block col-sm-2">Mode</div>
+                                          </div>
+  
+                                          <div class="text-95 text-secondary-d3">
+                                              <div class="row mb-2 mb-sm-0 py-25">
+                                                  <div class="d-none d-sm-block col-2">`+response.view_reciept.semyear+`</div>
+                                                  <div class="col-9 col-sm-3">`+response.view_reciept.paidamount+`</div>
+                                                  <div class="col-9 col-sm-3">`+response.view_reciept.pendingamount+`</div>
+                                                  <div class="d-none d-sm-block col-2">`+response.view_reciept.transaction_date+`</div>
+                                                  <div class="d-none d-sm-block col-2 text-95">`+response.view_reciept.paymentmode+`</div>
+                                              </div>
+  
+                                              
+                                          </div>
+  
+                                          <div class="row border-b-2 brc-default-l2"></div>
+  
+                                    
+  
+                                          <hr />
+  
+                                          <div>
+                                              <span class="text-secondary-d1 text-105">Thank you for your Payment</span>  
+                                          </div>
+  
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+  
+                      `);
+                      $('#reciept_modal').modal('show');
+                  }
+              });
+      }
+      function print_reciept(){
+          window.print();
+      }
+  
+  
+    function PaymentGateway() {
+      $.ajax({ // create an AJAX call...
+          data: {
+              'button': 'payment_gateway'
+          }, // get the form data
+          type: 'POST', // GET or POST
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          url: "{% url 'studentdashboard' %}", // the file to call
+          success: function (response) {
+            console.log(response)
+              if(response.pending == "yes"){
+                  console.log(response)
+                  $('#pending_amount_label').html(`Rs. ${response.amount} is Pending.`);
+                  $('#pending_key').val(response.transactionData.key);
+                  $('#pending_txnid').val(response.transactionData.txnid);
+                  $('#pending_productinfo').val(response.transactionData.productinfo);
+                  $('#pending_amount').val(response.transactionData.amount);
+                  $('#pending_email').val(response.transactionData.email);
+                  $('#pending_firstname').val(response.transactionData.firstname);
+                  $('#pending_lastname').val(response.transactionData.lastname);
+                  $('#pending_surl').val(response.transactionData.surl);
+                  $('#pending_furl').val(response.transactionData.furl);
+                  $('#pending_phone').val(response.transactionData.phone);
+                  $('#pending_hash').val(response.transactionData.hashh);
+                  $('#PendingPaymentGatewayModal').modal('show');
+              }
+              else if(response.pending == "no"){
+                  $('#pending_amount_label').html(`No Pending Amount Remaining. You can Enroll Student to next Semester/Year`);
+                  $('#hiddenform').css('visibility','hidden');
+                  $('#PendingPaymentGatewayModal').modal('show');
+              }
+              else{
+              console.log(response)
+              $('#key').val(response.transactionData.key);
+              $('#txnid').val(response.transactionData.txnid);
+              $('#productinfo').val(response.transactionData.productinfo);
+              $('#amount').val(response.transactionData.amount);
+              $('#email').val(response.transactionData.email);
+              $('#firstname').val(response.transactionData.firstname);
+              $('#lastname').val(response.transactionData.lastname);
+              $('#surl').val(response.transactionData.surl);
+              $('#furl').val(response.transactionData.furl);
+              $('#phone').val(response.transactionData.phone);
+              $('#hash').val(response.transactionData.hashh);
+  
+              // $('#PaymentGatewayModal').modal('show');
+              }
+          }
+        });
+      }
+  
+  </script>
+{% endblock script %}
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049

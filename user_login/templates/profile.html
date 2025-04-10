@@ -1,0 +1,1822 @@
+<<<<<<< HEAD
+{% extends 'includes/admin.html' %}
+
+{% block head %}
+<style>
+    body{
+    margin-top:20px;
+    color: #1a202c;
+    text-align: left;
+    background-color: #e2e8f0;    
+}
+.main-body {
+    padding: 15px;
+}
+.card {
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+}
+
+.card-body {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1rem;
+}
+
+.gutters-sm {
+    margin-right: -8px;
+    margin-left: -8px;
+}
+
+.gutters-sm>.col, .gutters-sm>[class*=col-] {
+    padding-right: 8px;
+    padding-left: 8px;
+}
+.mb-3, .my-3 {
+    margin-bottom: 1rem!important;
+}
+
+.bg-gray-300 {
+    background-color: #e2e8f0;
+}
+.h-100 {
+    height: 100%!important;
+}
+.shadow-none {
+    box-shadow: none!important;
+}
+#main-navbar .logo{
+    width:70%;
+}
+#main-navbar .logo img{
+    width:12%;
+}
+#sidebarMenu {top: 40px;}
+.main-body {margin-top: 120px !important}
+</style>
+{% endblock head %}
+
+
+{% block nav %}
+{% if request.user.is_student %}
+<header>
+  <!-- Sidebar -->
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+    <div class="position-sticky">
+      <div class="list-group list-group-flush mx-3 mt-4">
+        <a href="{% url 'profile' %}" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Home</span>
+        </a>
+        
+        <a href="{% url 'studentdashboard' %}" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <i class="fas fa-id-card fa-fw me-3"></i><span>DashBoard</span>
+        </a>
+
+
+        <a href="{% url 'StudentStudyMaterial' %}" class="list-group-item list-group-item-action py-2 ripple"
+          aria-current="true">
+          <i class="fas fa-book fa-fw me-3"></i><span>Study Materials</span>
+        </a>
+        <a href="{% url 'StudentVideoMaterial' %}" class="list-group-item list-group-item-action py-2 ripple"
+          aria-current="true">
+          <i class="fas fa-video fa-fw me-3"></i><span>Video Materials</span>
+        </a>
+        
+
+
+
+
+
+        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+            class="fas fa-lock fa-fw me-3"></i><span>Logout</span></a>
+
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+
+  <!-- Navbar -->
+  <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+      <!-- Toggle button -->
+      <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
+        aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <!-- Brand -->
+      <a class="navbar-brand" href="#">
+        <img src="" height="25" alt="" loading="lazy" />
+      </a>
+      <!-- Search form -->
+      <form class="d-none d-md-flex input-group w-auto my-auto">
+        <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+          style="min-width: 225px" />
+        <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+      </form>
+        <div class="logo text-center">
+            <img src="/media/ciis_logo/logo.jpg" class="logo" alt="logo_img" />
+        </div>
+      <!-- Right links -->
+      <ul class="navbar-nav d-flex flex-row">
+        <!-- Notification dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink"
+            role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bell"></i>
+            <span class="badge rounded-pill badge-notification bg-danger">1</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="#">Some news</a></li>
+            <li><a class="dropdown-item" href="#">Another news</a></li>
+            <li>
+              <a class="dropdown-item" href="#">Something else</a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Icon -->
+        <li class="nav-item">
+          <a class="nav-link me-3 me-lg-0" href="#">
+            <i class="fas fa-fill-drip"></i>
+          </a>
+        </li>
+        <!-- Icon -->
+        <li class="nav-item me-3 me-lg-0">
+          <a class="nav-link" href="#">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+
+        <!-- Icon dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button"
+            data-mdb-toggle="dropdown" aria-expanded="false">
+            <i class="united kingdom flag m-0"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li>
+              <a class="dropdown-item" href="#"><i class="united kingdom flag"></i>English
+                <i class="fa fa-check text-success ms-2"></i></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider" />
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="poland flag"></i>Polski</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="china flag"></i>中文</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="japan flag"></i>日本語</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="germany flag"></i>Deutsch</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="france flag"></i>Français</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="spain flag"></i>Español</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="russia flag"></i>Русский</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="portugal flag"></i>Português</a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Avatar -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#"
+            id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt=""
+              loading="lazy" />
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="#">My profile</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><a class="dropdown-item" href="#">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <!-- Container wrapper -->
+  </nav>
+  <!-- Navbar -->
+</header>
+{% endif %}
+{% endblock nav%}
+
+
+{% block body %}
+{% if request.user.is_student %}
+
+
+<div class="container">
+    <div class="main-body">
+    
+          
+    
+          <div class="row gutters-sm">
+            <div class="col-md-4 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex flex-column align-items-center text-center">
+                    <img src="/media/{{student.image}}" alt="Admin" class="rounded-circle" width="150">
+                    <div class="mt-3">
+                      <h4>{{student.name}}</h4>
+                      
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card mt-3">
+                <ul class="list-group list-group-flush">
+                    <h4 class="text-center">Enrollment Details</h4>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0">Course Name</h6>
+                    <span class="text-secondary">{{student.course_name}}</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0">Stream Name</h6>
+                    <span class="text-secondary">{{student.stream_name}}</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0">Study Pattern</h6>
+                    <span class="text-secondary">{{student.course_pattern}}</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0">Current Semester</h6>
+                    <span class="text-secondary">Semester - {{student.current_semester}}</span>
+                  </li>
+                  
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Full Name</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{student.name}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Email</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{student.email}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Mobile</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{student.mobile}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Address</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{student.address}} , {{student.city}} , {{student.state}} , {{student.pincode}}
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+
+              <div class="row gutters-sm">
+                <div class="col-sm-6 mb-3">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
+                      <small>Web Design</small>
+                      <div class="progress mb-3" style="height: 5px">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <small>Website Markup</small>
+                      <div class="progress mb-3" style="height: 5px">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <small>One Page</small>
+                      <div class="progress mb-3" style="height: 5px">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <small>Mobile Template</small>
+                      <div class="progress mb-3" style="height: 5px">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <small>Backend API</small>
+                      <div class="progress mb-3" style="height: 5px">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2"></i></h6>
+                      <div class="row">
+    
+                        <div class="col-xl-12 col-lg-12">
+                          <div class="card mb-3">
+                            <a class="btn btn-warning " href="https://erp.ciisindia.in/study_materials/" >Study Materials</a>
+                          </div>
+                        </div>
+                        <div class="col-xl-12 col-lg-12">
+                          <div class="card mb-3">
+                            <button class="btn btn-danger " onclick="getpayment()">Payment History</button>
+                          </div>
+                        </div>
+                        <div class="col-xl-12 col-lg-12">
+                          <div class="card mb-3">
+                            <button class="btn btn-success " onclick="PaymentGateway()">Pay Fees</button>
+                          </div>
+                        </div>
+                        <div class="col-xl-12 col-lg-12">
+                          <div class="card mb-3">
+                            <a class="btn btn-primary" href="{% url 'giveexamination' %}">Examination</a>
+                          </div>
+                        </div>
+                      <!--<small>Web Design</small>-->
+                      <!--<div class="progress mb-3" style="height: 5px">-->
+                      <!--  <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>-->
+                      <!--</div>-->
+                      <!--<small>Website Markup</small>-->
+                      <!--<div class="progress mb-3" style="height: 5px">-->
+                      <!--  <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>-->
+                      <!--</div>-->
+                      <!--<small>One Page</small>-->
+                      <!--<div class="progress mb-3" style="height: 5px">-->
+                      <!--  <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>-->
+                      <!--</div>-->
+                      <!--<small>Mobile Template</small>-->
+                      <!--<div class="progress mb-3" style="height: 5px">-->
+                      <!--  <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>-->
+                      <!--</div>-->
+                      <!--<small>Backend API</small>-->
+                      <!--<div class="progress mb-3" style="height: 5px">-->
+                      <!--  <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>-->
+                      <!--</div>-->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+            </div>
+          </div>
+
+        </div>
+    </div>
+</div>
+    <div class="modal fade" id="StudyMaterials" tabindex="-1" aria-labelledby="StudyMaterialsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="StudyMaterialsLabel">Study Material</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container" id="syllabus_modal_body_container">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">View</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>ASSESSMENT FOR LEARNING</td>
+                <td><a href="/media/studentsyllabus/b-ed-study-material/ASSESSMENT FOR LEARNING.pdf" target="_blank">View</a></td>
+              </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<div class="modal fade" id="SyllabusModal" tabindex="-1" aria-labelledby="SyllabusModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="SyllabusModalLabel">Syllabus</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container" id="syllabus_modal_body_container">
+
+
+          <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Semester</th>
+                    <th scope="col">Syllabus</th>
+                </tr>
+            </thead>
+            <tbody id="StudentSyllabusModaldata">
+
+            </tbody>
+        </table>
+
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>  
+
+<div class="modal fade" id="feespaidmodal" tabindex="-1" aria-labelledby="feespaidmodalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="feespaidmodalLabel">Paid Fees</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="modal-body">
+              <div class="container" id="feesmodaldata">
+                  <table class="table table-bordered text-center">
+                      <thead id="fees_modal_head">
+
+                      </thead>
+                      <tbody id="table_body">
+
+
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="modal fade" id="reciept_modal" tabindex="-1" aria-labelledby="reciept_modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="reciept_modalLabel">Reciept <span><button class="btn bg-white btn-light mx-1px text-95 print_button" data-title="Print" onclick="print_reciept()">
+                  <i class="mr-1 fa fa-print text-primary-m1 text-120 w-2"></i>
+                  Print
+              </button></span></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="modal-body">
+              <div class="container" id="reciept_modal_body">
+                  
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="PaymentGatewayModal" tabindex="-1" aria-labelledby="PaymentGatewayModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="PaymentGatewayModalLabel">Payment Gateway</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container" id="PaymentGatewayModaldata">
+
+                    <div class="form">
+                        <form action='https://test.payu.in/_payment' method='post'>
+                            <input type="hidden" name="key" id="key" value="" />
+                            <input type="hidden" name="txnid" id="txnid" value="" />
+                            <input type="hidden" name="productinfo" id="productinfo" value="" />
+                            <input type="hidden" name="amount" id="amount" value="" />
+                            <input type="hidden" name="email" id="email" value="" />
+                            <input type="hidden" name="firstname" id="firstname" value="" />
+                            <input type="hidden" name="lastname" id="lastname" value="" />
+                            <input type="hidden" name="surl" id="surl" value="" />
+                            <input type="hidden" name="furl" id="furl" value="" />
+                            <input type="hidden" name="phone" id="phone" value="">
+
+                            <input type="hidden" name="hash" id="hash" value="" />
+                            <input type="submit" class="btn btn-success" value="Pay">
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="PendingPaymentGatewayModal" tabindex="-1" aria-labelledby="PendingPaymentGatewayModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="PendingPaymentGatewayModalLabel">Payment Gateway</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container" id="PendingPaymentGatewayModaldata">
+                    <h1 class="pending" id="pending_amount_label"></h1>
+                    <div class="form" id="hiddenform">
+                        <form action='https://test.payu.in/_payment' method='post'>
+                            <input type="hidden" name="key" id="pending_key" value="" />
+                            <input type="hidden" name="txnid" id="pending_txnid" value="" />
+                            <input type="hidden" name="productinfo" id="pending_productinfo" value="" />
+                            <input type="hidden" name="amount" id="pending_amount" value="" />
+                            <input type="hidden" name="email" id="pending_email" value="" />
+                            <input type="hidden" name="firstname" id="pending_firstname" value="" />
+                            <input type="hidden" name="lastname" id="pending_lastname" value="" />
+                            <input type="hidden" name="surl" id="pending_surl" value="" />
+                            <input type="hidden" name="furl" id="pending_furl" value="" />
+                            <input type="hidden" name="phone" id="pending_phone" value="">
+
+                            <input type="hidden" name="hash" id="pending_hash" value="" />
+                            <input type="submit" class="btn btn-success" value="Pay">
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="error_modal" tabindex="-1" aria-labelledby="error_modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-center" id="error_modalModalLabel" style="width:100%;">Examination data already present..!</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          
+          
+      </div>
+  </div>
+</div>
+
+{% endif %}
+
+
+<script>
+  function getsyllabus(){
+      $.ajax({
+          type: "POST",
+          url: "{% url 'studentdashboard' %}",
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          data: {
+              'button':'getsyllabus'
+              },
+      success: function (response) {
+          console.log(response);
+          if(response.openmodal == "yes"){
+            $('#StudentSyllabusModaldata').empty();
+            $('#StudentSyllabusModaldata').append(`
+            <tr>
+                <td>${response.data.semester}</td>
+                <td><a href="${response.data.pdf}" class="btn btn-warning" target="_blank">View</a></td>
+            </tr>
+            `);
+            $('#SyllabusModal').modal('show');
+          }
+      }
+  });
+  }
+
+  function getpayment(){
+    $.ajax({
+          type: "POST",
+          url: "{% url 'studentdashboard' %}",
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          data: {
+              'button':'getpaymentinvoice'
+              },
+      success: function (response) {
+        console.log(response)
+        if(response.data == "yes"){
+          var fees = response.fees
+
+                    if (fees) {
+                        $('#fees_modal_head').empty();
+                        $('#fees_modal_head').append(`
+                        
+                            <tr>
+                                <th scope="col">Sr.No</th>
+                                <th scope="col">Year/Sem</th>
+                                <th scope="col">Session</th>
+                                <th scope="col">Transaction Date</th>
+                                <th scope="col">Transaction ID</th>
+                                <th scope="col">Mode</th>
+                                <th scope="col">No</th>
+                                <th scope="col">Paid Amount</th>
+                                <th scope="col">Pending Amount</th>
+                                <th scopt="col">View Reciept</th>
+                            </tr>
+
+                        `);
+
+                        $('#table_body').empty();
+                        fees.forEach(myFunction);
+                        var count = 0;
+                        function myFunction(item, count) {
+                            console.log(item)
+                            count = count + 1;
+                            if (item.paymentmode == "Cheque") {
+                                $('#table_body').append(`
+                                <tr>
+                                    <th scope="row">${count}</th>
+                                    <td>  ${item.semyear}  </td>
+                                    <td> ${item.session} </td>
+                                    <td>  ${item.transaction_date}  </td>
+                                    <td>  ${item.transactionID}  </td>
+                                    <td>  ${item.paymentmode}  </td>
+                                    <td>  ${item.cheque_no}  </td>
+                                    <td>  ${item.paidamount}  </td>
+                                    <td>  ${item.pendingamount}  </td>
+                                    <td>  <button class="btn btn-warning" onclick="viewPaymentReciept(${item.id})" >View</button>  </td>                                   
+                                </tr>`)
+                            }
+                            else {
+                                $('#table_body').append(`
+                                <tr>
+                                    <th scope="row">${count}</th>
+                                    <td>  ${item.semyear}  </td>
+                                    <td> ${item.session} </td>
+                                    <td>  ${item.transaction_date}  </td>
+                                    <td>  ${item.transactionID}  </td>
+                                    <td>  ${item.paymentmode}  </td>
+                                    <td>  NA </td>
+                                    <td>  ${item.paidamount}  </td>
+                                    <td>  ${item.pendingamount}  </td>
+                                    <td>  <button class="btn btn-warning" onclick="viewPaymentReciept(${item.id})" >View</button>  </td> 
+                                </tr>`)
+                            }
+
+                        }
+       
+                      }
+                      $('#feespaidmodal').modal('show');
+                    }
+      }
+    });
+  }
+  
+  function getexamination(){
+    console.log("examination button clicked");
+    $.ajax({
+      data: {
+          'button': "examination"
+      },
+      type: 'POST',
+      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+      url: "{% url 'studentdashboard' %}",
+      success: function (response) {
+        console.log(response);
+        if(response.can_give_exam == "yes"){
+          console.log("result not found")
+          window.location = "{% url 'giveexamination' %}"
+        }
+        else{
+          console.log("examination already given.. cant change data..")
+          $('#error_modal').modal('show');
+        }
+      }
+    });
+
+  }
+  
+  
+  function viewPaymentReciept(id){
+        $.ajax({ // create an AJAX call...
+                data: {
+                    'getpayment_reciept': id
+                }, // get the form data
+                type: 'POST', // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'studentdashboard' %}", // the file to call
+                success: function (response) {  
+                    console.log(response)
+                    // console.log("View Payment Reciept :",id)
+                    $('#reciept_modal_body').empty();
+                    
+                    $('#reciept_modal_body').html(`
+                    <div class="page-content container print_form">
+                        <div class="page-header text-blue-d2">
+                            <h1 class="page-title text-secondary-d1">
+                                Reciept
+                                <small class="page-info">
+                                    <i class="fa fa-angle-double-right text-80"></i>
+                                    ID: `+response.view_reciept.transactionID+`
+                                </small>
+                            </h1>
+
+                            
+                        </div>
+
+                        <div class="container px-0">
+                            <div class="row mt-4">
+                                <div class="col-12 col-lg-12">
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div>
+                                                <span class="text-sm text-grey-m2 align-middle">To:</span>
+                                                <span class="text-600 text-110 text-blue align-middle">`+response.personal.name + `</span>
+                                            </div>
+                                            <div class="text-grey-m2">
+                                                <div class="my-1">
+                                                    `+response.personal.address + ', ' + response.personal.city +`
+                                                </div>
+                                                <div class="my-1">
+                                                    `+response.personal.state + ', ' + response.personal.country +`
+                                                </div>
+                                                <div class="my-1"><i class="fa fa-phone fa-flip-horizontal text-secondary"></i> <b class="text-600">`+response.personal.mobile+`</b></div>
+                                                <div class="my-1"><i class="fas fa-envelope  text-secondary"></i> <b class="text-600">`+response.personal.email+`</b></div>
+                                            </div>
+                                        </div>
+                                        <!-- /.col -->
+
+                                        <div class="text-95 col-sm-6 align-self-start d-sm-flex justify-content-end">
+                                            <hr class="d-sm-none" />
+                                            <div class="text-grey-m2">
+                                                <div class="mt-1 mb-2 text-secondary-m1 text-600 text-125">
+                                                    Invoice
+                                                </div>
+
+                                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">ID:</span> #`+response.view_reciept.transactionID+`</div>
+
+                                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Issue Date:</span> `+response.view_reciept.transaction_date+`</div>
+
+                                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> Paid </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.col -->
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <div class="row text-600 text-white bgc-default-tp1 py-25">
+                                            <div class="d-none d-sm-block col-2">Semester</div>
+                                            <div class="col-9 col-sm-3">Paid Amount</div>
+                                            <div class="col-9 col-sm-3">Pending Amount</div>
+                                            <div class="d-none d-sm-block col-3 col-sm-2">Transaction Date</div>
+                                            <div class="d-none d-sm-block col-sm-2">Mode</div>
+                                        </div>
+
+                                        <div class="text-95 text-secondary-d3">
+                                            <div class="row mb-2 mb-sm-0 py-25">
+                                                <div class="d-none d-sm-block col-2">`+response.view_reciept.semyear+`</div>
+                                                <div class="col-9 col-sm-3">`+response.view_reciept.paidamount+`</div>
+                                                <div class="col-9 col-sm-3">`+response.view_reciept.pendingamount+`</div>
+                                                <div class="d-none d-sm-block col-2">`+response.view_reciept.transaction_date+`</div>
+                                                <div class="d-none d-sm-block col-2 text-95">`+response.view_reciept.paymentmode+`</div>
+                                            </div>
+
+                                            
+                                        </div>
+
+                                        <div class="row border-b-2 brc-default-l2"></div>
+
+                                  
+
+                                        <hr />
+
+                                        <div>
+                                            <span class="text-secondary-d1 text-105">Thank you for your Payment</span>  
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    `);
+                    $('#reciept_modal').modal('show');
+                }
+            });
+    }
+    function print_reciept(){
+        window.print();
+    }
+
+
+  function PaymentGateway() {
+    $.ajax({ // create an AJAX call...
+        data: {
+            'button': 'payment_gateway'
+        }, // get the form data
+        type: 'POST', // GET or POST
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'studentdashboard' %}", // the file to call
+        success: function (response) {
+          console.log(response)
+            if(response.pending == "yes"){
+                console.log(response)
+                $('#pending_amount_label').html(`Rs. ${response.amount} is Pending.`);
+                $('#pending_key').val(response.transactionData.key);
+                $('#pending_txnid').val(response.transactionData.txnid);
+                $('#pending_productinfo').val(response.transactionData.productinfo);
+                $('#pending_amount').val(response.transactionData.amount);
+                $('#pending_email').val(response.transactionData.email);
+                $('#pending_firstname').val(response.transactionData.firstname);
+                $('#pending_lastname').val(response.transactionData.lastname);
+                $('#pending_surl').val(response.transactionData.surl);
+                $('#pending_furl').val(response.transactionData.furl);
+                $('#pending_phone').val(response.transactionData.phone);
+                $('#pending_hash').val(response.transactionData.hashh);
+                $('#PendingPaymentGatewayModal').modal('show');
+            }
+            else if(response.pending == "no"){
+                $('#pending_amount_label').html(`No Pending Amount Remaining. You can Enroll Student to next Semester/Year`);
+                $('#hiddenform').css('visibility','hidden');
+                $('#PendingPaymentGatewayModal').modal('show');
+            }
+            else{
+            console.log(response)
+            $('#key').val(response.transactionData.key);
+            $('#txnid').val(response.transactionData.txnid);
+            $('#productinfo').val(response.transactionData.productinfo);
+            $('#amount').val(response.transactionData.amount);
+            $('#email').val(response.transactionData.email);
+            $('#firstname').val(response.transactionData.firstname);
+            $('#lastname').val(response.transactionData.lastname);
+            $('#surl').val(response.transactionData.surl);
+            $('#furl').val(response.transactionData.furl);
+            $('#phone').val(response.transactionData.phone);
+            $('#hash').val(response.transactionData.hashh);
+
+            // $('#PaymentGatewayModal').modal('show');
+            }
+        }
+      });
+    }
+
+</script>
+
+=======
+{% extends 'includes/admin.html' %}
+
+{% block head %}
+<style>
+    body{
+    margin-top:20px;
+    color: #1a202c;
+    text-align: left;
+    background-color: #e2e8f0;    
+}
+.main-body {
+    padding: 15px;
+}
+.card {
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+}
+
+.card-body {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1rem;
+}
+
+.gutters-sm {
+    margin-right: -8px;
+    margin-left: -8px;
+}
+
+.gutters-sm>.col, .gutters-sm>[class*=col-] {
+    padding-right: 8px;
+    padding-left: 8px;
+}
+.mb-3, .my-3 {
+    margin-bottom: 1rem!important;
+}
+
+.bg-gray-300 {
+    background-color: #e2e8f0;
+}
+.h-100 {
+    height: 100%!important;
+}
+.shadow-none {
+    box-shadow: none!important;
+}
+#main-navbar .logo{
+    width:70%;
+}
+#main-navbar .logo img{
+    width:12%;
+}
+#sidebarMenu {top: 40px;}
+.main-body {margin-top: 120px !important}
+</style>
+{% endblock head %}
+
+
+{% block nav %}
+{% if request.user.is_student %}
+<header>
+  <!-- Sidebar -->
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+    <div class="position-sticky">
+      <div class="list-group list-group-flush mx-3 mt-4">
+        <a href="{% url 'profile' %}" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Home</span>
+        </a>
+        
+        <a href="{% url 'studentdashboard' %}" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <i class="fas fa-id-card fa-fw me-3"></i><span>DashBoard</span>
+        </a>
+
+
+        <a href="{% url 'StudentStudyMaterial' %}" class="list-group-item list-group-item-action py-2 ripple"
+          aria-current="true">
+          <i class="fas fa-book fa-fw me-3"></i><span>Study Materials</span>
+        </a>
+        <a href="{% url 'StudentVideoMaterial' %}" class="list-group-item list-group-item-action py-2 ripple"
+          aria-current="true">
+          <i class="fas fa-video fa-fw me-3"></i><span>Video Materials</span>
+        </a>
+        
+
+
+
+
+
+        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+            class="fas fa-lock fa-fw me-3"></i><span>Logout</span></a>
+
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+
+  <!-- Navbar -->
+  <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+      <!-- Toggle button -->
+      <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
+        aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <!-- Brand -->
+      <a class="navbar-brand" href="#">
+        <img src="" height="25" alt="" loading="lazy" />
+      </a>
+      <!-- Search form -->
+      <form class="d-none d-md-flex input-group w-auto my-auto">
+        <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+          style="min-width: 225px" />
+        <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+      </form>
+        <div class="logo text-center">
+            <img src="/media/ciis_logo/logo.jpg" class="logo" alt="logo_img" />
+        </div>
+      <!-- Right links -->
+      <ul class="navbar-nav d-flex flex-row">
+        <!-- Notification dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink"
+            role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bell"></i>
+            <span class="badge rounded-pill badge-notification bg-danger">1</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="#">Some news</a></li>
+            <li><a class="dropdown-item" href="#">Another news</a></li>
+            <li>
+              <a class="dropdown-item" href="#">Something else</a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Icon -->
+        <li class="nav-item">
+          <a class="nav-link me-3 me-lg-0" href="#">
+            <i class="fas fa-fill-drip"></i>
+          </a>
+        </li>
+        <!-- Icon -->
+        <li class="nav-item me-3 me-lg-0">
+          <a class="nav-link" href="#">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+
+        <!-- Icon dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button"
+            data-mdb-toggle="dropdown" aria-expanded="false">
+            <i class="united kingdom flag m-0"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li>
+              <a class="dropdown-item" href="#"><i class="united kingdom flag"></i>English
+                <i class="fa fa-check text-success ms-2"></i></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider" />
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="poland flag"></i>Polski</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="china flag"></i>中文</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="japan flag"></i>日本語</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="germany flag"></i>Deutsch</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="france flag"></i>Français</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="spain flag"></i>Español</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="russia flag"></i>Русский</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="portugal flag"></i>Português</a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Avatar -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#"
+            id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt=""
+              loading="lazy" />
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="#">My profile</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><a class="dropdown-item" href="#">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <!-- Container wrapper -->
+  </nav>
+  <!-- Navbar -->
+</header>
+{% endif %}
+{% endblock nav%}
+
+
+{% block body %}
+{% if request.user.is_student %}
+
+
+<div class="container">
+    <div class="main-body">
+    
+          
+    
+          <div class="row gutters-sm">
+            <div class="col-md-4 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex flex-column align-items-center text-center">
+                    <img src="/media/{{student.image}}" alt="Admin" class="rounded-circle" width="150">
+                    <div class="mt-3">
+                      <h4>{{student.name}}</h4>
+                      
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card mt-3">
+                <ul class="list-group list-group-flush">
+                    <h4 class="text-center">Enrollment Details</h4>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0">Course Name</h6>
+                    <span class="text-secondary">{{student.course_name}}</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0">Stream Name</h6>
+                    <span class="text-secondary">{{student.stream_name}}</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0">Study Pattern</h6>
+                    <span class="text-secondary">{{student.course_pattern}}</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0">Current Semester</h6>
+                    <span class="text-secondary">Semester - {{student.current_semester}}</span>
+                  </li>
+                  
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Full Name</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{student.name}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Email</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{student.email}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Mobile</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{student.mobile}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Address</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{student.address}} , {{student.city}} , {{student.state}} , {{student.pincode}}
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+
+              <div class="row gutters-sm">
+                <div class="col-sm-6 mb-3">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
+                      <small>Web Design</small>
+                      <div class="progress mb-3" style="height: 5px">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <small>Website Markup</small>
+                      <div class="progress mb-3" style="height: 5px">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <small>One Page</small>
+                      <div class="progress mb-3" style="height: 5px">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <small>Mobile Template</small>
+                      <div class="progress mb-3" style="height: 5px">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <small>Backend API</small>
+                      <div class="progress mb-3" style="height: 5px">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2"></i></h6>
+                      <div class="row">
+    
+                        <div class="col-xl-12 col-lg-12">
+                          <div class="card mb-3">
+                            <a class="btn btn-warning " href="https://erp.ciisindia.in/study_materials/" >Study Materials</a>
+                          </div>
+                        </div>
+                        <div class="col-xl-12 col-lg-12">
+                          <div class="card mb-3">
+                            <button class="btn btn-danger " onclick="getpayment()">Payment History</button>
+                          </div>
+                        </div>
+                        <div class="col-xl-12 col-lg-12">
+                          <div class="card mb-3">
+                            <button class="btn btn-success " onclick="PaymentGateway()">Pay Fees</button>
+                          </div>
+                        </div>
+                        <div class="col-xl-12 col-lg-12">
+                          <div class="card mb-3">
+                            <a class="btn btn-primary" href="{% url 'giveexamination' %}">Examination</a>
+                          </div>
+                        </div>
+                      <!--<small>Web Design</small>-->
+                      <!--<div class="progress mb-3" style="height: 5px">-->
+                      <!--  <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>-->
+                      <!--</div>-->
+                      <!--<small>Website Markup</small>-->
+                      <!--<div class="progress mb-3" style="height: 5px">-->
+                      <!--  <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>-->
+                      <!--</div>-->
+                      <!--<small>One Page</small>-->
+                      <!--<div class="progress mb-3" style="height: 5px">-->
+                      <!--  <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>-->
+                      <!--</div>-->
+                      <!--<small>Mobile Template</small>-->
+                      <!--<div class="progress mb-3" style="height: 5px">-->
+                      <!--  <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>-->
+                      <!--</div>-->
+                      <!--<small>Backend API</small>-->
+                      <!--<div class="progress mb-3" style="height: 5px">-->
+                      <!--  <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>-->
+                      <!--</div>-->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+            </div>
+          </div>
+
+        </div>
+    </div>
+</div>
+    <div class="modal fade" id="StudyMaterials" tabindex="-1" aria-labelledby="StudyMaterialsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="StudyMaterialsLabel">Study Material</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container" id="syllabus_modal_body_container">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">View</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>ASSESSMENT FOR LEARNING</td>
+                <td><a href="/media/studentsyllabus/b-ed-study-material/ASSESSMENT FOR LEARNING.pdf" target="_blank">View</a></td>
+              </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<div class="modal fade" id="SyllabusModal" tabindex="-1" aria-labelledby="SyllabusModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="SyllabusModalLabel">Syllabus</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container" id="syllabus_modal_body_container">
+
+
+          <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Semester</th>
+                    <th scope="col">Syllabus</th>
+                </tr>
+            </thead>
+            <tbody id="StudentSyllabusModaldata">
+
+            </tbody>
+        </table>
+
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>  
+
+<div class="modal fade" id="feespaidmodal" tabindex="-1" aria-labelledby="feespaidmodalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="feespaidmodalLabel">Paid Fees</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="modal-body">
+              <div class="container" id="feesmodaldata">
+                  <table class="table table-bordered text-center">
+                      <thead id="fees_modal_head">
+
+                      </thead>
+                      <tbody id="table_body">
+
+
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="modal fade" id="reciept_modal" tabindex="-1" aria-labelledby="reciept_modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="reciept_modalLabel">Reciept <span><button class="btn bg-white btn-light mx-1px text-95 print_button" data-title="Print" onclick="print_reciept()">
+                  <i class="mr-1 fa fa-print text-primary-m1 text-120 w-2"></i>
+                  Print
+              </button></span></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="modal-body">
+              <div class="container" id="reciept_modal_body">
+                  
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="PaymentGatewayModal" tabindex="-1" aria-labelledby="PaymentGatewayModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="PaymentGatewayModalLabel">Payment Gateway</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container" id="PaymentGatewayModaldata">
+
+                    <div class="form">
+                        <form action='https://test.payu.in/_payment' method='post'>
+                            <input type="hidden" name="key" id="key" value="" />
+                            <input type="hidden" name="txnid" id="txnid" value="" />
+                            <input type="hidden" name="productinfo" id="productinfo" value="" />
+                            <input type="hidden" name="amount" id="amount" value="" />
+                            <input type="hidden" name="email" id="email" value="" />
+                            <input type="hidden" name="firstname" id="firstname" value="" />
+                            <input type="hidden" name="lastname" id="lastname" value="" />
+                            <input type="hidden" name="surl" id="surl" value="" />
+                            <input type="hidden" name="furl" id="furl" value="" />
+                            <input type="hidden" name="phone" id="phone" value="">
+
+                            <input type="hidden" name="hash" id="hash" value="" />
+                            <input type="submit" class="btn btn-success" value="Pay">
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="PendingPaymentGatewayModal" tabindex="-1" aria-labelledby="PendingPaymentGatewayModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="PendingPaymentGatewayModalLabel">Payment Gateway</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container" id="PendingPaymentGatewayModaldata">
+                    <h1 class="pending" id="pending_amount_label"></h1>
+                    <div class="form" id="hiddenform">
+                        <form action='https://test.payu.in/_payment' method='post'>
+                            <input type="hidden" name="key" id="pending_key" value="" />
+                            <input type="hidden" name="txnid" id="pending_txnid" value="" />
+                            <input type="hidden" name="productinfo" id="pending_productinfo" value="" />
+                            <input type="hidden" name="amount" id="pending_amount" value="" />
+                            <input type="hidden" name="email" id="pending_email" value="" />
+                            <input type="hidden" name="firstname" id="pending_firstname" value="" />
+                            <input type="hidden" name="lastname" id="pending_lastname" value="" />
+                            <input type="hidden" name="surl" id="pending_surl" value="" />
+                            <input type="hidden" name="furl" id="pending_furl" value="" />
+                            <input type="hidden" name="phone" id="pending_phone" value="">
+
+                            <input type="hidden" name="hash" id="pending_hash" value="" />
+                            <input type="submit" class="btn btn-success" value="Pay">
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="error_modal" tabindex="-1" aria-labelledby="error_modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-center" id="error_modalModalLabel" style="width:100%;">Examination data already present..!</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          
+          
+      </div>
+  </div>
+</div>
+
+{% endif %}
+
+
+<script>
+  function getsyllabus(){
+      $.ajax({
+          type: "POST",
+          url: "{% url 'studentdashboard' %}",
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          data: {
+              'button':'getsyllabus'
+              },
+      success: function (response) {
+          console.log(response);
+          if(response.openmodal == "yes"){
+            $('#StudentSyllabusModaldata').empty();
+            $('#StudentSyllabusModaldata').append(`
+            <tr>
+                <td>${response.data.semester}</td>
+                <td><a href="${response.data.pdf}" class="btn btn-warning" target="_blank">View</a></td>
+            </tr>
+            `);
+            $('#SyllabusModal').modal('show');
+          }
+      }
+  });
+  }
+
+  function getpayment(){
+    $.ajax({
+          type: "POST",
+          url: "{% url 'studentdashboard' %}",
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          data: {
+              'button':'getpaymentinvoice'
+              },
+      success: function (response) {
+        console.log(response)
+        if(response.data == "yes"){
+          var fees = response.fees
+
+                    if (fees) {
+                        $('#fees_modal_head').empty();
+                        $('#fees_modal_head').append(`
+                        
+                            <tr>
+                                <th scope="col">Sr.No</th>
+                                <th scope="col">Year/Sem</th>
+                                <th scope="col">Session</th>
+                                <th scope="col">Transaction Date</th>
+                                <th scope="col">Transaction ID</th>
+                                <th scope="col">Mode</th>
+                                <th scope="col">No</th>
+                                <th scope="col">Paid Amount</th>
+                                <th scope="col">Pending Amount</th>
+                                <th scopt="col">View Reciept</th>
+                            </tr>
+
+                        `);
+
+                        $('#table_body').empty();
+                        fees.forEach(myFunction);
+                        var count = 0;
+                        function myFunction(item, count) {
+                            console.log(item)
+                            count = count + 1;
+                            if (item.paymentmode == "Cheque") {
+                                $('#table_body').append(`
+                                <tr>
+                                    <th scope="row">${count}</th>
+                                    <td>  ${item.semyear}  </td>
+                                    <td> ${item.session} </td>
+                                    <td>  ${item.transaction_date}  </td>
+                                    <td>  ${item.transactionID}  </td>
+                                    <td>  ${item.paymentmode}  </td>
+                                    <td>  ${item.cheque_no}  </td>
+                                    <td>  ${item.paidamount}  </td>
+                                    <td>  ${item.pendingamount}  </td>
+                                    <td>  <button class="btn btn-warning" onclick="viewPaymentReciept(${item.id})" >View</button>  </td>                                   
+                                </tr>`)
+                            }
+                            else {
+                                $('#table_body').append(`
+                                <tr>
+                                    <th scope="row">${count}</th>
+                                    <td>  ${item.semyear}  </td>
+                                    <td> ${item.session} </td>
+                                    <td>  ${item.transaction_date}  </td>
+                                    <td>  ${item.transactionID}  </td>
+                                    <td>  ${item.paymentmode}  </td>
+                                    <td>  NA </td>
+                                    <td>  ${item.paidamount}  </td>
+                                    <td>  ${item.pendingamount}  </td>
+                                    <td>  <button class="btn btn-warning" onclick="viewPaymentReciept(${item.id})" >View</button>  </td> 
+                                </tr>`)
+                            }
+
+                        }
+       
+                      }
+                      $('#feespaidmodal').modal('show');
+                    }
+      }
+    });
+  }
+  
+  function getexamination(){
+    console.log("examination button clicked");
+    $.ajax({
+      data: {
+          'button': "examination"
+      },
+      type: 'POST',
+      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+      url: "{% url 'studentdashboard' %}",
+      success: function (response) {
+        console.log(response);
+        if(response.can_give_exam == "yes"){
+          console.log("result not found")
+          window.location = "{% url 'giveexamination' %}"
+        }
+        else{
+          console.log("examination already given.. cant change data..")
+          $('#error_modal').modal('show');
+        }
+      }
+    });
+
+  }
+  
+  
+  function viewPaymentReciept(id){
+        $.ajax({ // create an AJAX call...
+                data: {
+                    'getpayment_reciept': id
+                }, // get the form data
+                type: 'POST', // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'studentdashboard' %}", // the file to call
+                success: function (response) {  
+                    console.log(response)
+                    // console.log("View Payment Reciept :",id)
+                    $('#reciept_modal_body').empty();
+                    
+                    $('#reciept_modal_body').html(`
+                    <div class="page-content container print_form">
+                        <div class="page-header text-blue-d2">
+                            <h1 class="page-title text-secondary-d1">
+                                Reciept
+                                <small class="page-info">
+                                    <i class="fa fa-angle-double-right text-80"></i>
+                                    ID: `+response.view_reciept.transactionID+`
+                                </small>
+                            </h1>
+
+                            
+                        </div>
+
+                        <div class="container px-0">
+                            <div class="row mt-4">
+                                <div class="col-12 col-lg-12">
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div>
+                                                <span class="text-sm text-grey-m2 align-middle">To:</span>
+                                                <span class="text-600 text-110 text-blue align-middle">`+response.personal.name + `</span>
+                                            </div>
+                                            <div class="text-grey-m2">
+                                                <div class="my-1">
+                                                    `+response.personal.address + ', ' + response.personal.city +`
+                                                </div>
+                                                <div class="my-1">
+                                                    `+response.personal.state + ', ' + response.personal.country +`
+                                                </div>
+                                                <div class="my-1"><i class="fa fa-phone fa-flip-horizontal text-secondary"></i> <b class="text-600">`+response.personal.mobile+`</b></div>
+                                                <div class="my-1"><i class="fas fa-envelope  text-secondary"></i> <b class="text-600">`+response.personal.email+`</b></div>
+                                            </div>
+                                        </div>
+                                        <!-- /.col -->
+
+                                        <div class="text-95 col-sm-6 align-self-start d-sm-flex justify-content-end">
+                                            <hr class="d-sm-none" />
+                                            <div class="text-grey-m2">
+                                                <div class="mt-1 mb-2 text-secondary-m1 text-600 text-125">
+                                                    Invoice
+                                                </div>
+
+                                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">ID:</span> #`+response.view_reciept.transactionID+`</div>
+
+                                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Issue Date:</span> `+response.view_reciept.transaction_date+`</div>
+
+                                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> Paid </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.col -->
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <div class="row text-600 text-white bgc-default-tp1 py-25">
+                                            <div class="d-none d-sm-block col-2">Semester</div>
+                                            <div class="col-9 col-sm-3">Paid Amount</div>
+                                            <div class="col-9 col-sm-3">Pending Amount</div>
+                                            <div class="d-none d-sm-block col-3 col-sm-2">Transaction Date</div>
+                                            <div class="d-none d-sm-block col-sm-2">Mode</div>
+                                        </div>
+
+                                        <div class="text-95 text-secondary-d3">
+                                            <div class="row mb-2 mb-sm-0 py-25">
+                                                <div class="d-none d-sm-block col-2">`+response.view_reciept.semyear+`</div>
+                                                <div class="col-9 col-sm-3">`+response.view_reciept.paidamount+`</div>
+                                                <div class="col-9 col-sm-3">`+response.view_reciept.pendingamount+`</div>
+                                                <div class="d-none d-sm-block col-2">`+response.view_reciept.transaction_date+`</div>
+                                                <div class="d-none d-sm-block col-2 text-95">`+response.view_reciept.paymentmode+`</div>
+                                            </div>
+
+                                            
+                                        </div>
+
+                                        <div class="row border-b-2 brc-default-l2"></div>
+
+                                  
+
+                                        <hr />
+
+                                        <div>
+                                            <span class="text-secondary-d1 text-105">Thank you for your Payment</span>  
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    `);
+                    $('#reciept_modal').modal('show');
+                }
+            });
+    }
+    function print_reciept(){
+        window.print();
+    }
+
+
+  function PaymentGateway() {
+    $.ajax({ // create an AJAX call...
+        data: {
+            'button': 'payment_gateway'
+        }, // get the form data
+        type: 'POST', // GET or POST
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'studentdashboard' %}", // the file to call
+        success: function (response) {
+          console.log(response)
+            if(response.pending == "yes"){
+                console.log(response)
+                $('#pending_amount_label').html(`Rs. ${response.amount} is Pending.`);
+                $('#pending_key').val(response.transactionData.key);
+                $('#pending_txnid').val(response.transactionData.txnid);
+                $('#pending_productinfo').val(response.transactionData.productinfo);
+                $('#pending_amount').val(response.transactionData.amount);
+                $('#pending_email').val(response.transactionData.email);
+                $('#pending_firstname').val(response.transactionData.firstname);
+                $('#pending_lastname').val(response.transactionData.lastname);
+                $('#pending_surl').val(response.transactionData.surl);
+                $('#pending_furl').val(response.transactionData.furl);
+                $('#pending_phone').val(response.transactionData.phone);
+                $('#pending_hash').val(response.transactionData.hashh);
+                $('#PendingPaymentGatewayModal').modal('show');
+            }
+            else if(response.pending == "no"){
+                $('#pending_amount_label').html(`No Pending Amount Remaining. You can Enroll Student to next Semester/Year`);
+                $('#hiddenform').css('visibility','hidden');
+                $('#PendingPaymentGatewayModal').modal('show');
+            }
+            else{
+            console.log(response)
+            $('#key').val(response.transactionData.key);
+            $('#txnid').val(response.transactionData.txnid);
+            $('#productinfo').val(response.transactionData.productinfo);
+            $('#amount').val(response.transactionData.amount);
+            $('#email').val(response.transactionData.email);
+            $('#firstname').val(response.transactionData.firstname);
+            $('#lastname').val(response.transactionData.lastname);
+            $('#surl').val(response.transactionData.surl);
+            $('#furl').val(response.transactionData.furl);
+            $('#phone').val(response.transactionData.phone);
+            $('#hash').val(response.transactionData.hashh);
+
+            // $('#PaymentGatewayModal').modal('show');
+            }
+        }
+      });
+    }
+
+</script>
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

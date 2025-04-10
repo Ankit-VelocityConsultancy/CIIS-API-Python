@@ -1,0 +1,346 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+
+{% block head %}
+<title>USER CREATION - CIIS</title>
+<!--<style>
+    main {
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+
+    body {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+
+    html {
+        height: -webkit-fill-available;
+    }
+</style> -->
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_superuser %}
+
+<div class="user-creation header-tag">
+    <div class="">
+        <section class="my-course  ">
+           
+                    <div class="outer-rectangle">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="section-header pt-3 px-4">
+                                    <h1 class="font-26 font-bold text-black text-uppercase">User Creation</h1>
+            
+                                </div>
+                        <div class="select-padding px-4">
+                            <form action="" method="POST" id="UserCreationForm">
+                            <div class="options  select-padding">
+                                <div class="row">
+                                    <div class="col-6 col-md-4">
+                                        <label for="email" class="labelrequired">Email Address</label>
+                                            <input type="email" placeholder=" " name="email" id="useremail" class="select-formatting font-14 font-bold text-lightgray" required>
+                            
+                                    </div>
+
+                                    <div class="col-6 col-md-4">
+                                        <label for="password" class="labelrequired">Password</label>
+                                        <input type="password" placeholder="Password" name="password" id="userpassword" class="select-formatting font-14 font-bold text-lightgray" required>
+                                    </div>
+                                    <div class="col-6 col-md-4">
+                                        <label for="user_privilege" class="labelrequired">User Priviledge</label>
+                                        <select name="user_privilege" id="userprevilage" class="select-formatting font-14 font-bold text-lightgray mt-4 mt-md-0">
+                                            <option selected>Select</option>
+                                            <option value="2">Data Entry</option>
+                                            <option value="3">Fee Counter</option> </select>
+                                    </div>
+
+                                    
+                                
+                                
+                                    <div class="col-6 col-md-4">
+                                        <input type="submit" value="Create User" class="save-btn  red-btn font-16 font-bold mt-4">
+                                    </div>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+           
+
+        </section>
+        <section class="my-course-entries mt-4  ">
+            <div class="row">
+                <div class="col-12">
+                   
+                           
+                            <div class="user-table user-bg">
+                                <table class="format-table" id="User_table">
+                                    <thead class="bottom-border-grey ">
+                                        <th class="font-14 font-bold text-darkgray width-10 px-2 text-left">Sr. No.</th>
+                                        <th class="font-14 font-bold text-darkgray width-80 px-2 text-left">Email ID</th>
+                                        <th class="font-14 font-bold text-darkgray px-2 text-center">Level</th>
+                                    </thead>
+                                    <tbody id="User_table_body">
+                                    {% for i in main %}
+                                    <tr class="line-height-35 bottom-border-grey ">
+                                      <td class="font-14 font-bold text-light-yellow  mx-2 text-left">{{forloop.counter}}</td>  
+                                      <td class="font-14 text-extragray mx-2 text-left">{{i.email}}</td>
+                                      <td class="font-12 font-bold text-blue   text-center blue-bg bor-ra">{% if i.is_data_entry == True %} Data Entry {% elif i.is_fee_clerk == True %} Fee Counter Clerk {% endif %} </td>
+                                    </tr>
+                                      {% endfor %}
+                                </tbody>
+                                   
+                                 
+                                 
+                            
+                                </table>
+                            </div>
+                  
+            </div>
+            
+
+
+        </section>
+
+        
+      
+    </div>
+   
+
+
+
+
+</div>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+<script language="JavaScript">
+    $(document).ready(function() {
+        $('#miscelanous-collapse').addClass("show");
+        $("#user_creation_link").removeClass("link-dark");
+        $('#user_creation_link').addClass("link-primary");
+        $('#UserCreationForm').submit(function() {  
+            $.ajax({    
+                data:{
+                    "email":$('#useremail').val(),
+                    "password":$('#userpassword').val(),
+                    "level":$('#userprevilage').val(),
+                    
+                },  
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                type: "POST",   
+                url: "{% url 'usercreation' %}",    
+                success: function(response) {
+                    console.log(response);
+                    $('#update').html('');
+                    console.log("Sent");
+                    if(response.created){
+                        $('#update').html('User Created SuccessFully');
+                        $('#update').css('color','green')
+                    }
+                    
+                    $('#useremail').val('');
+                    $('#userpassword').val('');
+                    $('#userprevilage').val('');
+
+                    if(response.user){
+                        $('#User_table_body').append(`
+                            <tr>
+                                <td>${response.user.email}</td>
+                                <td>${response.user.level}</td>
+                            </tr>
+                        `);
+                    }
+                    
+                },
+                error: function(response){
+                    $('#update').html('');
+                    $('#update').html('User Not Created');
+                    $('#update').css('color','red')
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+=======
+{% extends 'includes/master.html' %}
+
+{% block head %}
+<title>USER CREATION - CIIS</title>
+<!--<style>
+    main {
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+
+    body {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+
+    html {
+        height: -webkit-fill-available;
+    }
+</style> -->
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_superuser %}
+
+<div class="user-creation header-tag">
+    <div class="">
+        <section class="my-course  ">
+           
+                    <div class="outer-rectangle">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="section-header pt-3 px-4">
+                                    <h1 class="font-26 font-bold text-black text-uppercase">User Creation</h1>
+            
+                                </div>
+                        <div class="select-padding px-4">
+                            <form action="" method="POST" id="UserCreationForm">
+                            <div class="options  select-padding">
+                                <div class="row">
+                                    <div class="col-6 col-md-4">
+                                        <label for="email" class="labelrequired">Email Address</label>
+                                            <input type="email" placeholder=" " name="email" id="useremail" class="select-formatting font-14 font-bold text-lightgray" required>
+                            
+                                    </div>
+
+                                    <div class="col-6 col-md-4">
+                                        <label for="password" class="labelrequired">Password</label>
+                                        <input type="password" placeholder="Password" name="password" id="userpassword" class="select-formatting font-14 font-bold text-lightgray" required>
+                                    </div>
+                                    <div class="col-6 col-md-4">
+                                        <label for="user_privilege" class="labelrequired">User Priviledge</label>
+                                        <select name="user_privilege" id="userprevilage" class="select-formatting font-14 font-bold text-lightgray mt-4 mt-md-0">
+                                            <option selected>Select</option>
+                                            <option value="2">Data Entry</option>
+                                            <option value="3">Fee Counter</option> </select>
+                                    </div>
+
+                                    
+                                
+                                
+                                    <div class="col-6 col-md-4">
+                                        <input type="submit" value="Create User" class="save-btn  red-btn font-16 font-bold mt-4">
+                                    </div>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+           
+
+        </section>
+        <section class="my-course-entries mt-4  ">
+            <div class="row">
+                <div class="col-12">
+                   
+                           
+                            <div class="user-table user-bg">
+                                <table class="format-table" id="User_table">
+                                    <thead class="bottom-border-grey ">
+                                        <th class="font-14 font-bold text-darkgray width-10 px-2 text-left">Sr. No.</th>
+                                        <th class="font-14 font-bold text-darkgray width-80 px-2 text-left">Email ID</th>
+                                        <th class="font-14 font-bold text-darkgray px-2 text-center">Level</th>
+                                    </thead>
+                                    <tbody id="User_table_body">
+                                    {% for i in main %}
+                                    <tr class="line-height-35 bottom-border-grey ">
+                                      <td class="font-14 font-bold text-light-yellow  mx-2 text-left">{{forloop.counter}}</td>  
+                                      <td class="font-14 text-extragray mx-2 text-left">{{i.email}}</td>
+                                      <td class="font-12 font-bold text-blue   text-center blue-bg bor-ra">{% if i.is_data_entry == True %} Data Entry {% elif i.is_fee_clerk == True %} Fee Counter Clerk {% endif %} </td>
+                                    </tr>
+                                      {% endfor %}
+                                </tbody>
+                                   
+                                 
+                                 
+                            
+                                </table>
+                            </div>
+                  
+            </div>
+            
+
+
+        </section>
+
+        
+      
+    </div>
+   
+
+
+
+
+</div>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+<script language="JavaScript">
+    $(document).ready(function() {
+        $('#miscelanous-collapse').addClass("show");
+        $("#user_creation_link").removeClass("link-dark");
+        $('#user_creation_link').addClass("link-primary");
+        $('#UserCreationForm').submit(function() {  
+            $.ajax({    
+                data:{
+                    "email":$('#useremail').val(),
+                    "password":$('#userpassword').val(),
+                    "level":$('#userprevilage').val(),
+                    
+                },  
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                type: "POST",   
+                url: "{% url 'usercreation' %}",    
+                success: function(response) {
+                    console.log(response);
+                    $('#update').html('');
+                    console.log("Sent");
+                    if(response.created){
+                        $('#update').html('User Created SuccessFully');
+                        $('#update').css('color','green')
+                    }
+                    
+                    $('#useremail').val('');
+                    $('#userpassword').val('');
+                    $('#userprevilage').val('');
+
+                    if(response.user){
+                        $('#User_table_body').append(`
+                            <tr>
+                                <td>${response.user.email}</td>
+                                <td>${response.user.level}</td>
+                            </tr>
+                        `);
+                    }
+                    
+                },
+                error: function(response){
+                    $('#update').html('');
+                    $('#update').html('User Not Created');
+                    $('#update').css('color','red')
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

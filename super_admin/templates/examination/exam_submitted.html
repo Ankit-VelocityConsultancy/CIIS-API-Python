@@ -1,0 +1,112 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+
+
+
+<style type="text/css" media="print">
+    
+  @page {
+  size: auto;   /* auto is the initial value */
+  margin: 0;  /* this affects the margin in the printer settings */
+}
+@media print {
+      body * {
+          visibility: hidden;
+      }
+      .print_form,
+      .print_form *:not(.print_button) {
+          
+          visibility: visible;
+          
+      }
+      
+  }
+</style>
+<script src="{% static 'dict/js/student.js' %}"></script>
+{% endblock head %}
+
+
+
+
+
+{% block body %}
+<div class="exam-submit">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="header-block mt-3">
+          <h1 class="font-42 text-darkblue text-center">Examination Submitted. Please Wait for Results.</h1>
+        </div>
+        <div class="content-block">
+          <h4 class="font-24 text-darkblue text-center">Results will be sent to your registered Email ID</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+
+
+
+<style type="text/css" media="print">
+    
+  @page {
+  size: auto;   /* auto is the initial value */
+  margin: 0;  /* this affects the margin in the printer settings */
+}
+@media print {
+      body * {
+          visibility: hidden;
+      }
+      .print_form,
+      .print_form *:not(.print_button) {
+          
+          visibility: visible;
+          
+      }
+      
+  }
+</style>
+<script src="{% static 'dict/js/student.js' %}"></script>
+{% endblock head %}
+
+
+
+
+
+{% block body %}
+<div class="exam-submit">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="header-block mt-3">
+          <h1 class="font-42 text-darkblue text-center">Examination Submitted. Please Wait for Results.</h1>
+        </div>
+        <div class="content-block">
+          <h4 class="font-24 text-darkblue text-center">Results will be sent to your registered Email ID</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

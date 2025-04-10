@@ -1,0 +1,638 @@
+<<<<<<< HEAD
+{% extends 'master.html' %}
+{% load static %}
+{% block head %}
+<style>
+    body {
+        background-color: white;
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+
+    tr.hide-table-padding td {
+        padding: 0;
+    }
+
+    .expand-button {
+        position: relative;
+    }
+
+    .accordion-toggle .expand-button:after {
+        position: absolute;
+        left: .75rem;
+        top: 50%;
+        transform: translate(0, -50%);
+        content: '-';
+    }
+
+    .accordion-toggle.collapsed .expand-button:after {
+        content: '+';
+    }
+</style>
+{% endblock head %}
+
+{% block body %}
+{% if display == "yes" %}
+<section class="add-stream-fees mx-3 ">
+    <div class="add-stream-fees pages-body-bg-color pt-5 ">
+        <div class="row">
+            <div class="col-12">
+              <div class="outer-rectangle">
+                <div class="inner-block px-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="box-title pt-4 ">
+                                <h5 class="font-18 text-uppercase font-bold text-purewhite">Add Stream Fees</h5>
+                            </div>
+                            
+                        </div>
+                    </div>
+                  
+                    <div class="select-options py-4">
+                        <div class="row">
+                            <div class="col-4">
+                          <div class="display-block py-2">
+                            <select class="form-select" name="course" id="course" aria-label="Default select example">
+                            <option selected>Select Course</option>
+                            {% for i in course %}
+                            <option value="{{i.id}}">{{i.name}}</option>
+                            {% endfor %}
+                        </select>
+                          </div>
+                               
+                            </div>
+                            <div class="col-4">
+                                <div class="display-block py-2">
+                                  
+                                    <select class="form-select" name="Stream" id="Stream" aria-label="Default select example">
+                                      <option value="">Select Stream</option>  
+                    
+                    
+                                    </select>
+                                </div>
+                            </div>
+                           
+                        </div>
+    </div>
+    </div>
+    
+    </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<section class="stream-fees-table mx-3 pt-4">
+    <div class="row">
+        <div class="col-12">
+            <form action="" method="POST" id="fee_form">
+                {% csrf_token %}
+            
+                <table class="table format-table-1">
+                    <thead>
+                    <tr>
+                        <th scope="col">Semester</th>
+                        <th scope="col">Fees</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody_fees">
+        
+                    
+                    
+                    </tbody>
+                </table>
+                <button class="save-btn width-15" id="submitbtn" style="visibility:hidden;" type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+
+{% endif %}
+
+<script type="text/javascript">
+    // document.getElementById("course").onchange = function () {
+    //     var coursename = this.value;
+    //     console.log(coursename);
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "{% url 'streamfees' %}",
+    //         headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    //         data: {
+    //             'data': coursename // from form
+
+    //         },
+    //         success: function (response) {
+    //             // console.log(response);
+    //             var data = response.stream
+    //             // console.log("data",data)
+    //             var duration = ''
+    //             $('#Stream').empty();
+    //             data.forEach(myFunction);
+    //             $('#Stream').append('<option Selected> Select Stream </option>');
+    //             function myFunction(item) {
+    //             duration = item.sem
+    //             $('#Stream').append('<option value=' + item.id + '>' + item.name + '</option>');
+    //             }
+                
+    //             document.getElementById("Stream").onchange = function () {
+    //                 var coursename = $('#course').val();
+    //                 var streamname = this.value;
+    //                 // console.log(coursename,streamname)
+    //                 if (coursename && streamname){
+                        
+
+    //                     $.ajax({
+    //                     type: "POST",
+    //                     url: "{% url 'streamfees' %}",
+    //                     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    //                     data: {
+    //                         'c_name': coursename, // from form
+    //                         's_name':streamname
+    //                     },
+    //                     success: function (response) {
+    //                         $('#tbody_fees').empty();
+    //                         console.log(response);
+    //                         console.log("coursename and streamname sent");
+    //                         var responsedata = response.stream
+    //                         var semesters = responsedata.sem * 2
+    //                         for (var i=1;i<=semesters;i++){
+    //                             $('#tbody_fees').append('<tr><th scope="row">Semester '+i+'</th><th><input type="text" id="semester'+i+'" value=""></th><td>')
+    //                         }
+    //                         $('#submitbtn').css('visibility', 'visible')
+    //                         // $('#tbody_fees').append('<tr><th scope="row">Semester 1</th><th><input type="text" value="15000"></th><td>')
+    //                     }
+    //                 });
+
+
+
+
+    //                 }
+    //             }
+                
+                
+    //             // console.log(course,stream);
+                
+
+
+
+    //         }
+    //     });
+
+    // };
+
+
+</script>
+
+<script  type="text/javascript">
+document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        console.log(coursename);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'streamfees' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'data': coursename // from form
+
+            },
+            success: function (response) {
+                console.log(response);
+                var data = response.stream
+                // console.log("data",data)
+                var duration = ''
+                $('#Stream').empty();
+                data.forEach(myFunction);
+                $('#Stream').append('<option Selected> Select Stream </option>');
+                function myFunction(item) {
+                duration = item.sem
+                $('#Stream').append('<option value=' + item.id + '>' + item.name + '</option>');
+                }
+                document.getElementById("Stream").onchange = function () {
+                    var coursename = $('#course').val();
+                    var streamname = this.value;
+                    console.log(coursename,streamname)
+                    if (coursename && streamname){
+                        $.ajax({
+                        type: "POST",
+                        url: "{% url 'streamfees' %}",
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                        data: {
+                            'c_name': coursename, // from form
+                            's_name':streamname
+                        },
+                        success: function (response) {
+                            
+                            $('#tbody_fees').empty();
+                            console.log(response);
+                            console.log("coursename and streamname sent");
+                            var streamfees = response.streamfees
+                            
+                            var responsedata = response.stream
+                            var semesters = responsedata.sem * 2
+                            
+                            for (var i=1;i<=semesters;i++){
+                                $('#tbody_fees').append('<tr><th scope="row">Semester '+i+'</th><th><input type="text" id="semester'+i+'" value=""></th>')
+                            }
+                            $('#submitbtn').css('visibility', 'visible')
+                            // $('#tbody_fees').append('<tr><th scope="row">Semester 1</th><th><input type="text" value="15000"></th><td>')
+                        
+                            if (streamfees){
+                                if (semesters == 4){
+                                    $('#semester1').val(streamfees.sem1);
+                                    $('#semester2').val(streamfees.sem2);
+                                    $('#semester3').val(streamfees.sem3);
+                                    $('#semester4').val(streamfees.sem4);
+                                    
+                                }
+                                if (semesters == 6){
+                                    $('#semester1').val(streamfees.sem1);
+                                    $('#semester2').val(streamfees.sem2);
+                                    $('#semester3').val(streamfees.sem3);
+                                    $('#semester4').val(streamfees.sem4);
+                                    $('#semester5').val(streamfees.sem5);
+                                    $('#semester6').val(streamfees.sem6);
+                                    
+
+                                }
+                                if (semesters == 8){
+                                    $('#semester1').val(streamfees.sem1);
+                                    $('#semester2').val(streamfees.sem2);
+                                    $('#semester3').val(streamfees.sem3);
+                                    $('#semester4').val(streamfees.sem4);
+                                    $('#semester5').val(streamfees.sem5);
+                                    $('#semester6').val(streamfees.sem6);
+                                    $('#semester7').val(streamfees.sem7);
+                                    $('#semester8').val(streamfees.sem8);
+                                    
+                                }
+                            }
+
+
+
+
+
+
+                        }
+                    });
+                }
+
+                }
+
+
+            }
+        });
+    }
+            
+</script>
+
+
+<script language="JavaScript">
+    $(document).ready(function() {
+        $('#fee_form').submit(function() { // catch the form's submit event
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'course_id':$('#course').val(),
+                    'stream_id':$('#Stream').val(),
+                    "sem1":$('#semester1').val(),
+                    "sem2":$('#semester2').val(),
+                    "sem3":$('#semester3').val(),
+                    "sem4":$('#semester4').val(),
+                    "sem5":$('#semester5').val(),
+                    "sem6":$('#semester6').val(),
+                    "sem7":$('#semester7').val(),
+                    "sem8":$('#semester8').val(),
+                    "sem9":$('#semester9').val(),
+                    "sem10":$('#semester10').val(),
+                }, // get the form data
+                type: "POST", // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'streamfees' %}", // the file to call
+                success: function(response) { // on success..
+                    $('#DIV_CONTAINING_FORM').html(response); // update the DIV 
+                }
+            });
+            return false;
+        });
+    });
+</script>
+=======
+{% extends 'master.html' %}
+{% load static %}
+{% block head %}
+<style>
+    body {
+        background-color: white;
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+
+    tr.hide-table-padding td {
+        padding: 0;
+    }
+
+    .expand-button {
+        position: relative;
+    }
+
+    .accordion-toggle .expand-button:after {
+        position: absolute;
+        left: .75rem;
+        top: 50%;
+        transform: translate(0, -50%);
+        content: '-';
+    }
+
+    .accordion-toggle.collapsed .expand-button:after {
+        content: '+';
+    }
+</style>
+{% endblock head %}
+
+{% block body %}
+{% if display == "yes" %}
+<section class="add-stream-fees mx-3 ">
+    <div class="add-stream-fees pages-body-bg-color pt-5 ">
+        <div class="row">
+            <div class="col-12">
+              <div class="outer-rectangle">
+                <div class="inner-block px-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="box-title pt-4 ">
+                                <h5 class="font-18 text-uppercase font-bold text-purewhite">Add Stream Fees</h5>
+                            </div>
+                            
+                        </div>
+                    </div>
+                  
+                    <div class="select-options py-4">
+                        <div class="row">
+                            <div class="col-4">
+                          <div class="display-block py-2">
+                            <select class="form-select" name="course" id="course" aria-label="Default select example">
+                            <option selected>Select Course</option>
+                            {% for i in course %}
+                            <option value="{{i.id}}">{{i.name}}</option>
+                            {% endfor %}
+                        </select>
+                          </div>
+                               
+                            </div>
+                            <div class="col-4">
+                                <div class="display-block py-2">
+                                  
+                                    <select class="form-select" name="Stream" id="Stream" aria-label="Default select example">
+                                      <option value="">Select Stream</option>  
+                    
+                    
+                                    </select>
+                                </div>
+                            </div>
+                           
+                        </div>
+    </div>
+    </div>
+    
+    </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<section class="stream-fees-table mx-3 pt-4">
+    <div class="row">
+        <div class="col-12">
+            <form action="" method="POST" id="fee_form">
+                {% csrf_token %}
+            
+                <table class="table format-table-1">
+                    <thead>
+                    <tr>
+                        <th scope="col">Semester</th>
+                        <th scope="col">Fees</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody_fees">
+        
+                    
+                    
+                    </tbody>
+                </table>
+                <button class="save-btn width-15" id="submitbtn" style="visibility:hidden;" type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+
+{% endif %}
+
+<script type="text/javascript">
+    // document.getElementById("course").onchange = function () {
+    //     var coursename = this.value;
+    //     console.log(coursename);
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "{% url 'streamfees' %}",
+    //         headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    //         data: {
+    //             'data': coursename // from form
+
+    //         },
+    //         success: function (response) {
+    //             // console.log(response);
+    //             var data = response.stream
+    //             // console.log("data",data)
+    //             var duration = ''
+    //             $('#Stream').empty();
+    //             data.forEach(myFunction);
+    //             $('#Stream').append('<option Selected> Select Stream </option>');
+    //             function myFunction(item) {
+    //             duration = item.sem
+    //             $('#Stream').append('<option value=' + item.id + '>' + item.name + '</option>');
+    //             }
+                
+    //             document.getElementById("Stream").onchange = function () {
+    //                 var coursename = $('#course').val();
+    //                 var streamname = this.value;
+    //                 // console.log(coursename,streamname)
+    //                 if (coursename && streamname){
+                        
+
+    //                     $.ajax({
+    //                     type: "POST",
+    //                     url: "{% url 'streamfees' %}",
+    //                     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    //                     data: {
+    //                         'c_name': coursename, // from form
+    //                         's_name':streamname
+    //                     },
+    //                     success: function (response) {
+    //                         $('#tbody_fees').empty();
+    //                         console.log(response);
+    //                         console.log("coursename and streamname sent");
+    //                         var responsedata = response.stream
+    //                         var semesters = responsedata.sem * 2
+    //                         for (var i=1;i<=semesters;i++){
+    //                             $('#tbody_fees').append('<tr><th scope="row">Semester '+i+'</th><th><input type="text" id="semester'+i+'" value=""></th><td>')
+    //                         }
+    //                         $('#submitbtn').css('visibility', 'visible')
+    //                         // $('#tbody_fees').append('<tr><th scope="row">Semester 1</th><th><input type="text" value="15000"></th><td>')
+    //                     }
+    //                 });
+
+
+
+
+    //                 }
+    //             }
+                
+                
+    //             // console.log(course,stream);
+                
+
+
+
+    //         }
+    //     });
+
+    // };
+
+
+</script>
+
+<script  type="text/javascript">
+document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        console.log(coursename);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'streamfees' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'data': coursename // from form
+
+            },
+            success: function (response) {
+                console.log(response);
+                var data = response.stream
+                // console.log("data",data)
+                var duration = ''
+                $('#Stream').empty();
+                data.forEach(myFunction);
+                $('#Stream').append('<option Selected> Select Stream </option>');
+                function myFunction(item) {
+                duration = item.sem
+                $('#Stream').append('<option value=' + item.id + '>' + item.name + '</option>');
+                }
+                document.getElementById("Stream").onchange = function () {
+                    var coursename = $('#course').val();
+                    var streamname = this.value;
+                    console.log(coursename,streamname)
+                    if (coursename && streamname){
+                        $.ajax({
+                        type: "POST",
+                        url: "{% url 'streamfees' %}",
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                        data: {
+                            'c_name': coursename, // from form
+                            's_name':streamname
+                        },
+                        success: function (response) {
+                            
+                            $('#tbody_fees').empty();
+                            console.log(response);
+                            console.log("coursename and streamname sent");
+                            var streamfees = response.streamfees
+                            
+                            var responsedata = response.stream
+                            var semesters = responsedata.sem * 2
+                            
+                            for (var i=1;i<=semesters;i++){
+                                $('#tbody_fees').append('<tr><th scope="row">Semester '+i+'</th><th><input type="text" id="semester'+i+'" value=""></th>')
+                            }
+                            $('#submitbtn').css('visibility', 'visible')
+                            // $('#tbody_fees').append('<tr><th scope="row">Semester 1</th><th><input type="text" value="15000"></th><td>')
+                        
+                            if (streamfees){
+                                if (semesters == 4){
+                                    $('#semester1').val(streamfees.sem1);
+                                    $('#semester2').val(streamfees.sem2);
+                                    $('#semester3').val(streamfees.sem3);
+                                    $('#semester4').val(streamfees.sem4);
+                                    
+                                }
+                                if (semesters == 6){
+                                    $('#semester1').val(streamfees.sem1);
+                                    $('#semester2').val(streamfees.sem2);
+                                    $('#semester3').val(streamfees.sem3);
+                                    $('#semester4').val(streamfees.sem4);
+                                    $('#semester5').val(streamfees.sem5);
+                                    $('#semester6').val(streamfees.sem6);
+                                    
+
+                                }
+                                if (semesters == 8){
+                                    $('#semester1').val(streamfees.sem1);
+                                    $('#semester2').val(streamfees.sem2);
+                                    $('#semester3').val(streamfees.sem3);
+                                    $('#semester4').val(streamfees.sem4);
+                                    $('#semester5').val(streamfees.sem5);
+                                    $('#semester6').val(streamfees.sem6);
+                                    $('#semester7').val(streamfees.sem7);
+                                    $('#semester8').val(streamfees.sem8);
+                                    
+                                }
+                            }
+
+
+
+
+
+
+                        }
+                    });
+                }
+
+                }
+
+
+            }
+        });
+    }
+            
+</script>
+
+
+<script language="JavaScript">
+    $(document).ready(function() {
+        $('#fee_form').submit(function() { // catch the form's submit event
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'course_id':$('#course').val(),
+                    'stream_id':$('#Stream').val(),
+                    "sem1":$('#semester1').val(),
+                    "sem2":$('#semester2').val(),
+                    "sem3":$('#semester3').val(),
+                    "sem4":$('#semester4').val(),
+                    "sem5":$('#semester5').val(),
+                    "sem6":$('#semester6').val(),
+                    "sem7":$('#semester7').val(),
+                    "sem8":$('#semester8').val(),
+                    "sem9":$('#semester9').val(),
+                    "sem10":$('#semester10').val(),
+                }, // get the form data
+                type: "POST", // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'streamfees' %}", // the file to call
+                success: function(response) { // on success..
+                    $('#DIV_CONTAINING_FORM').html(response); // update the DIV 
+                }
+            });
+            return false;
+        });
+    });
+</script>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

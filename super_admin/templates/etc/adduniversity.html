@@ -1,0 +1,534 @@
+<<<<<<< HEAD
+{% extends 'master.html' %}
+{% load static %}
+{% block head %}
+<title>MY UNIVERSITY - CIIS</title>
+
+{% endblock head %}
+
+
+{% block nav %}
+
+{% include 'sidebar.html' %}
+
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<div class="pages-body-bg-color pt-5">
+<div class="container">
+    
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <section class="my-university mx-3">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-header">
+                        <h1 class="font-26 font-bold text-black text-uppercase">Add University Details</h1>
+
+                    </div>
+                    <div class="outer-rectangle">
+                        <div class="inner-block px-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="box-title pt-4 ">
+                                        <h5 class="font-18 text-uppercase font-bold text-purewhite">University Details</h5>
+                                    </div>
+                                    <div class="box-text  ">
+                                        <p class="font-16 text-purewhite">Enter university details</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="select-options py-4">
+                                <div class="row">
+                                    <div class=" col-6 col-sm-4">
+                                        <input name="university_name" id="university_name" class="  width-100 select-mycourse text-extralightgray font-14 px-3" value="University Name">
+                                          
+                                    </div>
+                                    <div class="col-6 col-sm-4">
+                                        <input name="university_address" id="university_address" class="  width-100 select-mycourse font-14 text-extralightgray px-3" value="University Address">
+                                           
+                                    </div>
+                                    <div class="col-6 col-sm-4 pt-3 pt-sm-0">
+                                        <input name="university_city" id="university_city" class="  width-100 select-mycourse font-14 text-extralightgray px-3" value="University City">
+                                           
+                                    </div>
+
+                                   
+                               
+                              
+                                        <div class="col-6 col-sm-4 offset-sm-0 pt-3">
+                                            <input name="university_state" id="university_state" class="  width-100 select-mycourse font-14 text-extralightgray px-3" value="University State">
+                                               
+                                        </div>
+                                        <div class=" col-6 col-sm-4 col-md-3 pt-3">
+                                            <input name="university_pincode" id="university_pincode" class="  width-100 select-mycourse font-14 text-extralightgray px-3" value="University Pincode">
+                                               
+                                        </div>
+                                        <div class=" col-12 col-sm-6 col-md-5 pt-sm-3">
+                                                    <div class="button-wrapper mt-3 mt-sm-0">
+                                                        <label for="file" class="text-extralightgray file-btn font-14">Choose File</label>                                    
+                                                         <input type="file" id="university_logo" style="display:none"> 
+                                                         <label id="uploaded-file" class="text-extralightgray font-14 px-3">University Logo</label>
+                                                    </div>
+                                                    
+                                           
+                                       
+                                       
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-4 col-sm-2 col-md-4 mt-3">
+                                        <input type="submit" value="Save" class="save-btn  font-18 font-bold">
+                                    </div>
+                                </div>
+                               
+                            </div>
+                            
+                        </div>
+                      
+                     
+                    </div>
+                </div>
+            </div>
+           
+
+        </section>
+             
+    
+        
+       
+    </form>
+    <section class="university-entries my-4 mx-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="white-box">
+                    <div class="inner-block px-4">
+                       
+                        <div class="entries-table  pt-4 pb-5">
+                            <table class="format-table" id="university_table">
+                                <thead class="bottom-border-grey">
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2">Sr. No.</th>
+                                    <th class="font-14 font-bold text-darkgray width-40 px-2">University Name</th>
+                                    <th class="font-14 font-bold text-darkgray px-2">Registration ID</th>
+                                    <th class="font-14 font-bold text-darkgray px-2">Logo</th>
+                                    <th class="font-14 font-bold text-darkgray px-2">Edit University</th>
+                                </thead>
+                                <tbody>
+                                    {% for university in universities %}
+                                  <tr class="line-height-35 bottom-border-grey">
+                                    <th class="font-14 font-bold text-light-yellow light-yellow-circle set-posn px-2" scope="row">{{forloop.counter}}</th>
+                                    <td class="font-14 text-extragray text-uppercase px-2">{{university.university_name}}</td>
+                                    <td class="font-12 font-bold text-extragray px-2">{{university.registrationID}}</td>
+                                    {% if university.university_logo and university.university_logo != "False" or university.university_logo == "" %}
+                                      <td class="font-12 font-bold text-extragray px-2"><a href="/media/{{university.university_logo}}" target="_blank"><i onclick="yes()" class="fa fa-eye" aria-hidden="true"></i></a></td>
+                                    {% else %}
+                                    <td font-12 font-bold text-extragray px-2><i class="fa fa-times" aria-hidden="true"></i></td>
+                                    {% endif %}
+                                    <td class="font-12 font-bold text-extragray px-2"><button class="blue-bg text-blue font-bold font-12 no-border " onclick="EditUniversity('{{university.id}}','{{university.university_name}}','{{university.university_address}}','{{university.university_city}}','{{university.university_state}}','{{university.university_pincode}}','{{university.university_logo}}')" >Edit</button></td>
+                                    
+                                  </tr>
+                                  {% endfor %}
+                                  
+                                </tbody>
+                                
+                            </table>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+
+</div>
+</div>
+
+
+
+{% endif %}
+
+<div class="modal fade" id="UniversityEdit" tabindex="-1" aria-labelledby="UniversityEditLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="UniversityEditLabel">Edit University <input type="text" name="" id="university_edit_id"> </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="UniversityEdit_body">
+        <div class="container">
+          <div class="row mt-3">
+            <div class="col-4">
+                <div class="mb-3">
+                    <label for="edit_university_name" Required class="form-label">University Name: <span class="text-danger">*</span></label>
+                    <input type="text" name="edit_university_name" class="  " id="edit_university_name" >
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="mb-3">
+                    <label for="edit_university_address" class="form-label">University Address:</label>
+                    <input type="text" name="edit_university_address" class="  " id="edit_university_address" >
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="mb-3">
+                    <label for="edit_university_state" class="form-label">University State:</label>
+                    <input type="text" name="edit_university_state" class="  " id="edit_university_state" >
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="edit_university_city" class="form-label">University City:</label>
+                    <input type="text" name="edit_university_city" class="  " id="edit_university_city" >
+                </div>
+            </div>
+            <div class="col-6">
+              <div class="mb-3">
+                    <label for="edit_university_pincode" class="form-label">University Pincode:</label>
+                    <input type="text" name="edit_university_pincode" class="  " id="edit_university_pincode" >
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="edit_university_logo" class="form-label">University Logo:</label>
+                    <input type="file" name="edit_university_logo" class="  " id="edit_university_logo" >
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="blue-bg text-blue font-bold font-12 no-border" onclick="UpdateUniversity($('#university_edit_id').val())">Save</button>
+        <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    $(document).ready( function () {
+        $('#course-collapse').addClass("show");
+        $("#add_university_link").removeClass("link-dark");
+        $('#add_university_link').addClass("link-primary");
+    $('#university_table').DataTable();
+
+} );
+
+function EditUniversity(id,name,address,city,state,pincode,logo){
+  console.log(id,name,address,city,state,pincode,logo)
+  $('#university_edit_id').val(id);
+  $('#edit_university_name').val(name);
+  $('#edit_university_address').val(address);
+  $('#edit_university_state').val(state);
+  $('#edit_university_city').val(city);
+  $('#edit_university_pincode').val(pincode);
+
+  
+  $('#UniversityEdit').modal('show');
+}
+
+function UpdateUniversity(id){
+  var name = $('#edit_university_name').val();
+  var address = $('#edit_university_address').val();
+  var state = $('#edit_university_state').val();
+  var city = $('#edit_university_city').val();
+  var pincode = $('#edit_university_pincode').val();
+
+
+  var data = new FormData();
+  data.append("edit_university_id", id);
+  data.append("edit_university_name", name);
+  data.append("edit_university_address", address);
+  data.append("edit_university_state", state);
+  data.append("edit_university_city", city);
+  data.append("edit_university_pincode", pincode);
+  data.append("edit_university_logo", $('#edit_university_logo')[0].files[0]);
+  data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+  $.ajax({
+      method: "POST",
+      url: "{% url 'adduniversity' %}",
+      processData: false,
+      contentType: false,
+      mimeType: "multipart/form-data",
+      data: data,
+      success: function (res) {
+        const response = JSON.parse(res);
+        if(response.updated == "yes"){
+          window.location.reload();
+        }
+      }
+    });
+}
+</script>
+=======
+{% extends 'master.html' %}
+{% load static %}
+{% block head %}
+<title>MY UNIVERSITY - CIIS</title>
+
+{% endblock head %}
+
+
+{% block nav %}
+
+{% include 'sidebar.html' %}
+
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<div class="pages-body-bg-color pt-5">
+<div class="container">
+    
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <section class="my-university mx-3">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-header">
+                        <h1 class="font-26 font-bold text-black text-uppercase">Add University Details</h1>
+
+                    </div>
+                    <div class="outer-rectangle">
+                        <div class="inner-block px-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="box-title pt-4 ">
+                                        <h5 class="font-18 text-uppercase font-bold text-purewhite">University Details</h5>
+                                    </div>
+                                    <div class="box-text  ">
+                                        <p class="font-16 text-purewhite">Enter university details</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="select-options py-4">
+                                <div class="row">
+                                    <div class=" col-6 col-sm-4">
+                                        <input name="university_name" id="university_name" class="  width-100 select-mycourse text-extralightgray font-14 px-3" value="University Name">
+                                          
+                                    </div>
+                                    <div class="col-6 col-sm-4">
+                                        <input name="university_address" id="university_address" class="  width-100 select-mycourse font-14 text-extralightgray px-3" value="University Address">
+                                           
+                                    </div>
+                                    <div class="col-6 col-sm-4 pt-3 pt-sm-0">
+                                        <input name="university_city" id="university_city" class="  width-100 select-mycourse font-14 text-extralightgray px-3" value="University City">
+                                           
+                                    </div>
+
+                                   
+                               
+                              
+                                        <div class="col-6 col-sm-4 offset-sm-0 pt-3">
+                                            <input name="university_state" id="university_state" class="  width-100 select-mycourse font-14 text-extralightgray px-3" value="University State">
+                                               
+                                        </div>
+                                        <div class=" col-6 col-sm-4 col-md-3 pt-3">
+                                            <input name="university_pincode" id="university_pincode" class="  width-100 select-mycourse font-14 text-extralightgray px-3" value="University Pincode">
+                                               
+                                        </div>
+                                        <div class=" col-12 col-sm-6 col-md-5 pt-sm-3">
+                                                    <div class="button-wrapper mt-3 mt-sm-0">
+                                                        <label for="file" class="text-extralightgray file-btn font-14">Choose File</label>                                    
+                                                         <input type="file" id="university_logo" style="display:none"> 
+                                                         <label id="uploaded-file" class="text-extralightgray font-14 px-3">University Logo</label>
+                                                    </div>
+                                                    
+                                           
+                                       
+                                       
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-4 col-sm-2 col-md-4 mt-3">
+                                        <input type="submit" value="Save" class="save-btn  font-18 font-bold">
+                                    </div>
+                                </div>
+                               
+                            </div>
+                            
+                        </div>
+                      
+                     
+                    </div>
+                </div>
+            </div>
+           
+
+        </section>
+             
+    
+        
+       
+    </form>
+    <section class="university-entries my-4 mx-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="white-box">
+                    <div class="inner-block px-4">
+                       
+                        <div class="entries-table  pt-4 pb-5">
+                            <table class="format-table" id="university_table">
+                                <thead class="bottom-border-grey">
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2">Sr. No.</th>
+                                    <th class="font-14 font-bold text-darkgray width-40 px-2">University Name</th>
+                                    <th class="font-14 font-bold text-darkgray px-2">Registration ID</th>
+                                    <th class="font-14 font-bold text-darkgray px-2">Logo</th>
+                                    <th class="font-14 font-bold text-darkgray px-2">Edit University</th>
+                                </thead>
+                                <tbody>
+                                    {% for university in universities %}
+                                  <tr class="line-height-35 bottom-border-grey">
+                                    <th class="font-14 font-bold text-light-yellow light-yellow-circle set-posn px-2" scope="row">{{forloop.counter}}</th>
+                                    <td class="font-14 text-extragray text-uppercase px-2">{{university.university_name}}</td>
+                                    <td class="font-12 font-bold text-extragray px-2">{{university.registrationID}}</td>
+                                    {% if university.university_logo and university.university_logo != "False" or university.university_logo == "" %}
+                                      <td class="font-12 font-bold text-extragray px-2"><a href="/media/{{university.university_logo}}" target="_blank"><i onclick="yes()" class="fa fa-eye" aria-hidden="true"></i></a></td>
+                                    {% else %}
+                                    <td font-12 font-bold text-extragray px-2><i class="fa fa-times" aria-hidden="true"></i></td>
+                                    {% endif %}
+                                    <td class="font-12 font-bold text-extragray px-2"><button class="blue-bg text-blue font-bold font-12 no-border " onclick="EditUniversity('{{university.id}}','{{university.university_name}}','{{university.university_address}}','{{university.university_city}}','{{university.university_state}}','{{university.university_pincode}}','{{university.university_logo}}')" >Edit</button></td>
+                                    
+                                  </tr>
+                                  {% endfor %}
+                                  
+                                </tbody>
+                                
+                            </table>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+
+</div>
+</div>
+
+
+
+{% endif %}
+
+<div class="modal fade" id="UniversityEdit" tabindex="-1" aria-labelledby="UniversityEditLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="UniversityEditLabel">Edit University <input type="text" name="" id="university_edit_id"> </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="UniversityEdit_body">
+        <div class="container">
+          <div class="row mt-3">
+            <div class="col-4">
+                <div class="mb-3">
+                    <label for="edit_university_name" Required class="form-label">University Name: <span class="text-danger">*</span></label>
+                    <input type="text" name="edit_university_name" class="  " id="edit_university_name" >
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="mb-3">
+                    <label for="edit_university_address" class="form-label">University Address:</label>
+                    <input type="text" name="edit_university_address" class="  " id="edit_university_address" >
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="mb-3">
+                    <label for="edit_university_state" class="form-label">University State:</label>
+                    <input type="text" name="edit_university_state" class="  " id="edit_university_state" >
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="edit_university_city" class="form-label">University City:</label>
+                    <input type="text" name="edit_university_city" class="  " id="edit_university_city" >
+                </div>
+            </div>
+            <div class="col-6">
+              <div class="mb-3">
+                    <label for="edit_university_pincode" class="form-label">University Pincode:</label>
+                    <input type="text" name="edit_university_pincode" class="  " id="edit_university_pincode" >
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="edit_university_logo" class="form-label">University Logo:</label>
+                    <input type="file" name="edit_university_logo" class="  " id="edit_university_logo" >
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="blue-bg text-blue font-bold font-12 no-border" onclick="UpdateUniversity($('#university_edit_id').val())">Save</button>
+        <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    $(document).ready( function () {
+        $('#course-collapse').addClass("show");
+        $("#add_university_link").removeClass("link-dark");
+        $('#add_university_link').addClass("link-primary");
+    $('#university_table').DataTable();
+
+} );
+
+function EditUniversity(id,name,address,city,state,pincode,logo){
+  console.log(id,name,address,city,state,pincode,logo)
+  $('#university_edit_id').val(id);
+  $('#edit_university_name').val(name);
+  $('#edit_university_address').val(address);
+  $('#edit_university_state').val(state);
+  $('#edit_university_city').val(city);
+  $('#edit_university_pincode').val(pincode);
+
+  
+  $('#UniversityEdit').modal('show');
+}
+
+function UpdateUniversity(id){
+  var name = $('#edit_university_name').val();
+  var address = $('#edit_university_address').val();
+  var state = $('#edit_university_state').val();
+  var city = $('#edit_university_city').val();
+  var pincode = $('#edit_university_pincode').val();
+
+
+  var data = new FormData();
+  data.append("edit_university_id", id);
+  data.append("edit_university_name", name);
+  data.append("edit_university_address", address);
+  data.append("edit_university_state", state);
+  data.append("edit_university_city", city);
+  data.append("edit_university_pincode", pincode);
+  data.append("edit_university_logo", $('#edit_university_logo')[0].files[0]);
+  data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+  $.ajax({
+      method: "POST",
+      url: "{% url 'adduniversity' %}",
+      processData: false,
+      contentType: false,
+      mimeType: "multipart/form-data",
+      data: data,
+      success: function (res) {
+        const response = JSON.parse(res);
+        if(response.updated == "yes"){
+          window.location.reload();
+        }
+      }
+    });
+}
+</script>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

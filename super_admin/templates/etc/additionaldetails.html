@@ -1,0 +1,684 @@
+<<<<<<< HEAD
+{% extends 'master.html' %}
+
+{% block head %}
+
+{% endblock head %}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<!-- <div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+  <label class="form-check-label" for="flexSwitchCheckChecked">Checked switch checkbox input</label>
+</div> -->
+
+<section class="additional-details pages-body-bg-color pt-5 mx-3">
+  <div class="row">
+    <div class="col-12">
+      <div class="outer-rectangle">
+        <div class="inner-block px-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="box-title pt-4 ">
+                        <h5 class="font-18 text-uppercase font-bold text-purewhite">Additional Details</h5>
+                    </div>
+                    
+                </div>
+            </div>
+          
+            <div class="select-options py-4">
+              <div class="row">
+                <div class="col-12">
+                
+                  <h5 class="font-18  font-bold text-purewhite">Enter Enrollment ID</h5>
+
+                </div>
+              </div>
+              <form action="" method="POST" id="enrollform">
+                {% csrf_token %}
+              <div class="row">
+                <div class="col-6">
+                        <div class="display-block py-2">
+                          
+                          <input type="number" name="enroll_id" class="form-control" id="enroll_id" placeholder="Enrollment ID">
+                        </div>
+                </div>
+                <div class="col-6">
+                  <div class="display-block py-2">
+                    <button type="submit" class="save-btn" >Search</button>
+                  </div>
+                </div>
+                      
+                      <div class="col-sm-5">
+              
+                        <h3 id="notfound"></h3>
+              
+                      </div>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+    
+
+    <div id="hiddendata" class="invisible">
+      <hr>
+
+      <div class="main-form">
+        <div class="header-tag">
+          <h1>Personal Details</h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="first_name" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="first_name" readonly>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="middle_name" class="form-label">Middle Name</label>
+              <input type="text" class="form-control" id="middle_name" readonly>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="last_name" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="last_name" readonly>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="mobile" class="form-label">Mobile</label>
+              <input type="text" class="form-control" id="mobile" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-4">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" readonly>
+          </div>
+          <div class="col-sm-4">
+            <div class="mb-3">
+              <label for="course" class="form-label">Course</label>
+              <input type="text" class="form-control" id="course" readonly>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="mb-3">
+              <label for="stream" class="form-label">Stream</label>
+              <input type="text" class="form-control" id="stream" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="header-tag">
+          <h1>Additional Details</h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="counselor_name" class="form-label">Counselor Name</label>
+              <input type="text" class="form-control" id="counselor_name">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="reference_name" class="form-label">Reference Name</label>
+              <input type="text" class="form-control" id="reference_name">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="session" class="form-label">Session</label>
+              <select class="form-select" id="session" name="session" aria-label="Default select example">
+                <option value="" selected>Select</option>
+                <option value="Winter 2021">Winter 2021</option>
+                <option value="Summer 2021">Summer 2022</option>
+                <option value="Winter 2022">Winter 2022</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="entry_mode" class="form-label">Entry Mode</label>
+              <select class="form-select" id="entry_mode" name="entry_mode" aria-label="Default select example">
+                <option value="" selected>Select</option>
+                <option value="Regular">Regular</option>
+                <option value="Lateral Entry">Lateral Entry</option>
+                <option value="Credit Transfer">Credit Transfer</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-5">
+            <div class="mb-3">
+              <label for="old_university_enrollment_id" class="form-label">Old University Enrollment ID</label>
+              <input type="text" class="form-control" id="old_university_enrollment_id">
+            </div>
+          </div>
+          <div class="col-sm-5">
+            <div class="mb-3">
+              <label for="university_enrollment_id" class="form-label">Current University Enrollment ID</label>
+              <input type="text" class="form-control" id="university_enrollment_id">
+            </div>
+          </div>
+        </div>
+
+        <div class="header-tag">
+          <h1>Transportation/Courier Details</h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="courier_company_name" class="form-label">Courier Company Name</label>
+              <input type="text" class="form-control" id="courier_company_name">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="courier_tracking_id" class="form-label">Courier Tracking ID</label>
+              <input type="text" class="form-control" id="courier_tracking_id">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="courier_date" class="form-label">Courier Date</label>
+              <input type="date" class="form-control" id="courier_date">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="courier_return_date" class="form-label">Courier Return Date</label>
+              <input type="date" class="form-control" id="courier_return_date">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-9">
+            <div class="mb-3">
+              <label for="courier_return_reason" class="form-label">Courier Return Reason</label>
+              <input type="text" class="form-control" id="courier_return_reason">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="courier_goods_type" class="form-label">Courier Goods Type</label>
+              <select class="form-select" id="courier_goods_type" name="courier_goods_type" aria-label="Default select example">
+                <option value="" selected>Select</option>
+                <option value="Marksheet">Marksheet</option>
+                <option value="AS">AS</option>
+                <option value="QP">QP</option>
+                <option value="Others">Others</option>
+              
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="mb-3">
+              <label for="courier_remarks" class="form-label">Courier Remarks</label>
+              <input type="text" class="form-control" id="courier_remarks">
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="btn btn-primary mb-5" onclick="saveform()" >Save</button>
+    </div>
+
+  </div>
+</div>
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+
+<script language="JavaScript">
+  document.addEventListener("wheel", function (event) {
+    if (document.activeElement.type === "number") {
+      document.activeElement.blur();
+    }
+  });
+  $(document).ready(function () {
+    $('#enrollform').submit(function () { // catch the form's submit event
+      $.ajax({ // create an AJAX call...
+        data: {
+          'enroll_id': $('#enroll_id').val()
+        },
+        type: 'POST', // GET or POST
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'additionaldetail' %}",
+        success: function (response) { // on success..
+          console.log("sent")
+          console.log(response)
+          if (response.student == "NA") {
+            $('#notfound').text("NO student Found !")
+            $('#notfound').css('color', 'white')
+          }
+          if (response.student == "YES") {
+            $('#notfound').text(" ")
+            $('#hiddendata').css('visibility', 'visible')
+            var data = response.data
+            $('#first_name').val(data.first_name)
+            $('#last_name').val(data.last_name)
+            $('#middle_name').val(data.middle_name)
+            $('#mobile').val(data.mobile)
+            $('#email').val(data.email)
+            $('#course').val(data.course)
+            $('#stream').val(data.stream)
+            $('#counselor_name').val(data.counselor_name)
+            $('#reference_name').val(data.reference_name)
+            $('#session').val(data.session)
+            $('#entry_mode').val(data.entry_mode)
+            $('#old_university_enrollment_id').val(data.old_university_enrollment_id)
+            $('#university_enrollment_id').val(data.university_enrollment_id)
+            $('#courier_company_name').val(data.courier_company_name)
+            $('#courier_tracking_id').val(data.courier_tracking_id)
+            $('#courier_date').val(data.courier_date)
+            $('#courier_return_date').val(data.courier_return_date)
+            $('#courier_return_reason').val(data.courier_return_reason)
+            $('#courier_goods_type').val(data.courier_goods_type)
+            $('#courier_remarks').val(data.courier_remarks)
+
+          }
+        }
+      });
+      return false;
+    });
+  });
+</script>
+
+<script language="JavaScript">
+function saveform(){
+  console.log("clicked")
+  var obj = {
+    "mobile":$('#mobile').val(),
+    "email":$('#email').val(),
+    "counselor_name":$('#counselor_name').val(),
+    "reference_name":$('#reference_name').val(),
+    "session":$('#session').val(),
+    "entry_mode":$('#entry_mode').val(),
+    "old_university_enrollment_id":$('#old_university_enrollment_id').val(),
+    "university_enrollment_id":$('#university_enrollment_id').val(),
+    "courier_company_name":$('#courier_company_name').val(),
+    "courier_tracking_id":$('#courier_tracking_id').val(),
+    "courier_date":$('#courier_date').val(),
+    "courier_return_date":$('#courier_return_date').val(),
+    "courier_return_reason":$('#courier_return_reason').val(),
+    "courier_goods_type":$('#courier_goods_type').val(),
+    "courier_remarks":$('#courier_remarks').val(),
+    
+  }
+  const myJSON = JSON.stringify(obj);
+  $.ajax({ // create an AJAX call...
+        data: {
+          'data': myJSON
+        }, // get the form data
+        type: 'POST', // GET or POST
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'additionaldetail' %}", // the file to call
+        success: function (response) { // on success..
+          console.log("sent object")
+        }
+  });
+}
+</script>
+
+=======
+{% extends 'master.html' %}
+
+{% block head %}
+
+{% endblock head %}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<!-- <div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+  <label class="form-check-label" for="flexSwitchCheckChecked">Checked switch checkbox input</label>
+</div> -->
+
+<section class="additional-details pages-body-bg-color pt-5 mx-3">
+  <div class="row">
+    <div class="col-12">
+      <div class="outer-rectangle">
+        <div class="inner-block px-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="box-title pt-4 ">
+                        <h5 class="font-18 text-uppercase font-bold text-purewhite">Additional Details</h5>
+                    </div>
+                    
+                </div>
+            </div>
+          
+            <div class="select-options py-4">
+              <div class="row">
+                <div class="col-12">
+                
+                  <h5 class="font-18  font-bold text-purewhite">Enter Enrollment ID</h5>
+
+                </div>
+              </div>
+              <form action="" method="POST" id="enrollform">
+                {% csrf_token %}
+              <div class="row">
+                <div class="col-6">
+                        <div class="display-block py-2">
+                          
+                          <input type="number" name="enroll_id" class="form-control" id="enroll_id" placeholder="Enrollment ID">
+                        </div>
+                </div>
+                <div class="col-6">
+                  <div class="display-block py-2">
+                    <button type="submit" class="save-btn" >Search</button>
+                  </div>
+                </div>
+                      
+                      <div class="col-sm-5">
+              
+                        <h3 id="notfound"></h3>
+              
+                      </div>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+    
+
+    <div id="hiddendata" class="invisible">
+      <hr>
+
+      <div class="main-form">
+        <div class="header-tag">
+          <h1>Personal Details</h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="first_name" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="first_name" readonly>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="middle_name" class="form-label">Middle Name</label>
+              <input type="text" class="form-control" id="middle_name" readonly>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="last_name" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="last_name" readonly>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="mobile" class="form-label">Mobile</label>
+              <input type="text" class="form-control" id="mobile" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-4">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" readonly>
+          </div>
+          <div class="col-sm-4">
+            <div class="mb-3">
+              <label for="course" class="form-label">Course</label>
+              <input type="text" class="form-control" id="course" readonly>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="mb-3">
+              <label for="stream" class="form-label">Stream</label>
+              <input type="text" class="form-control" id="stream" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="header-tag">
+          <h1>Additional Details</h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="counselor_name" class="form-label">Counselor Name</label>
+              <input type="text" class="form-control" id="counselor_name">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="reference_name" class="form-label">Reference Name</label>
+              <input type="text" class="form-control" id="reference_name">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="session" class="form-label">Session</label>
+              <select class="form-select" id="session" name="session" aria-label="Default select example">
+                <option value="" selected>Select</option>
+                <option value="Winter 2021">Winter 2021</option>
+                <option value="Summer 2021">Summer 2022</option>
+                <option value="Winter 2022">Winter 2022</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="entry_mode" class="form-label">Entry Mode</label>
+              <select class="form-select" id="entry_mode" name="entry_mode" aria-label="Default select example">
+                <option value="" selected>Select</option>
+                <option value="Regular">Regular</option>
+                <option value="Lateral Entry">Lateral Entry</option>
+                <option value="Credit Transfer">Credit Transfer</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-5">
+            <div class="mb-3">
+              <label for="old_university_enrollment_id" class="form-label">Old University Enrollment ID</label>
+              <input type="text" class="form-control" id="old_university_enrollment_id">
+            </div>
+          </div>
+          <div class="col-sm-5">
+            <div class="mb-3">
+              <label for="university_enrollment_id" class="form-label">Current University Enrollment ID</label>
+              <input type="text" class="form-control" id="university_enrollment_id">
+            </div>
+          </div>
+        </div>
+
+        <div class="header-tag">
+          <h1>Transportation/Courier Details</h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="courier_company_name" class="form-label">Courier Company Name</label>
+              <input type="text" class="form-control" id="courier_company_name">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="courier_tracking_id" class="form-label">Courier Tracking ID</label>
+              <input type="text" class="form-control" id="courier_tracking_id">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="courier_date" class="form-label">Courier Date</label>
+              <input type="date" class="form-control" id="courier_date">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="courier_return_date" class="form-label">Courier Return Date</label>
+              <input type="date" class="form-control" id="courier_return_date">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-9">
+            <div class="mb-3">
+              <label for="courier_return_reason" class="form-label">Courier Return Reason</label>
+              <input type="text" class="form-control" id="courier_return_reason">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="courier_goods_type" class="form-label">Courier Goods Type</label>
+              <select class="form-select" id="courier_goods_type" name="courier_goods_type" aria-label="Default select example">
+                <option value="" selected>Select</option>
+                <option value="Marksheet">Marksheet</option>
+                <option value="AS">AS</option>
+                <option value="QP">QP</option>
+                <option value="Others">Others</option>
+              
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="mb-3">
+              <label for="courier_remarks" class="form-label">Courier Remarks</label>
+              <input type="text" class="form-control" id="courier_remarks">
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="btn btn-primary mb-5" onclick="saveform()" >Save</button>
+    </div>
+
+  </div>
+</div>
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+
+<script language="JavaScript">
+  document.addEventListener("wheel", function (event) {
+    if (document.activeElement.type === "number") {
+      document.activeElement.blur();
+    }
+  });
+  $(document).ready(function () {
+    $('#enrollform').submit(function () { // catch the form's submit event
+      $.ajax({ // create an AJAX call...
+        data: {
+          'enroll_id': $('#enroll_id').val()
+        },
+        type: 'POST', // GET or POST
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'additionaldetail' %}",
+        success: function (response) { // on success..
+          console.log("sent")
+          console.log(response)
+          if (response.student == "NA") {
+            $('#notfound').text("NO student Found !")
+            $('#notfound').css('color', 'white')
+          }
+          if (response.student == "YES") {
+            $('#notfound').text(" ")
+            $('#hiddendata').css('visibility', 'visible')
+            var data = response.data
+            $('#first_name').val(data.first_name)
+            $('#last_name').val(data.last_name)
+            $('#middle_name').val(data.middle_name)
+            $('#mobile').val(data.mobile)
+            $('#email').val(data.email)
+            $('#course').val(data.course)
+            $('#stream').val(data.stream)
+            $('#counselor_name').val(data.counselor_name)
+            $('#reference_name').val(data.reference_name)
+            $('#session').val(data.session)
+            $('#entry_mode').val(data.entry_mode)
+            $('#old_university_enrollment_id').val(data.old_university_enrollment_id)
+            $('#university_enrollment_id').val(data.university_enrollment_id)
+            $('#courier_company_name').val(data.courier_company_name)
+            $('#courier_tracking_id').val(data.courier_tracking_id)
+            $('#courier_date').val(data.courier_date)
+            $('#courier_return_date').val(data.courier_return_date)
+            $('#courier_return_reason').val(data.courier_return_reason)
+            $('#courier_goods_type').val(data.courier_goods_type)
+            $('#courier_remarks').val(data.courier_remarks)
+
+          }
+        }
+      });
+      return false;
+    });
+  });
+</script>
+
+<script language="JavaScript">
+function saveform(){
+  console.log("clicked")
+  var obj = {
+    "mobile":$('#mobile').val(),
+    "email":$('#email').val(),
+    "counselor_name":$('#counselor_name').val(),
+    "reference_name":$('#reference_name').val(),
+    "session":$('#session').val(),
+    "entry_mode":$('#entry_mode').val(),
+    "old_university_enrollment_id":$('#old_university_enrollment_id').val(),
+    "university_enrollment_id":$('#university_enrollment_id').val(),
+    "courier_company_name":$('#courier_company_name').val(),
+    "courier_tracking_id":$('#courier_tracking_id').val(),
+    "courier_date":$('#courier_date').val(),
+    "courier_return_date":$('#courier_return_date').val(),
+    "courier_return_reason":$('#courier_return_reason').val(),
+    "courier_goods_type":$('#courier_goods_type').val(),
+    "courier_remarks":$('#courier_remarks').val(),
+    
+  }
+  const myJSON = JSON.stringify(obj);
+  $.ajax({ // create an AJAX call...
+        data: {
+          'data': myJSON
+        }, // get the form data
+        type: 'POST', // GET or POST
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'additionaldetail' %}", // the file to call
+        success: function (response) { // on success..
+          console.log("sent object")
+        }
+  });
+}
+</script>
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

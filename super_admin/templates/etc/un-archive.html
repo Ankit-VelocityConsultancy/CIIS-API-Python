@@ -1,0 +1,461 @@
+<<<<<<< HEAD
+{% extends 'admin.html' %}
+{% load static %}
+{% block head %}
+<style>
+     main {
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+</style>
+
+{% endblock head %}
+
+
+{% block nav %}
+<header>
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+      <div class="position-sticky">
+        <div class="list-group list-group-flush mx-3 mt-4">
+          <a href="{% url 'overview' %}" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+            <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+          </a>
+  
+  
+          <ul class="list-unstyled ps-0">
+            <li class="">
+              <button class="list-group-item list-group-item-action py-2 ripple active" data-bs-toggle="collapse"
+                data-bs-target="#dashboard-collapse" aria-expanded="true">
+                <i class="fas fa-users-cog fa-fw me-3"></i><span>Stud Management</span>
+              </button>
+              <div class="collapse" id="dashboard-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Student Registration</a></li>
+                  <li><a href="{% url 'additionaldetail' %}" class="link-dark rounded">Additional Details</a></li>
+                  <li><a href="{% url 'advancesearch' %}" class="link-dark rounded">Advanced Search</a></li>
+                  <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Pending Student Verification</a></li>
+                  <li><a href="{% url 'registered' %}" class="link-dark rounded">Registered Student</a></li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+          <ul class="list-unstyled ps-0">
+            <li class="">
+              <button class="list-group-item list-group-item-action py-2 ripple active" data-bs-toggle="collapse"
+                data-bs-target="#course-collapse" aria-expanded="true">
+                <i class="fas fa-users-cog fa-fw me-3"></i><span>My Course/Subject</span>
+              </button>
+              <div class="collapse" id="course-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="{% url 'addcourse' %}" class="link-dark rounded">My Course</a></li>
+                    <li><a href="{% url 'addstream' %}" class="link-dark rounded">My Subject</a></li>
+                    <li><a href="{% url 'adduniversity' %}" class="link-dark rounded">My University</a></li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+          
+          <ul class="list-unstyled ps-0">
+              <li class="">
+                  <button class="list-group-item list-group-item-action py-2 ripple active"
+                      data-bs-toggle="collapse" data-bs-target="#miscelanous-collapse" aria-expanded="true">
+                      <i class="fas fa-users-cog fa-fw me-3"></i><span>Miscelanous</span>
+                  </button>
+                  <div class="collapse" id="miscelanous-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                          <li><a href="{% url 'usercreation' %}" class="link-dark rounded">User Creation</a></li>
+                          <li><a href="{% url 'printaddress' %}" class="link-dark rounded">Print Address</a></li>
+                          
+                      </ul>
+                  </div>
+              </li>
+          </ul>
+          <ul class="list-unstyled ps-0">
+            <li class="">
+                <button class="list-group-item list-group-item-action py-2 ripple active"
+                    data-bs-toggle="collapse" data-bs-target="#fees-collapse" aria-expanded="true">
+                    <i class="fas fa-users-cog fa-fw me-3"></i><span>Fees</span>
+                </button>
+                <div class="collapse" id="fees-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'addfees' %}" class="link-dark rounded">Subject Fees</a></li>
+                        <li><a href="{% url 'editoldfees' %}" class="link-dark rounded">Student Fees</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+          
+          <a href="{% url 'sendemail' %}" class="list-group-item list-group-item-action py-2 ripple"
+                      aria-current="true">
+                      <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Send Email</span>
+                  </a>
+  
+  
+          <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+            class="fas fa-sign-out-alt fa-fw me-3"></i><span>Logout</span></a>
+  
+        </div>
+      </div>
+    </nav>
+    <!-- Sidebar -->
+  
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+      <!-- Container wrapper -->
+      <div class="container-fluid">
+          <!-- Toggle button -->
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+              aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+  
+          <!-- Brand -->
+          <a class="navbar-brand" href="#">
+              <img src="" height="25" alt="" loading="lazy" />
+          </a>
+          <!-- Search form -->
+          <form class="d-none d-md-flex input-group w-auto my-auto">
+              <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                  style="min-width: 225px" />
+              <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+          </form>
+  
+          <!-- Right links -->
+          <ul class="navbar-nav ms-auto d-flex flex-row">
+              
+  
+              <li class="nav-item dropdown">
+                  <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fas fa-bell"></i>
+                      <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  </ul>
+                </li>
+  
+             
+  
+              <!-- Avatar -->
+              <li class="nav-item dropdown">
+                 
+                  <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                          height="22" alt="" loading="lazy" />
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="#">My profile</a></li>
+                      <li><a class="dropdown-item" href="#">Settings</a></li>
+                      <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                  </ul>
+              </li>
+          </ul>
+      </div>
+      <!-- Container wrapper -->
+  </nav>
+    <!-- Navbar -->
+  </header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<table class="table" id="archived_student_table">
+    <thead>
+      <tr>
+        <th scope="col">Sr.No</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Mobile</th>
+        <th scope="col">Enrollment ID</th>
+        <th scope="col">Action</th>
+        
+        
+      </tr>
+    </thead>
+    <tbody id="payment_reciept_table_body">
+      {% for i in students %}
+      <tr>
+        <th scope="row">{{forloop.counter}}</th>
+        <td>{{i.name}}</td>
+        <td>{{i.email}}</td>
+        <td>{{i.mobile}}</td>
+        <td>{{i.enrollment_id}}</td>
+        <td>
+          <button class="btn btn-success" onclick="unarchive('{{i.id}}')" >UnArchive</button>
+        </td>
+        
+        
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% else %}
+<h1 class="text-center">Restricted Access</h1>
+{% endif %}
+
+<script>
+    $(document).ready( function () {
+        $('#archived_student_table').DataTable();
+    });
+
+    function unarchive(id){
+        console.log(id)
+        if(id){
+            $.ajax({
+                type: "POST",
+                url: "{% url 'unarchive' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'unarchive_student_id': id,
+                },
+            success: function (response) {
+                console.log("sent data")
+            }
+        });
+        }
+    }
+</script>
+
+{% endblock body %}
+
+
+
+
+=======
+{% extends 'admin.html' %}
+{% load static %}
+{% block head %}
+<style>
+     main {
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+</style>
+
+{% endblock head %}
+
+
+{% block nav %}
+<header>
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+      <div class="position-sticky">
+        <div class="list-group list-group-flush mx-3 mt-4">
+          <a href="{% url 'overview' %}" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+            <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+          </a>
+  
+  
+          <ul class="list-unstyled ps-0">
+            <li class="">
+              <button class="list-group-item list-group-item-action py-2 ripple active" data-bs-toggle="collapse"
+                data-bs-target="#dashboard-collapse" aria-expanded="true">
+                <i class="fas fa-users-cog fa-fw me-3"></i><span>Stud Management</span>
+              </button>
+              <div class="collapse" id="dashboard-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Student Registration</a></li>
+                  <li><a href="{% url 'additionaldetail' %}" class="link-dark rounded">Additional Details</a></li>
+                  <li><a href="{% url 'advancesearch' %}" class="link-dark rounded">Advanced Search</a></li>
+                  <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Pending Student Verification</a></li>
+                  <li><a href="{% url 'registered' %}" class="link-dark rounded">Registered Student</a></li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+          <ul class="list-unstyled ps-0">
+            <li class="">
+              <button class="list-group-item list-group-item-action py-2 ripple active" data-bs-toggle="collapse"
+                data-bs-target="#course-collapse" aria-expanded="true">
+                <i class="fas fa-users-cog fa-fw me-3"></i><span>My Course/Subject</span>
+              </button>
+              <div class="collapse" id="course-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="{% url 'addcourse' %}" class="link-dark rounded">My Course</a></li>
+                    <li><a href="{% url 'addstream' %}" class="link-dark rounded">My Subject</a></li>
+                    <li><a href="{% url 'adduniversity' %}" class="link-dark rounded">My University</a></li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+          
+          <ul class="list-unstyled ps-0">
+              <li class="">
+                  <button class="list-group-item list-group-item-action py-2 ripple active"
+                      data-bs-toggle="collapse" data-bs-target="#miscelanous-collapse" aria-expanded="true">
+                      <i class="fas fa-users-cog fa-fw me-3"></i><span>Miscelanous</span>
+                  </button>
+                  <div class="collapse" id="miscelanous-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                          <li><a href="{% url 'usercreation' %}" class="link-dark rounded">User Creation</a></li>
+                          <li><a href="{% url 'printaddress' %}" class="link-dark rounded">Print Address</a></li>
+                          
+                      </ul>
+                  </div>
+              </li>
+          </ul>
+          <ul class="list-unstyled ps-0">
+            <li class="">
+                <button class="list-group-item list-group-item-action py-2 ripple active"
+                    data-bs-toggle="collapse" data-bs-target="#fees-collapse" aria-expanded="true">
+                    <i class="fas fa-users-cog fa-fw me-3"></i><span>Fees</span>
+                </button>
+                <div class="collapse" id="fees-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'addfees' %}" class="link-dark rounded">Subject Fees</a></li>
+                        <li><a href="{% url 'editoldfees' %}" class="link-dark rounded">Student Fees</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+          
+          <a href="{% url 'sendemail' %}" class="list-group-item list-group-item-action py-2 ripple"
+                      aria-current="true">
+                      <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Send Email</span>
+                  </a>
+  
+  
+          <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+            class="fas fa-sign-out-alt fa-fw me-3"></i><span>Logout</span></a>
+  
+        </div>
+      </div>
+    </nav>
+    <!-- Sidebar -->
+  
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+      <!-- Container wrapper -->
+      <div class="container-fluid">
+          <!-- Toggle button -->
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+              aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+  
+          <!-- Brand -->
+          <a class="navbar-brand" href="#">
+              <img src="" height="25" alt="" loading="lazy" />
+          </a>
+          <!-- Search form -->
+          <form class="d-none d-md-flex input-group w-auto my-auto">
+              <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                  style="min-width: 225px" />
+              <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+          </form>
+  
+          <!-- Right links -->
+          <ul class="navbar-nav ms-auto d-flex flex-row">
+              
+  
+              <li class="nav-item dropdown">
+                  <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fas fa-bell"></i>
+                      <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  </ul>
+                </li>
+  
+             
+  
+              <!-- Avatar -->
+              <li class="nav-item dropdown">
+                 
+                  <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                          height="22" alt="" loading="lazy" />
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="#">My profile</a></li>
+                      <li><a class="dropdown-item" href="#">Settings</a></li>
+                      <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                  </ul>
+              </li>
+          </ul>
+      </div>
+      <!-- Container wrapper -->
+  </nav>
+    <!-- Navbar -->
+  </header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<table class="table" id="archived_student_table">
+    <thead>
+      <tr>
+        <th scope="col">Sr.No</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Mobile</th>
+        <th scope="col">Enrollment ID</th>
+        <th scope="col">Action</th>
+        
+        
+      </tr>
+    </thead>
+    <tbody id="payment_reciept_table_body">
+      {% for i in students %}
+      <tr>
+        <th scope="row">{{forloop.counter}}</th>
+        <td>{{i.name}}</td>
+        <td>{{i.email}}</td>
+        <td>{{i.mobile}}</td>
+        <td>{{i.enrollment_id}}</td>
+        <td>
+          <button class="btn btn-success" onclick="unarchive('{{i.id}}')" >UnArchive</button>
+        </td>
+        
+        
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% else %}
+<h1 class="text-center">Restricted Access</h1>
+{% endif %}
+
+<script>
+    $(document).ready( function () {
+        $('#archived_student_table').DataTable();
+    });
+
+    function unarchive(id){
+        console.log(id)
+        if(id){
+            $.ajax({
+                type: "POST",
+                url: "{% url 'unarchive' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'unarchive_student_id': id,
+                },
+            success: function (response) {
+                console.log("sent data")
+            }
+        });
+        }
+    }
+</script>
+
+{% endblock body %}
+
+
+
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049

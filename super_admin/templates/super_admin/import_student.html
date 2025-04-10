@@ -1,0 +1,670 @@
+<<<<<<< HEAD
+{% extends 'includes/admin.html' %}
+{% load static %}
+{% block head %}
+<title>OVERVIEW - CIIS</title>
+<style>
+  main{
+    margin-left: 25px;
+    margin-right: 25px;
+  }
+</style>
+<link rel="stylesheet" href="{% static 'dict/#css/overview.css' %}">
+{% endblock head %}
+
+
+{% block nav %}
+
+{% include 'sidebar.html' %}
+
+{% endblock nav%}
+{% block body %}
+{% if request.user.is_superuser%}
+
+
+    
+    
+        <div class="container">
+            {% if inserted == "yes" %}
+            <div class="alert alert-success" id="success_alert" role="alert">
+                Student record inserted successfully
+            </div> 
+            {% endif %}
+            <h1>Import Student</h1>
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="col-sm-3">
+                    <div class="mb-3">
+                        <label for="import_student" class="form-label">Upload Excel (XLSX)</label>
+                        <input type="file" class="form-control" name="import_student" id="import_student">
+                    </div>
+                </div>
+                <div class="col-sm-3" style="display:none;" id="import_student_button">
+                    <div class="mb-3">
+                        <input type="submit" class="btn btn-success" value="Import" >
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+
+
+    <div class="modal fade" id="ErrorModal" tabindex="-1" aria-labelledby="ErrorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="ErrorModalLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="container" id="error_modal_container">
+                
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+
+<script>
+    $("#success_alert").delay(4000).slideUp(200, function() {
+        $(this).alert('close');
+    });
+    $('#import_student').on('change', function(){
+        var fileExtension = ['xlsx'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+            alert("Only formats are allowed : "+fileExtension.join(', '));
+        }
+        var data = new FormData();
+        data.append("upload_file", $('#import_student')[0].files[0]);
+        data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+        $.ajax({
+            method: "POST",
+            url: "{% url 'validate_student_import_file' %}",
+            processData: false,
+            contentType: false,
+            mimeType: "multipart/form-data",
+            data: data,
+            success: function (res) {
+                $('#error_modal_container').empty();
+                const response = JSON.parse(res);
+                console.log(response);
+                
+                if(response.column_error.length > 0){
+                    console.log("Column error");
+                    $('#error_modal_container').append(`
+                    <div class="mt-1">
+                        <h4>Column Error</h4>
+                        <div class="alert alert-danger" role="alert">
+                            ${response.column_error}
+                        </div>
+                    </div>
+                    <br/>
+                    <hr/>
+                    `);
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.missing_details.length > 0){
+                    console.log("missing details");
+                    var missing_details = response.missing_details;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Missing Details Error</h4>
+                                <div id="missing_details_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    missing_details.forEach(myfunction);
+                    function myfunction(item){
+                        $('#missing_details_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.mobile_matched_list.length > 0){
+                    var mobile_matched_list = response.mobile_matched_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Mobile Matched Error</h4>
+                                <div id="mobile_matched_list_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    mobile_matched_list.forEach(myfunction);
+                    function myfunction(item){
+                        $('#mobile_matched_list_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.email_matched_list.length > 0){
+                    var email_matched_list = response.email_matched_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Email Matched Error</h4>
+                                <div id="email_matched_list_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    email_matched_list.forEach(myfunction);
+                    function myfunction(item){
+                        $('#email_matched_list_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.university_enrollment_id_matched_list.length > 0){
+                    var university_enrollment_id_matched_list = response.university_enrollment_id_matched_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>University Enrollment No Matched Error</h4>
+                                <div id="university_enrollment_id_matched_list_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    university_enrollment_id_matched_list.forEach(myfunction);
+                    function myfunction(item){
+                        $('#university_enrollment_id_matched_list_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.university_error_list.length > 0){
+                    var university_error_list = response.university_error_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>University Error</h4>
+                                <div id="university_error_list_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    university_error_list.forEach(myfunction);
+                    function myfunction(item){
+                        $('#university_error_list_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.course_error_list.length > 0){
+                    var course_error_list = response.course_error_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Course Error</h4>
+                                <div id="course_error_list_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    course_error_list.forEach(myfunction);
+                    function myfunction(item){
+                        $('#course_error_list_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.stream_error_list.length > 0){
+                    var stream_error_list = response.stream_error_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Stream Error</h4>
+                                <div id="stream_error_list_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    stream_error_list.forEach(myfunction);
+                    function myfunction(item){
+                        $('#stream_error_list_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+
+                if(response.column_error.length == 0 & response.column_error.length == 0 & response.missing_details.length == 0 & response.mobile_matched_list.length == 0 & response.email_matched_list.length == 0 & response.university_enrollment_id_matched_list.length == 0 & response.university_error_list.length == 0 & response.course_error_list.length == 0 & response.stream_error_list.length == 0){
+                    console.log("everything fine");
+                    $('#import_student_button').css('display', 'block');
+                }
+                else{
+                    $('#import_student_button').css('display', 'none');
+                }
+
+
+                // import_student_button
+
+
+
+
+
+
+            }
+        });
+    });
+</script>
+   
+
+=======
+{% extends 'includes/admin.html' %}
+{% load static %}
+{% block head %}
+<title>OVERVIEW - CIIS</title>
+<style>
+  main{
+    margin-left: 25px;
+    margin-right: 25px;
+  }
+</style>
+<link rel="stylesheet" href="{% static 'dict/#css/overview.css' %}">
+{% endblock head %}
+
+
+{% block nav %}
+
+{% include 'sidebar.html' %}
+
+{% endblock nav%}
+{% block body %}
+{% if request.user.is_superuser%}
+
+
+    
+    
+        <div class="container">
+            {% if inserted == "yes" %}
+            <div class="alert alert-success" id="success_alert" role="alert">
+                Student record inserted successfully
+            </div> 
+            {% endif %}
+            <h1>Import Student</h1>
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="col-sm-3">
+                    <div class="mb-3">
+                        <label for="import_student" class="form-label">Upload Excel (XLSX)</label>
+                        <input type="file" class="form-control" name="import_student" id="import_student">
+                    </div>
+                </div>
+                <div class="col-sm-3" style="display:none;" id="import_student_button">
+                    <div class="mb-3">
+                        <input type="submit" class="btn btn-success" value="Import" >
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+
+
+    <div class="modal fade" id="ErrorModal" tabindex="-1" aria-labelledby="ErrorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="ErrorModalLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="container" id="error_modal_container">
+                
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+
+<script>
+    $("#success_alert").delay(4000).slideUp(200, function() {
+        $(this).alert('close');
+    });
+    $('#import_student').on('change', function(){
+        var fileExtension = ['xlsx'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+            alert("Only formats are allowed : "+fileExtension.join(', '));
+        }
+        var data = new FormData();
+        data.append("upload_file", $('#import_student')[0].files[0]);
+        data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+        $.ajax({
+            method: "POST",
+            url: "{% url 'validate_student_import_file' %}",
+            processData: false,
+            contentType: false,
+            mimeType: "multipart/form-data",
+            data: data,
+            success: function (res) {
+                $('#error_modal_container').empty();
+                const response = JSON.parse(res);
+                console.log(response);
+                
+                if(response.column_error.length > 0){
+                    console.log("Column error");
+                    $('#error_modal_container').append(`
+                    <div class="mt-1">
+                        <h4>Column Error</h4>
+                        <div class="alert alert-danger" role="alert">
+                            ${response.column_error}
+                        </div>
+                    </div>
+                    <br/>
+                    <hr/>
+                    `);
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.missing_details.length > 0){
+                    console.log("missing details");
+                    var missing_details = response.missing_details;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Missing Details Error</h4>
+                                <div id="missing_details_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    missing_details.forEach(myfunction);
+                    function myfunction(item){
+                        $('#missing_details_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.mobile_matched_list.length > 0){
+                    var mobile_matched_list = response.mobile_matched_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Mobile Matched Error</h4>
+                                <div id="mobile_matched_list_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    mobile_matched_list.forEach(myfunction);
+                    function myfunction(item){
+                        $('#mobile_matched_list_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.email_matched_list.length > 0){
+                    var email_matched_list = response.email_matched_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Email Matched Error</h4>
+                                <div id="email_matched_list_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    email_matched_list.forEach(myfunction);
+                    function myfunction(item){
+                        $('#email_matched_list_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.university_enrollment_id_matched_list.length > 0){
+                    var university_enrollment_id_matched_list = response.university_enrollment_id_matched_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>University Enrollment No Matched Error</h4>
+                                <div id="university_enrollment_id_matched_list_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    university_enrollment_id_matched_list.forEach(myfunction);
+                    function myfunction(item){
+                        $('#university_enrollment_id_matched_list_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.university_error_list.length > 0){
+                    var university_error_list = response.university_error_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>University Error</h4>
+                                <div id="university_error_list_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    university_error_list.forEach(myfunction);
+                    function myfunction(item){
+                        $('#university_error_list_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.course_error_list.length > 0){
+                    var course_error_list = response.course_error_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Course Error</h4>
+                                <div id="course_error_list_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    course_error_list.forEach(myfunction);
+                    function myfunction(item){
+                        $('#course_error_list_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.stream_error_list.length > 0){
+                    var stream_error_list = response.stream_error_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Stream Error</h4>
+                                <div id="stream_error_list_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    stream_error_list.forEach(myfunction);
+                    function myfunction(item){
+                        $('#stream_error_list_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+
+                if(response.column_error.length == 0 & response.column_error.length == 0 & response.missing_details.length == 0 & response.mobile_matched_list.length == 0 & response.email_matched_list.length == 0 & response.university_enrollment_id_matched_list.length == 0 & response.university_error_list.length == 0 & response.course_error_list.length == 0 & response.stream_error_list.length == 0){
+                    console.log("everything fine");
+                    $('#import_student_button').css('display', 'block');
+                }
+                else{
+                    $('#import_student_button').css('display', 'none');
+                }
+
+
+                // import_student_button
+
+
+
+
+
+
+            }
+        });
+    });
+</script>
+   
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+  {% endblock body %}

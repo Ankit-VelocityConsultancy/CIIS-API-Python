@@ -1,0 +1,2532 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>QUICK REGISTRATION - CIIS</title>
+<script src="{% static 'dict/js/studentregistration.js' %}"></script>
+<style>
+  #spinner {
+      position: fixed; width: 100vw; height: 100vh;
+      top: -100px; left: 0; z-index: 9999;
+      width: 100vw; height: 100vh;
+
+      transition: opacity 0.2s;
+      }
+      
+      /* (B) CENTER LOADING SPINNER */
+      #spinner img {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%);
+      }
+      
+      /* (C) SHOW & HIDE */
+      #spinner {
+      visibility: hidden;
+      opacity: 0;
+      }
+      #spinner.show {
+      visibility: visible;
+      opacity: 1;
+      }
+</style>
+<script>
+  $(document).ready(function(){
+      
+      $("#student_image").change(function(){
+          $("#uploaded-file-image").text(this.files[0].name);
+      });
+    });
+</script>
+
+
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+<div id="spinner">
+  <img src="{% static 'dict/gif/loader.gif' %}"/>
+</div> 
+
+<div class="quick-add-student pages-body-bg-color ">
+
+  <section class="message-display-section" id="message">
+
+  </section>
+  <section class="personal-details-section  ">
+              
+  <div class="row">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-12">
+              <div class="section-header">
+                  <h1 class="font-26 font-bold text-black text-uppercase">Student - Quick Registration</h1>
+
+              </div>
+        <div class="outer-rectangle">
+          <div class="inner-block px-4">
+              <div class="row">
+                  <div class="col-12">
+                      <div class="box-title pt-4 ">
+                          <h5 class="font-18 text-uppercase font-bold text-black">Personal Details</h5>
+                          <p class="font-16 font-medium text-light-gray">A task is accomplished by a set deadline, and must contribute toward work-related objectives.</p>
+                      </div>
+                      
+                  </div>
+              </div>
+            
+              <div class="select-options py-4">
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <div class="detail-block py-2">
+                        <label for="university" class="labelrequired">University</label>
+                        <select name="university" id="university" class="  width-100 font-14 font-bold text-extralightgray ">
+                         
+                          <option      class="option-format" value=""   selected>Select</option>
+                          {% for i in university %}
+                          <option      class="option-format"   value="{{i.registrationID}}">{{i.university_name}}</option>
+                          {% endfor %}
+                  </select>
+                          
+                      </div>
+            
+                  
+                    </div>
+                    <div class="col-md-6 col-12">
+                    <div class="detail-block py-2 pt-4">
+                      <div class="file-upload">
+                                
+                        <div class="button-wrapper   width-100 font-14 font-bold text-extralightgray  ">
+                            <label for="student_image" class="bg-darkgray  width-100 font-14 font-bold  text-extralightgray  file-btn-form">Choose File for Student Image</label>                                    
+                            <input type="file" id="student_image" style="display:none"> 
+                            <label id="uploaded-file-image" class="  width-100 font-14 font-bold text-extralightgray " style="border:none">No files chosen</label>
+                        </div>
+                                        
+                    </div>
+       
+                  
+              
+          </div>
+                      
+                         
+                      
+                           
+                    </div>
+                                      
+                  </div>
+  
+    
+                  <div class="row">
+                              <div class="col-4">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelrequired">Name</label>
+                                  <input class="  width-100 font-14 font-bold text-extralightgray "  type="text" placeholder="" id="name" name="name">
+                                </div>
+                                
+                              </div>
+                              <div class="col-4">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelnotrequired">Father/ Husband Name</label>
+                                  <input class="  width-100 font-14 font-bold text-extralightgray "  type="text" placeholder="" id="father_name" name="father_name">
+                                </div>
+                                
+                              </div>
+                              <div class="col-4">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelrequired">Date of Birth</label>
+                                  <input  class="  width-100 font-14 font-bold text-extralightgray " type="text" name="dob" id="dateofbirth"  onfocus="(this.type='date')" placeholder="">
+                                 
+                                </div>
+                                  
+                              </div>
+                   </div>  
+                            
+    
+   
+
+   
+ 
+
+ 
+              <div class="row">
+
+                            
+                          
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelrequired">Email Address</label>
+                                  <div class="d-flex">
+                                     
+                                      <input
+                                      class="  width-100 font-14 font-bold text-extralightgray "
+                                      type="email" name="email" placeholder=""
+                                      id="email"  required>
+                                      <img src="{% static 'dict/images/plus.png' %}" alt="Add" onclick="showAlternate('email')" class="showhand">
+                                  </div>
+                                 
+                              
+                                </div>
+                                <div class="detail-block py-2 d-none" id="emaildiv">
+                                  <label for="" class="labelnotrequired">Alternate Email Address</label>
+                                  <input
+                                      class="  width-100 font-14 font-bold text-extralightgray "
+                                      type="email" name="alt_email"
+                                      placeholder="" id="alternateemail">
+                                      <label for="alternateemail" id="is_alt_email_available"></label>
+                              </div>
+
+                                 
+                              </div>
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelrequired">Mobile Number</label>
+                                  <div class="d-flex">
+                                      <input
+                                      class="  width-100 font-14 font-bold text-extralightgray "
+                                      type="text" name="mobile" id="mobile"
+                                      placeholder=""  required pattern="[0-9]*" maxlength="10">
+                                      <img src="{% static 'dict/images/plus.png' %}" alt="Add" onclick="showAlternate('mobile')" class="showhand">
+                                  
+                                  
+                                  </div>
+                                
+                                </div>
+                                <div class="detail-block py-2 d-none" id="mobilediv">
+                                  <label for="" class="labelnotrequired">Alternate Mobile Number</label>
+                                  <input
+                                      class="  width-100 font-14 font-bold text-extralightgray "
+                                      type="text" name="alternatemobile1"
+                                      placeholder="" id="alternatemobile" pattern="[0-9]*" maxlength="10">
+                                      <label for="alternatemobile1" id="is_alt_mobile_available"></label>
+                              </div>
+                              </div>
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelnotrequired">Counselor Name</label>
+                                  <input type="text" class="  width-100 font-14 font-bold text-extralightgray " id="counselor_name" placeholder="">
+                                </div>
+                              </div>
+                             
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelnotrequired">University Enrollment Number</label>
+                                  <input type="text" class="  width-100 font-14 font-bold text-extralightgray " id="university_enrollment_number" placeholder="">
+                                </div>
+                              </div>
+                          </div>  
+                     
+                       
+                          
+                    
+                          <div class="row">
+                            <div class="col-md-6 col-12">
+                              <div class="detail-block py-2">
+                                <label for="" class="labelnotrequired">Student Remarks</label>
+                                <textarea type="text" name="student_remarks" class="  width-100 font-14 font-bold text-extralightgray   " id="student_remarks" placeholder=""></textarea>
+                              </div>
+                              <div class="col-md-6 col-12 invisible">
+                                <div class="detail-block py-2">
+                                 
+                                  <input type="text" name="test_hidden" class="form-control" id="test_hidden" >
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                          
+                          
+                         
+              </div> 
+          </div>
+      </div>   
+    </div>
+  </div>       
+  </section>
+
+  
+      
+        
+<section class="course-details-section   mt-4">
+  
+  <div class="row">
+    <div class="col-12">
+      <div class="outer-rectangle">
+        <div class="inner-block px-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="box-title pt-4 ">
+                        <h5 class="font-18 text-uppercase font-bold text-black">Course/ Program Details</h5>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-3">
+                <div class="detail-block py-2">
+                  <label for="" class="labelrequired">Course</label>
+                  <select class="  width-100 font-14 font-bold text-extralightgray " name="course" id="course" >
+                    <option  class="option-format" value=""  selected>Select</option>
+                    {% for i in course %}
+                    <option  class="option-format"   value="{{i.id}}">{{i.name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+               
+              </div>
+              <div class="col-3">
+                <div class="detail-block py-2">
+                  <label for="" class="labelrequired">Stream</label>
+                  <select class="  width-100 font-14 font-bold text-extralightgray " name="Stream" id="Stream">
+                    <option    class="option-format"   value="" selected>Select</option>
+                  </select>
+                </div>
+              
+              </div>
+              <div class="col-3" id="hideSubStream">
+                <div class="detail-block py-2 " >
+                    <label for="" class="labelnotrequired">Sub Stream </label>
+                    <select
+                        class="  width-100 font-14 font-bold text-extralightgray "
+                        name="SubStream" id="SubStream" >
+                        <option class="option-format" value="" selected>Select</option>
+                    </select>
+                </div>
+
+            </div>
+              <div class="col-3">
+                <div class="detail-block py-2">
+                  <label for="" class="labelrequired">Session</label>
+                  <select class="  width-100 font-14 font-bold text-extralightgray " name="session" id="session" >
+                    <option      class="option-format"   value="" selected>Select</option>
+                    {% for i in sessionnames %}
+                            <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                    {% endfor %}
+                    
+            
+                  </select>
+                </div>
+                
+              </div>
+               <div class="col-3">
+                <label for="" class="labelrequired">Study Pattern</label>
+                  <div class="detail-block py-2">
+                    <select class="  width-100 font-14 font-bold text-extralightgray " name="studypattern" id="studypattern">
+                      <option      class="option-format"   selected>Select Study Pattern*</option>
+                      <option      class="option-format"   value="Semester">Semester</option>
+                      <option      class="option-format"   value="Annual">Annual</option>
+                      <option      class="option-format"   value="Full Course">Full Course</option>
+                    </select>
+                  </div>
+               
+                </div>
+              
+              <div class="col-3">
+                <div class="detail-block py-2">
+                  <label for="" class="labelrequired">Admission Type</label>
+                  <select class="  width-100 font-14 font-bold text-extralightgray " name="entry_mode" id="entry_mode">
+                    <option      class="option-format"  value=""  selected>Select</option>
+                    <option      class="option-format"   value="Regular">Regular</option>
+                    <option      class="option-format"   value="Distance">Distance</option>
+                    <option      class="option-format"   value="Lateral Entry">Lateral Entry</option>
+                    <option      class="option-format"   value="Credit Transfer">Credit Transfer</option>
+                  </select>
+                </div>
+                </div>
+                <div class="col-3" id="semyear_hide">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelrequired">Semester/Year</label>
+                    <select class="  width-100 font-14 font-bold text-extralightgray " name="semyear" id="semyear" >
+                      <option      class="option-format"  value="" selected >Select</option>
+                    </select>
+                  </div>
+                 
+                </div>
+               
+                    <div class="col-3">
+                      <div class="detail-block py-2">
+                        <label for="" class="labelrequired">Course Duration (in years)</label>
+                        <input type="text" name="course_duration" id="course_duration" class="  width-100 font-14 font-bold text-extralightgray " readonly>
+                         
+                      </div>
+    
+                  </div>
+                
+                
+            </div>
+            </div>
+           
+          
+           
+              
+               
+             
+                
+          </div>
+        </div>
+      </div>
+  </div>
+ 
+ 
+</section>        
+
+<section class="payment-details-section   mt-4 my-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="outer-rectangle">
+        <div class="inner-block px-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="box-title pt-4 ">
+                        <h5 class="font-18 text-uppercase font-bold text-black">Payment Details</h5>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="select-options py-4">
+
+              <div class="row">
+                <div class="col-6">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelrequired">Fees Receipt</label>
+                    <select class="  width-100 font-14 font-bold text-extralightgray " name="fees_reciept" id="fees_reciept">
+                      <option      class="option-format" value=""  selected>Select</option>
+                      {% for i in feereceiptoptions %}
+                      <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                 
+                </div>
+                <div class="col-6 invisible" id="other_data" >
+                  <div class="detail-block py-2">
+                    <input type="others" name="others" class="  width-100 font-14 font-bold text-extralightgray " id="others" placeholder="Others">
+                  </div>
+                 
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelnotrequired">Total Fees</label>
+                    <input type="number" placeholder="" name="total_fees" class="  width-100 font-14 font-bold text-extralightgray " id="total_fees"  readonly>
+                  </div>
+                 
+                </div>
+                <div class="col-4">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelrequired">Amount</label>
+                    <input type="number" name="fees" placeholder="" class="  width-100 font-14 font-bold text-extralightgray " id="fees" >
+                  </div>
+                  
+                </div>
+                <div class="col-4">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelrequired">Transaction Date</label>
+                    <input type="text" placeholder="" name="date_of_transaction" class="  width-100 font-14 font-bold text-extralightgray " id="date_of_transaction" onfocus="(this.type='date')" >
+                  </div>
+                 
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelrequired">Payment Mode</label>
+                    <select class="  width-100 font-14 font-bold text-extralightgray " name="payment_mode" id="payment_mode" >
+                      <option      class="option-format"  value="" selected>Select</option>
+                      {% for i in paymentmodes %}
+                            <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                      {% endfor %}
+                      
+                    </select>
+                  </div>
+                
+                </div>
+                <div class="col-4">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelnotrequired">Cheque/DD/CC Number</label>
+                    <input type="text" placeholder="Cheque/DD/CC Number" name="cheque_no" class="  width-100 font-14 font-bold text-extralightgray " id="cheque_no" >
+                  </div>
+                  
+                </div>
+                <div class="col-4">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelnotrequired">Bank Name</label>
+                    <select class="  width-100 font-14 font-bold text-extralightgray " name="bank_name" id="bank_name" >
+                      <option      class="option-format"   selected value="">Select</option>
+                      {% for i in banknames %}
+                      <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                      {% endfor %}
+                      
+                    </select>
+                  </div>
+                 
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6" id="other_bank_container" style="display:none;">
+                  <div id="other_bank_name">
+              
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelrequired">Remarks</label>
+                    <input type="text" name="remarks" placeholder="" class="  width-100 font-14 font-bold text-extralightgray " id="remarks">
+                  </div>
+                
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-12">
+                  <div id="student_output"></div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-2 col-4">
+                  <div class="detail-block py-2">
+                    <button type="submit" id="student_save_button" class="edit-btn  red-btn width-100" onclick="savestudent()">Add Student</button>
+                  </div>
+                 
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+
+
+
+
+
+
+ 
+ 
+
+
+ 
+
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+<div id="exampleModal" class="modal">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+
+          <div class="modal-body">
+              <div class="container" id="output_container">
+                <h3 class="text-center font-16 text-darkblue" >Course / Programme Details is Mandatory ..!!</h3>
+                <div class="output_course" id="output_course"></div>  
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+   $(document).ready(function () {
+    $('#dashboard-collapse').addClass("show");
+    $("#add_student_quick_link").removeClass("link-dark");
+    $('#add_student_quick_link').addClass("link-primary");
+    $('#hideSubStream').css('display', 'none');
+   
+   })
+
+document.getElementById("university").onchange = function () {
+  var university = this.value;
+        if (university == "Select University") {
+
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_course':university
+                },
+                success: function (response) {
+                    $('#course').empty()
+                    $('#course').append('<option class="option-format" value="">Select</option>')
+                    
+                    console.log(response)
+                    if(response.course){
+                        var data = response.course
+                        data.forEach(myFunction);
+                        function myFunction(item){
+                        console.log(item)
+                        $('#course').append(`
+                            <option class="option-format" value="${item.id}">${item.name}</option>
+                        `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+}
+
+
+  document.getElementById("course").onchange = function () {
+    var course = this.value;
+    $.ajax({
+        type: "GET",
+        url: "{% url 'addstudent' %}",
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        data: {
+          'selected_course': course,
+          
+        },
+        success: function (response) {
+            console.log(response);
+          var data = response.data
+          var duration = ''
+          $('#Stream').empty();
+          $('#Stream').append('<option class="option-format" selected>Select</option>');
+          data.forEach(myFunction);
+  
+          function myFunction(item) {
+            duration = item.sem
+            $('#Stream').append(`<option class="option-format" value='${item.id}'> ${item.name}  </option>`);
+          }
+  
+          
+        }
+      });
+    
+
+  };
+  document.getElementById("Stream").onchange = function () {
+      
+      var stream = this.value;
+
+      var course_name = $('#course').val();
+      var study_pattern = $('#studypattern').val();
+      if (study_pattern !== '')
+          fillSemYear(course_name, stream, study_pattern)
+      $.ajax({
+          type: "POST",
+          url: "{% url 'getsubstream' %}",
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          data: {
+              'streamid': stream,
+              
+          },
+          success: function (response) {
+              var data = response.substream
+              if (response.substream.length > 0) {
+                  $('#hideSubStream').css('display', 'block');
+                  $('#SubStream').empty();
+                  $('#SubStream').append('<option      class="option-format" value=""  selected>Select</option>');
+                  streamdata = data;
+                  data.forEach(myFunction);
+
+                  function myFunction(item) {
+                  
+                  $('#SubStream').append(`<option class="option-format" value='${item.id}'>  ${item.name}  </option>`);
+                  }
+              }
+              else {
+                  $('#hideSubStream').css('display', 'none');
+              }
+          }
+      })
+  }
+
+  document.getElementById("studypattern").onchange = function () {
+          var course_name = $('#course').val();
+          var stream_name = $('#Stream').val();
+          var study_pattern = this.value;
+          if(study_pattern == "Full Course"){
+            console.log("Full Course Given")
+            $('#semyear_hide').css('display','none');
+            $('#total_fees').prop('readonly',false)
+          }
+          else{
+            $('#semyear_hide').css('display','block')
+            $('#total_fees').prop('readonly',true)
+                
+          }
+          if (course_name != '' && stream_name != '')
+            fillSemYear(course_name,stream_name, study_pattern)
+          
+
+      }
+      document.getElementById("semyear").onchange = function () {
+                  var c_id = $('#course').val();
+                  var s_id = $('#Stream').val();
+                  var ss_id = $('#SubStream').val();
+                  var studypattern = $('#studypattern').val();
+                  var semyear = $('#semyear').val();
+                  if (c_id && s_id && studypattern && semyear) {
+                    $.ajax({
+                      type: "POST",
+                      url: "{% url 'addstudent' %}",
+                      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                      data: {
+                        'c_id': c_id, // from form
+                        's_id': s_id,
+                        'studypattern': studypattern,
+                        'semyear': semyear,
+                        'ss_id': ss_id
+                      },
+                      success: function (response) {
+                        if(response.data){
+                            var total_fees = response.data.totalfees;
+                            $('#total_fees').val(total_fees);
+                        }
+                      }
+                    });
+                  }
+
+                
+                }
+  
+  function fillSemYear(course_name, stream_name, study_pattern) {
+  
+  console.log(course_name, stream_name, study_pattern)
+      if (course_name && stream_name && study_pattern != "Full Course") {
+        $.ajax({
+          type: "POST",
+          url: "{% url 'addstudent' %}",
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          data: {
+            'course_name': course_name, // from form
+            'stream_name': stream_name,
+            'study_pattern': study_pattern,
+          },
+          success: function (response) {
+            console.log(response)
+            $('#semyear').empty();
+            
+            if(response.obj){
+              if(response.obj.study_pattern == "Semester"){
+                $('#course_duration').val(parseInt(response.obj.semyear, 10) / 2);
+                $('#semyear').append('<option class="option-format">Select Semester</option>');
+                for(var i=1;i<=response.obj.semyear;i++){
+                  $('#semyear').append('<option  class="option-format" value=' + i + '>' + i + ' Semester' + '</option>');
+                }
+              }
+              else if(response.obj.study_pattern == "Annual"){
+                $('#course_duration').val(response.obj.semyear);
+                $('#semyear').append('<option class="option-format">Select Annual</option>');
+                for(var i=1;i<=response.obj.semyear;i++){
+                  $('#semyear').append('<option class="option-format" value=' + i + '>' + i + ' Year' + '</option>');
+                }
+              }
+            }
+          }
+        })
+      }
+  }
+  
+ 
+         
+
+</script>
+
+
+<script type="text/javascript">
+  
+  
+ 
+ 
+  $(function() {
+    $("#fees_reciept").change(function() {
+        var selected_option = $('option:selected', this).text()
+        if(selected_option == "Others"){
+            $('#other_data').css('visibility','visible');
+        }
+        else{
+            $('#other_data').css('visibility','hidden');
+        }
+        });
+    });
+  
+  $(function() {
+    $("#bank_name").change(function() {
+        var selected_option = $('option:selected', this).text()
+        if(selected_option == "Others"){
+          console.log("yes other")  
+          $('#other_bank_name').css('visibility','visible');
+          $('#other_bank_name').append(`
+
+          <div class="col-sm-6">
+            <div class="mb-3">
+              <input type="text" name="other_bank" class=" width-100 font-14 font-bold text-extralightgray " id="other_bank" placeholder="Enter Bank Name">
+            </div>
+          </div>
+
+          `);
+        }
+        else{
+          console.log("no other")  
+          $('#other_bank_name').empty();
+          $('#other_bank_name').css('visibility','hidden');
+        }
+        });
+    });
+
+
+
+  function savestudent() {
+    // console.log("saved called")
+    // $('#student_save_button').
+    $('#student_save_button').attr('disabled','disabled');
+    error_counter=0;
+    var data = new FormData();
+    data.append("university", $('#university').val());
+    data.append("student_image", $('#student_image')[0].files[0]);
+    data.append("name", $('#name').val());
+    data.append("father_name", $('#father_name').val());
+    data.append("dateofbirth", $('#dateofbirth').val());
+    
+    data.append("email", $('#email').val());
+    data.append("alternateemail", $('#alternateemail').val()); /* added by Avani */
+    
+    data.append("mobile", $('#mobile').val());
+    data.append("alternatemobile1", $('#alternatemobile').val());/* added by Avani */
+    
+    data.append("counselor_name", $('#counselor_name').val());
+    data.append("university_enrollment_number", $('#university_enrollment_number').val());
+    data.append("student_remarks", $('#student_remarks').val());
+
+    data.append("course", $('#course').val());
+    data.append("Stream", $('#Stream').val());
+    data.append("SubStream", $('#SubStream').val());
+    data.append("studypattern", $('#studypattern').val());
+    data.append("semyear", $('#semyear').val());
+
+
+
+    data.append("session", $('#session').val());
+    data.append("entry_mode", $('#entry_mode').val());
+    data.append("fees", $('#fees').val());
+    data.append("total_fees", $('#total_fees').val());
+
+    
+
+    data.append('fee_reciept_type',$('#fees_reciept option:selected').text());
+    data.append('other_data', $('#others').val());
+    data.append('transaction_date',$('#date_of_transaction').val());
+    data.append('payment_mode',$('#payment_mode option:selected').text());
+    data.append('cheque_no',$('#cheque_no').val());
+    data.append('bank_name',$('#bank_name option:selected').text());
+    data.append('remarks',$('#remarks').val());
+    var bank_name = $('#bank_name').val();
+    if(bank_name == "Others"){
+      data.append('other_bank',$('#other_bank').val());
+    }
+    var random_number = Math.floor(9999999999 + Math.random() * 99999999999);
+    console.log(random_number)
+    data.append('random_number',random_number);
+    data.append('is_quick_register', 1);
+    data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+    
+
+    if($('#university').val() == ''){
+      displayError('university', 'Please select a University')
+    }
+
+    if($('#name').val() == ''){
+      displayError('name', 'Please enter a Name')
+    }
+    if($('#mobile').val() == ''){
+      displayError('mobile', 'Please enter a Mobile Number')
+    }
+    if($('#email').val() == ''){
+      displayError('email', 'Please enter an Email Address')
+    }
+    if($('#dateofbirth').val() == ''){
+      displayError('dateofbirth', 'Please enter Date of Birth')
+    }
+    if($('#course_year').val() == ''){
+      displayError('course_year', 'Please select Course Year')
+    }
+    if($('#session').val() == ''){
+      displayError('session', 'Please select a Session')
+    }
+    if($('#entry_mode').val() == ''){
+      displayError('entry_mode', 'Please select Admission Type')
+    }
+    if($('#course').val() == ''){
+      displayError('course', 'Please select Course')
+    }
+    if($('#stream').val() == ''){
+      displayError('stream', 'Please select Stream')
+    }
+    if($('#semyear').val() == ''){
+      displayError('semyear', 'Please select Semester/Year')
+    }
+    if($('#fees_reciept').val() == ''){
+      displayError('fees_reciept', 'Please select Fees Receipt')
+    }
+    if($('#fees').val() == ''){
+      displayError('fees', 'Please enter Amount')
+    }
+    if($('#date_of_transaction').val() == ''){
+      displayError('date_of_transaction', 'Please select Transaction Date')
+    }
+    if($('#payment_mode').val() == ''){
+      displayError('payment_mode', 'Please select Payment Mode')
+    }
+    if($('#remarks').val() == ''){
+      displayError('remarks', 'Please enter Remarks')
+    }
+    //added by Avani..commented the old validation code
+    /*var is_email  = '' , is_mobile = "" , is_date_of_birth = "";
+
+    var email = $('#email').val();
+    var mobile = $('#mobile').val();
+    var dateofbirth = $('#dateofbirth').val()
+    // var university_enrollment_number = $('#university_enrollment_number').val();
+
+    var is_course = '' , is_stream = '' , is_studypattern = '' ,is_semyear = ''  ;
+    var courseid = $('#course').val();
+    var streamid = $('#Stream').val();
+    var studypattern = $('#studypattern').val();
+    var semyear = $('#semyear').val();
+
+
+    var is_fees_reciept = "" , is_fees = "" ,is_date_of_transaction = "" , is_payment_mode = "" , is_remarks = "";
+    var fees_reciept = $('#fees_reciept').val();
+    var fees = $('#fees').val();
+    var date_of_transaction = $('#date_of_transaction').val();
+    var paymentmode = $('#payment_mode').val();
+    var remarks = $('#remarks').val();
+    
+
+
+    console.log(courseid,streamid,studypattern,semyear )
+    console.log( email , mobile )
+    console.log(fees_reciept , fees , date_of_transaction , remarks)
+    
+    $('#output_course').empty();
+    
+
+
+    
+    if(email == null || email == ""){
+      console.log("entrymode not provided")
+      is_email = "no"
+      
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Enter an Email </h3>
+      `);
+    }
+    if(mobile == null || mobile == ""){
+      console.log("entrymode not provided")
+      is_mobile = "no"
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Enter Mobile </h3>
+      `);
+    }
+    if(dateofbirth == null || dateofbirth == ""){
+      console.log("entrymode not provided")
+      is_date_of_birth = "no"
+     
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Enter Date Of Birth </h3>
+      `);
+    }
+    // if(university_enrollment_number == null || university_enrollment_number == ""){
+    //   console.log("entrymode not provided")
+    //   is_university_enrollment_number = "no"
+    //   $('#output_course').append(`
+    //     <h3 class="text-center text-darkblue font-20 font-bold" > Please Enter University Enrollment Number </h3>
+    //   `);
+    // }
+    
+    if(courseid == "Select Course"){
+      console.log("course not provided")
+      is_course = "no"
+      $('#output_course').append(`
+      
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Select a Course </h3>
+
+      `);
+    }
+    if(streamid == "Select Stream"){
+      console.log("stream not provided")
+      is_stream = "no"
+      $('#output_course').append(`
+      
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Select a Stream </h3>
+
+      `);
+    }
+    if(studypattern == "Full Course"){
+      console.log("removing error because Full Course given")
+      is_studypattern == "yes"
+      is_semyear = "yes"
+    }
+    else{
+      if(studypattern == "Select Study Pattern"){
+        console.log("study pattern not provided")
+        is_studypattern = "no"
+        $('#output_course').append(`
+        
+          <h3 class="text-center text-darkblue font-20 font-bold" > Please Select a Study Pattern </h3>
+
+        `);
+      }
+      if(semyear == null || semyear == "Select Semester" || semyear == "Select Annual"){
+      console.log("semyear not provided")
+      is_semyear = "no"
+      $('#output_course').append(`
+      
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Select a Semester / Year </h3>
+
+      `);
+    }
+    }
+    
+    
+    
+    
+
+    
+    if(fees_reciept == null || fees_reciept == "" | fees_reciept == "Select"){
+      console.log("Fees Reciept not provided")
+      is_fees_reciept = "no"
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Select Fees Reciept </h3>
+      `);
+    }
+    if(fees == null || fees == ""){
+      console.log("Fees not provided")
+      is_fees = "no"
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please add Fees </h3>
+      `);
+    }
+    if(date_of_transaction == null || date_of_transaction == ""){
+      console.log("Date of Transaction not provided")
+      is_date_of_transaction = "no"
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Select a Transaction Date </h3>
+      `);
+    }
+    if(paymentmode == null || paymentmode == "Select"){
+      console.log("paymentmode not provided")
+      is_payment_mode = "no"
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Select Payment Mode </h3>
+      `);
+    }
+    if(remarks == null || remarks == ""){
+      console.log("remarks not provided")
+      is_remarks = "no"
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Add Remarks </h3>
+      `);
+    }
+    
+    
+
+
+
+    if(is_course == "no" || is_stream == "no" || is_studypattern == "no" || is_semyear == "no" || is_email == "no" || is_date_of_birth == "no" || is_mobile == "no" || is_fees_reciept == "no" || is_fees == "no" || is_date_of_transaction == "no" || is_payment_mode == "no" || is_remarks == "no" ){
+      console.log("wrong")
+      $('#student_save_button').removeAttr('disabled');
+      $('#exampleModal').modal('show');
+    }*/
+    if (error_counter != 0){
+        $('#student_save_button').removeAttr('disabled');
+        $('#student_save_button').attr('enabled','enabled');
+        $('#exampleModal').modal('show');
+    }
+    else{
+      console.log("right");
+      $.ajax({
+      method: "POST",
+      url: "{% url 'quickaddstudent' %}",
+      processData: false,
+      contentType: false,
+      mimeType: "multipart/form-data",
+      data: data,
+      success: function (res) {
+        // console.log("sent data to views")
+        console.log(res)
+        $('#output_container').empty();
+        // <h3 class="text-center" style="color:red;">Course / Programme Details is Mandatory ..!!</h3>
+        const obj = JSON.parse(res);
+        console.log(obj);
+        if(obj.data){
+          var data = obj.data;
+          console.log(data)
+          if(data.mobile_unique == "no" && data.email_unique == "no"){
+            $('#student_save_button').removeAttr('disabled');
+            console.log("mobile and email both present");
+            console.log(data.mobile_unique)
+            console.log(data.email_unique)
+            $('#output_container').append(`
+            <p class=" text-darkblue font-14" >Email ID and Mobile already Present in system ..!!  </p>   
+            <p class=" text-darkblue font-14">Student ${data.studentname} has been added with these details by ${data.createdby}</p>     
+            `);
+            $('#exampleModal').modal('show');
+          }
+          else if(data.mobile_unique == "no" || data.email_unique == "yes"){
+            $('#student_save_button').removeAttr('disabled');
+            console.log("mobile present")
+            console.log(data.mobile_unique)
+            console.log(data.email_unique)
+            $('#output_container').append(`
+             <p class=" text-darkblue font-14" >Mobile already Present in system ..!! </p>   
+             <p class=" text-darkblue font-14">Student ${data.studentname} has been added with these details by ${data.createdby}</p>         
+            `);
+            $('#exampleModal').modal('show');
+          }
+          else if(data.mobile_unique == "yes" || data.email_unique == "no"){
+            $('#student_save_button').removeAttr('disabled');
+            console.log("email present")
+            console.log(data.mobile_unique)
+            console.log(data.email_unique)  
+            $('#output_container').append(`
+             <p class=" text-darkblue font-14" >Email already Present in system ..!! </p>  
+             <p class=" text-darkblue font-14">Student ${data.studentname} has been added with these details by ${data.createdby}</p>        
+            `);
+            $('#exampleModal').modal('show');
+          }
+          
+          
+          if(data.mobile_unique == "no" || data.email_unique == "no"){
+            $('#student_output').append(`
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Email or Mobile already present in System.</strong> 
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            `);
+        
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 2000);
+          }
+        }
+        if(obj.added){
+          document.getElementById("spinner").classList.add("show");
+            setTimeout(() => {
+                document.getElementById("spinner").classList.remove("show");
+                window.location = "{% url 'viewquickregister' %}"
+            }, 4000);
+            
+            
+        //   console.log("redirected")
+        
+        //   $('#university').val('');
+        //   $('#student_image').val('')
+        //   $('#first_name').val('')
+        //   $('#middle_name').val('')
+        //   $('#last_name').val('')
+        //   $('#dateofbirth').val('')
+        //   $('#fathers_name').val('')
+        //   $('#mothers_name').val('')
+        //   $('#email').val('')
+        //   $('#mobile').val('')
+        //   $('#gender').val('')
+        //   $('#category').val('')
+        //   $('#identity_type').val('')
+        //   $('#identity_no').val('')
+        //   $('#address').val('')
+        //   $('#nationality').val('')
+        //   $('#countryId').val('')
+        //   $('#stateId').val('')
+        //   $('#cityId').val('')
+        //   $('#Pincode').val('')
+        //   $('#course').val('')
+        //   $('#Stream').val('')
+        //   $('#studypattern').val('')
+        //   $('#semyear').val('')
+
+
+        //   $('#session').val('')
+        //   $('#entry_mode').val('')
+        //   $('#fees').val('')
+        //   $('#total_fees').val('')
+
+        //   $('#aadharname').val('')
+        //   $('#aadharfile').val('')
+
+        //   $('#panname').val('')
+        //   $('#panfile').val('')
+
+        //   $('#document1name').val('')
+        //   $('#document1file').val('')
+        //   $('#document2name').val('')
+        //   $('#document2file').val('')
+
+        //   $('#document3name').val('')
+        //   $('#document3file').val('')
+          
+        //   $('#secondary_year').val('')
+        //   $('#secondary_board').val('')
+        //   $('#secondary_percentage').val('')
+        //   $('#secondary_document').val('')
+
+        //   $('#sr_year').val('')
+        //   $('#sr_board').val('')
+        //   $('#sr_percentage').val('')
+        //   $('#sr_document').val('')
+
+        //   $('#under_year').val('')
+        //   $('#under_board').val('')
+        //   $('#under_percentage').val('')
+        //   $('#under_document').val('')
+
+        //   $('#post_year').val('')
+        //   $('#post_board').val('')
+        //   $('#post_percentage').val('')
+        //   $('#post_document').val('')
+        //   $('#mphil_year').val('')
+        //   $('#mphil_board').val('')
+        //   $('#mphil_percentage').val('')
+        //   $('#mphil_document').val('')
+
+        //   $('#other_year').val('')
+        //   $('#other_board').val('')
+        //   $('#other_percentage').val('')
+        //   $('#other_document').val('')
+
+        //   $('#fees_reciept').val('')
+        //   $('#others').val('')
+        //   $('#date_of_transaction').val('')
+        //   $('#payment_mode').val('')
+        //   $('#cheque_no').val('')
+        //   $('#bank_name').val('')
+        //   $('#remarks').val('');
+
+
+        //   $('#counselor_name').val('');
+        //   $('#reference_name').val('');
+        //   $('#university_enrollment_number').val('');
+
+        //   $('#DocumentName1').val('');
+        //   $('#DocumentID1').val('');
+        //   $('#DocumentUpload1').val('');
+
+        //   $('#DocumentName2').val('');
+        //   $('#DocumentID2').val('');
+        //   $('#DocumentUpload2').val('');
+          
+        //   $('#DocumentName3').val('');
+        //   $('#DocumentID3').val('');
+        //   $('#DocumentUpload3').val('');
+          
+        //   $('#DocumentName4').val('');
+        //   $('#DocumentID4').val('');
+        //   $('#DocumentUpload4').val('');
+
+        //   $('#DocumentName5').val('');
+        //   $('#DocumentID5').val('');
+        //   $('#DocumentUpload5').val('');
+          
+          
+
+          
+
+
+        //   $('#student_output').append(`
+        //   <div class="alert alert-success alert-dismissible fade show" role="alert">
+        //       <strong>Student Record Inserted Successfully</strong> 
+        //       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        //   </div>
+        //   `);
+        
+        //   setTimeout(() => {
+        //       $('.alert').alert('close');
+        //   }, 2000);
+        }
+      
+      }
+    });
+    }
+    
+    
+    
+  }
+
+
+</script>
+
+
+
+
+
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>QUICK REGISTRATION - CIIS</title>
+<script src="{% static 'dict/js/studentregistration.js' %}"></script>
+<style>
+  #spinner {
+      position: fixed; width: 100vw; height: 100vh;
+      top: -100px; left: 0; z-index: 9999;
+      width: 100vw; height: 100vh;
+
+      transition: opacity 0.2s;
+      }
+      
+      /* (B) CENTER LOADING SPINNER */
+      #spinner img {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%);
+      }
+      
+      /* (C) SHOW & HIDE */
+      #spinner {
+      visibility: hidden;
+      opacity: 0;
+      }
+      #spinner.show {
+      visibility: visible;
+      opacity: 1;
+      }
+</style>
+<script>
+  $(document).ready(function(){
+      
+      $("#student_image").change(function(){
+          $("#uploaded-file-image").text(this.files[0].name);
+      });
+    });
+</script>
+
+
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+<div id="spinner">
+  <img src="{% static 'dict/gif/loader.gif' %}"/>
+</div> 
+
+<div class="quick-add-student pages-body-bg-color ">
+
+  <section class="message-display-section" id="message">
+
+  </section>
+  <section class="personal-details-section  ">
+              
+  <div class="row">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-12">
+              <div class="section-header">
+                  <h1 class="font-26 font-bold text-black text-uppercase">Student - Quick Registration</h1>
+
+              </div>
+        <div class="outer-rectangle">
+          <div class="inner-block px-4">
+              <div class="row">
+                  <div class="col-12">
+                      <div class="box-title pt-4 ">
+                          <h5 class="font-18 text-uppercase font-bold text-black">Personal Details</h5>
+                          <p class="font-16 font-medium text-light-gray">A task is accomplished by a set deadline, and must contribute toward work-related objectives.</p>
+                      </div>
+                      
+                  </div>
+              </div>
+            
+              <div class="select-options py-4">
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <div class="detail-block py-2">
+                        <label for="university" class="labelrequired">University</label>
+                        <select name="university" id="university" class="  width-100 font-14 font-bold text-extralightgray ">
+                         
+                          <option      class="option-format" value=""   selected>Select</option>
+                          {% for i in university %}
+                          <option      class="option-format"   value="{{i.registrationID}}">{{i.university_name}}</option>
+                          {% endfor %}
+                  </select>
+                          
+                      </div>
+            
+                  
+                    </div>
+                    <div class="col-md-6 col-12">
+                    <div class="detail-block py-2 pt-4">
+                      <div class="file-upload">
+                                
+                        <div class="button-wrapper   width-100 font-14 font-bold text-extralightgray  ">
+                            <label for="student_image" class="bg-darkgray  width-100 font-14 font-bold  text-extralightgray  file-btn-form">Choose File for Student Image</label>                                    
+                            <input type="file" id="student_image" style="display:none"> 
+                            <label id="uploaded-file-image" class="  width-100 font-14 font-bold text-extralightgray " style="border:none">No files chosen</label>
+                        </div>
+                                        
+                    </div>
+       
+                  
+              
+          </div>
+                      
+                         
+                      
+                           
+                    </div>
+                                      
+                  </div>
+  
+    
+                  <div class="row">
+                              <div class="col-4">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelrequired">Name</label>
+                                  <input class="  width-100 font-14 font-bold text-extralightgray "  type="text" placeholder="" id="name" name="name">
+                                </div>
+                                
+                              </div>
+                              <div class="col-4">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelnotrequired">Father/ Husband Name</label>
+                                  <input class="  width-100 font-14 font-bold text-extralightgray "  type="text" placeholder="" id="father_name" name="father_name">
+                                </div>
+                                
+                              </div>
+                              <div class="col-4">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelrequired">Date of Birth</label>
+                                  <input  class="  width-100 font-14 font-bold text-extralightgray " type="text" name="dob" id="dateofbirth"  onfocus="(this.type='date')" placeholder="">
+                                 
+                                </div>
+                                  
+                              </div>
+                   </div>  
+                            
+    
+   
+
+   
+ 
+
+ 
+              <div class="row">
+
+                            
+                          
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelrequired">Email Address</label>
+                                  <div class="d-flex">
+                                     
+                                      <input
+                                      class="  width-100 font-14 font-bold text-extralightgray "
+                                      type="email" name="email" placeholder=""
+                                      id="email"  required>
+                                      <img src="{% static 'dict/images/plus.png' %}" alt="Add" onclick="showAlternate('email')" class="showhand">
+                                  </div>
+                                 
+                              
+                                </div>
+                                <div class="detail-block py-2 d-none" id="emaildiv">
+                                  <label for="" class="labelnotrequired">Alternate Email Address</label>
+                                  <input
+                                      class="  width-100 font-14 font-bold text-extralightgray "
+                                      type="email" name="alt_email"
+                                      placeholder="" id="alternateemail">
+                                      <label for="alternateemail" id="is_alt_email_available"></label>
+                              </div>
+
+                                 
+                              </div>
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelrequired">Mobile Number</label>
+                                  <div class="d-flex">
+                                      <input
+                                      class="  width-100 font-14 font-bold text-extralightgray "
+                                      type="text" name="mobile" id="mobile"
+                                      placeholder=""  required pattern="[0-9]*" maxlength="10">
+                                      <img src="{% static 'dict/images/plus.png' %}" alt="Add" onclick="showAlternate('mobile')" class="showhand">
+                                  
+                                  
+                                  </div>
+                                
+                                </div>
+                                <div class="detail-block py-2 d-none" id="mobilediv">
+                                  <label for="" class="labelnotrequired">Alternate Mobile Number</label>
+                                  <input
+                                      class="  width-100 font-14 font-bold text-extralightgray "
+                                      type="text" name="alternatemobile1"
+                                      placeholder="" id="alternatemobile" pattern="[0-9]*" maxlength="10">
+                                      <label for="alternatemobile1" id="is_alt_mobile_available"></label>
+                              </div>
+                              </div>
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelnotrequired">Counselor Name</label>
+                                  <input type="text" class="  width-100 font-14 font-bold text-extralightgray " id="counselor_name" placeholder="">
+                                </div>
+                              </div>
+                             
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                                  <label for="" class="labelnotrequired">University Enrollment Number</label>
+                                  <input type="text" class="  width-100 font-14 font-bold text-extralightgray " id="university_enrollment_number" placeholder="">
+                                </div>
+                              </div>
+                          </div>  
+                     
+                       
+                          
+                    
+                          <div class="row">
+                            <div class="col-md-6 col-12">
+                              <div class="detail-block py-2">
+                                <label for="" class="labelnotrequired">Student Remarks</label>
+                                <textarea type="text" name="student_remarks" class="  width-100 font-14 font-bold text-extralightgray   " id="student_remarks" placeholder=""></textarea>
+                              </div>
+                              <div class="col-md-6 col-12 invisible">
+                                <div class="detail-block py-2">
+                                 
+                                  <input type="text" name="test_hidden" class="form-control" id="test_hidden" >
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                          
+                          
+                         
+              </div> 
+          </div>
+      </div>   
+    </div>
+  </div>       
+  </section>
+
+  
+      
+        
+<section class="course-details-section   mt-4">
+  
+  <div class="row">
+    <div class="col-12">
+      <div class="outer-rectangle">
+        <div class="inner-block px-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="box-title pt-4 ">
+                        <h5 class="font-18 text-uppercase font-bold text-black">Course/ Program Details</h5>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-3">
+                <div class="detail-block py-2">
+                  <label for="" class="labelrequired">Course</label>
+                  <select class="  width-100 font-14 font-bold text-extralightgray " name="course" id="course" >
+                    <option  class="option-format" value=""  selected>Select</option>
+                    {% for i in course %}
+                    <option  class="option-format"   value="{{i.id}}">{{i.name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+               
+              </div>
+              <div class="col-3">
+                <div class="detail-block py-2">
+                  <label for="" class="labelrequired">Stream</label>
+                  <select class="  width-100 font-14 font-bold text-extralightgray " name="Stream" id="Stream">
+                    <option    class="option-format"   value="" selected>Select</option>
+                  </select>
+                </div>
+              
+              </div>
+              <div class="col-3" id="hideSubStream">
+                <div class="detail-block py-2 " >
+                    <label for="" class="labelnotrequired">Sub Stream </label>
+                    <select
+                        class="  width-100 font-14 font-bold text-extralightgray "
+                        name="SubStream" id="SubStream" >
+                        <option class="option-format" value="" selected>Select</option>
+                    </select>
+                </div>
+
+            </div>
+              <div class="col-3">
+                <div class="detail-block py-2">
+                  <label for="" class="labelrequired">Session</label>
+                  <select class="  width-100 font-14 font-bold text-extralightgray " name="session" id="session" >
+                    <option      class="option-format"   value="" selected>Select</option>
+                    {% for i in sessionnames %}
+                            <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                    {% endfor %}
+                    
+            
+                  </select>
+                </div>
+                
+              </div>
+               <div class="col-3">
+                <label for="" class="labelrequired">Study Pattern</label>
+                  <div class="detail-block py-2">
+                    <select class="  width-100 font-14 font-bold text-extralightgray " name="studypattern" id="studypattern">
+                      <option      class="option-format"   selected>Select Study Pattern*</option>
+                      <option      class="option-format"   value="Semester">Semester</option>
+                      <option      class="option-format"   value="Annual">Annual</option>
+                      <option      class="option-format"   value="Full Course">Full Course</option>
+                    </select>
+                  </div>
+               
+                </div>
+              
+              <div class="col-3">
+                <div class="detail-block py-2">
+                  <label for="" class="labelrequired">Admission Type</label>
+                  <select class="  width-100 font-14 font-bold text-extralightgray " name="entry_mode" id="entry_mode">
+                    <option      class="option-format"  value=""  selected>Select</option>
+                    <option      class="option-format"   value="Regular">Regular</option>
+                    <option      class="option-format"   value="Distance">Distance</option>
+                    <option      class="option-format"   value="Lateral Entry">Lateral Entry</option>
+                    <option      class="option-format"   value="Credit Transfer">Credit Transfer</option>
+                  </select>
+                </div>
+                </div>
+                <div class="col-3" id="semyear_hide">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelrequired">Semester/Year</label>
+                    <select class="  width-100 font-14 font-bold text-extralightgray " name="semyear" id="semyear" >
+                      <option      class="option-format"  value="" selected >Select</option>
+                    </select>
+                  </div>
+                 
+                </div>
+               
+                    <div class="col-3">
+                      <div class="detail-block py-2">
+                        <label for="" class="labelrequired">Course Duration (in years)</label>
+                        <input type="text" name="course_duration" id="course_duration" class="  width-100 font-14 font-bold text-extralightgray " readonly>
+                         
+                      </div>
+    
+                  </div>
+                
+                
+            </div>
+            </div>
+           
+          
+           
+              
+               
+             
+                
+          </div>
+        </div>
+      </div>
+  </div>
+ 
+ 
+</section>        
+
+<section class="payment-details-section   mt-4 my-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="outer-rectangle">
+        <div class="inner-block px-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="box-title pt-4 ">
+                        <h5 class="font-18 text-uppercase font-bold text-black">Payment Details</h5>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="select-options py-4">
+
+              <div class="row">
+                <div class="col-6">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelrequired">Fees Receipt</label>
+                    <select class="  width-100 font-14 font-bold text-extralightgray " name="fees_reciept" id="fees_reciept">
+                      <option      class="option-format" value=""  selected>Select</option>
+                      {% for i in feereceiptoptions %}
+                      <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                 
+                </div>
+                <div class="col-6 invisible" id="other_data" >
+                  <div class="detail-block py-2">
+                    <input type="others" name="others" class="  width-100 font-14 font-bold text-extralightgray " id="others" placeholder="Others">
+                  </div>
+                 
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelnotrequired">Total Fees</label>
+                    <input type="number" placeholder="" name="total_fees" class="  width-100 font-14 font-bold text-extralightgray " id="total_fees"  readonly>
+                  </div>
+                 
+                </div>
+                <div class="col-4">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelrequired">Amount</label>
+                    <input type="number" name="fees" placeholder="" class="  width-100 font-14 font-bold text-extralightgray " id="fees" >
+                  </div>
+                  
+                </div>
+                <div class="col-4">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelrequired">Transaction Date</label>
+                    <input type="text" placeholder="" name="date_of_transaction" class="  width-100 font-14 font-bold text-extralightgray " id="date_of_transaction" onfocus="(this.type='date')" >
+                  </div>
+                 
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelrequired">Payment Mode</label>
+                    <select class="  width-100 font-14 font-bold text-extralightgray " name="payment_mode" id="payment_mode" >
+                      <option      class="option-format"  value="" selected>Select</option>
+                      {% for i in paymentmodes %}
+                            <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                      {% endfor %}
+                      
+                    </select>
+                  </div>
+                
+                </div>
+                <div class="col-4">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelnotrequired">Cheque/DD/CC Number</label>
+                    <input type="text" placeholder="Cheque/DD/CC Number" name="cheque_no" class="  width-100 font-14 font-bold text-extralightgray " id="cheque_no" >
+                  </div>
+                  
+                </div>
+                <div class="col-4">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelnotrequired">Bank Name</label>
+                    <select class="  width-100 font-14 font-bold text-extralightgray " name="bank_name" id="bank_name" >
+                      <option      class="option-format"   selected value="">Select</option>
+                      {% for i in banknames %}
+                      <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                      {% endfor %}
+                      
+                    </select>
+                  </div>
+                 
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6" id="other_bank_container" style="display:none;">
+                  <div id="other_bank_name">
+              
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="detail-block py-2">
+                    <label for="" class="labelrequired">Remarks</label>
+                    <input type="text" name="remarks" placeholder="" class="  width-100 font-14 font-bold text-extralightgray " id="remarks">
+                  </div>
+                
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-12">
+                  <div id="student_output"></div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-2 col-4">
+                  <div class="detail-block py-2">
+                    <button type="submit" id="student_save_button" class="edit-btn  red-btn width-100" onclick="savestudent()">Add Student</button>
+                  </div>
+                 
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+
+
+
+
+
+
+ 
+ 
+
+
+ 
+
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+<div id="exampleModal" class="modal">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+
+          <div class="modal-body">
+              <div class="container" id="output_container">
+                <h3 class="text-center font-16 text-darkblue" >Course / Programme Details is Mandatory ..!!</h3>
+                <div class="output_course" id="output_course"></div>  
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+   $(document).ready(function () {
+    $('#dashboard-collapse').addClass("show");
+    $("#add_student_quick_link").removeClass("link-dark");
+    $('#add_student_quick_link').addClass("link-primary");
+    $('#hideSubStream').css('display', 'none');
+   
+   })
+
+document.getElementById("university").onchange = function () {
+  var university = this.value;
+        if (university == "Select University") {
+
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_course':university
+                },
+                success: function (response) {
+                    $('#course').empty()
+                    $('#course').append('<option class="option-format" value="">Select</option>')
+                    
+                    console.log(response)
+                    if(response.course){
+                        var data = response.course
+                        data.forEach(myFunction);
+                        function myFunction(item){
+                        console.log(item)
+                        $('#course').append(`
+                            <option class="option-format" value="${item.id}">${item.name}</option>
+                        `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+}
+
+
+  document.getElementById("course").onchange = function () {
+    var course = this.value;
+    $.ajax({
+        type: "GET",
+        url: "{% url 'addstudent' %}",
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        data: {
+          'selected_course': course,
+          
+        },
+        success: function (response) {
+            console.log(response);
+          var data = response.data
+          var duration = ''
+          $('#Stream').empty();
+          $('#Stream').append('<option class="option-format" selected>Select</option>');
+          data.forEach(myFunction);
+  
+          function myFunction(item) {
+            duration = item.sem
+            $('#Stream').append(`<option class="option-format" value='${item.id}'> ${item.name}  </option>`);
+          }
+  
+          
+        }
+      });
+    
+
+  };
+  document.getElementById("Stream").onchange = function () {
+      
+      var stream = this.value;
+
+      var course_name = $('#course').val();
+      var study_pattern = $('#studypattern').val();
+      if (study_pattern !== '')
+          fillSemYear(course_name, stream, study_pattern)
+      $.ajax({
+          type: "POST",
+          url: "{% url 'getsubstream' %}",
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          data: {
+              'streamid': stream,
+              
+          },
+          success: function (response) {
+              var data = response.substream
+              if (response.substream.length > 0) {
+                  $('#hideSubStream').css('display', 'block');
+                  $('#SubStream').empty();
+                  $('#SubStream').append('<option      class="option-format" value=""  selected>Select</option>');
+                  streamdata = data;
+                  data.forEach(myFunction);
+
+                  function myFunction(item) {
+                  
+                  $('#SubStream').append(`<option class="option-format" value='${item.id}'>  ${item.name}  </option>`);
+                  }
+              }
+              else {
+                  $('#hideSubStream').css('display', 'none');
+              }
+          }
+      })
+  }
+
+  document.getElementById("studypattern").onchange = function () {
+          var course_name = $('#course').val();
+          var stream_name = $('#Stream').val();
+          var study_pattern = this.value;
+          if(study_pattern == "Full Course"){
+            console.log("Full Course Given")
+            $('#semyear_hide').css('display','none');
+            $('#total_fees').prop('readonly',false)
+          }
+          else{
+            $('#semyear_hide').css('display','block')
+            $('#total_fees').prop('readonly',true)
+                
+          }
+          if (course_name != '' && stream_name != '')
+            fillSemYear(course_name,stream_name, study_pattern)
+          
+
+      }
+      document.getElementById("semyear").onchange = function () {
+                  var c_id = $('#course').val();
+                  var s_id = $('#Stream').val();
+                  var ss_id = $('#SubStream').val();
+                  var studypattern = $('#studypattern').val();
+                  var semyear = $('#semyear').val();
+                  if (c_id && s_id && studypattern && semyear) {
+                    $.ajax({
+                      type: "POST",
+                      url: "{% url 'addstudent' %}",
+                      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                      data: {
+                        'c_id': c_id, // from form
+                        's_id': s_id,
+                        'studypattern': studypattern,
+                        'semyear': semyear,
+                        'ss_id': ss_id
+                      },
+                      success: function (response) {
+                        if(response.data){
+                            var total_fees = response.data.totalfees;
+                            $('#total_fees').val(total_fees);
+                        }
+                      }
+                    });
+                  }
+
+                
+                }
+  
+  function fillSemYear(course_name, stream_name, study_pattern) {
+  
+  console.log(course_name, stream_name, study_pattern)
+      if (course_name && stream_name && study_pattern != "Full Course") {
+        $.ajax({
+          type: "POST",
+          url: "{% url 'addstudent' %}",
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          data: {
+            'course_name': course_name, // from form
+            'stream_name': stream_name,
+            'study_pattern': study_pattern,
+          },
+          success: function (response) {
+            console.log(response)
+            $('#semyear').empty();
+            
+            if(response.obj){
+              if(response.obj.study_pattern == "Semester"){
+                $('#course_duration').val(parseInt(response.obj.semyear, 10) / 2);
+                $('#semyear').append('<option class="option-format">Select Semester</option>');
+                for(var i=1;i<=response.obj.semyear;i++){
+                  $('#semyear').append('<option  class="option-format" value=' + i + '>' + i + ' Semester' + '</option>');
+                }
+              }
+              else if(response.obj.study_pattern == "Annual"){
+                $('#course_duration').val(response.obj.semyear);
+                $('#semyear').append('<option class="option-format">Select Annual</option>');
+                for(var i=1;i<=response.obj.semyear;i++){
+                  $('#semyear').append('<option class="option-format" value=' + i + '>' + i + ' Year' + '</option>');
+                }
+              }
+            }
+          }
+        })
+      }
+  }
+  
+ 
+         
+
+</script>
+
+
+<script type="text/javascript">
+  
+  
+ 
+ 
+  $(function() {
+    $("#fees_reciept").change(function() {
+        var selected_option = $('option:selected', this).text()
+        if(selected_option == "Others"){
+            $('#other_data').css('visibility','visible');
+        }
+        else{
+            $('#other_data').css('visibility','hidden');
+        }
+        });
+    });
+  
+  $(function() {
+    $("#bank_name").change(function() {
+        var selected_option = $('option:selected', this).text()
+        if(selected_option == "Others"){
+          console.log("yes other")  
+          $('#other_bank_name').css('visibility','visible');
+          $('#other_bank_name').append(`
+
+          <div class="col-sm-6">
+            <div class="mb-3">
+              <input type="text" name="other_bank" class=" width-100 font-14 font-bold text-extralightgray " id="other_bank" placeholder="Enter Bank Name">
+            </div>
+          </div>
+
+          `);
+        }
+        else{
+          console.log("no other")  
+          $('#other_bank_name').empty();
+          $('#other_bank_name').css('visibility','hidden');
+        }
+        });
+    });
+
+
+
+  function savestudent() {
+    // console.log("saved called")
+    // $('#student_save_button').
+    $('#student_save_button').attr('disabled','disabled');
+    error_counter=0;
+    var data = new FormData();
+    data.append("university", $('#university').val());
+    data.append("student_image", $('#student_image')[0].files[0]);
+    data.append("name", $('#name').val());
+    data.append("father_name", $('#father_name').val());
+    data.append("dateofbirth", $('#dateofbirth').val());
+    
+    data.append("email", $('#email').val());
+    data.append("alternateemail", $('#alternateemail').val()); /* added by Avani */
+    
+    data.append("mobile", $('#mobile').val());
+    data.append("alternatemobile1", $('#alternatemobile').val());/* added by Avani */
+    
+    data.append("counselor_name", $('#counselor_name').val());
+    data.append("university_enrollment_number", $('#university_enrollment_number').val());
+    data.append("student_remarks", $('#student_remarks').val());
+
+    data.append("course", $('#course').val());
+    data.append("Stream", $('#Stream').val());
+    data.append("SubStream", $('#SubStream').val());
+    data.append("studypattern", $('#studypattern').val());
+    data.append("semyear", $('#semyear').val());
+
+
+
+    data.append("session", $('#session').val());
+    data.append("entry_mode", $('#entry_mode').val());
+    data.append("fees", $('#fees').val());
+    data.append("total_fees", $('#total_fees').val());
+
+    
+
+    data.append('fee_reciept_type',$('#fees_reciept option:selected').text());
+    data.append('other_data', $('#others').val());
+    data.append('transaction_date',$('#date_of_transaction').val());
+    data.append('payment_mode',$('#payment_mode option:selected').text());
+    data.append('cheque_no',$('#cheque_no').val());
+    data.append('bank_name',$('#bank_name option:selected').text());
+    data.append('remarks',$('#remarks').val());
+    var bank_name = $('#bank_name').val();
+    if(bank_name == "Others"){
+      data.append('other_bank',$('#other_bank').val());
+    }
+    var random_number = Math.floor(9999999999 + Math.random() * 99999999999);
+    console.log(random_number)
+    data.append('random_number',random_number);
+    data.append('is_quick_register', 1);
+    data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+    
+
+    if($('#university').val() == ''){
+      displayError('university', 'Please select a University')
+    }
+
+    if($('#name').val() == ''){
+      displayError('name', 'Please enter a Name')
+    }
+    if($('#mobile').val() == ''){
+      displayError('mobile', 'Please enter a Mobile Number')
+    }
+    if($('#email').val() == ''){
+      displayError('email', 'Please enter an Email Address')
+    }
+    if($('#dateofbirth').val() == ''){
+      displayError('dateofbirth', 'Please enter Date of Birth')
+    }
+    if($('#course_year').val() == ''){
+      displayError('course_year', 'Please select Course Year')
+    }
+    if($('#session').val() == ''){
+      displayError('session', 'Please select a Session')
+    }
+    if($('#entry_mode').val() == ''){
+      displayError('entry_mode', 'Please select Admission Type')
+    }
+    if($('#course').val() == ''){
+      displayError('course', 'Please select Course')
+    }
+    if($('#stream').val() == ''){
+      displayError('stream', 'Please select Stream')
+    }
+    if($('#semyear').val() == ''){
+      displayError('semyear', 'Please select Semester/Year')
+    }
+    if($('#fees_reciept').val() == ''){
+      displayError('fees_reciept', 'Please select Fees Receipt')
+    }
+    if($('#fees').val() == ''){
+      displayError('fees', 'Please enter Amount')
+    }
+    if($('#date_of_transaction').val() == ''){
+      displayError('date_of_transaction', 'Please select Transaction Date')
+    }
+    if($('#payment_mode').val() == ''){
+      displayError('payment_mode', 'Please select Payment Mode')
+    }
+    if($('#remarks').val() == ''){
+      displayError('remarks', 'Please enter Remarks')
+    }
+    //added by Avani..commented the old validation code
+    /*var is_email  = '' , is_mobile = "" , is_date_of_birth = "";
+
+    var email = $('#email').val();
+    var mobile = $('#mobile').val();
+    var dateofbirth = $('#dateofbirth').val()
+    // var university_enrollment_number = $('#university_enrollment_number').val();
+
+    var is_course = '' , is_stream = '' , is_studypattern = '' ,is_semyear = ''  ;
+    var courseid = $('#course').val();
+    var streamid = $('#Stream').val();
+    var studypattern = $('#studypattern').val();
+    var semyear = $('#semyear').val();
+
+
+    var is_fees_reciept = "" , is_fees = "" ,is_date_of_transaction = "" , is_payment_mode = "" , is_remarks = "";
+    var fees_reciept = $('#fees_reciept').val();
+    var fees = $('#fees').val();
+    var date_of_transaction = $('#date_of_transaction').val();
+    var paymentmode = $('#payment_mode').val();
+    var remarks = $('#remarks').val();
+    
+
+
+    console.log(courseid,streamid,studypattern,semyear )
+    console.log( email , mobile )
+    console.log(fees_reciept , fees , date_of_transaction , remarks)
+    
+    $('#output_course').empty();
+    
+
+
+    
+    if(email == null || email == ""){
+      console.log("entrymode not provided")
+      is_email = "no"
+      
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Enter an Email </h3>
+      `);
+    }
+    if(mobile == null || mobile == ""){
+      console.log("entrymode not provided")
+      is_mobile = "no"
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Enter Mobile </h3>
+      `);
+    }
+    if(dateofbirth == null || dateofbirth == ""){
+      console.log("entrymode not provided")
+      is_date_of_birth = "no"
+     
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Enter Date Of Birth </h3>
+      `);
+    }
+    // if(university_enrollment_number == null || university_enrollment_number == ""){
+    //   console.log("entrymode not provided")
+    //   is_university_enrollment_number = "no"
+    //   $('#output_course').append(`
+    //     <h3 class="text-center text-darkblue font-20 font-bold" > Please Enter University Enrollment Number </h3>
+    //   `);
+    // }
+    
+    if(courseid == "Select Course"){
+      console.log("course not provided")
+      is_course = "no"
+      $('#output_course').append(`
+      
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Select a Course </h3>
+
+      `);
+    }
+    if(streamid == "Select Stream"){
+      console.log("stream not provided")
+      is_stream = "no"
+      $('#output_course').append(`
+      
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Select a Stream </h3>
+
+      `);
+    }
+    if(studypattern == "Full Course"){
+      console.log("removing error because Full Course given")
+      is_studypattern == "yes"
+      is_semyear = "yes"
+    }
+    else{
+      if(studypattern == "Select Study Pattern"){
+        console.log("study pattern not provided")
+        is_studypattern = "no"
+        $('#output_course').append(`
+        
+          <h3 class="text-center text-darkblue font-20 font-bold" > Please Select a Study Pattern </h3>
+
+        `);
+      }
+      if(semyear == null || semyear == "Select Semester" || semyear == "Select Annual"){
+      console.log("semyear not provided")
+      is_semyear = "no"
+      $('#output_course').append(`
+      
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Select a Semester / Year </h3>
+
+      `);
+    }
+    }
+    
+    
+    
+    
+
+    
+    if(fees_reciept == null || fees_reciept == "" | fees_reciept == "Select"){
+      console.log("Fees Reciept not provided")
+      is_fees_reciept = "no"
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Select Fees Reciept </h3>
+      `);
+    }
+    if(fees == null || fees == ""){
+      console.log("Fees not provided")
+      is_fees = "no"
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please add Fees </h3>
+      `);
+    }
+    if(date_of_transaction == null || date_of_transaction == ""){
+      console.log("Date of Transaction not provided")
+      is_date_of_transaction = "no"
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Select a Transaction Date </h3>
+      `);
+    }
+    if(paymentmode == null || paymentmode == "Select"){
+      console.log("paymentmode not provided")
+      is_payment_mode = "no"
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Select Payment Mode </h3>
+      `);
+    }
+    if(remarks == null || remarks == ""){
+      console.log("remarks not provided")
+      is_remarks = "no"
+      $('#output_course').append(`
+        <h3 class="text-center text-darkblue font-20 font-bold" > Please Add Remarks </h3>
+      `);
+    }
+    
+    
+
+
+
+    if(is_course == "no" || is_stream == "no" || is_studypattern == "no" || is_semyear == "no" || is_email == "no" || is_date_of_birth == "no" || is_mobile == "no" || is_fees_reciept == "no" || is_fees == "no" || is_date_of_transaction == "no" || is_payment_mode == "no" || is_remarks == "no" ){
+      console.log("wrong")
+      $('#student_save_button').removeAttr('disabled');
+      $('#exampleModal').modal('show');
+    }*/
+    if (error_counter != 0){
+        $('#student_save_button').removeAttr('disabled');
+        $('#student_save_button').attr('enabled','enabled');
+        $('#exampleModal').modal('show');
+    }
+    else{
+      console.log("right");
+      $.ajax({
+      method: "POST",
+      url: "{% url 'quickaddstudent' %}",
+      processData: false,
+      contentType: false,
+      mimeType: "multipart/form-data",
+      data: data,
+      success: function (res) {
+        // console.log("sent data to views")
+        console.log(res)
+        $('#output_container').empty();
+        // <h3 class="text-center" style="color:red;">Course / Programme Details is Mandatory ..!!</h3>
+        const obj = JSON.parse(res);
+        console.log(obj);
+        if(obj.data){
+          var data = obj.data;
+          console.log(data)
+          if(data.mobile_unique == "no" && data.email_unique == "no"){
+            $('#student_save_button').removeAttr('disabled');
+            console.log("mobile and email both present");
+            console.log(data.mobile_unique)
+            console.log(data.email_unique)
+            $('#output_container').append(`
+            <p class=" text-darkblue font-14" >Email ID and Mobile already Present in system ..!!  </p>   
+            <p class=" text-darkblue font-14">Student ${data.studentname} has been added with these details by ${data.createdby}</p>     
+            `);
+            $('#exampleModal').modal('show');
+          }
+          else if(data.mobile_unique == "no" || data.email_unique == "yes"){
+            $('#student_save_button').removeAttr('disabled');
+            console.log("mobile present")
+            console.log(data.mobile_unique)
+            console.log(data.email_unique)
+            $('#output_container').append(`
+             <p class=" text-darkblue font-14" >Mobile already Present in system ..!! </p>   
+             <p class=" text-darkblue font-14">Student ${data.studentname} has been added with these details by ${data.createdby}</p>         
+            `);
+            $('#exampleModal').modal('show');
+          }
+          else if(data.mobile_unique == "yes" || data.email_unique == "no"){
+            $('#student_save_button').removeAttr('disabled');
+            console.log("email present")
+            console.log(data.mobile_unique)
+            console.log(data.email_unique)  
+            $('#output_container').append(`
+             <p class=" text-darkblue font-14" >Email already Present in system ..!! </p>  
+             <p class=" text-darkblue font-14">Student ${data.studentname} has been added with these details by ${data.createdby}</p>        
+            `);
+            $('#exampleModal').modal('show');
+          }
+          
+          
+          if(data.mobile_unique == "no" || data.email_unique == "no"){
+            $('#student_output').append(`
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Email or Mobile already present in System.</strong> 
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            `);
+        
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 2000);
+          }
+        }
+        if(obj.added){
+          document.getElementById("spinner").classList.add("show");
+            setTimeout(() => {
+                document.getElementById("spinner").classList.remove("show");
+                window.location = "{% url 'viewquickregister' %}"
+            }, 4000);
+            
+            
+        //   console.log("redirected")
+        
+        //   $('#university').val('');
+        //   $('#student_image').val('')
+        //   $('#first_name').val('')
+        //   $('#middle_name').val('')
+        //   $('#last_name').val('')
+        //   $('#dateofbirth').val('')
+        //   $('#fathers_name').val('')
+        //   $('#mothers_name').val('')
+        //   $('#email').val('')
+        //   $('#mobile').val('')
+        //   $('#gender').val('')
+        //   $('#category').val('')
+        //   $('#identity_type').val('')
+        //   $('#identity_no').val('')
+        //   $('#address').val('')
+        //   $('#nationality').val('')
+        //   $('#countryId').val('')
+        //   $('#stateId').val('')
+        //   $('#cityId').val('')
+        //   $('#Pincode').val('')
+        //   $('#course').val('')
+        //   $('#Stream').val('')
+        //   $('#studypattern').val('')
+        //   $('#semyear').val('')
+
+
+        //   $('#session').val('')
+        //   $('#entry_mode').val('')
+        //   $('#fees').val('')
+        //   $('#total_fees').val('')
+
+        //   $('#aadharname').val('')
+        //   $('#aadharfile').val('')
+
+        //   $('#panname').val('')
+        //   $('#panfile').val('')
+
+        //   $('#document1name').val('')
+        //   $('#document1file').val('')
+        //   $('#document2name').val('')
+        //   $('#document2file').val('')
+
+        //   $('#document3name').val('')
+        //   $('#document3file').val('')
+          
+        //   $('#secondary_year').val('')
+        //   $('#secondary_board').val('')
+        //   $('#secondary_percentage').val('')
+        //   $('#secondary_document').val('')
+
+        //   $('#sr_year').val('')
+        //   $('#sr_board').val('')
+        //   $('#sr_percentage').val('')
+        //   $('#sr_document').val('')
+
+        //   $('#under_year').val('')
+        //   $('#under_board').val('')
+        //   $('#under_percentage').val('')
+        //   $('#under_document').val('')
+
+        //   $('#post_year').val('')
+        //   $('#post_board').val('')
+        //   $('#post_percentage').val('')
+        //   $('#post_document').val('')
+        //   $('#mphil_year').val('')
+        //   $('#mphil_board').val('')
+        //   $('#mphil_percentage').val('')
+        //   $('#mphil_document').val('')
+
+        //   $('#other_year').val('')
+        //   $('#other_board').val('')
+        //   $('#other_percentage').val('')
+        //   $('#other_document').val('')
+
+        //   $('#fees_reciept').val('')
+        //   $('#others').val('')
+        //   $('#date_of_transaction').val('')
+        //   $('#payment_mode').val('')
+        //   $('#cheque_no').val('')
+        //   $('#bank_name').val('')
+        //   $('#remarks').val('');
+
+
+        //   $('#counselor_name').val('');
+        //   $('#reference_name').val('');
+        //   $('#university_enrollment_number').val('');
+
+        //   $('#DocumentName1').val('');
+        //   $('#DocumentID1').val('');
+        //   $('#DocumentUpload1').val('');
+
+        //   $('#DocumentName2').val('');
+        //   $('#DocumentID2').val('');
+        //   $('#DocumentUpload2').val('');
+          
+        //   $('#DocumentName3').val('');
+        //   $('#DocumentID3').val('');
+        //   $('#DocumentUpload3').val('');
+          
+        //   $('#DocumentName4').val('');
+        //   $('#DocumentID4').val('');
+        //   $('#DocumentUpload4').val('');
+
+        //   $('#DocumentName5').val('');
+        //   $('#DocumentID5').val('');
+        //   $('#DocumentUpload5').val('');
+          
+          
+
+          
+
+
+        //   $('#student_output').append(`
+        //   <div class="alert alert-success alert-dismissible fade show" role="alert">
+        //       <strong>Student Record Inserted Successfully</strong> 
+        //       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        //   </div>
+        //   `);
+        
+        //   setTimeout(() => {
+        //       $('.alert').alert('close');
+        //   }, 2000);
+        }
+      
+      }
+    });
+    }
+    
+    
+    
+  }
+
+
+</script>
+
+
+
+
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

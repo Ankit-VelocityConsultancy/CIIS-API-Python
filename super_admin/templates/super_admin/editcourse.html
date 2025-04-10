@@ -1,0 +1,932 @@
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+
+
+{% endblock head %}
+
+
+
+
+{% block body %}
+
+<div class="advance-search">
+    <section class="semester-fees   ">
+        <div class="row">
+            <div class="col-12">
+               
+                <div class="outer-rectangle px-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="box-title pt-4 ">
+                                <h5 class="font-18 text-uppercase font-bold text-black">Change Course
+                                    </h5>
+                                    <p class="font-16 font-medium text-light-gray">Enter either Enrollment Id or Name of the student</p>
+                            </div>
+
+                        </div>
+                    </div>
+                        <div class="options mx-5 select-padding">
+                           
+                            <div class="row">
+                              <div class="col-12 col-sm-6">
+                                <div class="detail-block py-2">
+                                    <label for="" clas="labelnotrequired">Enrollment Id</label>
+                                  <input name="enrollid" id="enroll_id" class="  width-100 font-14 font-bold text-lightgray" placeholder=" ">
+                                </div>
+                                 
+                              
+                              </div>
+                              <div class="col-12 col-sm-6 ">
+                                <div class="detail-block py-2">
+                                    <label for="" clas="labelnotrequired">Name</label>
+                                  <input type="text" name="name" class="  width-100 font-14 font-bold text-lightgray" id="name" placeholder="">
+                                </div>
+                               
+                              </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                            
+                              
+                              <div class="col-sm-4 col-12">
+                                <div class="detail-block py-2">
+                                  <button class="save-btn search-btn yellow-btn" onclick="Search()">Search</button>
+                                </div>
+                             
+                              </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div id="message" class="font-18 font-bold text-center"></div>
+                                </div>
+                            </div>
+                                
+                          </div>
+                     
+                </div>
+                
+            </div>
+        </div>
+       
+  
+    </section>
+  
+  <section class="show-data-section px-3 pt-4">
+    <div class="hiddendata" id="hiddendata" style="visibility: visible;">
+              
+    </div>
+  </section>
+    
+      
+        
+  </div>
+
+<section class="course-section   mt-4" id="course-section">
+
+    <div class="row" >
+        <div class="col-12">
+            <div class="outer-rectangle">
+                <div class="inner-block px-4">
+                   
+                    <div class="select-options py-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="font-16 text-uppercase font-bold text-black">Existing Course Details</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 col-12">
+                                <div class="detail-block py-2">
+                                    <label class="text-extralightgray">University</label>
+                                    <input name="university"
+                                        class="width-100 font-14 font-bold text-extralightgray"
+                                        id="university">
+                                    <input type="hidden" id="university_id" name="university_id">
+                                  
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3 col-12">
+                                <div class="detail-block py-2">
+                                    <label class="text-extralightgray">Course</label>
+                                    <input type='text' name="old_course"
+                                        class="width-100 font-14 font-bold text-extralightgray"
+                                        id="old_course">
+                                        
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                                <div class="detail-block py-2">
+                                    <label class="text-extralightgray">Stream</label>
+                                    <input type="text" name="old_stream"
+                                        class="width-100 font-14 font-bold text-extralightgray"
+                                        id="old_stream">
+
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-12" id="hideSubStream">
+                                <div class="detail-block py-2">
+                                    <label class="text-extralightgray">Sub Stream</label>
+                                    <input type="text" name="old_substream"
+                                        class="width-100 font-14 font-bold text-extralightgray"
+                                        id="old_substream">
+
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                                <div class="detail-block py-2">
+                                    <label class="text-extralightgray">Study Pattern</label>
+                                    <input type="text"
+                                            class="  width-100 font-14 font-bold text-extralightgray transparent-input"
+                                            name="old_study_pattern" id="old_study_pattern" readonly>
+                                           
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3 col-12">
+                                <div class="detail-block py-2">
+                                    <label class="text-extralightgray">Session</label>
+                                    <input name="old_session"
+                                        class="width-100 font-14 font-bold text-extralightgray"
+                                        id="old_session">
+                                      
+                                </div>
+                            </div>
+                            
+                       
+                            <div class="col-md-3 col-12" >
+                                <div class="detail-block py-2">
+                                    <label for="change_semyear" class="text-extralightgray">Semester/Year</label>
+                                    <input type="text"
+                                            class="  width-100 font-14 font-bold text-extralightgray transparent-input"
+                                            name="old_semyear" id="old_semyear">
+                                       
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                                <div class="detail-block py-2">
+                                    <label class="text-extralightgray">Course Duration (in years)</label>
+                                    <input name="old_course_year"
+                                        class="width-100 font-14 font-bold text-extralightgray"
+                                        id="old_course_year">
+                                      
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-12"  style="display:none;">
+                                <div class="detail-block py-2">
+                                    <label for="full_course_fees" class="text-extralightgray">Full Course Fees</label>
+                                    <input type="text" class="width-100 font-14 font-bold text-extralightgray transparent-input" id="full_course_fees">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="font-16 text-uppercase font-bold text-black">New Course Details</h5>
+                        </div>
+                    </div>
+                    <form action="newcourse" id="newcourse">
+                        <input type="hidden" id="student_enrollment_id" name="student_enrollment_id">
+                        <div class="select-options py-4">
+                            <div class="row">
+                                
+                                
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="text-extralightgray">Course</label>
+                                        <select name="change_course"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="change_course">
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="text-extralightgray">Stream</label>
+                                        <select name="change_stream"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="change_stream">
+                                            
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12" id="hideChangeSubStream">
+                                    <div class="detail-block py-2">
+                                        <label class="text-extralightgray">Sub Stream</label>
+                                        <select name="change_substream"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="change_substream">
+                                            
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="text-extralightgray">Study Pattern</label>
+                                        <select
+                                                class="  width-100 font-14 font-bold text-extralightgray transparent-input"
+                                                name="change_study_pattern" id="change_study_pattern" required>
+                                                <option class="option-format" value="" selected>Select
+                                                </option>
+                                                <option class="option-format" value="Semester">Semester</option>
+                                                <option class="option-format" value="Annual">Annual</option>
+                                                <option class="option-format" value="Full Course">Full Course</option>
+                                            </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="text-extralightgray" for="change_session">Session</label>
+                                        <select
+                                                class=" width-100 font-14 font-bold text-extralightgray session"
+                                                name="change_session" id="change_session" required>
+
+                                                <option class="option-format" value="" selected>Select</option>
+                                                {% for i in sessionnames %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                                {% endfor %}
+                                                
+    
+    
+    
+                                            </select>
+                                    </div>
+                                </div>
+                                
+                           
+                                <div class="col-md-3 col-12" id="change_semyear_container">
+                                    <div class="detail-block py-2">
+                                        <label for="change_semyear" class="text-extralightgray">Semester/Year</label>
+                                        <select
+                                                class="  width-100 font-14 font-bold text-extralightgray transparent-input"
+                                                name="change_semyear" id="change_semyear">
+                                            </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="text-extralightgray">Course Duration (in years)</label>
+                                        <input type="text" name="change_course_duration"
+                                        class="width-100 font-14 font-bold text-extralightgray"
+                                        id="change_course_duration" readonly>
+                                       
+                                    </div>
+                                <div class="col-md-3 col-12" id="full_course_fees_container" style="display:none;">
+                                    <div class="detail-block py-2">
+                                        <label for="full_course_fees" class="text-extralightgray">Full Course Fees</label>
+                                        <input type="text" class="width-100 font-14 font-bold text-extralightgray transparent-input" id="full_course_fees">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2 pt-4">
+                                        <button type="button" class="save-btn width-100" onclick="savechanges()">Save</button>
+                                    </div>
+                        
+                        
+                        
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<div class="modal fade" id="PaymentRecieptModal" tabindex="-1" aria-labelledby="PaymentRecieptLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="PaymentRecieptLabel">Update Course - Fees Preview</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="fee_preview_modal_body">
+            
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock body %}
+{% block script %}
+<script>
+ function savechanges() {
+    $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'savechangecourse' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'enrollment_id': $('#student_enrollment_id').val(),
+              'change_course': $('#change_course').val(),
+              'change_stream': $('#change_stream').val(),
+              'change_substream': $('#change_substream').val(),
+              'change_study_pattern': $('#change_study_pattern').val(),
+              'change_semyear': $('#change_semyear').val(),
+              'full_course_fees': $('#full_course_fees').val(),
+              'change_session': $('#change_session').val(),
+
+            },
+            success: function(response) { 
+                alert(response.message);
+                window.location.reload();
+            }
+    });
+ }
+
+   
+
+function init(){
+        $('#course-section').css('display', 'none');
+        $('#change_course').val('');
+        $('#change_course_duration').val('');
+        $('#change_study_pattern').val('');
+        $('#change_session').val('');
+    }
+function getcourse(enroll_id) {
+    $('#course-section').css('display', 'block');
+    $('#hideChangeSubStream').css('display', 'none');
+    $.ajax({ // create an AJAX call...
+        data: {
+          'enroll_id': enroll_id ,
+    
+          
+        }, // get the form data
+        type: 'POST', // GET or POST
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'changecourse' %}", // the file to call
+        success: function (response) { 
+         
+            var coursedetails = response.coursedetails;
+            document.getElementById('old_course_year').value = coursedetails.course_duration;
+            document.getElementById('old_course').value = coursedetails.course;
+            document.getElementById('old_stream').value = coursedetails.stream;
+            document.getElementById('old_study_pattern').value = coursedetails.course_pattern;
+            document.getElementById('old_semyear').value = coursedetails.current_semyear;
+            document.getElementById('university').value = coursedetails.university;
+            document.getElementById('university_id').value = coursedetails.university_id;
+            document.getElementById('student_enrollment_id').value = coursedetails.enrollment_id;
+            document.getElementById('old_session').value = coursedetails.session;
+            if (coursedetails.substream != '-'){
+                $('#hideSubStream').css('display', 'block');
+                document.getElementById('old_substream').value = coursedetails.substream;
+            }
+            else{
+                $('#hideSubStream').css('display', 'none');
+            }
+                
+            var all_course = response.all_course;
+            console.log(all_course, "dfgfgf")
+            var $dropdown = $('#change_course'); // Replace with your dropdown's ID
+
+            // Clear existing options
+            $dropdown.empty();
+            
+            $dropdown.append('<option value="">Select</option>');
+            // Append new options
+            $.each(all_course, function(index, course) {
+                console.log(course, index);
+             option = $('<option></option>')
+        .attr('value', course.id) // Assuming each course has an `id` field
+        .text(course.name); // Assuming each course has a `name` field
+
+    $dropdown.append(option);
+});
+          
+        }
+    })
+
+}
+
+function Search() {
+    var enroll_id = $('#enroll_id').val();
+    var name = $('#name').val();
+  if (enroll_id == '' && name == '') {
+    alert("Please enter either Enrollment ID or Name")
+  }
+  else {
+    $.ajax({ // create an AJAX call...
+        data: {
+          'enroll_id': enroll_id ,
+          'name':name,
+          
+        }, // get the form data
+        type: 'POST', // GET or POST
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'changecourse' %}", // the file to call
+        success: function (response) { 
+          $('#hiddendata').empty();
+          var coursedetails = response.coursedetails;
+          var studentdetails = response.studentdetails;
+          
+          console.log(coursedetails)
+          console.log(studentdetails)
+
+          if(studentdetails != undefined && studentdetails.length > 0) {
+            $('#message').html('');
+            $('#course-section').css('display', 'none');
+            console.log(studentdetails)
+             
+              $('#hiddendata').append(`
+              <table class="table format-table details-table" id="student-table">
+                <thead>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Enrollment ID</th>
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Name</th>
+                   
+                    <th class="font-14 font-bold text-darkgray bottom-border-grey line-height-35 px-2 scope="col">Change Course/Year</th>
+                   
+
+                  </tr>
+                </thead>
+                <tbody id="student-table-body">
+                    
+                </tbody>
+              </table>
+              `);
+          studentdetails.forEach(myFunction);
+          function myFunction(item){
+         
+              $('#student-table-body').append(`
+                <tr class="bottom-border-grey line-height-35">
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.enrollment_id} </td>
+                    <td class="font-14 text-extralightgray px-2 text-center " scope="col">${item.name}</td>
+                    
+                    <td class="font-14 text-extralightgray px-2 text-center  " scope="col"> <button  class="edit-btn" onclick="getcourse(${item.enrollment_id})">Change Course</button></td>
+                    
+                </tr>
+                `);
+          }
+        
+          }  
+          else if (coursedetails != undefined && coursedetails != '') {
+           $('#message').html('');
+            $('#course-section').css('display', 'block');
+            $('#hideChangeSubStream').css('display', 'none');
+            console.log("Coursedetails: " + coursedetails.course_duration)
+            document.getElementById('old_course_year').value = coursedetails.course_duration;
+            document.getElementById('old_course').value = coursedetails.course;
+            document.getElementById('old_stream').value = coursedetails.stream;
+            document.getElementById('old_study_pattern').value = coursedetails.course_pattern;
+            document.getElementById('old_semyear').value = coursedetails.current_semyear;
+            document.getElementById('university').value = coursedetails.university;
+            document.getElementById('university_id').value = coursedetails.university_id;
+            document.getElementById('student_enrollment_id').value = coursedetails.enrollment_id;
+            document.getElementById('old_session').value = coursedetails.session;
+            if (coursedetails.substream != '-'){
+                $('#hideSubStream').css('display', 'block');
+                document.getElementById('old_substream').value = coursedetails.substream;
+            }
+            else{
+                $('#hideSubStream').css('display', 'none');
+            }
+            var all_course = response.all_course;
+            console.log(all_course, "dfgfgf")
+            var $dropdown = $('#change_course'); // Replace with your dropdown's ID
+
+            // Clear existing options
+            $dropdown.empty();
+            $dropdown.append('<option value="">Select</option>');
+            // Append new options
+            $.each(all_course, function(index, course) {
+                console.log(course, index);
+            var option = $('<option></option>')
+        .attr('value', course.id) // Assuming each course has an `id` field
+        .text(course.name); // Assuming each course has a `name` field
+
+    $dropdown.append(option);
+            });
+          }
+          else if(coursedetails == '' && (studentdetails.length == 0 || studentdetails == undefined)) {
+            
+                $("#message").html('No student found')
+        }    
+        }
+       
+    })
+
+  }
+  
+}
+  
+
+document.getElementById("change_course").onchange = function () {
+    var coursename = this.value;
+        console.log(coursename);
+        $.ajax({
+            type: "GET",
+            url: "{% url 'addstudent' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'selected_course': coursename,
+            },
+            success: function (response) {
+                var data = response.data
+                var duration = ''
+                $('#change_stream').empty();
+                $('#change_stream').append('<option      class="option-format" value=""  selected>Select</option>');
+                data.forEach(myFunction);
+
+                function myFunction(item) {
+                    duration = item.sem
+                    $('#change_stream').append(`<option class="option-format" value='${item.id}'>  ${item.name} </option>`);
+                }
+            }
+        });
+}
+
+document.getElementById("change_stream").onchange = function () {
+    var streamid = this.value;
+        
+        $.ajax({
+            type: "POST",
+            url: "{% url 'getsubstream' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'streamid': streamid,
+            },
+            success: function (response) {
+                var data = response.substream
+                if (response.substream.length > 0){
+                    $('#hideChangeSubStream').css('display', 'block');
+                    $('#change_substream').empty();
+                $('#change_substream').append('<option      class="option-format" value=""  selected>Select</option>');
+                data.forEach(myFunction);
+
+                function myFunction(item) {
+                    duration = item.sem
+                    $('#change_substream').append(`<option class="option-format" value='${item.id}'>  ${item.name} </option>`);
+                }
+
+                }
+                else{
+                    $('#hideChangeSubStream').css('display', 'none');
+                }
+               
+            }
+        });
+}
+
+    document.getElementById("change_study_pattern").onchange = function () {
+                    var course_name = $('#change_course').val();
+                    var stream_name = $('#change_stream').val();
+                    var study_pattern = this.value;
+                    var studypattern = this.value;
+                    //alert("ddd"+ studypattern + course_name +study_pattern + stream_name)
+                    if (studypattern == "Full Course") {
+                        console.log("Full Course Given")
+                        $('#change_semyear_container').css('display', 'none');
+                        $('#full_course_fees_container').css('display','block');
+                        $('#total_fees').prop('readonly', false)
+                        $('#fee_preview_modal_body').empty();
+                        $('#fee_preview_modal_body').append(`
+                        
+                        <div class="row">
+                            <div class="col-md-12 col-12">
+                                <h2>Current Course Fees</h2>
+                                <div class="detail-block py-2">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Payment For</th>
+                                                <th scope="col">Transaction Date</th>
+                                                <th scope="col">Semester/Year</th>
+                                                <th scope="col">Paid Amount</th>
+                                                <th scope="col">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="student_payment_reciept_table_body">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 col-12">
+                                <h2>New Course Fees</h2>
+                                <div class="detail-block py-2">
+                                    <label for="total_fees_paid_till_now">Total Fees Paid Till Now</label>
+                                    <input type="text" class="font-14 font-bold text-extralightgray w-100" disabled id="total_fees_paid_till_now">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-12">
+                                <div class="detail-block py-2">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Study Pattern</th>
+                                                <th scope="col">Semester/Year Fees</th>
+                                                <th scope="col">Paid Amount</th>
+                                                <th scope="col">Pending Amount</th>
+                                                <th scope="col">Advance Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="student_updated_reciept_table_body">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        `);
+                    }
+                    else {
+                        $('#change_semyear_container').css('display', 'block');
+                        $('#full_course_fees_container').css('display','none');
+                        $('#fee_preview_modal_body').empty();
+                        $('#fee_preview_modal_body').append(`
+                        
+                        <div class="row">
+                            <div class="col-md-12 col-12">
+                                <h2>Current Course Fees</h2>
+                                <div class="detail-block py-2">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Payment For</th>
+                                                <th scope="col">Transaction Date</th>
+                                                <th scope="col">Semester/Year</th>
+                                                <th scope="col">Paid Amount</th>
+                                                <th scope="col">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="student_payment_reciept_table_body">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 col-12">
+                                <h2>New Course Fees</h2>
+                                <div class="detail-block py-2">
+                                    <label for="total_fees_paid_till_now">Total Fees Paid Till Now</label>
+                                    <input type="text" class="font-14 font-bold text-extralightgray w-100" disabled id="total_fees_paid_till_now">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-12">
+                                <div class="detail-block py-2">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Study Pattern</th>
+                                                <th scope="col">Semester/Year</th>
+                                                <th scope="col">Semester/Year Fees</th>
+                                                <th scope="col">Paid Amount</th>
+                                                <th scope="col">Pending Amount</th>
+                                                <th scope="col">Advance Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="student_updated_reciept_table_body">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        `);
+                        // $('#semyear_hide').css('display', 'block')
+                        $('#total_fees').prop('readonly', true)
+
+                    }
+
+                    console.log(course_name, stream_name, study_pattern)
+                    if (course_name && stream_name && study_pattern != "Full Course") {
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'addstudent' %}",
+                            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                            data: {
+                                'course_name': course_name, // from form
+                                'stream_name': stream_name,
+                                'study_pattern': study_pattern
+                            },
+                            success: function (response) {
+                                console.log(response)
+                                $('#change_semyear').empty();
+
+                                if (response.obj) {
+                                    if (response.obj.study_pattern == "Semester") {
+                                        $('#change_course_duration').val(parseInt(response.obj.semyear, 10) / 2);
+                                        $('#change_semyear').css('display', 'block');
+                                        $('#change_semyear').append('<option      class="option-format" value="" >Select Semester</option>');
+                                        for (var i = 1; i <= response.obj.semyear; i++) {
+                                            $('#change_semyear').append('<option      class="option-format"   value=' + i + '>' + i + ' Semester' + '</option>');
+                                        }
+                                    }
+                                    else if (response.obj.study_pattern == "Annual") {
+                                        $('#change_course_duration').val(response.obj.semyear);
+                                        $('#change_semyear').css('display', 'block');
+                                        $('#change_semyear').append('<option      class="option-format" value="" >Select Annual</option>');
+                                        for (var i = 1; i <= response.obj.semyear; i++) {
+                                            $('#change_semyear').append('<option      class="option-format"   value=' + i + '>' + i + ' Year' + '</option>');
+                                        }
+                                    }
+                                }
+
+                                document.getElementById("change_semyear").onchange = function () {
+                                    var student_enrollment_id = $('#student_enrollment_id').val();
+                                    var show_modal_course = $('#change_course').val();
+                                    var show_modal_stream = $('#change_stream').val();
+                                    var show_modal_substream = $('#change_substream').val();
+                                    var show_modal_study_pattern = $('#change_study_pattern').val();
+                                    var show_modal_semyear = $('#change_semyear').val();
+                                    if (student_enrollment_id && show_modal_course && show_modal_stream && show_modal_study_pattern && show_modal_semyear) {
+                                        console.log("semyear modal show")
+                                    }
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "{% url 'changeStudentCourse' %}",
+                                        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                                        data: {
+                                            'student_enrollment_id':student_enrollment_id,
+                                            'show_modal_course': show_modal_course,
+                                            'show_modal_stream': show_modal_stream,
+                                            'show_modal_study_pattern': show_modal_study_pattern,
+                                            'show_modal_semyear':show_modal_semyear,
+                                            'show_modal_substream': show_modal_substream
+                                        },
+                                        success: function (response) {
+                                            $('#student_payment_reciept_table_body').empty();
+                                            $('#student_updated_reciept_table_body').empty();
+                                            console.log(response.data)
+                                            var reciepts = response.data.reciepts
+                                            var count = 0;
+                                            if(response.data.total_fees_paid){
+                                                $('#total_fees_paid_till_now').val(response.data.total_fees_paid);
+                                            }
+                                            reciepts.forEach(myfunction);
+                                            function myfunction(item,count){
+                                                count=count+1;
+                                                // console.log(item);
+                                                $('#student_payment_reciept_table_body').append(`
+                                                <tr>
+                                                    <th scope="row">${count}</th>
+                                                    <td>${item.payment_for}</td>
+                                                    <td>${item.transaction_date}</td>
+                                                    <td>${item.semyear}</td>
+                                                    <td>${item.paidamount}</td>
+                                                    <td>${item.status}</td>
+                                                </tr>
+                                                `);
+                                            }
+
+
+                                            $('#student_updated_reciept_table_body').append(`
+                                                <tr>
+                                                    <td>${response.data.study_pattern}</td>
+                                                    <td>${response.data.semyear}</td>
+                                                    <td>${response.data.semyear_fees}</td>
+                                                    <td>${response.data.total_fees_paid}</td>
+                                                    <td>${response.data.pending_fees}</td>
+                                                    <td>${response.data.advance_amount}</td>
+                                                </tr>
+                                            `);
+                                            $('#PaymentRecieptModal').modal('show');
+                                            // $('#student_payment_reciept_table_body')
+                                        }
+                                    });
+
+
+                                }
+
+                                
+
+                            }
+                        })
+                    }
+                    else if (course_name && stream_name && study_pattern == "Full Course") {
+                        // console.log("full course given");
+                        $('#change_semyear').empty()
+                        $('#change_semyear').css('display', 'none');
+                        var student_enrollment_id = $('#student_enrollment_id').val();
+                        var show_modal_course = $('#change_course').val();
+                        var show_modal_stream = $('#change_stream').val();
+                        var show_modal_study_pattern = $('#change_study_pattern').val();
+                        if (student_enrollment_id && show_modal_course && show_modal_stream && show_modal_study_pattern) {
+                            $.ajax({
+                                type: "POST",
+                                url: "{% url 'changeStudentCourse' %}",
+                                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                                data: {
+                                    'student_enrollment_id':student_enrollment_id,
+                                    'show_modal_course': show_modal_course,
+                                    'show_modal_stream': show_modal_stream,
+                                    'show_modal_study_pattern': show_modal_study_pattern,
+                                    // 'show_modal_semyear':show_modal_semyear
+                                },
+                                success: function (response) {
+                                    $('#student_payment_reciept_table_body').empty();
+                                    $('#student_updated_reciept_table_body').empty();
+                                    console.log(response.data)
+                                    var reciepts = response.data.reciepts
+                                    var count = 0;
+                                    if(response.data.total_fees_paid){
+                                        $('#total_fees_paid_till_now').val(response.data.total_fees_paid);
+                                    }
+                                    reciepts.forEach(myfunction);
+                                    function myfunction(item,count){
+                                        count=count+1;
+                                        // console.log(item);
+                                        $('#student_payment_reciept_table_body').append(`
+                                        <tr>
+                                            <th scope="row">${count}</th>
+                                            <td>${item.payment_for}</td>
+                                            <td>${item.transaction_date}</td>
+                                            <td>${item.semyear}</td>
+                                            <td>${item.paidamount}</td>
+                                            <td>${item.status}</td>
+                                        </tr>
+                                        `);
+                                    }
+
+                                    $('#student_updated_reciept_table_body').append(`
+                                        <tr>
+                                            <td>${response.data.study_pattern}</td>
+                                            <td>${response.data.semyear_fees}</td>
+                                            <td>${response.data.total_fees_paid}</td>
+                                            <td>${response.data.pending_fees}</td>
+                                            <td>${response.data.advance_amount}</td>
+                                        </tr>
+                                    `);
+                                    // $('#student_payment_reciept_table_body').empty();
+                                    // $('#student_updated_reciept_table_body').empty();
+                                    // console.log(response.data)
+                                    // var reciepts = response.data.reciepts
+                                    // var count = 0;
+                                    // if(response.data.total_fees_paid){
+                                    //     $('#total_fees_paid_till_now').val(response.data.total_fees_paid);
+                                    // }
+                                    // reciepts.forEach(myfunction);
+                                    // function myfunction(item,count){
+                                    //     count=count+1;
+                                    //     // console.log(item);
+                                    //     $('#student_payment_reciept_table_body').append(`
+                                    //     <tr>
+                                    //         <th scope="row">${count}</th>
+                                    //         <td>${item.payment_for}</td>
+                                    //         <td>${item.transaction_date}</td>
+                                    //         <td>${item.semyear}</td>
+                                    //         <td>${item.paidamount}</td>
+                                    //         <td>${item.status}</td>
+                                    //     </tr>
+                                    //     `);
+                                    // }
+
+
+                                    // $('#student_updated_reciept_table_body').append(`
+                                    //     <tr>
+                                    //         <td>${response.data.study_pattern}</td>
+                                    //         <td>${response.data.semyear}</td>
+                                    //         <td>${response.data.semyear_fees}</td>
+                                    //         <td>${response.data.total_fees_paid}</td>
+                                    //         <td>${response.data.pending_fees}</td>
+                                    //         <td>${response.data.advance_amount}</td>
+                                    //     </tr>
+                                    // `);
+                                    $('#PaymentRecieptModal').modal('show');
+                                    // $('#student_payment_reciept_table_body')
+                                }
+                            });
+
+                        }
+                    }
+
+                }
+
+
+
+            
+
+document.getElementById('name').onchange = function(){
+    document.getElementById('enroll_id').value = ''
+}
+document.getElementById('enroll_id').onchange = function(){
+    document.getElementById('name').value = ''
+}
+window.onload = init();
+</script>
+{% endblock script %}
+    
+

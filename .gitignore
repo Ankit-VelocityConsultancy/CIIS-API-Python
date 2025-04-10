@@ -1,0 +1,28 @@
+<<<<<<< HEAD
+__pycache__/*
+system/settings.py
+system/__pycache__/*
+user/__pycache__/*
+user/migrations/__pycache__/*
+debug6.log
+dataentry/__pycache__/*
+dataentry/migrations/__pycache__/*
+app/__pycache__/*
+app/migrations/__pycache__/*
+Lib/*
+Include/*
+Scripts/*
+share/*
+super_admin/__pycache__/
+__pycache__/
+**/__pycache__/
+__pycache__
+=======
+venv/
+__pycache__/
+*.log
+*.sqlite3
+media/
+*.zip
+*.tar.gz
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049

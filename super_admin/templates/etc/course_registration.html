@@ -1,0 +1,690 @@
+<<<<<<< HEAD
+{% extends 'admin.html' %}
+{% block head %}
+<style>
+    body {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+
+    html {
+        height: -webkit-fill-available;
+    }
+
+    main {
+        display: flex;
+        flex-wrap: nowrap;
+        height: 100vh;
+        height: -webkit-fill-available;
+        max-height: 100vh;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .b-example-divider {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+    }
+
+    .bi {
+        vertical-align: -.125em;
+        pointer-events: none;
+        fill: currentColor;
+    }
+
+    .dropdown-toggle {
+        outline: 0;
+    }
+
+    .nav-flush .nav-link {
+        border-radius: 0;
+    }
+
+    .btn-toggle {
+        display: inline-flex;
+        align-items: center;
+        padding: .25rem .5rem;
+        font-weight: 600;
+        color: rgba(0, 0, 0, .65);
+        background-color: transparent;
+        border: 0;
+    }
+
+    .btn-toggle:hover,
+    .btn-toggle:focus {
+        color: rgba(0, 0, 0, .85);
+        background-color: #d2f4ea;
+    }
+
+    .btn-toggle::before {
+        width: 1.25em;
+        line-height: 0;
+        content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+        transition: transform .35s ease;
+        transform-origin: .5em 50%;
+    }
+
+    .btn-toggle[aria-expanded="true"] {
+        color: rgba(0, 0, 0, .85);
+    }
+
+    .btn-toggle[aria-expanded="true"]::before {
+        transform: rotate(90deg);
+    }
+
+    .btn-toggle-nav a {
+        display: inline-flex;
+        padding: .1875rem .5rem;
+        margin-top: .125rem;
+        margin-left: 1.25rem;
+        text-decoration: none;
+    }
+
+    .btn-toggle-nav a:hover,
+    .btn-toggle-nav a:focus {
+        background-color: #d2f4ea;
+    }
+
+
+
+    .fw-semibold {
+        font-weight: 600;
+    }
+
+    .lh-tight {
+        line-height: 1.25;
+    }
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif
+    }
+
+    body {
+        background: linear-gradient(45deg, #ce1e53, #8f00c7);
+        min-height: 100vh
+    }
+
+    .wrapper {
+        max-width: 900px;
+        margin: 0px auto;
+        padding: 30px 45px;
+        box-shadow: 5px 25px 35px #3535356b
+    }
+</style>
+{% endblock head %}
+
+
+
+
+
+
+
+{% block body %}
+{% if display == "yes" %}
+
+
+
+
+<main>
+    <div class="flex-shrink-0 p-3 bg-white" style="width: 280px;">
+        <ul class="list-unstyled ps-0">
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#home-collapse" aria-expanded="false">
+                    Dashboard
+                </button>
+                <div class="collapse " id="home-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'index' %}" class="link-dark rounded">Home</a></li>
+
+                        <li><a href="{% url 'studentdashboard' %}" class="link-dark rounded">Dashboard</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded" data-bs-toggle="collapse"
+                    data-bs-target="#dashboard-collapse" aria-expanded="true">
+                    Registration
+                </button>
+                <div class="collapse show" id="dashboard-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'courseregistration' %}" class="nav-link active">Course Registration</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="border-top my-3"></li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#account-collapse" aria-expanded="false">
+                    Account
+                </button>
+                <div class="collapse" id="account-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="#" class="link-dark rounded">New...</a></li>
+                        <li><a href="{% url 'profile' %}" class="link-dark rounded">Profile</a></li>
+                        <li><a href="#" class="link-dark rounded">Settings</a></li>
+                        <li><a href="{% url 'logout' %}" class="link-dark rounded">Sign out</a></li>
+                    </ul>
+                </div>
+            </li>
+
+        </ul>
+    </div>
+
+    <div class="b-example-divider"></div>
+
+    <div class="flex-shrink-0 p-3 bg-white" style="width:77%;">
+        <div class="wrapper rounded bg-white">
+            <div class="form">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mt-md-0 mt-3">
+                            <label>Select Course</label>
+                            <select class="form-select" id="course" name="course" aria-label="Default select example">
+                                <option selected>Select Course</option>
+                                {% for i in course %}
+                                <option value="{{i.degree}}">{{i.degree}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mt-md-0 mt-3">
+                            <label>Select Specialization</label>
+                            <select class="form-select" id="specialization" name="specialization"
+                                aria-label="Default select example">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-sm-3">
+                            <div class="form-floating">
+                                <input type="number" class="form-control" name="sem1" id="sem1" placeholder="">
+                                <label for="sem1">Semester 1 Fees</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-floating">
+                                <input type="number" class="form-control" name="sem1paid" id="sem1paid" placeholder="">
+                                <label for="sem2">Fee Student Paid</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-sm-4">
+                            <div class="form-floating">
+                                <input type="file" class="form-control" name="doc1" id="doc1" placeholder="">
+                                <label for="doc1">Document 1</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-floating">
+                                <input type="file" class="form-control" name="doc2" id="doc2" placeholder="">
+                                <label for="doc2">Document 2</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-floating">
+                                <input type="file" class="form-control" name="doc3" id="doc3" placeholder="">
+                                <label for="doc3">Document 3</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<script type="text/javascript">
+    document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        console.log(coursename);
+        $.ajax({
+            type: "GET",
+            url: "{% url 'addstudent' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'data': coursename // from form
+
+            },
+            success: function (response) {
+                console.log("sent successfully");
+                var data = response.data
+                console.log(data)
+                var duration = ''
+                $('#specialization').empty();
+                data.forEach(myFunction);
+
+                function myFunction(item) {
+                    duration = item.duration
+                    $('#specialization').append('<option value=' + item.id + '>' + item.type + '</option>');
+                }
+                // var times = duration * 2;
+                // $('#semester1').css('visibility', 'hidden');
+                // $('#semester2').css('visibility', 'hidden');
+                // $('#semester3').css('visibility', 'hidden');
+                // $('#semester4').css('visibility', 'hidden');
+                // $('#semester5').css('visibility', 'hidden');
+                // $('#semester6').css('visibility', 'hidden');
+                // $('#semester7').css('visibility', 'hidden');
+                // $('#semester8').css('visibility', 'hidden');
+
+                // if(times === 6){
+                //     console.log("6 semester");
+                //     $('#semester1').css('visibility', 'visible');
+                //     $('#semester2').css('visibility', 'visible');
+                //     $('#semester3').css('visibility', 'visible');
+                //     $('#semester4').css('visibility', 'visible');
+                //     $('#semester5').css('visibility', 'visible');
+                //     $('#semester6').css('visibility', 'visible');
+
+
+                // }
+                // else if(times === 4){
+                //     console.log("4 semester");
+                //     $('#semester1').css('visibility', 'visible');
+                //     $('#semester2').css('visibility', 'visible');
+                //     $('#semester3').css('visibility', 'visible');
+                //     $('#semester4').css('visibility', 'visible');
+
+                // }
+                // else if(times === 8){
+                //     $('#semester1').css('visibility', 'visible');
+                //     $('#semester2').css('visibility', 'visible');
+                //     $('#semester3').css('visibility', 'visible');
+                //     $('#semester4').css('visibility', 'visible');
+                //     $('#semester5').css('visibility', 'visible');
+                //     $('#semester6').css('visibility', 'visible');
+                //     $('#semester7').css('visibility', 'visible');
+                //     $('#semester8').css('visibility', 'visible');
+
+                // }
+                // else{
+                //     console.log("IDK")
+                // }
+
+            }
+        });
+
+    };
+</script>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+=======
+{% extends 'admin.html' %}
+{% block head %}
+<style>
+    body {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+
+    html {
+        height: -webkit-fill-available;
+    }
+
+    main {
+        display: flex;
+        flex-wrap: nowrap;
+        height: 100vh;
+        height: -webkit-fill-available;
+        max-height: 100vh;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .b-example-divider {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+    }
+
+    .bi {
+        vertical-align: -.125em;
+        pointer-events: none;
+        fill: currentColor;
+    }
+
+    .dropdown-toggle {
+        outline: 0;
+    }
+
+    .nav-flush .nav-link {
+        border-radius: 0;
+    }
+
+    .btn-toggle {
+        display: inline-flex;
+        align-items: center;
+        padding: .25rem .5rem;
+        font-weight: 600;
+        color: rgba(0, 0, 0, .65);
+        background-color: transparent;
+        border: 0;
+    }
+
+    .btn-toggle:hover,
+    .btn-toggle:focus {
+        color: rgba(0, 0, 0, .85);
+        background-color: #d2f4ea;
+    }
+
+    .btn-toggle::before {
+        width: 1.25em;
+        line-height: 0;
+        content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+        transition: transform .35s ease;
+        transform-origin: .5em 50%;
+    }
+
+    .btn-toggle[aria-expanded="true"] {
+        color: rgba(0, 0, 0, .85);
+    }
+
+    .btn-toggle[aria-expanded="true"]::before {
+        transform: rotate(90deg);
+    }
+
+    .btn-toggle-nav a {
+        display: inline-flex;
+        padding: .1875rem .5rem;
+        margin-top: .125rem;
+        margin-left: 1.25rem;
+        text-decoration: none;
+    }
+
+    .btn-toggle-nav a:hover,
+    .btn-toggle-nav a:focus {
+        background-color: #d2f4ea;
+    }
+
+
+
+    .fw-semibold {
+        font-weight: 600;
+    }
+
+    .lh-tight {
+        line-height: 1.25;
+    }
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif
+    }
+
+    body {
+        background: linear-gradient(45deg, #ce1e53, #8f00c7);
+        min-height: 100vh
+    }
+
+    .wrapper {
+        max-width: 900px;
+        margin: 0px auto;
+        padding: 30px 45px;
+        box-shadow: 5px 25px 35px #3535356b
+    }
+</style>
+{% endblock head %}
+
+
+
+
+
+
+
+{% block body %}
+{% if display == "yes" %}
+
+
+
+
+<main>
+    <div class="flex-shrink-0 p-3 bg-white" style="width: 280px;">
+        <ul class="list-unstyled ps-0">
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#home-collapse" aria-expanded="false">
+                    Dashboard
+                </button>
+                <div class="collapse " id="home-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'index' %}" class="link-dark rounded">Home</a></li>
+
+                        <li><a href="{% url 'studentdashboard' %}" class="link-dark rounded">Dashboard</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded" data-bs-toggle="collapse"
+                    data-bs-target="#dashboard-collapse" aria-expanded="true">
+                    Registration
+                </button>
+                <div class="collapse show" id="dashboard-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'courseregistration' %}" class="nav-link active">Course Registration</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="border-top my-3"></li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#account-collapse" aria-expanded="false">
+                    Account
+                </button>
+                <div class="collapse" id="account-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="#" class="link-dark rounded">New...</a></li>
+                        <li><a href="{% url 'profile' %}" class="link-dark rounded">Profile</a></li>
+                        <li><a href="#" class="link-dark rounded">Settings</a></li>
+                        <li><a href="{% url 'logout' %}" class="link-dark rounded">Sign out</a></li>
+                    </ul>
+                </div>
+            </li>
+
+        </ul>
+    </div>
+
+    <div class="b-example-divider"></div>
+
+    <div class="flex-shrink-0 p-3 bg-white" style="width:77%;">
+        <div class="wrapper rounded bg-white">
+            <div class="form">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mt-md-0 mt-3">
+                            <label>Select Course</label>
+                            <select class="form-select" id="course" name="course" aria-label="Default select example">
+                                <option selected>Select Course</option>
+                                {% for i in course %}
+                                <option value="{{i.degree}}">{{i.degree}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mt-md-0 mt-3">
+                            <label>Select Specialization</label>
+                            <select class="form-select" id="specialization" name="specialization"
+                                aria-label="Default select example">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-sm-3">
+                            <div class="form-floating">
+                                <input type="number" class="form-control" name="sem1" id="sem1" placeholder="">
+                                <label for="sem1">Semester 1 Fees</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-floating">
+                                <input type="number" class="form-control" name="sem1paid" id="sem1paid" placeholder="">
+                                <label for="sem2">Fee Student Paid</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-sm-4">
+                            <div class="form-floating">
+                                <input type="file" class="form-control" name="doc1" id="doc1" placeholder="">
+                                <label for="doc1">Document 1</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-floating">
+                                <input type="file" class="form-control" name="doc2" id="doc2" placeholder="">
+                                <label for="doc2">Document 2</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-floating">
+                                <input type="file" class="form-control" name="doc3" id="doc3" placeholder="">
+                                <label for="doc3">Document 3</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<script type="text/javascript">
+    document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        console.log(coursename);
+        $.ajax({
+            type: "GET",
+            url: "{% url 'addstudent' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'data': coursename // from form
+
+            },
+            success: function (response) {
+                console.log("sent successfully");
+                var data = response.data
+                console.log(data)
+                var duration = ''
+                $('#specialization').empty();
+                data.forEach(myFunction);
+
+                function myFunction(item) {
+                    duration = item.duration
+                    $('#specialization').append('<option value=' + item.id + '>' + item.type + '</option>');
+                }
+                // var times = duration * 2;
+                // $('#semester1').css('visibility', 'hidden');
+                // $('#semester2').css('visibility', 'hidden');
+                // $('#semester3').css('visibility', 'hidden');
+                // $('#semester4').css('visibility', 'hidden');
+                // $('#semester5').css('visibility', 'hidden');
+                // $('#semester6').css('visibility', 'hidden');
+                // $('#semester7').css('visibility', 'hidden');
+                // $('#semester8').css('visibility', 'hidden');
+
+                // if(times === 6){
+                //     console.log("6 semester");
+                //     $('#semester1').css('visibility', 'visible');
+                //     $('#semester2').css('visibility', 'visible');
+                //     $('#semester3').css('visibility', 'visible');
+                //     $('#semester4').css('visibility', 'visible');
+                //     $('#semester5').css('visibility', 'visible');
+                //     $('#semester6').css('visibility', 'visible');
+
+
+                // }
+                // else if(times === 4){
+                //     console.log("4 semester");
+                //     $('#semester1').css('visibility', 'visible');
+                //     $('#semester2').css('visibility', 'visible');
+                //     $('#semester3').css('visibility', 'visible');
+                //     $('#semester4').css('visibility', 'visible');
+
+                // }
+                // else if(times === 8){
+                //     $('#semester1').css('visibility', 'visible');
+                //     $('#semester2').css('visibility', 'visible');
+                //     $('#semester3').css('visibility', 'visible');
+                //     $('#semester4').css('visibility', 'visible');
+                //     $('#semester5').css('visibility', 'visible');
+                //     $('#semester6').css('visibility', 'visible');
+                //     $('#semester7').css('visibility', 'visible');
+                //     $('#semester8').css('visibility', 'visible');
+
+                // }
+                // else{
+                //     console.log("IDK")
+                // }
+
+            }
+        });
+
+    };
+</script>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

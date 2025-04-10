@@ -1,0 +1,650 @@
+<<<<<<< HEAD
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'dict/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'dict/css/google_fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'dict/css/style_homepage.css' %}" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <!-- <link href="{% static 'dict/css/jquery.datatables.min.css' %}" > -->
+    <!-- <link rel="stylesheet" href="{% static 'dict/css/buttons.dataTables.min.css' %}"> -->
+    <!--<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">-->
+    <!-- <link rel="stylesheet" href="{% static 'dict/css/fontawesome.5.11.2.css' %}"> -->
+    <!-- <link rel="stylesheet" href="{% static 'dict/css/fontawesome.css' %}"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="{% static 'dict/js/jquery.min.js' %}"></script>
+    <title>{% block title %} {% endblock title %}</title>
+
+    
+      
+    {% block head %}
+        
+    {% endblock head %}
+
+</head>
+<body>
+    <div class="container-fluid pages-body-bg-color">
+        <div class="row ">
+          <div class="col-5 col-sm-4  d-lg-block col-lg-3 col-xl-2">
+            <div id="navigation-bar" class=" outer-rectangle my-3   navigation sm-hide-nav show-nav " >
+              <div class=" h-100 show" id="nav-toggle">
+                  <ul class="nav flex-column  pt-3 " >
+                    <li class=" text-center py-3 pb-5 w-100 ">
+                      <a class="navbar-brand text-purewhite text-uppercase font-32 font-bold" href="{% url 'home' %}"><img src="{% static 'dict/images/ciis.png' %}" class="logo" alt="logo"></a>
+                    </li>
+                    <!-- {% if request.user.is_superuser %}
+                    <li class=" pt-3 pb-5">
+                      <div class="user-items">
+                        <span class="dot align-vertical mx-4"></span>
+                        <a href="{% url 'overview' %}" class="mx-3 align-vertical text-purewhite text-uppercase text-decoration-none font-26 font-bold">
+                         
+                          {{request.user.first_name}} {{request.user.last_name}}
+                        
+                        </a>
+      
+                      </div>
+                    </li>
+                    {% endif %} -->
+                    {% if request.user.is_superuser or request.user.is_data_entry %}
+                    <li class="nav-item w-100 ms-2">
+                      <a class="nav-link dashboard active text-gray font-20 me-3 mb-4" href="{% url 'overview' %}">
+                        <div class="link-items">
+                           <img class="img-bg-color align-vertical" src="/media/navigation_logos/dashboard.png" alt="">
+                        
+                        <span class="  align-vertical">Dashboard</span> 
+                      </div>
+                        </a>
+                    </li>
+
+                    
+                    <li class="nav-item dropdown w-100">
+                      
+                      <a class="nav-link  text-gray font-20" href="navbarStudentManangement" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="/media/navigation_logos/studentmanagement.png" alt="">     
+                       <span class="  align-vertical">Student Management</span> 
+                     </div>
+                       
+                        </a>
+                      
+                        <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarStudentManangement">
+
+                            <li><a class="dropdown-item text-gray font-16 " href="{% url 'addstudent' %}">Student Registration</a></li>
+                            <li><a class="dropdown-item text-gray font-16 " href="{% url 'quickaddstudent' %}">Quick Registration</a></li>  
+                            <li><a class="dropdown-item text-gray font-16" href="{% url 'viewpaymentstatus' %}">Payment Status</a></li> 
+                            <li><a class="dropdown-item text-gray font-16" href="{% url 'advancesearch' %}">Advanced Search</a></li>
+              
+                          <!--li><a class="dropdown-item text-gray font-18" href="{% url 'pending_verification' %}">Pending Student Verification</a></li-->
+                          
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown w-100">
+                      
+                      <a class="nav-link  text-gray font-20" href="navbarStudentManangement" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="/media/navigation_logos/program.png" alt="">     
+                       <span class="  align-vertical">View Students</span> 
+                     </div>
+                       
+                        </a>
+                      
+                        <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarStudentManangement">
+                         
+                           
+                            <li><a class="dropdown-item text-gray font-16 " href="{% url 'viewregister' %}">Registered Students</a></li> 
+                         
+                          <li><a class="dropdown-item text-gray font-16" href="{% url 'viewquickregister' %}">Quick Registered Students</a></li> 
+                          
+                        
+                            <li><a class="dropdown-item text-gray font-16 " href="{% url 'registered' %}">All Registered Students</a></li>
+                            <li><a class="dropdown-item text-gray font-16" href="{% url 'cancelledstudents' %}">Cancelled Students</a></li>
+                         
+                          
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      <a class="nav-link text-gray font-20" href="navbarMyCourse" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="/media/navigation_logos/mycourse.png" alt="">
+                       
+                       <span class="  align-vertical">Add course/subjects</span> 
+                     </div>
+                         </a>
+                         <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarMyCourse">
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'adduniversity' %}">Add University</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'addcourse' %}">Add Course</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'addstream' %}">Add Stream</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'addsubstream' %}">Add Sub Stream</a></li>
+                         </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      
+                      <a class="nav-link  text-gray font-20" href="navbarOthers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="/media/navigation_logos/studentmanagement.png" alt="">     
+                       <span class="  align-vertical">Other Students</span> 
+                     </div>
+                       
+                        </a>
+                      
+                        <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarOthers">
+
+                            <li><a class="dropdown-item text-gray font-16 " href="{% url 'addothersstudent' %}">Add Student</a></li>
+                            <li><a class="dropdown-item text-gray font-16 " href="{% url 'viewregisterother' %}">Edit Student</a></li>  
+                            <li><a class="dropdown-item text-gray font-16" href="{% url 'showstudents' %}">View Students</a></li> 
+                           
+              
+                          <!--li><a class="dropdown-item text-gray font-18" href="{% url 'pending_verification' %}">Pending Student Verification</a></li-->
+                          
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      <a class="nav-link text-gray font-20" href="navbarMiscellaneous" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="/media/navigation_logos/miscellaneous.png" alt="">
+                       
+                       <span class="  align-vertical">Miscellaneous</span> 
+                     </div>
+                       </a>
+                       <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarMiscellaneous">
+                        {% if request.user.is_superuser %}
+                        <li><a class="dropdown-item text-gray font-18" href="{% url 'usercreation' %}">User Creation</a></li>
+                       
+                        {% endif %}
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'changecourse' %}">Change Course</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'printaddress' %}">Print Address</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'change_password' %}">Change Password</a></li>
+                          
+                       </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      <a class="nav-link text-gray font-20" href="navbarFees" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="{% static 'dict/images/fees.png' %}" alt="">
+                       
+                       <span class="  align-vertical">Fees</span> 
+                     </div>
+                       </a>
+                       <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarFees">
+                        <li><a class="dropdown-item text-gray font-18" href="{% url 'addstreamfees' %}">Course Fees</a></li>
+                        {% if request.user.is_superuser %}
+                        <li><a href="{% url 'studentfees' %}" class="dropdown-item text-gray font-18">Student Fees</a></li>
+                        {% endif %}
+                       </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      <a class="nav-link text-gray font-20" href="navbarFees" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="{% static 'dict/images/exam.png' %}" alt="">
+                       
+                       <span class="  align-vertical">Examination</span> 
+                     </div>
+                       </a>
+                       <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarFees">
+                        <li><a class="dropdown-item text-gray font-18" href="{% url 'setexamination' %}">Set Examination</a></li>
+                        
+                        <li><a href="{% url 'checkresult' %}" class="dropdown-item text-gray font-18">Check Result</a></li>
+  
+                       </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      <a class="nav-link text-gray font-20" href="navbarMyCourse" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="/media/navigation_logos/mycourse.png" alt="">
+                       
+                       <span class="  align-vertical">Master Data</span> 
+                     </div>
+                         </a>
+                         <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarMyCourse">
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'paymentmode' %}">Add Payment Modes</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'feereceiptoption' %}">Add Fee Receipt Options</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'bankname' %}">Add Banks</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'sessionname' %}">Add Sessions</a></li>
+                         </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      <a class="nav-link text-gray font-20" href="/logout" role="button" >
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="{% static 'dict/images/logout (2).png' %}" alt="">
+                       
+                       <span class="  align-vertical">Logout</span> 
+                     </div>
+                       </a>
+                       
+                    </li>
+                    
+                    {% endif %}
+                    {% if request.user.is_student %}
+                    <li class="nav-item w-100 ms-2">
+                      <a class="nav-link dashboard active text-gray font-20 me-3 mb-4" href="{% url 'profile' %}">
+                        <div class="link-items">
+                           <img class="img-bg-color align-vertical" src="/media/navigation_logos/dashboard.png" alt="">
+                        
+                        <span class="  align-vertical">Profile</span> 
+                      </div>
+                        </a>
+                    </li>
+                    <li><a class="dropdown-item text-gray font-18" href="{% url 'studentdashboard' %}">Dashboard</a></li>
+                    <li><a class="dropdown-item text-gray font-18" href="{% url 'StudentStudyMaterial' %}">Study Materials</a></li>
+                    <li><a class="dropdown-item text-gray font-18" href="{% url 'StudentVideoMaterial' %}">Video Materials</a></li>
+                    <!-- <li><a class="dropdown-item text-gray font-18" href="{% url 'pending_verification' %}">Pending Student Verification</a></li>
+                    <li><a class="dropdown-item text-gray font-18" href="{% url 'registered' %}">Registered Student</a></li>
+                    <li><a class="dropdown-item text-gray font-18" href="{% url 'cancelledstudents' %}">Cancelled Student</a></li> -->
+                    {% endif %}
+                    
+                  </ul>
+                
+                
+              </div>
+            </div>
+          </div>
+         
+          <div id="maincontent" class="main-content col-md-12 col-lg-9 col-xl-10 mb-3">
+            
+              <div class="top-header outer-rectangle my-3 p-2">
+               
+                      <div class="top-header-left">
+                        <nav class="navbar navbar-light px-2">
+                         
+                          <button type="button" id="toggle" class="btn">
+                          <img src="/static/dict/images/navigation.png" alt="">
+                          </button>
+            
+            
+                        </nav>
+                        <div class="title-block">
+                          <h5 class="font-jakarta font-16 font-semibold mb-0">ciisindia.in</h5>
+                        </div>
+                      </div>
+                      <div class="top-header-right">
+                        <div class="user-items">
+                          <!-- <a href="#" class="text-darkblue text-uppercase text-decoration-none align-vertical">{% if request.user.is_superuser %}
+                            {{request.user.first_name}} {{request.user.last_name}}
+                            {% endif %}</a>
+                            
+                        <span class="dot align-vertical"></span>
+                        <a href=""><img class="align-vertical px-3" src="/media/navigation_logos/settings.png" alt=""></a> -->
+                        <a href="#" class="width-100" id="addRow"><button class="edit-btn user-btn red-btn font-jakarta font-semibold font-14">{% if request.user.is_superuser %}
+                          {{request.user.first_name}} {{request.user.last_name}}
+                          {% else %}{{request.user}}
+                          {% endif %}</button></a>
+                        <a href="/logout" class=" width-100" id="addRow"><button class="edit-btn logout-btn font-jakarta font-semibold font-14">Logout</button></a>
+                        </div>
+                        
+                      </div>
+              </div>
+          
+              {% block body %}
+
+              {% endblock body %}
+             
+                     
+              <div class="copyright-line  outer-rectangle   py-3 ">
+                <p class="font-16 text-darkblue text-center font-regular">Copyright &#169 2022. CIIS. All rights reserved.</p>
+              </div>
+            </div>
+             
+            
+  
+          </div>
+        </div>
+      </div>
+  
+      
+    <script src="{% static 'dict/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'dict/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- <script src="{% static 'js/jquery.validate.js' %}"></script> -->
+    <!-- <script src="{% static 'js/jquery.validate.min.js' %}"></script> -->
+    <!-- <script src="{% static 'js/additional-methods.js' %}"></script> -->
+    <!-- <script src="{% static 'js/additional-methods.min.js' %}"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!--<script src="{% static 'dict/js/custom.js' %}"></script>-->
+    <script>
+      $(document).ready(function(){
+        $("#toggle").click(function(){
+
+          $("#maincontent").toggleClass(" col-md-12 col-xl-12");
+          $("#navigation-bar").toggleClass("sm-hide-nav d-lg-none");
+        });
+        $("#file").change(function(){
+            $("#uploaded-file").text(this.files[0].name);
+        });
+      });
+  
+      
+    </script>
+    {% block script %}
+
+    {% endblock script %}
+</body>
+=======
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'dict/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'dict/css/google_fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'dict/css/style_homepage.css' %}" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <!-- <link href="{% static 'dict/css/jquery.datatables.min.css' %}" > -->
+    <!-- <link rel="stylesheet" href="{% static 'dict/css/buttons.dataTables.min.css' %}"> -->
+    <!--<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">-->
+    <!-- <link rel="stylesheet" href="{% static 'dict/css/fontawesome.5.11.2.css' %}"> -->
+    <!-- <link rel="stylesheet" href="{% static 'dict/css/fontawesome.css' %}"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="{% static 'dict/js/jquery.min.js' %}"></script>
+    <title>{% block title %} {% endblock title %}</title>
+
+    
+      
+    {% block head %}
+        
+    {% endblock head %}
+
+</head>
+<body>
+    <div class="container-fluid pages-body-bg-color">
+        <div class="row ">
+          <div class="col-5 col-sm-4  d-lg-block col-lg-3 col-xl-2">
+            <div id="navigation-bar" class=" outer-rectangle my-3   navigation sm-hide-nav show-nav " >
+              <div class=" h-100 show" id="nav-toggle">
+                  <ul class="nav flex-column  pt-3 " >
+                    <li class=" text-center py-3 pb-5 w-100 ">
+                      <a class="navbar-brand text-purewhite text-uppercase font-32 font-bold" href="{% url 'home' %}"><img src="{% static 'dict/images/ciis.png' %}" class="logo" alt="logo"></a>
+                    </li>
+                    <!-- {% if request.user.is_superuser %}
+                    <li class=" pt-3 pb-5">
+                      <div class="user-items">
+                        <span class="dot align-vertical mx-4"></span>
+                        <a href="{% url 'overview' %}" class="mx-3 align-vertical text-purewhite text-uppercase text-decoration-none font-26 font-bold">
+                         
+                          {{request.user.first_name}} {{request.user.last_name}}
+                        
+                        </a>
+      
+                      </div>
+                    </li>
+                    {% endif %} -->
+                    {% if request.user.is_superuser or request.user.is_data_entry %}
+                    <li class="nav-item w-100 ms-2">
+                      <a class="nav-link dashboard active text-gray font-20 me-3 mb-4" href="{% url 'overview' %}">
+                        <div class="link-items">
+                           <img class="img-bg-color align-vertical" src="/media/navigation_logos/dashboard.png" alt="">
+                        
+                        <span class="  align-vertical">Dashboard</span> 
+                      </div>
+                        </a>
+                    </li>
+
+                    
+                    <li class="nav-item dropdown w-100">
+                      
+                      <a class="nav-link  text-gray font-20" href="navbarStudentManangement" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="/media/navigation_logos/studentmanagement.png" alt="">     
+                       <span class="  align-vertical">Student Management</span> 
+                     </div>
+                       
+                        </a>
+                      
+                        <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarStudentManangement">
+
+                            <li><a class="dropdown-item text-gray font-16 " href="{% url 'addstudent' %}">Student Registration</a></li>
+                            <li><a class="dropdown-item text-gray font-16 " href="{% url 'quickaddstudent' %}">Quick Registration</a></li>  
+                            <li><a class="dropdown-item text-gray font-16" href="{% url 'viewpaymentstatus' %}">Payment Status</a></li> 
+                            <li><a class="dropdown-item text-gray font-16" href="{% url 'advancesearch' %}">Advanced Search</a></li>
+              
+                          <!--li><a class="dropdown-item text-gray font-18" href="{% url 'pending_verification' %}">Pending Student Verification</a></li-->
+                          
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown w-100">
+                      
+                      <a class="nav-link  text-gray font-20" href="navbarStudentManangement" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="/media/navigation_logos/program.png" alt="">     
+                       <span class="  align-vertical">View Students</span> 
+                     </div>
+                       
+                        </a>
+                      
+                        <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarStudentManangement">
+                         
+                           
+                            <li><a class="dropdown-item text-gray font-16 " href="{% url 'viewregister' %}">Registered Students</a></li> 
+                         
+                          <li><a class="dropdown-item text-gray font-16" href="{% url 'viewquickregister' %}">Quick Registered Students</a></li> 
+                          
+                        
+                            <li><a class="dropdown-item text-gray font-16 " href="{% url 'registered' %}">All Registered Students</a></li>
+                            <li><a class="dropdown-item text-gray font-16" href="{% url 'cancelledstudents' %}">Cancelled Students</a></li>
+                         
+                          
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      <a class="nav-link text-gray font-20" href="navbarMyCourse" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="/media/navigation_logos/mycourse.png" alt="">
+                       
+                       <span class="  align-vertical">Add course/subjects</span> 
+                     </div>
+                         </a>
+                         <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarMyCourse">
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'adduniversity' %}">Add University</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'addcourse' %}">Add Course</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'addstream' %}">Add Stream</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'addsubstream' %}">Add Sub Stream</a></li>
+                         </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      
+                      <a class="nav-link  text-gray font-20" href="navbarOthers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="/media/navigation_logos/studentmanagement.png" alt="">     
+                       <span class="  align-vertical">Other Students</span> 
+                     </div>
+                       
+                        </a>
+                      
+                        <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarOthers">
+
+                            <li><a class="dropdown-item text-gray font-16 " href="{% url 'addothersstudent' %}">Add Student</a></li>
+                            <li><a class="dropdown-item text-gray font-16 " href="{% url 'viewregisterother' %}">Edit Student</a></li>  
+                            <li><a class="dropdown-item text-gray font-16" href="{% url 'showstudents' %}">View Students</a></li> 
+                           
+              
+                          <!--li><a class="dropdown-item text-gray font-18" href="{% url 'pending_verification' %}">Pending Student Verification</a></li-->
+                          
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      <a class="nav-link text-gray font-20" href="navbarMiscellaneous" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="/media/navigation_logos/miscellaneous.png" alt="">
+                       
+                       <span class="  align-vertical">Miscellaneous</span> 
+                     </div>
+                       </a>
+                       <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarMiscellaneous">
+                        {% if request.user.is_superuser %}
+                        <li><a class="dropdown-item text-gray font-18" href="{% url 'usercreation' %}">User Creation</a></li>
+                       
+                        {% endif %}
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'changecourse' %}">Change Course</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'printaddress' %}">Print Address</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'change_password' %}">Change Password</a></li>
+                          
+                       </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      <a class="nav-link text-gray font-20" href="navbarFees" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="{% static 'dict/images/fees.png' %}" alt="">
+                       
+                       <span class="  align-vertical">Fees</span> 
+                     </div>
+                       </a>
+                       <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarFees">
+                        <li><a class="dropdown-item text-gray font-18" href="{% url 'addstreamfees' %}">Course Fees</a></li>
+                        {% if request.user.is_superuser %}
+                        <li><a href="{% url 'studentfees' %}" class="dropdown-item text-gray font-18">Student Fees</a></li>
+                        {% endif %}
+                       </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      <a class="nav-link text-gray font-20" href="navbarFees" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="{% static 'dict/images/exam.png' %}" alt="">
+                       
+                       <span class="  align-vertical">Examination</span> 
+                     </div>
+                       </a>
+                       <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarFees">
+                        <li><a class="dropdown-item text-gray font-18" href="{% url 'setexamination' %}">Set Examination</a></li>
+                        
+                        <li><a href="{% url 'checkresult' %}" class="dropdown-item text-gray font-18">Check Result</a></li>
+  
+                       </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      <a class="nav-link text-gray font-20" href="navbarMyCourse" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="/media/navigation_logos/mycourse.png" alt="">
+                       
+                       <span class="  align-vertical">Master Data</span> 
+                     </div>
+                         </a>
+                         <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarMyCourse">
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'paymentmode' %}">Add Payment Modes</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'feereceiptoption' %}">Add Fee Receipt Options</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'bankname' %}">Add Banks</a></li>
+                          <li><a class="dropdown-item text-gray font-18" href="{% url 'sessionname' %}">Add Sessions</a></li>
+                         </ul>
+                    </li>
+                    <li class="nav-item dropdown w-100">
+                      <a class="nav-link text-gray font-20" href="/logout" role="button" >
+                        <div class="link-items">
+                          <img class="img-bg-color align-vertical" src="{% static 'dict/images/logout (2).png' %}" alt="">
+                       
+                       <span class="  align-vertical">Logout</span> 
+                     </div>
+                       </a>
+                       
+                    </li>
+                    
+                    {% endif %}
+                    {% if request.user.is_student %}
+                    <li class="nav-item w-100 ms-2">
+                      <a class="nav-link dashboard active text-gray font-20 me-3 mb-4" href="{% url 'profile' %}">
+                        <div class="link-items">
+                           <img class="img-bg-color align-vertical" src="/media/navigation_logos/dashboard.png" alt="">
+                        
+                        <span class="  align-vertical">Profile</span> 
+                      </div>
+                        </a>
+                    </li>
+                    <li><a class="dropdown-item text-gray font-18" href="{% url 'studentdashboard' %}">Dashboard</a></li>
+                    <li><a class="dropdown-item text-gray font-18" href="{% url 'StudentStudyMaterial' %}">Study Materials</a></li>
+                    <li><a class="dropdown-item text-gray font-18" href="{% url 'StudentVideoMaterial' %}">Video Materials</a></li>
+                    <!-- <li><a class="dropdown-item text-gray font-18" href="{% url 'pending_verification' %}">Pending Student Verification</a></li>
+                    <li><a class="dropdown-item text-gray font-18" href="{% url 'registered' %}">Registered Student</a></li>
+                    <li><a class="dropdown-item text-gray font-18" href="{% url 'cancelledstudents' %}">Cancelled Student</a></li> -->
+                    {% endif %}
+                    
+                  </ul>
+                
+                
+              </div>
+            </div>
+          </div>
+         
+          <div id="maincontent" class="main-content col-md-12 col-lg-9 col-xl-10 mb-3">
+            
+              <div class="top-header outer-rectangle my-3 p-2">
+               
+                      <div class="top-header-left">
+                        <nav class="navbar navbar-light px-2">
+                         
+                          <button type="button" id="toggle" class="btn">
+                          <img src="/static/dict/images/navigation.png" alt="">
+                          </button>
+            
+            
+                        </nav>
+                        <div class="title-block">
+                          <h5 class="font-jakarta font-16 font-semibold mb-0">ciisindia.in</h5>
+                        </div>
+                      </div>
+                      <div class="top-header-right">
+                        <div class="user-items">
+                          <!-- <a href="#" class="text-darkblue text-uppercase text-decoration-none align-vertical">{% if request.user.is_superuser %}
+                            {{request.user.first_name}} {{request.user.last_name}}
+                            {% endif %}</a>
+                            
+                        <span class="dot align-vertical"></span>
+                        <a href=""><img class="align-vertical px-3" src="/media/navigation_logos/settings.png" alt=""></a> -->
+                        <a href="#" class="width-100" id="addRow"><button class="edit-btn user-btn red-btn font-jakarta font-semibold font-14">{% if request.user.is_superuser %}
+                          {{request.user.first_name}} {{request.user.last_name}}
+                          {% else %}{{request.user}}
+                          {% endif %}</button></a>
+                        <a href="/logout" class=" width-100" id="addRow"><button class="edit-btn logout-btn font-jakarta font-semibold font-14">Logout</button></a>
+                        </div>
+                        
+                      </div>
+              </div>
+          
+              {% block body %}
+
+              {% endblock body %}
+             
+                     
+              <div class="copyright-line  outer-rectangle   py-3 ">
+                <p class="font-16 text-darkblue text-center font-regular">Copyright &#169 2022. CIIS. All rights reserved.</p>
+              </div>
+            </div>
+             
+            
+  
+          </div>
+        </div>
+      </div>
+  
+      
+    <script src="{% static 'dict/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'dict/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- <script src="{% static 'js/jquery.validate.js' %}"></script> -->
+    <!-- <script src="{% static 'js/jquery.validate.min.js' %}"></script> -->
+    <!-- <script src="{% static 'js/additional-methods.js' %}"></script> -->
+    <!-- <script src="{% static 'js/additional-methods.min.js' %}"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!--<script src="{% static 'dict/js/custom.js' %}"></script>-->
+    <script>
+      $(document).ready(function(){
+        $("#toggle").click(function(){
+
+          $("#maincontent").toggleClass(" col-md-12 col-xl-12");
+          $("#navigation-bar").toggleClass("sm-hide-nav d-lg-none");
+        });
+        $("#file").change(function(){
+            $("#uploaded-file").text(this.files[0].name);
+        });
+      });
+  
+      
+    </script>
+    {% block script %}
+
+    {% endblock script %}
+</body>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+</html>

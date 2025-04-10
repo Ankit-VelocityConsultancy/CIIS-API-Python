@@ -1,0 +1,604 @@
+<<<<<<< HEAD
+{% extends 'admin.html' %}
+{% load static %}
+{% block head %}
+<style>
+    main {
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+</style>
+{% endblock head %}
+
+
+{% block nav %}
+<header>
+  <!-- Sidebar -->
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+    <div class="position-sticky">
+      <div class="list-group list-group-flush mx-3 mt-4">
+        <a href="{% url 'overview' %}" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+        </a>
+
+
+        <ul class="list-unstyled ps-0">
+          <li class="">
+            <button class="list-group-item list-group-item-action py-2 ripple active" data-bs-toggle="collapse"
+              data-bs-target="#dashboard-collapse" aria-expanded="true">
+              <i class="fas fa-users-cog fa-fw me-3"></i><span>Stud Management</span>
+            </button>
+            <div class="collapse" id="dashboard-collapse">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Student Registration</a></li>
+                <li><a href="{% url 'additionaldetail' %}" class="link-dark rounded">Additional Details</a></li>
+                <li><a href="{% url 'advancesearch' %}" class="link-dark rounded">Advanced Search</a></li>
+                <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Pending Student Verification</a></li>
+                <li><a href="{% url 'registered' %}" class="link-dark rounded">Registered Student</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <ul class="list-unstyled ps-0">
+          <li class="">
+            <button class="list-group-item list-group-item-action py-2 ripple active" data-bs-toggle="collapse"
+              data-bs-target="#course-collapse" aria-expanded="true">
+              <i class="fas fa-users-cog fa-fw me-3"></i><span>My Course/Subject</span>
+            </button>
+            <div class="collapse" id="course-collapse">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <li><a href="{% url 'addcourse' %}" class="link-dark rounded">My Course</a></li>
+                <li><a href="{% url 'addstream' %}" class="link-dark rounded">My Subject</a></li>
+                <li><a href="{% url 'adduniversity' %}" class="link-dark rounded">My University</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        
+        <ul class="list-unstyled ps-0">
+            <li class="">
+                <button class="list-group-item list-group-item-action py-2 ripple active"
+                    data-bs-toggle="collapse" data-bs-target="#miscelanous-collapse" aria-expanded="true">
+                    <i class="fas fa-users-cog fa-fw me-3"></i><span>Miscelanous</span>
+                </button>
+                <div class="collapse" id="miscelanous-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'usercreation' %}" class="link-dark rounded">User Creation</a></li>
+                        <li><a href="{% url 'printaddress' %}" class="link-dark rounded">Print Address</a></li>
+                        
+                    </ul>
+                </div>
+            </li>
+        </ul>
+        <ul class="list-unstyled ps-0">
+          <li class="">
+              <button class="list-group-item list-group-item-action py-2 ripple active"
+                  data-bs-toggle="collapse" data-bs-target="#fees-collapse" aria-expanded="true">
+                  <i class="fas fa-users-cog fa-fw me-3"></i><span>Fees</span>
+              </button>
+              <div class="collapse" id="fees-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                      <li><a href="{% url 'addfees' %}" class="link-dark rounded">Subject Fees</a></li>
+                      <li><a href="{% url 'editoldfees' %}" class="link-dark rounded">Student Fees</a></li>
+                  </ul>
+              </div>
+          </li>
+      </ul>
+        
+        <a href="{% url 'sendemail' %}" class="list-group-item list-group-item-action py-2 ripple"
+                    aria-current="true">
+                    <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Send Email</span>
+                </a>
+
+
+        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+          class="fas fa-sign-out-alt fa-fw me-3"></i><span>Logout</span></a>
+
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+
+  <!-- Navbar -->
+  <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+            aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Brand -->
+        <a class="navbar-brand" href="#">
+            <img src="" height="25" alt="" loading="lazy" />
+        </a>
+        <!-- Search form -->
+        <form class="d-none d-md-flex input-group w-auto my-auto">
+            <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                style="min-width: 225px" />
+            <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+        </form>
+
+        <!-- Right links -->
+        <ul class="navbar-nav ms-auto d-flex flex-row">
+            
+
+            <li class="nav-item dropdown">
+                <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </li>
+
+           
+
+            <!-- Avatar -->
+            <li class="nav-item dropdown">
+               
+                <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                        height="22" alt="" loading="lazy" />
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#">My profile</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- Container wrapper -->
+</nav>
+  <!-- Navbar -->
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+<div class="container">
+    <div class="form">
+        <div class="header-tag">
+            <h3>Enter Enrollment ID</h3>
+        </div>
+        <form action="" method="POST" id="enrollform">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="mb-3">
+                        <label for="enroll_id" class="form-label">Enroll ID</label>
+                        <input type="text" name="enrollid" class="form-control" id="enroll_id"
+                            style="margin-top: -10px;">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <button type="submit" class="btn btn-primary" style="margin-top:20px;">Search</button>
+                </div>
+                <div class="col-sm-5">
+
+                    <h3 id="notfound" style="color:red;margin-top:20px ;"></h3>
+
+                </div>
+            </div>
+        </form>
+
+        <div class="disabledView" id="disabledView" style="visibility: hidden;">
+
+            <form action="" method="POST" id="emailform">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" placeholder="eg. JOB Application !">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="emailID" class="form-label">Email ID</label>
+                            <input type="email" class="form-control" id="emailID" placeholder="eg. abc@abcd.com">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-floating">
+                            <textarea class="form-control" placeholder="Message To Send..!" id="MessageArea"
+                                style="height: 300px"></textarea>
+                            <label for="MessageArea">Message</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-success" >Send</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+<script language="JavaScript">
+
+    $(document).ready(function () {
+        $('#enrollform').submit(function () { // catch the form's submit event
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'enroll_id': $('#enroll_id').val()
+                }, // get the form data
+                type: 'POST', // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'sendemail' %}", // the file to call
+                success: function (response) { // on success..
+                    console.log(response);
+                    $('#notfound').html('')
+                    if (response.student == "yes") {
+                        $('#disabledView').css('visibility', 'visible');
+                        $('#emailID').val(response.details.email);
+                    }
+                    else {
+                        $('#disabledView').css('visibility', 'hidden');
+                        $('#notfound').html('Student Not Found !')
+                    }
+                    // var subject = $('#subject').val();
+                    // var email = $('#emailID').val();
+                    // var message = $('#MessageArea').val();
+                    // console.log(subject);
+                    // console.log(email);
+                    // console.log(message);
+                    
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+<script language="JavaScript">
+    $(document).ready(function () {
+        $('#emailform').submit(function () { // catch the form's submit event
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'subject':$('#subject').val(),
+                    'email':$('#emailID').val(),
+                    'message':$('#MessageArea').val()
+                }, // get the form data
+                type: 'POST', // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'sendemail' %}", // the file to call
+                success: function (response) { // on success..
+                    console.log(response);
+                    if(response.sent == "yes"){
+                        $('#subject').val('');
+                        $('#emailID').val('');
+                        $('#MessageArea').val('');
+                        $('#disabledView').css('visibility', 'hidden');
+                        $('#enroll_id').val('')
+                    }
+                    
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+=======
+{% extends 'admin.html' %}
+{% load static %}
+{% block head %}
+<style>
+    main {
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+</style>
+{% endblock head %}
+
+
+{% block nav %}
+<header>
+  <!-- Sidebar -->
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+    <div class="position-sticky">
+      <div class="list-group list-group-flush mx-3 mt-4">
+        <a href="{% url 'overview' %}" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+        </a>
+
+
+        <ul class="list-unstyled ps-0">
+          <li class="">
+            <button class="list-group-item list-group-item-action py-2 ripple active" data-bs-toggle="collapse"
+              data-bs-target="#dashboard-collapse" aria-expanded="true">
+              <i class="fas fa-users-cog fa-fw me-3"></i><span>Stud Management</span>
+            </button>
+            <div class="collapse" id="dashboard-collapse">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Student Registration</a></li>
+                <li><a href="{% url 'additionaldetail' %}" class="link-dark rounded">Additional Details</a></li>
+                <li><a href="{% url 'advancesearch' %}" class="link-dark rounded">Advanced Search</a></li>
+                <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Pending Student Verification</a></li>
+                <li><a href="{% url 'registered' %}" class="link-dark rounded">Registered Student</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <ul class="list-unstyled ps-0">
+          <li class="">
+            <button class="list-group-item list-group-item-action py-2 ripple active" data-bs-toggle="collapse"
+              data-bs-target="#course-collapse" aria-expanded="true">
+              <i class="fas fa-users-cog fa-fw me-3"></i><span>My Course/Subject</span>
+            </button>
+            <div class="collapse" id="course-collapse">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <li><a href="{% url 'addcourse' %}" class="link-dark rounded">My Course</a></li>
+                <li><a href="{% url 'addstream' %}" class="link-dark rounded">My Subject</a></li>
+                <li><a href="{% url 'adduniversity' %}" class="link-dark rounded">My University</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        
+        <ul class="list-unstyled ps-0">
+            <li class="">
+                <button class="list-group-item list-group-item-action py-2 ripple active"
+                    data-bs-toggle="collapse" data-bs-target="#miscelanous-collapse" aria-expanded="true">
+                    <i class="fas fa-users-cog fa-fw me-3"></i><span>Miscelanous</span>
+                </button>
+                <div class="collapse" id="miscelanous-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'usercreation' %}" class="link-dark rounded">User Creation</a></li>
+                        <li><a href="{% url 'printaddress' %}" class="link-dark rounded">Print Address</a></li>
+                        
+                    </ul>
+                </div>
+            </li>
+        </ul>
+        <ul class="list-unstyled ps-0">
+          <li class="">
+              <button class="list-group-item list-group-item-action py-2 ripple active"
+                  data-bs-toggle="collapse" data-bs-target="#fees-collapse" aria-expanded="true">
+                  <i class="fas fa-users-cog fa-fw me-3"></i><span>Fees</span>
+              </button>
+              <div class="collapse" id="fees-collapse">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                      <li><a href="{% url 'addfees' %}" class="link-dark rounded">Subject Fees</a></li>
+                      <li><a href="{% url 'editoldfees' %}" class="link-dark rounded">Student Fees</a></li>
+                  </ul>
+              </div>
+          </li>
+      </ul>
+        
+        <a href="{% url 'sendemail' %}" class="list-group-item list-group-item-action py-2 ripple"
+                    aria-current="true">
+                    <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Send Email</span>
+                </a>
+
+
+        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+          class="fas fa-sign-out-alt fa-fw me-3"></i><span>Logout</span></a>
+
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+
+  <!-- Navbar -->
+  <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+            aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Brand -->
+        <a class="navbar-brand" href="#">
+            <img src="" height="25" alt="" loading="lazy" />
+        </a>
+        <!-- Search form -->
+        <form class="d-none d-md-flex input-group w-auto my-auto">
+            <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                style="min-width: 225px" />
+            <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+        </form>
+
+        <!-- Right links -->
+        <ul class="navbar-nav ms-auto d-flex flex-row">
+            
+
+            <li class="nav-item dropdown">
+                <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </li>
+
+           
+
+            <!-- Avatar -->
+            <li class="nav-item dropdown">
+               
+                <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                        height="22" alt="" loading="lazy" />
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#">My profile</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- Container wrapper -->
+</nav>
+  <!-- Navbar -->
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+<div class="container">
+    <div class="form">
+        <div class="header-tag">
+            <h3>Enter Enrollment ID</h3>
+        </div>
+        <form action="" method="POST" id="enrollform">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="mb-3">
+                        <label for="enroll_id" class="form-label">Enroll ID</label>
+                        <input type="text" name="enrollid" class="form-control" id="enroll_id"
+                            style="margin-top: -10px;">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <button type="submit" class="btn btn-primary" style="margin-top:20px;">Search</button>
+                </div>
+                <div class="col-sm-5">
+
+                    <h3 id="notfound" style="color:red;margin-top:20px ;"></h3>
+
+                </div>
+            </div>
+        </form>
+
+        <div class="disabledView" id="disabledView" style="visibility: hidden;">
+
+            <form action="" method="POST" id="emailform">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" placeholder="eg. JOB Application !">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label for="emailID" class="form-label">Email ID</label>
+                            <input type="email" class="form-control" id="emailID" placeholder="eg. abc@abcd.com">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-floating">
+                            <textarea class="form-control" placeholder="Message To Send..!" id="MessageArea"
+                                style="height: 300px"></textarea>
+                            <label for="MessageArea">Message</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-success" >Send</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+<script language="JavaScript">
+
+    $(document).ready(function () {
+        $('#enrollform').submit(function () { // catch the form's submit event
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'enroll_id': $('#enroll_id').val()
+                }, // get the form data
+                type: 'POST', // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'sendemail' %}", // the file to call
+                success: function (response) { // on success..
+                    console.log(response);
+                    $('#notfound').html('')
+                    if (response.student == "yes") {
+                        $('#disabledView').css('visibility', 'visible');
+                        $('#emailID').val(response.details.email);
+                    }
+                    else {
+                        $('#disabledView').css('visibility', 'hidden');
+                        $('#notfound').html('Student Not Found !')
+                    }
+                    // var subject = $('#subject').val();
+                    // var email = $('#emailID').val();
+                    // var message = $('#MessageArea').val();
+                    // console.log(subject);
+                    // console.log(email);
+                    // console.log(message);
+                    
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+<script language="JavaScript">
+    $(document).ready(function () {
+        $('#emailform').submit(function () { // catch the form's submit event
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'subject':$('#subject').val(),
+                    'email':$('#emailID').val(),
+                    'message':$('#MessageArea').val()
+                }, // get the form data
+                type: 'POST', // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'sendemail' %}", // the file to call
+                success: function (response) { // on success..
+                    console.log(response);
+                    if(response.sent == "yes"){
+                        $('#subject').val('');
+                        $('#emailID').val('');
+                        $('#MessageArea').val('');
+                        $('#disabledView').css('visibility', 'hidden');
+                        $('#enroll_id').val('')
+                    }
+                    
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

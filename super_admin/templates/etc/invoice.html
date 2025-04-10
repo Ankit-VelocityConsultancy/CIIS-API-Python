@@ -1,0 +1,362 @@
+<<<<<<< HEAD
+{% extends 'admin.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2022.2.802/styles/kendo.default-ocean-blue.min.css">
+
+<script src="https://kendo.cdn.telerik.com/2022.2.802/js/jquery.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2022.2.802/js/jszip.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2022.2.802/js/kendo.all.min.js"></script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap');
+
+    body {
+        margin-left: -150px;
+        font-family: 'Maven Pro', sans-serif;
+        background-color: #f12369
+    }
+
+    hr {
+        color: #0000004f;
+        margin-top: 5px;
+        margin-bottom: 5px
+    }
+
+    .add td {
+        color: #c5c4c4;
+        text-transform: uppercase;
+        font-size: 12px
+    }
+
+    .content {
+        font-size: 14px
+    }
+
+    
+</style>
+<style type="text/css" media="print">
+    
+    @page {
+    size: auto;   /* auto is the initial value */
+    margin: 0;  /* this affects the margin in the printer settings */
+}
+@media print {
+        body * {
+            visibility: hidden;
+        }
+        .print_form,
+        .print_form *:not(.print_button) {
+            
+            visibility: visible;
+            
+        }
+        
+    }
+</style>
+{% endblock head %}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<div class="container mt-5 mb-3 print_form  content-wrapper" id="">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="d-flex flex-row p-2"> <img src="https://i.imgur.com/vzlPPh3.png" width="48">
+                    <div class="d-flex flex-column"> <span class="font-weight-bold">Tax Invoice</span>
+                        <small>INV-001</small>
+                    </div>
+
+                    <div class="d-flex flex-column ">
+                        <button class="btn btn-secondary print_button" style="position: absolute;right: 50px;" target="_blank"
+                            style="cursor:pointer;" onclick="print_screen()">Print</button>
+                    </div>
+
+                </div>
+                <hr>
+                <div class="table-responsive p-2">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr class="add">
+                                <td>To</td>
+                                <td>From</td>
+                            </tr>
+                            <tr class="content">
+                                <td class="font-weight-bold">{{data.first_name}} {{data.middle_name}} {{data.last_name}}
+                                    <br>{{data.city}} {{data.state}} {{data.country}}
+                                </td>
+                                <td class="font-weight-bold">CIIS <br> Mumbai Maharashtra India</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <div class="products p-2">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr class="add">
+                                <td>Description</td>
+                                <td>Total Fees</td>
+                                <td class="text-center">Paid</td>
+                            </tr>
+                            <tr class="content">
+                                <td>Semester/Year <strong>{{data.semesteryear}}</strong> Fees</td>
+                                <td>Rs. {{data.fees}}</td>
+                                <td class="text-center">Rs. {{data.paid}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <div class="products p-2">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr class="add">
+                                <td></td>
+                                <td></td>
+                                <td class="text-center">Transaction ID</td>
+                                <td class="text-center">Transaction Time</td>
+                            </tr>
+                            <tr class="content">
+                                <td></td>
+                                <td></td>
+                                <td class="text-center">{{data.transactionID}}</td>
+                                <td class="text-center">{{data.transactiontime}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <div class="address p-2">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr class="add">
+                                <td>Summary</td>
+                            </tr>
+                            <tr class="content">
+                                <td> Semester/Year <strong>{{data.semesteryear}}</strong> Fees Status :
+                                    <strong>PAID</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<script type="text/javascript">
+    function print_screen() {
+        window.print();
+    }
+</script>
+
+<script>
+//     $(".export-pdf").click(function() {
+//     // Convert the DOM element to a drawing using kendo.drawing.drawDOM
+   
+// });
+kendo.drawing.drawDOM($(".content-wrapper"))
+    .then(function(group) {
+        // Render the result as a PDF file
+        return kendo.drawing.exportPDF(group, {
+            paperSize: "auto",
+            margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
+        });
+    })
+    .done(function(data) {
+        // Save the PDF file
+        kendo.saveAs({
+            dataURI: data,
+            fileName: "HR-Dashboard.pdf",
+            proxyURL: "https://demos.telerik.com/kendo-ui/service/export"
+        });
+    });
+</script>
+
+
+=======
+{% extends 'admin.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2022.2.802/styles/kendo.default-ocean-blue.min.css">
+
+<script src="https://kendo.cdn.telerik.com/2022.2.802/js/jquery.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2022.2.802/js/jszip.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2022.2.802/js/kendo.all.min.js"></script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap');
+
+    body {
+        margin-left: -150px;
+        font-family: 'Maven Pro', sans-serif;
+        background-color: #f12369
+    }
+
+    hr {
+        color: #0000004f;
+        margin-top: 5px;
+        margin-bottom: 5px
+    }
+
+    .add td {
+        color: #c5c4c4;
+        text-transform: uppercase;
+        font-size: 12px
+    }
+
+    .content {
+        font-size: 14px
+    }
+
+    
+</style>
+<style type="text/css" media="print">
+    
+    @page {
+    size: auto;   /* auto is the initial value */
+    margin: 0;  /* this affects the margin in the printer settings */
+}
+@media print {
+        body * {
+            visibility: hidden;
+        }
+        .print_form,
+        .print_form *:not(.print_button) {
+            
+            visibility: visible;
+            
+        }
+        
+    }
+</style>
+{% endblock head %}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<div class="container mt-5 mb-3 print_form  content-wrapper" id="">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="d-flex flex-row p-2"> <img src="https://i.imgur.com/vzlPPh3.png" width="48">
+                    <div class="d-flex flex-column"> <span class="font-weight-bold">Tax Invoice</span>
+                        <small>INV-001</small>
+                    </div>
+
+                    <div class="d-flex flex-column ">
+                        <button class="btn btn-secondary print_button" style="position: absolute;right: 50px;" target="_blank"
+                            style="cursor:pointer;" onclick="print_screen()">Print</button>
+                    </div>
+
+                </div>
+                <hr>
+                <div class="table-responsive p-2">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr class="add">
+                                <td>To</td>
+                                <td>From</td>
+                            </tr>
+                            <tr class="content">
+                                <td class="font-weight-bold">{{data.first_name}} {{data.middle_name}} {{data.last_name}}
+                                    <br>{{data.city}} {{data.state}} {{data.country}}
+                                </td>
+                                <td class="font-weight-bold">CIIS <br> Mumbai Maharashtra India</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <div class="products p-2">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr class="add">
+                                <td>Description</td>
+                                <td>Total Fees</td>
+                                <td class="text-center">Paid</td>
+                            </tr>
+                            <tr class="content">
+                                <td>Semester/Year <strong>{{data.semesteryear}}</strong> Fees</td>
+                                <td>Rs. {{data.fees}}</td>
+                                <td class="text-center">Rs. {{data.paid}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <div class="products p-2">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr class="add">
+                                <td></td>
+                                <td></td>
+                                <td class="text-center">Transaction ID</td>
+                                <td class="text-center">Transaction Time</td>
+                            </tr>
+                            <tr class="content">
+                                <td></td>
+                                <td></td>
+                                <td class="text-center">{{data.transactionID}}</td>
+                                <td class="text-center">{{data.transactiontime}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <div class="address p-2">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr class="add">
+                                <td>Summary</td>
+                            </tr>
+                            <tr class="content">
+                                <td> Semester/Year <strong>{{data.semesteryear}}</strong> Fees Status :
+                                    <strong>PAID</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<script type="text/javascript">
+    function print_screen() {
+        window.print();
+    }
+</script>
+
+<script>
+//     $(".export-pdf").click(function() {
+//     // Convert the DOM element to a drawing using kendo.drawing.drawDOM
+   
+// });
+kendo.drawing.drawDOM($(".content-wrapper"))
+    .then(function(group) {
+        // Render the result as a PDF file
+        return kendo.drawing.exportPDF(group, {
+            paperSize: "auto",
+            margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
+        });
+    })
+    .done(function(data) {
+        // Save the PDF file
+        kendo.saveAs({
+            dataURI: data,
+            fileName: "HR-Dashboard.pdf",
+            proxyURL: "https://demos.telerik.com/kendo-ui/service/export"
+        });
+    });
+</script>
+
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

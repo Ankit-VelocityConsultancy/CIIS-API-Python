@@ -1,0 +1,143 @@
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>OVERVIEW - CIIS</title>
+
+
+
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+
+
+<div class="overview-page pages-body-bg-color pt-5">
+
+
+
+ 
+  <section class="overview-pendingfees-section pt-4">
+    <div class="pending-fees-table " >
+      <h3 class="font-20 text-darkblue font-bold">Payment Status</h3>
+      <table class="table format-table details-table" id="pending-fees-table">
+        <thead>
+          <tr>
+            <th scope="col">Sr.No</th>
+            <th scope="col">Name</th>
+            <th scope="col">Course</th>
+            <th scope="col">Stream</th>
+            <th scope="col">Sem/Year</th>
+            <th scope="col">Transaction ID</th>
+            <th scope="col">Uncleared Amount</th>
+            <th scope="col">Payment Status</th>
+            <th scope="col">Update Status</th>
+            <th scope="col">Action</th>
+            
+            
+          </tr>
+        </thead>
+        <tbody id="payment_reciept_table_body">
+          {% for i in payment_student %}
+          <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td class="font-14 font-bold text-extralightgray">{{i.name}}</td>
+            <td class="font-14 font-bold text-extralightgray">{{i.course}}</td>
+            <td class="font-14 font-bold text-extralightgray">{{i.stream}}</td>
+            <td class="font-14 font-bold text-extralightgray">{{i.current_semester}}</td>
+            <td class="font-14 font-bold text-extralightgray">{{i.transactionID}}</td>
+            <td class="font-14 font-bold text-extralightgray">{{i.uncleared_amount}}</td>
+            {% if i.payment_status == "Not Realised" %}
+            <td class="font-14 font-bold text-extralightgray" style="background-color: red;color:#FFF;">{{i.payment_status}}</td>  
+            {% endif %}
+            <td class="font-14 font-bold text-extralightgray">
+              <select class="session font-14 font-bold text-extralightgray" id="selected_payment_status{{i.payment_reciept_id}}" aria-label="Default select example">
+                <option selected>Select Status</option>
+                <option value="Realised">Realised</option>
+              </select>
+            </td>
+            <td class="font-14 font-bold text-extralightgray">
+              <button class="blue-bg text-blue font-bold font-12 no-border" onclick="update_payment('{{i.payment_reciept_id}}',$(`#selected_payment_status{{i.payment_reciept_id}}`).val())" >Update</button>
+            </td>
+            
+            
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+  
+
+
+
+
+
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+{% block script %}
+
+    
+<script>
+  $(document).ready( function () {
+    $('#student-table').DataTable();
+    $('#quick-student-table').DataTable();
+} );
+
+$(document).ready( function () {
+    $('#pending-fees-table').DataTable();
+} );
+
+function update_payment(id,status){
+  if(status == "Realised"){
+  console.log(id,status)
+  $.ajax({
+    type: "POST",
+    url: "{% url 'overview' %}",
+    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    data: {
+        'payment_reciept_id': id,
+        'payment_reciept_status': status
+    },
+    success: function (response) {
+      var data = response.data;
+      // console.log(data)
+      $('#payment_reciept_table_body').empty()
+      var count = 0;
+      data.forEach(myFunction);
+      function myFunction(item,count){
+        count = count+1;
+        
+        $('#payment_reciept_table_body').append(`
+        <tr>
+          <th scope="row">${count}</th>
+          <td>${item.name}</td>
+          <td>${item.course}</td>
+          <td>${item.stream}</td>
+          <td>${item.current_semester}</td>
+          <td>${item.transactionID}</td>
+          <td>${item.uncleared_amount}</td>
+          <td style="background-color: red;color:#FFF">${item.payment_status}</td>  
+          <td>
+            <select class="form-select" id="selected_payment_status${item.payment_reciept_id}" aria-label="Default select example">
+              <option selected>Select Status</option>
+              <option value="Realised">Realised</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn btn-success" onclick="update_payment(${item.payment_reciept_id},$('#selected_payment_status${item.payment_reciept_id}').val())" >Update</button>
+          </td>
+        </tr>
+        `);
+        
+        }
+
+    }
+});
+  }
+}
+</script>
+{% endblock script %}
+{% endblock body %}

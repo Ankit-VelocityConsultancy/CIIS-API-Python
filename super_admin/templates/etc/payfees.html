@@ -1,0 +1,906 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{% static 'dict/#css/bootstrap.min.css' %}" />
+  <script src="{% static 'dict/#js/jquery.js' %}" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  {% if display == "yes" %}
+  <div class="container">
+    <h1 class="text-center">Welcome</h1>
+
+    <form action="" method="POST" class="text-center">
+      {% csrf_token %}
+
+      <!-- {% if fees.semester == "1" %}
+            
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label for="sem1" class="form-label">Semester 1</label>
+                      <input type="text" disabled name="sem1" class="form-control" id="sem1" value="{{fees.sem1}}" style="margin-top: -10px;">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label for="paidsem1" class="form-label">Paid</label>
+                      <input type="text" disabled name="paidsem1" class="form-control" id="paidsem1" value="{{fees.sem1paid}}" style="margin-top: -10px;">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                        <label for="pendingsem1" class="form-label">Pending</label>
+                        <input type="text" disabled name="pendingsem1" class="form-control" id="pendingsem1" value="{{fees.pendingsem1}}" style="margin-top: -10px;">
+                      </div>
+                  </div>
+            </div>
+            {% if fees.sem1paid != fees.sem1 %}
+            <div class="row">
+                <div class="col-sm-4">
+                    <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+                </div>
+                <div class="col-sm-2">
+                    <div class="mb-3">
+                        <label for="pay_amount" class="form-label">Amount</label>
+                        <input type="text"  name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem1}}" style="margin-top: -10px;">
+                      </div>
+                </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-primary mt-4" type="submit">Pay</button>
+                </div>
+            </div>
+            {% endif %}
+            {% elif not fees.sem2paid %}
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label for="sem1" class="form-label">Semester 1</label>
+                      <input type="text" disabled name="sem1" class="form-control" id="sem1" value="{{fees.sem1}}" style="margin-top: -10px;">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label for="paidsem1" class="form-label">Paid</label>
+                      <input type="text" disabled name="paidsem1" class="form-control" id="paidsem1" value="{{fees.sem1paid}}" style="margin-top: -10px;">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                        <label for="pendingsem1" class="form-label">Pending</label>
+                        <input type="text" disabled name="pendingsem1" class="form-control" id="pendingsem1" value="{{fees.pendingsem1}}" style="margin-top: -10px;">
+                      </div>
+                  </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label for="sem1" class="form-label">Semester 1</label>
+                      <input type="text" disabled name="sem1" class="form-control" id="sem1" value="{{fees.sem1}}" style="margin-top: -10px;">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label for="paidsem1" class="form-label">Paid</label>
+                      <input type="text" disabled name="paidsem1" class="form-control" id="paidsem1" value="{{fees.sem1paid}}" style="margin-top: -10px;">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                        <label for="pendingsem1" class="form-label">Pending</label>
+                        <input type="text" disabled name="pendingsem1" class="form-control" id="pendingsem1" value="{{fees.pendingsem1}}" style="margin-top: -10px;">
+                      </div>
+                  </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+                </div>
+                <div class="col-sm-2">
+                    <div class="mb-3">
+                        <label for="pay_amount" class="form-label">Amount</label>
+                        <input type="text"  name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem1}}" style="margin-top: -10px;">
+                      </div>
+                </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-primary mt-4" type="submit">Pay</button>
+                </div>
+            </div>
+            {% endif %} -->
+      {% if fees.semester == "1" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem1" class="form-label">Semester 1</label>
+            <input type="text" disabled name="sem1" class="form-control" id="sem1" value="{{fees.sem1}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem1" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem1" class="form-control" id="paidsem1" value="{{fees.sem1paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem1" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem1" class="form-control" id="pendingsem1"
+              value="{{fees.pendingsem1}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem1paid != fees.sem1 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem1}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "2" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem2" class="form-label">Semester 2</label>
+            <input type="text" disabled name="sem2" class="form-control" id="sem2" value="{{fees.sem2}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem2" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem2" class="form-control" id="paidsem2" value="{{fees.sem2paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem2" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem2" class="form-control" id="pendingsem2"
+              value="{{fees.pendingsem2}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem2paid != fees.sem2 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem2}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "3" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem3" class="form-label">Semester 3</label>
+            <input type="text" disabled name="sem3" class="form-control" id="sem3" value="{{fees.sem3}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem3" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem3" class="form-control" id="paidsem3" value="{{fees.sem3paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem3" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem3" class="form-control" id="pendingsem3"
+              value="{{fees.pendingsem3}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem3paid != fees.sem3 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem3}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "4" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem4" class="form-label">Semester 4</label>
+            <input type="text" disabled name="sem4" class="form-control" id="sem4" value="{{fees.sem4}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem4" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem4" class="form-control" id="paidsem4" value="{{fees.sem4paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem4" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem4" class="form-control" id="pendingsem4"
+              value="{{fees.pendingsem4}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem4paid != fees.sem4 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem4}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "5" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem5" class="form-label">Semester 5</label>
+            <input type="text" disabled name="sem5" class="form-control" id="sem5" value="{{fees.sem5}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem5" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem5" class="form-control" id="paidsem5" value="{{fees.sem5paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem5" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem5" class="form-control" id="pendingsem5"
+              value="{{fees.pendingsem5}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem5paid != fees.sem5 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem5}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "6" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem6" class="form-label">Semester 6</label>
+            <input type="text" disabled name="sem6" class="form-control" id="sem6" value="{{fees.sem6}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem6" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem6" class="form-control" id="paidsem6" value="{{fees.sem6paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem6" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem6" class="form-control" id="pendingsem6"
+              value="{{fees.pendingsem6}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem6paid != fees.sem6 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem6}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "7" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem7" class="form-label">Semester 7</label>
+            <input type="text" disabled name="sem7" class="form-control" id="sem7" value="{{fees.sem7}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem7" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem7" class="form-control" id="paidsem7" value="{{fees.sem7paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem7" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem7" class="form-control" id="pendingsem7"
+              value="{{fees.pendingsem7}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem7paid != fees.sem7 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem7}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "8" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem8" class="form-label">Semester 8</label>
+            <input type="text" disabled name="sem8" class="form-control" id="sem8" value="{{fees.sem8}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem8" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem8" class="form-control" id="paidsem8" value="{{fees.sem8paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem8" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem8" class="form-control" id="pendingsem8"
+              value="{{fees.pendingsem8}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem8paid != fees.sem8 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem8}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% endif %}
+    </form>
+
+  </div>
+  {% endif %}
+  <script type="text/javascript" src="{% static 'dict/#js/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+=======
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{% static 'dict/#css/bootstrap.min.css' %}" />
+  <script src="{% static 'dict/#js/jquery.js' %}" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  {% if display == "yes" %}
+  <div class="container">
+    <h1 class="text-center">Welcome</h1>
+
+    <form action="" method="POST" class="text-center">
+      {% csrf_token %}
+
+      <!-- {% if fees.semester == "1" %}
+            
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label for="sem1" class="form-label">Semester 1</label>
+                      <input type="text" disabled name="sem1" class="form-control" id="sem1" value="{{fees.sem1}}" style="margin-top: -10px;">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label for="paidsem1" class="form-label">Paid</label>
+                      <input type="text" disabled name="paidsem1" class="form-control" id="paidsem1" value="{{fees.sem1paid}}" style="margin-top: -10px;">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                        <label for="pendingsem1" class="form-label">Pending</label>
+                        <input type="text" disabled name="pendingsem1" class="form-control" id="pendingsem1" value="{{fees.pendingsem1}}" style="margin-top: -10px;">
+                      </div>
+                  </div>
+            </div>
+            {% if fees.sem1paid != fees.sem1 %}
+            <div class="row">
+                <div class="col-sm-4">
+                    <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+                </div>
+                <div class="col-sm-2">
+                    <div class="mb-3">
+                        <label for="pay_amount" class="form-label">Amount</label>
+                        <input type="text"  name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem1}}" style="margin-top: -10px;">
+                      </div>
+                </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-primary mt-4" type="submit">Pay</button>
+                </div>
+            </div>
+            {% endif %}
+            {% elif not fees.sem2paid %}
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label for="sem1" class="form-label">Semester 1</label>
+                      <input type="text" disabled name="sem1" class="form-control" id="sem1" value="{{fees.sem1}}" style="margin-top: -10px;">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label for="paidsem1" class="form-label">Paid</label>
+                      <input type="text" disabled name="paidsem1" class="form-control" id="paidsem1" value="{{fees.sem1paid}}" style="margin-top: -10px;">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                        <label for="pendingsem1" class="form-label">Pending</label>
+                        <input type="text" disabled name="pendingsem1" class="form-control" id="pendingsem1" value="{{fees.pendingsem1}}" style="margin-top: -10px;">
+                      </div>
+                  </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label for="sem1" class="form-label">Semester 1</label>
+                      <input type="text" disabled name="sem1" class="form-control" id="sem1" value="{{fees.sem1}}" style="margin-top: -10px;">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label for="paidsem1" class="form-label">Paid</label>
+                      <input type="text" disabled name="paidsem1" class="form-control" id="paidsem1" value="{{fees.sem1paid}}" style="margin-top: -10px;">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                        <label for="pendingsem1" class="form-label">Pending</label>
+                        <input type="text" disabled name="pendingsem1" class="form-control" id="pendingsem1" value="{{fees.pendingsem1}}" style="margin-top: -10px;">
+                      </div>
+                  </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+                </div>
+                <div class="col-sm-2">
+                    <div class="mb-3">
+                        <label for="pay_amount" class="form-label">Amount</label>
+                        <input type="text"  name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem1}}" style="margin-top: -10px;">
+                      </div>
+                </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-primary mt-4" type="submit">Pay</button>
+                </div>
+            </div>
+            {% endif %} -->
+      {% if fees.semester == "1" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem1" class="form-label">Semester 1</label>
+            <input type="text" disabled name="sem1" class="form-control" id="sem1" value="{{fees.sem1}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem1" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem1" class="form-control" id="paidsem1" value="{{fees.sem1paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem1" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem1" class="form-control" id="pendingsem1"
+              value="{{fees.pendingsem1}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem1paid != fees.sem1 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem1}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "2" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem2" class="form-label">Semester 2</label>
+            <input type="text" disabled name="sem2" class="form-control" id="sem2" value="{{fees.sem2}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem2" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem2" class="form-control" id="paidsem2" value="{{fees.sem2paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem2" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem2" class="form-control" id="pendingsem2"
+              value="{{fees.pendingsem2}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem2paid != fees.sem2 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem2}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "3" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem3" class="form-label">Semester 3</label>
+            <input type="text" disabled name="sem3" class="form-control" id="sem3" value="{{fees.sem3}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem3" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem3" class="form-control" id="paidsem3" value="{{fees.sem3paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem3" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem3" class="form-control" id="pendingsem3"
+              value="{{fees.pendingsem3}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem3paid != fees.sem3 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem3}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "4" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem4" class="form-label">Semester 4</label>
+            <input type="text" disabled name="sem4" class="form-control" id="sem4" value="{{fees.sem4}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem4" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem4" class="form-control" id="paidsem4" value="{{fees.sem4paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem4" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem4" class="form-control" id="pendingsem4"
+              value="{{fees.pendingsem4}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem4paid != fees.sem4 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem4}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "5" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem5" class="form-label">Semester 5</label>
+            <input type="text" disabled name="sem5" class="form-control" id="sem5" value="{{fees.sem5}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem5" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem5" class="form-control" id="paidsem5" value="{{fees.sem5paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem5" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem5" class="form-control" id="pendingsem5"
+              value="{{fees.pendingsem5}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem5paid != fees.sem5 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem5}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "6" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem6" class="form-label">Semester 6</label>
+            <input type="text" disabled name="sem6" class="form-control" id="sem6" value="{{fees.sem6}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem6" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem6" class="form-control" id="paidsem6" value="{{fees.sem6paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem6" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem6" class="form-control" id="pendingsem6"
+              value="{{fees.pendingsem6}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem6paid != fees.sem6 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem6}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "7" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem7" class="form-label">Semester 7</label>
+            <input type="text" disabled name="sem7" class="form-control" id="sem7" value="{{fees.sem7}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem7" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem7" class="form-control" id="paidsem7" value="{{fees.sem7paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem7" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem7" class="form-control" id="pendingsem7"
+              value="{{fees.pendingsem7}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem7paid != fees.sem7 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem7}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% elif fees.semester == "8" %}
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="sem8" class="form-label">Semester 8</label>
+            <input type="text" disabled name="sem8" class="form-control" id="sem8" value="{{fees.sem8}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="paidsem8" class="form-label">Paid</label>
+            <input type="text" disabled name="paidsem8" class="form-control" id="paidsem8" value="{{fees.sem8paid}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="mb-3">
+            <label for="pendingsem8" class="form-label">Pending</label>
+            <input type="text" disabled name="pendingsem8" class="form-control" id="pendingsem8"
+              value="{{fees.pendingsem8}}" style="margin-top: -10px;">
+          </div>
+        </div>
+      </div>
+      {% if fees.sem8paid != fees.sem8 %}
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" value="{{fees.semester}}" name="sem" style="visibility: hidden;">
+        </div>
+        <div class="col-sm-2">
+          <div class="mb-3">
+            <label for="pay_amount" class="form-label">Amount</label>
+            <input type="text" name="pay_amount" class="form-control" id="pay_amount" value="{{fees.pendingsem8}}"
+              style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary mt-4" type="submit">Pay</button>
+        </div>
+      </div>
+      {% endif %}
+      {% endif %}
+    </form>
+
+  </div>
+  {% endif %}
+  <script type="text/javascript" src="{% static 'dict/#js/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+</html>

@@ -1,0 +1,380 @@
+<<<<<<< HEAD
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'dict/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'dict/css/google_fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'dict/css/style_homepage.css' %}" />
+    <link href="{% static 'dict/css/jquery.dataTables.min.css' %}" rel="stylesheet"  crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'dict/css/buttons.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dict/css/fontawesome.5.11.2.css' %}">
+    <script src="{% static 'dict/js/jquery.min.js' %}"></script>
+    <title>{% block title %} {% endblock title %}</title>
+
+    <script>
+      $(document).ready(function(){
+        $("#toggle").click(function(){
+
+          $("#maincontent").toggleClass(" col-md-12 col-xl-12");
+          $("#navigation-bar").toggleClass("sm-hide-nav d-lg-none");
+        });
+        $("#file").change(function(){
+            $("#uploaded-file").text(this.files[0].name);
+        });
+      });
+  
+      
+    </script>
+      
+    {% block head %}
+        
+    {% endblock head %}
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row ">
+          <div id="navigation-bar" class="  navigation sm-hide-nav show-nav col-5 col-sm-4  d-lg-block col-lg-2" >
+            <div class=" nav-background h-100 show" id="nav-toggle">
+               
+              
+                <ul class="nav flex-column pt-3 w-100" >
+                  <li class=" text-center py-3  border-bottom">
+                    <a class="navbar-brand text-purewhite text-uppercase font-32 font-bold" href=""><img src="/media/ciis_logo/logo.png" class="logo" alt="logo"></a>
+                  </li>
+                  <!-- <li class=" pt-3 pb-5">
+                    <div class="user-items">
+                      <span class="dot align-vertical mx-2"></span>
+                      <a href="#" class=" align-vertical text-purewhite text-uppercase text-decoration-none font-26 font-bold">User</a>
+    
+                    </div>
+                  </li> -->
+                  <li class="nav-item">
+                    <a class="nav-link  active text-gray font-20" href="">
+                      <div class="link-items">
+                         <img class="img-bg-color align-vertical" src="/media/navigation_logos/dashboard.png" alt="">
+                      
+                      <span class=" align-vertical">Dashboard</span> 
+                    </div>
+                      </a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    
+                    <a class="nav-link  text-gray font-20" href="navbarStudentManangement" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="link-items">
+                        <img class="img-bg-color align-vertical" src="/media/navigation_logos/studentmanagement.png" alt="">
+                     
+                     <span class=" align-vertical">Student Management</span> 
+                    
+                      
+                    
+                   </div>
+                     
+                      </a>
+                      <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarStudentManangement">
+                        <li><a class="dropdown-item text-gray font-18" href="">Student Registration</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">Quick Registration</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">Advanced Search</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">Pending Student Verification</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">Registered Student</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">Cancelled Student</a></li>
+                      </ul>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link text-gray font-20" href="navbarMyCourse" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="link-items">
+                        <img class="img-bg-color align-vertical" src="/media/navigation_logos/mycourse.png" alt="">
+                     
+                     <span class=" align-vertical">My course/subjects</span> 
+                   </div>
+                      
+                       </a>
+                       <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarMyCourse">
+                        <li><a class="dropdown-item text-gray font-18" href="">My Course</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">My Stream</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">My University</a></li>
+                       </ul>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link text-gray font-20" href="navbarMiscellaneous" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="link-items">
+                        <img class="img-bg-color align-vertical" src="/media/navigation_logos/miscellaneous.png" alt="">
+                     
+                     <span class=" align-vertical">Miscellaneous</span> 
+                   </div>
+                     </a>
+                     <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarMiscellaneous">
+                      <li><a class="dropdown-item text-gray font-18" href="">User Creation</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">Print Address</a></li>
+                     </ul>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link text-gray font-20" href="navbarFees" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="link-items">
+                        <img class="img-bg-color align-vertical" src="/media/navigation_logos/fees.png" alt="">
+                     
+                     <span class=" align-vertical">Fees</span> 
+                   </div>
+                     </a>
+                     <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarFees">
+                      <li><a class="dropdown-item text-gray font-18" href="">Course Fees</a></li>
+                      
+                      <li><a href="" class="dropdown-item text-gray font-18">Student Fees</a></li>
+
+                     </ul>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link text-gray font-20" href="/logout" role="button" >
+                      <div class="link-items">
+                        <img class="img-bg-color align-vertical" src="/media/navigation_logos/logout.png" alt="">
+                     
+                     <span class=" align-vertical">Logout</span> 
+                   </div>
+                     </a>
+                     
+                  </li>
+                  
+                </ul>
+              
+              
+            </div>
+          </div>
+          <div id="maincontent" class="main-content col-md-12 col-lg-10">
+            
+              <div class="top-header header-bg-color ">
+                
+                <div class="top-header-left">
+                  <nav class="navbar navbar-light px-3">
+                   
+                    <button type="button" id="toggle" class="btn">
+                    <img src="/static/dict/images/navigation.png" alt="">
+                    </button>
+      
+      
+                  </nav>
+                </div>
+                <div class="top-header-right">
+                  <div class="user-items">
+                    <a href="#" class="text-darkblue text-uppercase text-decoration-none align-vertical">User</a>
+                  <span class="dot align-vertical"></span>
+                  <a href=""><img class="align-vertical px-3" src="/media/navigation_logos/settings.png" alt=""></a>
+                  </div>
+                  
+                </div>
+              </div>
+          
+              {% block body %}
+
+              {% endblock body %}
+             
+                     
+              <div class="copyright-line  box-bg-color py-2">
+                <p class="font-16 text-darkblue text-center">Copyright &#169 2022. CIIS. All rights reserved.</p>
+              </div>
+            </div>
+             
+            
+  
+          </div>
+        </div>
+      </div>
+  
+   
+    <script src="{% static 'dict/js/jquery.dataTables.min.js' %}" crossorigin="anonymous"></script>
+    <script src="{% static 'dict/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+=======
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'dict/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'dict/css/google_fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'dict/css/style_homepage.css' %}" />
+    <link href="{% static 'dict/css/jquery.dataTables.min.css' %}" rel="stylesheet"  crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'dict/css/buttons.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dict/css/fontawesome.5.11.2.css' %}">
+    <script src="{% static 'dict/js/jquery.min.js' %}"></script>
+    <title>{% block title %} {% endblock title %}</title>
+
+    <script>
+      $(document).ready(function(){
+        $("#toggle").click(function(){
+
+          $("#maincontent").toggleClass(" col-md-12 col-xl-12");
+          $("#navigation-bar").toggleClass("sm-hide-nav d-lg-none");
+        });
+        $("#file").change(function(){
+            $("#uploaded-file").text(this.files[0].name);
+        });
+      });
+  
+      
+    </script>
+      
+    {% block head %}
+        
+    {% endblock head %}
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row ">
+          <div id="navigation-bar" class="  navigation sm-hide-nav show-nav col-5 col-sm-4  d-lg-block col-lg-2" >
+            <div class=" nav-background h-100 show" id="nav-toggle">
+               
+              
+                <ul class="nav flex-column pt-3 w-100" >
+                  <li class=" text-center py-3  border-bottom">
+                    <a class="navbar-brand text-purewhite text-uppercase font-32 font-bold" href=""><img src="/media/ciis_logo/logo.png" class="logo" alt="logo"></a>
+                  </li>
+                  <!-- <li class=" pt-3 pb-5">
+                    <div class="user-items">
+                      <span class="dot align-vertical mx-2"></span>
+                      <a href="#" class=" align-vertical text-purewhite text-uppercase text-decoration-none font-26 font-bold">User</a>
+    
+                    </div>
+                  </li> -->
+                  <li class="nav-item">
+                    <a class="nav-link  active text-gray font-20" href="">
+                      <div class="link-items">
+                         <img class="img-bg-color align-vertical" src="/media/navigation_logos/dashboard.png" alt="">
+                      
+                      <span class=" align-vertical">Dashboard</span> 
+                    </div>
+                      </a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    
+                    <a class="nav-link  text-gray font-20" href="navbarStudentManangement" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="link-items">
+                        <img class="img-bg-color align-vertical" src="/media/navigation_logos/studentmanagement.png" alt="">
+                     
+                     <span class=" align-vertical">Student Management</span> 
+                    
+                      
+                    
+                   </div>
+                     
+                      </a>
+                      <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarStudentManangement">
+                        <li><a class="dropdown-item text-gray font-18" href="">Student Registration</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">Quick Registration</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">Advanced Search</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">Pending Student Verification</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">Registered Student</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">Cancelled Student</a></li>
+                      </ul>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link text-gray font-20" href="navbarMyCourse" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="link-items">
+                        <img class="img-bg-color align-vertical" src="/media/navigation_logos/mycourse.png" alt="">
+                     
+                     <span class=" align-vertical">My course/subjects</span> 
+                   </div>
+                      
+                       </a>
+                       <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarMyCourse">
+                        <li><a class="dropdown-item text-gray font-18" href="">My Course</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">My Stream</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">My University</a></li>
+                       </ul>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link text-gray font-20" href="navbarMiscellaneous" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="link-items">
+                        <img class="img-bg-color align-vertical" src="/media/navigation_logos/miscellaneous.png" alt="">
+                     
+                     <span class=" align-vertical">Miscellaneous</span> 
+                   </div>
+                     </a>
+                     <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarMiscellaneous">
+                      <li><a class="dropdown-item text-gray font-18" href="">User Creation</a></li>
+                        <li><a class="dropdown-item text-gray font-18" href="">Print Address</a></li>
+                     </ul>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link text-gray font-20" href="navbarFees" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="link-items">
+                        <img class="img-bg-color align-vertical" src="/media/navigation_logos/fees.png" alt="">
+                     
+                     <span class=" align-vertical">Fees</span> 
+                   </div>
+                     </a>
+                     <ul class="secondary-nav dropdown-menu" aria-labelledby="navbarFees">
+                      <li><a class="dropdown-item text-gray font-18" href="">Course Fees</a></li>
+                      
+                      <li><a href="" class="dropdown-item text-gray font-18">Student Fees</a></li>
+
+                     </ul>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link text-gray font-20" href="/logout" role="button" >
+                      <div class="link-items">
+                        <img class="img-bg-color align-vertical" src="/media/navigation_logos/logout.png" alt="">
+                     
+                     <span class=" align-vertical">Logout</span> 
+                   </div>
+                     </a>
+                     
+                  </li>
+                  
+                </ul>
+              
+              
+            </div>
+          </div>
+          <div id="maincontent" class="main-content col-md-12 col-lg-10">
+            
+              <div class="top-header header-bg-color ">
+                
+                <div class="top-header-left">
+                  <nav class="navbar navbar-light px-3">
+                   
+                    <button type="button" id="toggle" class="btn">
+                    <img src="/static/dict/images/navigation.png" alt="">
+                    </button>
+      
+      
+                  </nav>
+                </div>
+                <div class="top-header-right">
+                  <div class="user-items">
+                    <a href="#" class="text-darkblue text-uppercase text-decoration-none align-vertical">User</a>
+                  <span class="dot align-vertical"></span>
+                  <a href=""><img class="align-vertical px-3" src="/media/navigation_logos/settings.png" alt=""></a>
+                  </div>
+                  
+                </div>
+              </div>
+          
+              {% block body %}
+
+              {% endblock body %}
+             
+                     
+              <div class="copyright-line  box-bg-color py-2">
+                <p class="font-16 text-darkblue text-center">Copyright &#169 2022. CIIS. All rights reserved.</p>
+              </div>
+            </div>
+             
+            
+  
+          </div>
+        </div>
+      </div>
+  
+   
+    <script src="{% static 'dict/js/jquery.dataTables.min.js' %}" crossorigin="anonymous"></script>
+    <script src="{% static 'dict/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+</html>

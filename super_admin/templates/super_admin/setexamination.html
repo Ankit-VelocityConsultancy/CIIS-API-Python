@@ -1,0 +1,2330 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'dict/css1/setexam.css' %}" />
+<script>
+    $(document).ready(function(){
+          
+          $("#upload_file").change(function(){
+              $("#uploaded-file").text(this.files[0].name);
+          });
+    });
+    </script>
+
+{% endblock head %}
+{% block nav %}
+
+
+
+{% endblock nav%}
+
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+<div class="pages-body-bg-color pt-5">
+    <div class="exam-section">
+        <section class="set-examination  ">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-header">
+                        <h1 class="font-26 font-bold text-black text-uppercase">Add Examination Details</h1>
+        
+                    </div>
+                    <div class="outer-rectangle">
+                        <div class="inner-block px-4">
+                            <div class="select-options py-4">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-4 col-xl-3 ">
+                                        <div class="detail-block py-2">
+                                        <label for="university" class="labelnotrequired">University</label>
+                                        <select name="university" id="university" class="  width-100  font-14 text-extralightgray">
+                                           
+                                            <option value="">Select</option>
+                                            {% for i in university %}
+                                            <option value="{{i.id}}">{{i.university_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-4 col-xl-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Course </label>
+                                            <select
+                                                class="clearable  width-100 font-14 font-bold text-extralightgray "
+                                                name="course" id="course" required>
+                                                <option class="option-format" value="" selected> Course</option>
+                                                {% for i in course %}
+                                                <option class="option-format" value="{{i.id}}">{{i.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Stream </label>
+                                            <select
+                                                class="clearable  width-100 font-14 font-bold text-extralightgray "
+                                                name="Stream" id="Stream" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelnotrequired">Session</label>
+                                            <select
+                                                class="clearable  width-100 font-14 font-bold text-extralightgray "
+                                                name="session" id="session" >
+                                                <option class="option-format" value="" selected>Select</option>
+                                              
+                                                {% for i in sessionnames %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                                {% endfor %}
+                                                
+                                                
+                                                
+
+
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Study Pattern</label>
+                                            <select
+                                                class="clearable  width-100 font-14 font-bold text-extralightgray "
+                                                name="studypattern" id="studypattern" required>
+                                                <option class="option-format" value="" selected>Select
+                                                </option>
+                                                <option class="option-format" value="Semester">Semester</option>
+                                                <option class="option-format" value="Annual">Annual</option>
+                                                <option class="option-format" value="Full Course">Full Course</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelnotrequired">Admission Type</label>
+                                            <select
+                                                class="clearable  width-100 font-14 font-bold text-extralightgray "
+                                                name="entry_mode" id="entry_mode" >
+                                                <option class="option-format" value="" selected>Select</option>
+                                                <option class="option-format" value="Regular">Regular</option>
+                                                <option class="option-format" value="Distance">Distance</option>
+                                                <option class="option-format" value="Lateral Entry">Lateral Entry
+                                                </option>
+                                                <option class="option-format" value="Credit Transfer">Credit Transfer
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                  
+                                   
+                               
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3" id="semyear_hide">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Semester/Year </label>
+                                            <select
+                                                class="clearable  width-100 font-14 font-bold text-extralightgray "
+                                                name="semyear" id="semyear" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                                        <div class="detail-block py-2 ">
+                                            <label for="" class="labelnotrequired">Course Duration (in years)</label>
+                                            <input type="text" name="course_duration" id="course_duration" class="clearable  width-100 font-14 font-bold text-extralightgray " readonly>
+                                          
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                                        <div class="detail-block py-2 mt-3">
+                                            <button class="save-btn blue-btn font-18 font-bold exam-button  width-100"  id="fetch_students">Fetch Students</button>
+                                          
+                                        </div>
+
+                                    </div>
+                                 
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mt-3">
+                                        <label for="exam_date" class="labelrequired">Exam Date</label>
+                                        <input
+                                        class="  width-100  font-14 text-extralightgray exam-input"
+                                        type="text" name="exam_date" id="exam_date"
+                                        onfocus="(this.type='date')" placeholder=""  required>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mt-3">
+                                        <label for="exam_time" class="labelrequired">Examination Start Time</label>
+                                        <input
+                                        class="  width-100  font-14 text-extralightgray exam-input"
+                                        type="text" name="exam_time" id="exam_time"
+                                        onfocus="(this.type='time')" placeholder=""  required>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mt-3">
+                                        <label for="exam_end_time" class="labelrequired">Examination End Time</label>
+                                        <input
+                                        class="  width-100  font-14 text-extralightgray exam-input"
+                                        type="text" name="exam_end_time" id="exam_end_time"
+                                        onfocus="(this.type='time')" placeholder=""  required>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mt-3">
+                                        <label for="exam_duration" class="labelrequired">Exam Duration (in minutes)</label>
+                                        <input
+                                        class="  width-100  font-14 text-extralightgray exam-input"
+                                        type="text" name="exam_duration" id="exam_duration" required
+                                         >
+
+                                    </div>
+                                   <div class="col-sm-6 col-md-4 col-xl-3 mt-3">
+                                    <label for="exam_name" class="labelrequired">Examination Name</label>
+                                    <input type="text" name="exam_name" class=" width-100  font-14 text-extralightgray exam-input" id="exam_name" placeholder="" required>
+                                   </div>
+                                   <div class="col-sm-6 col-md-4 col-xl-3 mt-3">
+                                    <label for="total_marks" class="labelrequired">Total Marks</label>
+                                    <input type="number" name="total_marks" max="100" class="width-100  font-14 text-extralightgray exam-input" id="total_marks"
+                                    placeholder="" required>
+                                </div>
+                                <div class="col-sm-6 col-md-4 col-xl-6 mt-3">
+                                    <!-- <div class="file-upload">
+
+                                        <div
+                                            class="button-wrapper    nav-background  width-100  font-14 text-extralightgray exam-input ">
+                                            <label for="upload_file"
+                                                class="  width-100  font-14 text-blue  ">Upload</label>
+                                            <input type="file" id="upload_file" name="upload_file"
+                                                style="display:none">
+                                            <label id="uploaded-file"
+                                                class="  width-100  font-14 text-extralightgray "
+                                                style="border:none">No files chosen</label>
+                                        </div>
+
+                                    </div> -->
+                                    <div class="file-upload pt-4">
+
+                                        <div class="button-wrapper width-100 font-14 font-bold text-extralightgray  ">
+                                            <label for="upload_file" class="labelrequired bg-darkgray width-100 font-14 font-bold  text-extralightgray  file-btn-form">Upload</label>
+                                            <input type="file" id="upload_file" name="upload_file" style="display:none">
+                                            <label id="uploaded-file" class="  width-100 font-14 font-bold text-extralightgray " style="border:none">No files chosen</label>
+                                        </div>
+
+                                    </div>
+                                   
+                                </div>
+                                <!--div class="col-sm-6 col-md-4 col-xl-3 mt-3 pt-4">
+                                    <button class="save-btn blue-btn font-18 font-bold exam-button  width-100"  id="show-question">Add Questions Manually</button>
+                                </div -->
+                                <div class="col-sm-6 col-md-4 col-xl-3 mt-3 pt-4" id="save_exam_button" >
+                                    <button class="save-btn  font-18 font-bold exam-button  width-100"  onclick="saveUpload()" >Save</button>
+                                </div>
+                                </div>
+                            </div>
+                                   
+
+                                   
+                                    
+                               
+                                   
+                                   
+                                
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+       
+      
+    
+    </div>
+</div>
+
+
+<div class="form" id="form" style="visibility: visible;">
+    <hr>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="set-questions  ">
+                    <form action="" method="POST" id="mainform">
+                        {% csrf_token %}
+                        <div class="form_values" id="form_values">
+                            
+                            
+                        </div>
+                        <div class="form_button" id="form_button">
+                            <!-- <button type="subit" class="btn btn-success mt-5">Save</button> -->
+                        </div>
+                    </form>
+                </div>
+              
+            </div>
+        </div>
+       
+    </div>
+</div>
+
+<section class="my-course-entries my-3  " style="display:none;" id="student_data">
+    <div class="row">
+        <div class="col-12">
+            <div class="white-box">
+                <div class="inner-block px-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="box-title pt-4 ">
+                                <h5 class="font-18  font-bold text-black">Add Student to Exam</h5>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="add_all_students" /> Add All Students
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="student_table_container entries-table pt-4 pb-5">
+                      
+                    </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+
+
+
+
+<!-- <button onclick='add()'>
+    add
+  </button>
+  <table class="table">
+    <tr>
+      <th>content</th>
+      <th>delete</th>
+    </tr>
+    <tbody>
+      <tr>
+        <td>Something</td>
+        <td>
+          <button onclick='rm()'>
+            remove
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table> -->
+  <div class="modal fade" id="ErrorModal" tabindex="-1" aria-labelledby="ErrorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ErrorModalLabel">Error</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="error_modal_container">
+            
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="edit-btn   width-100">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+<div id="exampleModal" class="modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <div class="container" id="output_container">
+                    <h3 class=" font-16 text-darkblue">Error ..!!</h3>
+                    <div class="output_course" id="output_course"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="blue-bg text-blue font-bold font-12 no-border"
+                    data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock body %}
+
+{% block script %}
+<script src="{% static 'dict/js/examvalidations.js' %}"></script>
+<script>
+
+    $('#upload_file').on('change', function(){
+        var fileExtension = ['xlsx'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+            alert("Only formats are allowed : "+fileExtension.join(', '));
+        }
+        var data = new FormData();
+        data.append("upload_file", $('#upload_file')[0].files[0]);
+        data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+        $.ajax({
+            method: "POST",
+            url: "{% url 'verify_examination_import_upload' %}",
+            processData: false,
+            contentType: false,
+            mimeType: "multipart/form-data",
+            data: data,
+            success: function (res) {
+                $('#error_modal_container').empty();
+                const response = JSON.parse(res);
+                console.log(response);
+                if(response.column_error.length > 0){
+                    console.log("Column error");
+                    $('#error_modal_container').append(`
+                    <div class="mt-1">
+                        <h4>Column Error</h4>
+                        <div class="alert alert-danger" role="alert">
+                            ${response.column_error}
+                        </div>
+                    </div>
+                    <br/>
+                    <hr/>
+                    `);
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.type_error_list.length > 0){
+                    var type_error = response.type_error_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Type Error</h4>
+                                <div id="type_error_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    type_error.forEach(myfunction);
+                    function myfunction(item){
+                        $('#type_error_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                    
+                }
+                if(response.answer_error_list.length > 0){
+                    var answer_error = response.answer_error_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Answer Error</h4>
+                                <div id="answer_error_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    answer_error.forEach(myfunction);
+                    function myfunction(item){
+                        $('#answer_error_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                
+                if(response.column_error.length == 0 & response.type_error_list.length == 0 & response.answer_error_list.length == 0){
+                    $('#save_exam_button').css('display', 'block');
+                }
+            }   
+        });
+    })
+
+    function VerifyFile(){
+
+    }
+
+
+    function saveUpload(){
+        var data_arr = []
+        var rowCount = ($('#student-table tr').length ) - 1;
+       
+        for(var i = 1; i <= rowCount; i++) {
+            if($(`#student_checkbox${i}`).is(':checked')){
+                    data_arr.push($(`#student_checkbox${i}`).val())
+
+            }
+                    // $(`#student_checkbox${i}`).prop('checked', false);
+        }
+        if (data_arr <= 0)
+            alert("Please select students for the exam");
+        else {
+        console.log("data_arr :",data_arr)
+        console.log("data uploaded");
+        flag = validateExamForm("Submit")
+        
+        if (flag){
+
+            var data = new FormData();
+            data.append("university", document.getElementById("university").value);
+            data.append("course", document.getElementById("course").value);
+            data.append("stream", document.getElementById("Stream").value);
+            data.append("exam_date", document.getElementById("exam_date").value);
+            data.append("exam_time", document.getElementById("exam_time").value);
+            data.append("exam_name", document.getElementById("exam_name").value);
+            data.append("exam_end_time", document.getElementById("exam_end_time").value);
+            data.append("exam_duration", document.getElementById("exam_duration").value);
+            data.append("total_marks", document.getElementById("total_marks").value);
+            data.append("upload_file", $('#upload_file')[0].files[0]);
+            data.append("array_data",data_arr);
+            data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+            $.ajax({
+                method: "POST",
+                url: "{% url 'setexamination' %}",
+                processData: false,
+                contentType: false,
+                mimeType: "multipart/form-data",
+                data: data,
+                success: function (res) {
+                    console.log(res)
+                    const obj = JSON.parse(res);
+                    console.log(obj);
+                    if(obj.saved == "yes"){
+                    alert("Exam details saved")
+                    window.location = "{% url 'setexamination' %}"
+                   }
+                }
+            })
+
+        }
+        
+        
+        }  
+
+        
+        
+        // console.log(is_university,is_course,is_stream,is_exam_date,is_exam_name,is_total_marks)
+    }
+
+    function rm() {
+      $(event.target).closest("tr").remove();
+    }
+
+    function add() {
+      $("table").append("<tr><td>New Thing</td><td><button onclick='rm()'>remove</button></td></tr>");
+    }
+    document.getElementById("university").onchange = function () {
+        document.querySelectorAll('.clearable').forEach(function(element) {
+                element.value = '';
+        });
+
+        var university = this.value;
+        if (university == "Select University") {
+
+        }
+        else {
+            console.log("university selected")
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'setexam' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_course': university
+                },
+                success: function (response) {
+                    /*$('#course_year').empty()
+                    $('#course_year').append('<option value="">Select Course Year</option>')
+                    
+                    console.log(response)
+                    if(response.distinct_years){
+                        var data = response.distinct_years
+                        data.forEach(myFunction);
+                        function myFunction(item){
+                        console.log(item)
+                        $('#course_year').append(`
+                            <option value="${item}">${item}</option>
+                        `);
+                        }
+
+                    }*/
+                    $('#course').empty()
+                    $('#course').append('<option class="option-format" value="">Select</option>')
+                    
+                    console.log(response)
+                    if(response.course){
+                        var data = response.course
+                        data.forEach(myFunction);
+                        function myFunction(item){
+                        console.log(item)
+                        $('#course').append(`
+                            <option class="option-format" value="${item.id}">${item.name}</option>
+                        `);
+                        }
+
+                    }
+
+                }
+            });
+
+        }
+    }
+
+    /*document.getElementById("course_year").onchange = function () {
+    var course_year = this.value;
+    if(course_year == "Select course_year"){
+
+    }
+    else{
+      $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'setexam' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'get_course_name':course_year,
+              'get_course_university':$('#university').val()
+
+            },
+            success: function(response) {
+              $('#course').empty()
+              $('#course').append('<option value="">Select Course</option>')
+              
+              console.log(response);
+              if(response.course){
+                var data = response.course
+                data.forEach(myFunction);
+                function myFunction(item){
+                  console.log(item)
+                  $('#course').append(`
+                    <option value="${item.id}">${item.name}</option>
+                  `);
+                }
+
+              }
+            }
+          });
+          
+    }
+}*/
+
+
+    document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        console.log(coursename);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'setexam' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'course_id': coursename // from form
+
+            },
+            success: function (response) {
+                console.log(response);
+                console.log(response);
+                var data = response.stream
+                // console.log("data",data)
+                var duration = ''
+                $('#Stream').empty();
+                data.forEach(myFunction);
+                $('#Stream').append('<option Selected> Select Stream </option>');
+                function myFunction(item) {
+                    duration = item.sem
+                    $('#Stream').append('<option value=' + item.id + '>' + item.name + '</option>');
+                }
+                document.getElementById("Stream").onchange = function () {
+                    var coursename = $('#course').val();
+                    var streamname = this.value;
+                    console.log("coursename :", coursename, 'streamname', streamname);
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'setexam' %}",
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                        data: {
+                            'xxx': coursename, // from form,
+                            'xxxx':streamname
+
+                        },
+                        success: function (response) {
+                            console.log("sent")
+                            $('#studypattern').empty();
+                            $('#studypattern').append(`
+                            <option>Select Study Pattern</option>
+                            <option value="Semester">Semester</option>
+                            <option value="Annual">Annual</option>
+                            <option value="Full Course">Full Course</option>
+                            
+                            `);
+                        }
+                        });
+                        document.getElementById("studypattern").onchange = function () {
+                            var course_name = $('#course').val();
+                            var stream_name = $('#Stream').val();
+                            var study_pattern = this.value;
+                            if (study_pattern == "Full Course"){
+                                console.log("full course")
+                                document.getElementById("semyear").disabled = true;
+                            }
+                            $.ajax({
+                                type: "POST",
+                                url: "{% url 'setexam' %}",
+                                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                                data: {
+                                    'student_course_id': coursename, // from form,
+                                    'student_stream_id':streamname
+                                },
+                                success: function (response) {
+                                    var data = response.total_semester
+                                    var study_pattern = $('#studypattern').val();
+                                    $('#semyear').empty();
+                                    $('#semyear').append(`
+                                        <option value="">Select Semester / Year</option>
+                                    `);
+                                    if(study_pattern == "Semester"){
+                                        var total_sem = parseInt(data) * 2;
+                                        $('#course_duration').val(parseInt(total_sem, 10) / 2);
+                                        console.log(total_sem,study_pattern);
+                                        for(var i = 1; i<=total_sem;i++){
+                                            $('#semyear').append(`
+                                                <option value="${i}">Semester ${i}</option>
+                                            `);
+                                        }
+                                    }
+                                    else if(study_pattern == "Annual"){
+                                        var total_sem = parseInt(data);
+                                        $('#course_duration').val(total_sem);
+                                        console.log(total_sem,study_pattern);
+                                        for(var i = 1; i<=total_sem;i++){
+                                            $('#semyear').append(`
+                                                <option value="${i}">Year ${i}</option>
+                                            `);
+                                        }
+                                    }
+                                    
+                                    
+                                    
+                                }
+                            });
+                            
+
+                            // console.log(course_name, stream_name, study_pattern)
+                        }
+                        
+                }
+
+            }
+        });
+    }
+    
+    
+    
+    //document.getElementById("semyear").onchange = function () {
+        document.getElementById("fetch_students").onclick = function () {
+        flag = validateExamForm("Fetch")
+        if (flag) {
+            var course_name = $('#course').val();
+        var stream_name = $('#Stream').val();
+        var study_pattern = $('#studypattern').val();
+        var session = $('#session').val();
+        var entry_mode = $('#entry_mode').val();
+        //var semyear = this.value;
+        var semyear = $('#semyear').val();
+        console.log(course_name,stream_name,study_pattern,semyear)
+        $.ajax({
+            type: "POST",
+            url: "{% url 'setexam' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'get_students_course_id': course_name,
+                'get_students_stream_id': stream_name,
+                'get_students_study_pattern': study_pattern,
+                'get_students_semyear': semyear,
+                'get_students_session': session,
+                'get_students_entry_mode': entry_mode,
+
+                
+            },
+            success: function (response) {
+                var data = response.data;
+                if(data){
+                    $('#student_data').css('display', 'block');
+                    $('.student_table_container').empty();
+                    $('.student_table_container').append(`
+                        <table class="table" id="student-table">
+                            <thead>
+                                <tr>
+                                <th scope="col">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="select_all_students">
+                                        <label class="form-check-label" for="select_all_students">
+                                        </label>
+                                    </div>
+                                </th>
+                                <th scope="col">Sr.No</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Mobile</th>
+                                <th scope="col">Enrollment ID</th>
+                                <th scope="col">Enrollment Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student_table_body">
+                                
+                            </tbody>
+                        </table>
+                    `);
+                }
+                data.forEach(myFunction);
+                var count = 0;
+                function myFunction(item,count){
+                    count = count + 1;
+                    // console.log(item,count)
+                    var enrollment_date = item.enrollment_date;
+                    var datePart = enrollment_date.match(/\d+/g),
+                    year = datePart[0].substring(0), // get only two digits
+                    month = datePart[1], day = datePart[2];
+                    
+                    var changedate =  day+'/'+month+'/'+year;
+                    $('#student_table_body').append(`
+                    <tr>
+                        <th scope="row">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="${item.id}" id="student_checkbox${count}">
+                                <label class="form-check-label" for="student_checkbox">
+                                </label>
+                            </div>
+                        </th>
+                        <td>${count}</td>
+                        <td>${item.name}</td>
+                        <td>${item.email}</td>
+                        <td>${item.mobile}</td>
+                        <td>${item.enrollment_id}</td>
+                        <td>${changedate}</td>
+                    </tr>
+
+                    `);
+                }
+                $(document).ready( function () {
+                    $('#student-table').DataTable({
+                        "pageLength": 5
+                    });
+                });
+            }
+        });
+
+        }
+        
+    }
+
+    $(document).ready( function () {
+        $('#examination-collapse').addClass("show");
+        $("#set_examination_link").removeClass("link-dark");
+        $('#set_examination_link').addClass("link-primary");
+           // Listen for change event on the "Add All Students" checkbox
+$('#add_all_students').on('change', function() {
+  
+    var isChecked = $(this).is(':checked'); // Check if "Add All Students" is checked
+
+    // Select all checkboxes inside the student table and set their checked property
+    $('#student_table_body input[type="checkbox"]').prop('checked', isChecked);
+});
+
+    });
+    // $('#student_checkbox1').click(function() {
+    //     console.log("yes")
+    // });
+    $(document).on('change', '#select_all_students', function() {
+        if(this.checked) {
+            var rowCount = ($('#student-table tr').length ) - 1;
+            for(var i = 1; i <= rowCount; i++) {
+                $(`#student_checkbox${i}`).prop('checked', true);
+            }
+        }
+        else{
+            var rowCount = ($('#student-table tr').length ) - 1;
+            for(var i = 1; i <= rowCount; i++) {
+                $(`#student_checkbox${i}`).prop('checked', false);
+            }
+        }
+        // console.log("test")
+    });
+
+    document.getElementById("show-question").onclick = function () {
+        console.log("show the questions");
+        $('#form_values').append(`
+        
+        <div class="card mb-5" id="question_row_1">
+            <div class="outer-rectangle">
+    <div class="card-header inner-block p-4" id="question_row_1">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="question">
+                    <input type="text" class="width-100  font-14 text-darkblue" placeholder="Question" id="question_1">
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="upload-image">
+                    <label for="upload_image_1" class="width-100  font-20 text-white"><i class="fa fa-upload">Upload</i></label>
+                    <input class="form-control" type="file" id="upload_image_1" onchange="preview(this.id)" hidden>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="question-type">
+                    <select class="width-100  font-14 text-darkblue questiontype" onchange="myFunction(this.id,this.value)" name="question_type" id="questiontype_1"
+                        aria-label="Default select example">
+                        <option class="option-format" selected value="Multiple Choice(Single)">Multiple Choice(Single)</option>
+                        <option class="option-format" value="Multiple Choice(Multiple)">Multiple Choice(Multiple)</option>
+                        <option class="option-format" value="Short Answer">Short Answer</option>
+                        <option class="option-format" value="Radio">Radio</option>
+                        
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="marks">
+                    <input type="text" class="width-100  font-14 text-darkblue exam-input" name="marks" id="marks_1" placeholder="Marks">
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <div id="add_question_row_1">
+                    <button type="button" id="add_new_row_question_1" onclick="Add_Question(this.id)" class="add_row_for_questions fas fa-plus-circle  font-30"></button>
+                </div>
+            </div>
+        </div> 
+        <div class="card-body_1">
+                <div class="uploaded-image">
+                    <img id="frame_1" src="" class="img-fluid" />
+                </div>
+                <div class="optionrows_question_1" id="optionrows_question_1">
+                    <div class="row" id="row_question_1_option_1">
+                        <div class="col-sm-3">
+                            <div class="select-options options">
+                                <input type="text" class="width-100 font-14 text-darkblue mb-3  exam-input" placeholder="Option 1" id="question_1_option_1">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="options_add_new">
+                                <button type="button" id="add_new_row_question_1_option_1" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle  font-30"></button>
+                            </div>
+                        </div>
+                    </div>
+                <div>
+            </div>
+    </div>
+    
+</div>
+            
+        </div>
+       
+        `); 
+        
+
+    }
+
+    function Add_Row(id){
+        console.log(id);
+        var first_split = id.replace('add_new_row_question_',"");
+        console.log(first_split);
+        var split_data = first_split.split('_option_');
+        var question_no = split_data[0];
+        document.getElementById(id).remove();
+        var next_option_no = parseInt(split_data[1]) + 1;
+        console.log(`optionrows_question_${question_no}`)
+        $(`.optionrows_question_${question_no}`).append(`
+            <div class="row" id="row_question_${question_no}_option_${next_option_no}">
+                <div class="col-sm-3">
+                    <div class="options pt-2">
+                        <input type="text" class="width-100 font-14 text-darkblue  mb-3" placeholder="Option ${next_option_no}" id="question_${question_no}_option_${next_option_no}">
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="options_add_new pt-2">
+                        <button type="button" id="add_new_row_question_${question_no}_option_${next_option_no}" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle  font-30"></button>
+                    </div>
+                </div>
+            </div>
+        `);
+    }
+
+
+    function Add_Question(id){
+        console.log("id :",id)
+        var data = "add_new_row_question_1"
+        var question_no = id.replace('add_new_row_question_',"")
+        var next_question_no = parseInt(question_no) + 1;
+        console.log(question_no,next_question_no)
+        document.getElementById(id).remove();
+        $(`#add_question_row_${question_no}`).append(`
+        <button type="button" id="add_new_row_question_${question_no}" onclick="Remove_Question(this.id)" class="add_row_for_questions fas fa-minus-circle  font-30"></button>
+        `);
+        $('#form_values').append(`
+       
+          
+        <div class="card mb-5" id="question_row_${next_question_no}">
+    <div class="outer-rectangle">
+        <div class="card-header inner-block p-4" id="question_row_${next_question_no}">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="question">
+                    <input type="text" class="width-100  font-14 text-darkblue" placeholder="Question" id="question_${next_question_no}">
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="upload-image">
+                    <label for="upload_image_${next_question_no}" class="width-100  font-20 text-white"><i class="fa fa-upload">Upload</i></label>
+                    <input class="form-control" type="file" id="upload_image_${next_question_no}" onchange="preview(this.id)" hidden>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="question-type">
+                    <select class="width-100  font-14 text-darkblue questiontype" onchange="myFunction(this.id,this.value)" name="question_type" id="questiontype_${next_question_no}"
+                        aria-label="Default select example">
+                        <option class="option-format" selected value="Multiple Choice(Single)">Multiple Choice(Single)</option>
+                        <option class="option-format" value="Multiple Choice(Multiple)">Multiple Choice(Multiple)</option>
+                        <option class="option-format" value="Short Answer">Short Answer</option>
+                        <option class="option-format" value="Radio">Radio</option>
+                        
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="marks">
+                    <input type="text" class="width-100  font-14 text-darkblue exam-input" name="marks" id="marks_${next_question_no}" placeholder="Marks">
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <div id="add_question_row_1">
+                    <button type="button" id="add_new_row_question_${next_question_no}" onclick="Add_Question(this.id)" class="add_row_for_questions fas fa-plus-circle  font-30"></button>
+                </div>
+            </div>
+        </div> 
+        <div class="card-body_${next_question_no}">
+                <div class="uploaded-image">
+                    <img id="frame_${next_question_no}" src="" class="img-fluid" />
+                </div>
+                <div class="optionrows_question_${next_question_no}" id="optionrows_question_${next_question_no}">
+                    <div class="row" id="row_question_${next_question_no}_option_1">
+                        <div class="col-sm-3">
+                            <div class="select-options options">
+                                <input type="text" class="width-100 font-14 text-darkblue mb-3  exam-input" placeholder="Option 1" id="question_${next_question_no}_option_1">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="options_add_new">
+                                <button type="button" id="add_new_row_question_${next_question_no}_option_1" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle  font-30"></button>
+                            </div>
+                        </div>
+                    </div>
+                <div>
+            </div>
+        </div>
+
+        </div>
+            
+        </div>
+    </div>
+</div>
+        `); }
+    function Remove_Question(id){
+        console.log(id);
+        var question_no = id.replace('add_new_row_question_',"")
+        console.log(question_no)
+        document.getElementById(`question_row_${question_no}`).remove();
+    }
+
+    function myFunction(id,value){
+        console.log(id,value);
+        var question_no = id.replace('questiontype_','');
+        console.log("Question no = " , question_no)
+        
+        
+        if(value == "Radio"){
+            document.getElementById(`optionrows_question_${question_no}`).remove();
+            $(`.card-body_${question_no}`).append(`
+                <div class="optionrows_question_${question_no}" id="optionrows_question_${question_no}">
+                    <div class="row" id="row_question_${question_no}_option_1">
+                        <div class="col-sm-3">
+                            <div class="options">
+                                <input type="text" class="width-100 font-14 text-darkblue exam-input" placeholder="Option 1" id="question_${question_no}_option_1">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="options_add_new">
+                                <button type="button" id="add_new_row_question_${question_no}_option_1" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle  font-30"></button>
+                            </div>
+                        </div>
+                    </div>
+                <div>
+            `);
+            console.log("change to Radio");
+            
+        }
+        else if(value == "Short Answer"){
+            document.getElementById(`optionrows_question_${question_no}`).remove();
+            $(`.card-body_${question_no}`).append(`
+                <div class="optionrows_question_${question_no}" id="optionrows_question_${question_no}">
+                    <div class="row" id="row_question_${question_no}_option_1">
+                        <div class="col-sm-3">
+                            <div class="options">
+                                <input type="text" class="width-100 font-14 text-darkblue exam-input" placeholder="Option 1" id="question_${question_no}_option_1">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="options_add_new">
+                                <button type="button" id="add_new_row_question_${question_no}_option_1" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle  font-30"></button>
+                            </div>
+                        </div>
+                    </div>
+                <div>
+            `);
+            console.log("change to short answer")
+        }
+        else if(value == "Multiple Choice(Multiple)"){
+            document.getElementById(`optionrows_question_${question_no}`).remove();
+            $(`.card-body_${question_no}`).append(`
+                <div class="optionrows_question_${question_no}" id="optionrows_question_${question_no}">
+                    <div class="row" id="row_question_${question_no}_option_1">
+                        <div class="col-sm-3">
+                            <div class="options">
+                                <input type="text" class="width-100 font-14 text-darkblue exam-input" placeholder="Option 1" id="question_${question_no}_option_1">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="options_add_new">
+                                <button type="button" id="add_new_row_question_${question_no}_option_1" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle font-30"></button>
+                            </div>
+                        </div>
+                    </div>
+                <div>
+            `);
+            console.log(" change to multiple choice muliple")
+        }
+        else if(value == "Multiple Choice(Single)"){
+            document.getElementById(`optionrows_question_${question_no}`).remove();
+            $(`.card-body_${question_no}`).append(`
+                <div class="optionrows_question_${question_no}" id="optionrows_question_${question_no}">
+                    <div class="row" id="row_question_${question_no}_option_1">
+                        <div class="col-sm-3">
+                            <div class="options">
+                                <input type="text" class="width-100 font-14 text-darkblue exam-input" placeholder="Option 1" id="question_${question_no}_option_1">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="options_add_new">
+                                <button type="button" id="add_new_row_question_${question_no}_option_1" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle  font-30"></button>
+                            </div>
+                        </div>
+                    </div>
+                <div>
+            `);
+            console.log("change to multiple choice single")
+        }
+    }
+   
+
+    
+</script>
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'dict/css1/setexam.css' %}" />
+<script>
+    $(document).ready(function(){
+          
+          $("#upload_file").change(function(){
+              $("#uploaded-file").text(this.files[0].name);
+          });
+    });
+    </script>
+
+{% endblock head %}
+{% block nav %}
+
+
+
+{% endblock nav%}
+
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+<div class="pages-body-bg-color pt-5">
+    <div class="exam-section">
+        <section class="set-examination  ">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-header">
+                        <h1 class="font-26 font-bold text-black text-uppercase">Add Examination Details</h1>
+        
+                    </div>
+                    <div class="outer-rectangle">
+                        <div class="inner-block px-4">
+                            <div class="select-options py-4">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-4 col-xl-3 ">
+                                        <div class="detail-block py-2">
+                                        <label for="university" class="labelnotrequired">University</label>
+                                        <select name="university" id="university" class="  width-100  font-14 text-extralightgray">
+                                           
+                                            <option value="">Select</option>
+                                            {% for i in university %}
+                                            <option value="{{i.id}}">{{i.university_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-4 col-xl-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Course </label>
+                                            <select
+                                                class="clearable  width-100 font-14 font-bold text-extralightgray "
+                                                name="course" id="course" required>
+                                                <option class="option-format" value="" selected> Course</option>
+                                                {% for i in course %}
+                                                <option class="option-format" value="{{i.id}}">{{i.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Stream </label>
+                                            <select
+                                                class="clearable  width-100 font-14 font-bold text-extralightgray "
+                                                name="Stream" id="Stream" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelnotrequired">Session</label>
+                                            <select
+                                                class="clearable  width-100 font-14 font-bold text-extralightgray "
+                                                name="session" id="session" >
+                                                <option class="option-format" value="" selected>Select</option>
+                                              
+                                                {% for i in sessionnames %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                                {% endfor %}
+                                                
+                                                
+                                                
+
+
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Study Pattern</label>
+                                            <select
+                                                class="clearable  width-100 font-14 font-bold text-extralightgray "
+                                                name="studypattern" id="studypattern" required>
+                                                <option class="option-format" value="" selected>Select
+                                                </option>
+                                                <option class="option-format" value="Semester">Semester</option>
+                                                <option class="option-format" value="Annual">Annual</option>
+                                                <option class="option-format" value="Full Course">Full Course</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelnotrequired">Admission Type</label>
+                                            <select
+                                                class="clearable  width-100 font-14 font-bold text-extralightgray "
+                                                name="entry_mode" id="entry_mode" >
+                                                <option class="option-format" value="" selected>Select</option>
+                                                <option class="option-format" value="Regular">Regular</option>
+                                                <option class="option-format" value="Distance">Distance</option>
+                                                <option class="option-format" value="Lateral Entry">Lateral Entry
+                                                </option>
+                                                <option class="option-format" value="Credit Transfer">Credit Transfer
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                  
+                                   
+                               
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3" id="semyear_hide">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Semester/Year </label>
+                                            <select
+                                                class="clearable  width-100 font-14 font-bold text-extralightgray "
+                                                name="semyear" id="semyear" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                                        <div class="detail-block py-2 ">
+                                            <label for="" class="labelnotrequired">Course Duration (in years)</label>
+                                            <input type="text" name="course_duration" id="course_duration" class="clearable  width-100 font-14 font-bold text-extralightgray " readonly>
+                                          
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                                        <div class="detail-block py-2 mt-3">
+                                            <button class="save-btn blue-btn font-18 font-bold exam-button  width-100"  id="fetch_students">Fetch Students</button>
+                                          
+                                        </div>
+
+                                    </div>
+                                 
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mt-3">
+                                        <label for="exam_date" class="labelrequired">Exam Date</label>
+                                        <input
+                                        class="  width-100  font-14 text-extralightgray exam-input"
+                                        type="text" name="exam_date" id="exam_date"
+                                        onfocus="(this.type='date')" placeholder=""  required>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mt-3">
+                                        <label for="exam_time" class="labelrequired">Examination Start Time</label>
+                                        <input
+                                        class="  width-100  font-14 text-extralightgray exam-input"
+                                        type="text" name="exam_time" id="exam_time"
+                                        onfocus="(this.type='time')" placeholder=""  required>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mt-3">
+                                        <label for="exam_end_time" class="labelrequired">Examination End Time</label>
+                                        <input
+                                        class="  width-100  font-14 text-extralightgray exam-input"
+                                        type="text" name="exam_end_time" id="exam_end_time"
+                                        onfocus="(this.type='time')" placeholder=""  required>
+
+                                    </div>
+                                    <div class="col-sm-6 col-md-4 col-xl-3 mt-3">
+                                        <label for="exam_duration" class="labelrequired">Exam Duration (in minutes)</label>
+                                        <input
+                                        class="  width-100  font-14 text-extralightgray exam-input"
+                                        type="text" name="exam_duration" id="exam_duration" required
+                                         >
+
+                                    </div>
+                                   <div class="col-sm-6 col-md-4 col-xl-3 mt-3">
+                                    <label for="exam_name" class="labelrequired">Examination Name</label>
+                                    <input type="text" name="exam_name" class=" width-100  font-14 text-extralightgray exam-input" id="exam_name" placeholder="" required>
+                                   </div>
+                                   <div class="col-sm-6 col-md-4 col-xl-3 mt-3">
+                                    <label for="total_marks" class="labelrequired">Total Marks</label>
+                                    <input type="number" name="total_marks" max="100" class="width-100  font-14 text-extralightgray exam-input" id="total_marks"
+                                    placeholder="" required>
+                                </div>
+                                <div class="col-sm-6 col-md-4 col-xl-6 mt-3">
+                                    <!-- <div class="file-upload">
+
+                                        <div
+                                            class="button-wrapper    nav-background  width-100  font-14 text-extralightgray exam-input ">
+                                            <label for="upload_file"
+                                                class="  width-100  font-14 text-blue  ">Upload</label>
+                                            <input type="file" id="upload_file" name="upload_file"
+                                                style="display:none">
+                                            <label id="uploaded-file"
+                                                class="  width-100  font-14 text-extralightgray "
+                                                style="border:none">No files chosen</label>
+                                        </div>
+
+                                    </div> -->
+                                    <div class="file-upload pt-4">
+
+                                        <div class="button-wrapper width-100 font-14 font-bold text-extralightgray  ">
+                                            <label for="upload_file" class="labelrequired bg-darkgray width-100 font-14 font-bold  text-extralightgray  file-btn-form">Upload</label>
+                                            <input type="file" id="upload_file" name="upload_file" style="display:none">
+                                            <label id="uploaded-file" class="  width-100 font-14 font-bold text-extralightgray " style="border:none">No files chosen</label>
+                                        </div>
+
+                                    </div>
+                                   
+                                </div>
+                                <!--div class="col-sm-6 col-md-4 col-xl-3 mt-3 pt-4">
+                                    <button class="save-btn blue-btn font-18 font-bold exam-button  width-100"  id="show-question">Add Questions Manually</button>
+                                </div -->
+                                <div class="col-sm-6 col-md-4 col-xl-3 mt-3 pt-4" id="save_exam_button" >
+                                    <button class="save-btn  font-18 font-bold exam-button  width-100"  onclick="saveUpload()" >Save</button>
+                                </div>
+                                </div>
+                            </div>
+                                   
+
+                                   
+                                    
+                               
+                                   
+                                   
+                                
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+       
+      
+    
+    </div>
+</div>
+
+
+<div class="form" id="form" style="visibility: visible;">
+    <hr>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="set-questions  ">
+                    <form action="" method="POST" id="mainform">
+                        {% csrf_token %}
+                        <div class="form_values" id="form_values">
+                            
+                            
+                        </div>
+                        <div class="form_button" id="form_button">
+                            <!-- <button type="subit" class="btn btn-success mt-5">Save</button> -->
+                        </div>
+                    </form>
+                </div>
+              
+            </div>
+        </div>
+       
+    </div>
+</div>
+
+<section class="my-course-entries my-3  " style="display:none;" id="student_data">
+    <div class="row">
+        <div class="col-12">
+            <div class="white-box">
+                <div class="inner-block px-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="box-title pt-4 ">
+                                <h5 class="font-18  font-bold text-black">Add Student to Exam</h5>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="add_all_students" /> Add All Students
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="student_table_container entries-table pt-4 pb-5">
+                      
+                    </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+
+
+
+
+<!-- <button onclick='add()'>
+    add
+  </button>
+  <table class="table">
+    <tr>
+      <th>content</th>
+      <th>delete</th>
+    </tr>
+    <tbody>
+      <tr>
+        <td>Something</td>
+        <td>
+          <button onclick='rm()'>
+            remove
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table> -->
+  <div class="modal fade" id="ErrorModal" tabindex="-1" aria-labelledby="ErrorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ErrorModalLabel">Error</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="error_modal_container">
+            
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="edit-btn   width-100">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+<div id="exampleModal" class="modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <div class="container" id="output_container">
+                    <h3 class=" font-16 text-darkblue">Error ..!!</h3>
+                    <div class="output_course" id="output_course"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="blue-bg text-blue font-bold font-12 no-border"
+                    data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock body %}
+
+{% block script %}
+<script src="{% static 'dict/js/examvalidations.js' %}"></script>
+<script>
+
+    $('#upload_file').on('change', function(){
+        var fileExtension = ['xlsx'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+            alert("Only formats are allowed : "+fileExtension.join(', '));
+        }
+        var data = new FormData();
+        data.append("upload_file", $('#upload_file')[0].files[0]);
+        data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+        $.ajax({
+            method: "POST",
+            url: "{% url 'verify_examination_import_upload' %}",
+            processData: false,
+            contentType: false,
+            mimeType: "multipart/form-data",
+            data: data,
+            success: function (res) {
+                $('#error_modal_container').empty();
+                const response = JSON.parse(res);
+                console.log(response);
+                if(response.column_error.length > 0){
+                    console.log("Column error");
+                    $('#error_modal_container').append(`
+                    <div class="mt-1">
+                        <h4>Column Error</h4>
+                        <div class="alert alert-danger" role="alert">
+                            ${response.column_error}
+                        </div>
+                    </div>
+                    <br/>
+                    <hr/>
+                    `);
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                if(response.type_error_list.length > 0){
+                    var type_error = response.type_error_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Type Error</h4>
+                                <div id="type_error_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    type_error.forEach(myfunction);
+                    function myfunction(item){
+                        $('#type_error_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                    
+                }
+                if(response.answer_error_list.length > 0){
+                    var answer_error = response.answer_error_list;
+                    $('#error_modal_container').append(`
+                            <div class="mt-1">
+                                <h4>Answer Error</h4>
+                                <div id="answer_error_container">
+                                </div>
+                            </div>
+                            <br/>
+                            <hr/>
+                    `);
+                    answer_error.forEach(myfunction);
+                    function myfunction(item){
+                        $('#answer_error_container').append(`
+                            <div class="alert alert-danger" role="alert">
+                                ${item}
+                            </div>                         
+                        `);
+                    }
+                    if($('#ErrorModal').data('modal') && $('#ErrorModal').data('modal').isShown){
+                        // console.log('Modal is open');
+                    } 
+                    else {
+                        console.log('Modal is closed');
+                        $('#ErrorModal').modal('show');
+                    }
+                }
+                
+                if(response.column_error.length == 0 & response.type_error_list.length == 0 & response.answer_error_list.length == 0){
+                    $('#save_exam_button').css('display', 'block');
+                }
+            }   
+        });
+    })
+
+    function VerifyFile(){
+
+    }
+
+
+    function saveUpload(){
+        var data_arr = []
+        var rowCount = ($('#student-table tr').length ) - 1;
+       
+        for(var i = 1; i <= rowCount; i++) {
+            if($(`#student_checkbox${i}`).is(':checked')){
+                    data_arr.push($(`#student_checkbox${i}`).val())
+
+            }
+                    // $(`#student_checkbox${i}`).prop('checked', false);
+        }
+        if (data_arr <= 0)
+            alert("Please select students for the exam");
+        else {
+        console.log("data_arr :",data_arr)
+        console.log("data uploaded");
+        flag = validateExamForm("Submit")
+        
+        if (flag){
+
+            var data = new FormData();
+            data.append("university", document.getElementById("university").value);
+            data.append("course", document.getElementById("course").value);
+            data.append("stream", document.getElementById("Stream").value);
+            data.append("exam_date", document.getElementById("exam_date").value);
+            data.append("exam_time", document.getElementById("exam_time").value);
+            data.append("exam_name", document.getElementById("exam_name").value);
+            data.append("exam_end_time", document.getElementById("exam_end_time").value);
+            data.append("exam_duration", document.getElementById("exam_duration").value);
+            data.append("total_marks", document.getElementById("total_marks").value);
+            data.append("upload_file", $('#upload_file')[0].files[0]);
+            data.append("array_data",data_arr);
+            data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+            $.ajax({
+                method: "POST",
+                url: "{% url 'setexamination' %}",
+                processData: false,
+                contentType: false,
+                mimeType: "multipart/form-data",
+                data: data,
+                success: function (res) {
+                    console.log(res)
+                    const obj = JSON.parse(res);
+                    console.log(obj);
+                    if(obj.saved == "yes"){
+                    alert("Exam details saved")
+                    window.location = "{% url 'setexamination' %}"
+                   }
+                }
+            })
+
+        }
+        
+        
+        }  
+
+        
+        
+        // console.log(is_university,is_course,is_stream,is_exam_date,is_exam_name,is_total_marks)
+    }
+
+    function rm() {
+      $(event.target).closest("tr").remove();
+    }
+
+    function add() {
+      $("table").append("<tr><td>New Thing</td><td><button onclick='rm()'>remove</button></td></tr>");
+    }
+    document.getElementById("university").onchange = function () {
+        document.querySelectorAll('.clearable').forEach(function(element) {
+                element.value = '';
+        });
+
+        var university = this.value;
+        if (university == "Select University") {
+
+        }
+        else {
+            console.log("university selected")
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'setexam' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_course': university
+                },
+                success: function (response) {
+                    /*$('#course_year').empty()
+                    $('#course_year').append('<option value="">Select Course Year</option>')
+                    
+                    console.log(response)
+                    if(response.distinct_years){
+                        var data = response.distinct_years
+                        data.forEach(myFunction);
+                        function myFunction(item){
+                        console.log(item)
+                        $('#course_year').append(`
+                            <option value="${item}">${item}</option>
+                        `);
+                        }
+
+                    }*/
+                    $('#course').empty()
+                    $('#course').append('<option class="option-format" value="">Select</option>')
+                    
+                    console.log(response)
+                    if(response.course){
+                        var data = response.course
+                        data.forEach(myFunction);
+                        function myFunction(item){
+                        console.log(item)
+                        $('#course').append(`
+                            <option class="option-format" value="${item.id}">${item.name}</option>
+                        `);
+                        }
+
+                    }
+
+                }
+            });
+
+        }
+    }
+
+    /*document.getElementById("course_year").onchange = function () {
+    var course_year = this.value;
+    if(course_year == "Select course_year"){
+
+    }
+    else{
+      $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'setexam' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'get_course_name':course_year,
+              'get_course_university':$('#university').val()
+
+            },
+            success: function(response) {
+              $('#course').empty()
+              $('#course').append('<option value="">Select Course</option>')
+              
+              console.log(response);
+              if(response.course){
+                var data = response.course
+                data.forEach(myFunction);
+                function myFunction(item){
+                  console.log(item)
+                  $('#course').append(`
+                    <option value="${item.id}">${item.name}</option>
+                  `);
+                }
+
+              }
+            }
+          });
+          
+    }
+}*/
+
+
+    document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        console.log(coursename);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'setexam' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'course_id': coursename // from form
+
+            },
+            success: function (response) {
+                console.log(response);
+                console.log(response);
+                var data = response.stream
+                // console.log("data",data)
+                var duration = ''
+                $('#Stream').empty();
+                data.forEach(myFunction);
+                $('#Stream').append('<option Selected> Select Stream </option>');
+                function myFunction(item) {
+                    duration = item.sem
+                    $('#Stream').append('<option value=' + item.id + '>' + item.name + '</option>');
+                }
+                document.getElementById("Stream").onchange = function () {
+                    var coursename = $('#course').val();
+                    var streamname = this.value;
+                    console.log("coursename :", coursename, 'streamname', streamname);
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'setexam' %}",
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                        data: {
+                            'xxx': coursename, // from form,
+                            'xxxx':streamname
+
+                        },
+                        success: function (response) {
+                            console.log("sent")
+                            $('#studypattern').empty();
+                            $('#studypattern').append(`
+                            <option>Select Study Pattern</option>
+                            <option value="Semester">Semester</option>
+                            <option value="Annual">Annual</option>
+                            <option value="Full Course">Full Course</option>
+                            
+                            `);
+                        }
+                        });
+                        document.getElementById("studypattern").onchange = function () {
+                            var course_name = $('#course').val();
+                            var stream_name = $('#Stream').val();
+                            var study_pattern = this.value;
+                            if (study_pattern == "Full Course"){
+                                console.log("full course")
+                                document.getElementById("semyear").disabled = true;
+                            }
+                            $.ajax({
+                                type: "POST",
+                                url: "{% url 'setexam' %}",
+                                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                                data: {
+                                    'student_course_id': coursename, // from form,
+                                    'student_stream_id':streamname
+                                },
+                                success: function (response) {
+                                    var data = response.total_semester
+                                    var study_pattern = $('#studypattern').val();
+                                    $('#semyear').empty();
+                                    $('#semyear').append(`
+                                        <option value="">Select Semester / Year</option>
+                                    `);
+                                    if(study_pattern == "Semester"){
+                                        var total_sem = parseInt(data) * 2;
+                                        $('#course_duration').val(parseInt(total_sem, 10) / 2);
+                                        console.log(total_sem,study_pattern);
+                                        for(var i = 1; i<=total_sem;i++){
+                                            $('#semyear').append(`
+                                                <option value="${i}">Semester ${i}</option>
+                                            `);
+                                        }
+                                    }
+                                    else if(study_pattern == "Annual"){
+                                        var total_sem = parseInt(data);
+                                        $('#course_duration').val(total_sem);
+                                        console.log(total_sem,study_pattern);
+                                        for(var i = 1; i<=total_sem;i++){
+                                            $('#semyear').append(`
+                                                <option value="${i}">Year ${i}</option>
+                                            `);
+                                        }
+                                    }
+                                    
+                                    
+                                    
+                                }
+                            });
+                            
+
+                            // console.log(course_name, stream_name, study_pattern)
+                        }
+                        
+                }
+
+            }
+        });
+    }
+    
+    
+    
+    //document.getElementById("semyear").onchange = function () {
+        document.getElementById("fetch_students").onclick = function () {
+        flag = validateExamForm("Fetch")
+        if (flag) {
+            var course_name = $('#course').val();
+        var stream_name = $('#Stream').val();
+        var study_pattern = $('#studypattern').val();
+        var session = $('#session').val();
+        var entry_mode = $('#entry_mode').val();
+        //var semyear = this.value;
+        var semyear = $('#semyear').val();
+        console.log(course_name,stream_name,study_pattern,semyear)
+        $.ajax({
+            type: "POST",
+            url: "{% url 'setexam' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'get_students_course_id': course_name,
+                'get_students_stream_id': stream_name,
+                'get_students_study_pattern': study_pattern,
+                'get_students_semyear': semyear,
+                'get_students_session': session,
+                'get_students_entry_mode': entry_mode,
+
+                
+            },
+            success: function (response) {
+                var data = response.data;
+                if(data){
+                    $('#student_data').css('display', 'block');
+                    $('.student_table_container').empty();
+                    $('.student_table_container').append(`
+                        <table class="table" id="student-table">
+                            <thead>
+                                <tr>
+                                <th scope="col">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="select_all_students">
+                                        <label class="form-check-label" for="select_all_students">
+                                        </label>
+                                    </div>
+                                </th>
+                                <th scope="col">Sr.No</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Mobile</th>
+                                <th scope="col">Enrollment ID</th>
+                                <th scope="col">Enrollment Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student_table_body">
+                                
+                            </tbody>
+                        </table>
+                    `);
+                }
+                data.forEach(myFunction);
+                var count = 0;
+                function myFunction(item,count){
+                    count = count + 1;
+                    // console.log(item,count)
+                    var enrollment_date = item.enrollment_date;
+                    var datePart = enrollment_date.match(/\d+/g),
+                    year = datePart[0].substring(0), // get only two digits
+                    month = datePart[1], day = datePart[2];
+                    
+                    var changedate =  day+'/'+month+'/'+year;
+                    $('#student_table_body').append(`
+                    <tr>
+                        <th scope="row">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="${item.id}" id="student_checkbox${count}">
+                                <label class="form-check-label" for="student_checkbox">
+                                </label>
+                            </div>
+                        </th>
+                        <td>${count}</td>
+                        <td>${item.name}</td>
+                        <td>${item.email}</td>
+                        <td>${item.mobile}</td>
+                        <td>${item.enrollment_id}</td>
+                        <td>${changedate}</td>
+                    </tr>
+
+                    `);
+                }
+                $(document).ready( function () {
+                    $('#student-table').DataTable({
+                        "pageLength": 5
+                    });
+                });
+            }
+        });
+
+        }
+        
+    }
+
+    $(document).ready( function () {
+        $('#examination-collapse').addClass("show");
+        $("#set_examination_link").removeClass("link-dark");
+        $('#set_examination_link').addClass("link-primary");
+           // Listen for change event on the "Add All Students" checkbox
+$('#add_all_students').on('change', function() {
+  
+    var isChecked = $(this).is(':checked'); // Check if "Add All Students" is checked
+
+    // Select all checkboxes inside the student table and set their checked property
+    $('#student_table_body input[type="checkbox"]').prop('checked', isChecked);
+});
+
+    });
+    // $('#student_checkbox1').click(function() {
+    //     console.log("yes")
+    // });
+    $(document).on('change', '#select_all_students', function() {
+        if(this.checked) {
+            var rowCount = ($('#student-table tr').length ) - 1;
+            for(var i = 1; i <= rowCount; i++) {
+                $(`#student_checkbox${i}`).prop('checked', true);
+            }
+        }
+        else{
+            var rowCount = ($('#student-table tr').length ) - 1;
+            for(var i = 1; i <= rowCount; i++) {
+                $(`#student_checkbox${i}`).prop('checked', false);
+            }
+        }
+        // console.log("test")
+    });
+
+    document.getElementById("show-question").onclick = function () {
+        console.log("show the questions");
+        $('#form_values').append(`
+        
+        <div class="card mb-5" id="question_row_1">
+            <div class="outer-rectangle">
+    <div class="card-header inner-block p-4" id="question_row_1">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="question">
+                    <input type="text" class="width-100  font-14 text-darkblue" placeholder="Question" id="question_1">
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="upload-image">
+                    <label for="upload_image_1" class="width-100  font-20 text-white"><i class="fa fa-upload">Upload</i></label>
+                    <input class="form-control" type="file" id="upload_image_1" onchange="preview(this.id)" hidden>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="question-type">
+                    <select class="width-100  font-14 text-darkblue questiontype" onchange="myFunction(this.id,this.value)" name="question_type" id="questiontype_1"
+                        aria-label="Default select example">
+                        <option class="option-format" selected value="Multiple Choice(Single)">Multiple Choice(Single)</option>
+                        <option class="option-format" value="Multiple Choice(Multiple)">Multiple Choice(Multiple)</option>
+                        <option class="option-format" value="Short Answer">Short Answer</option>
+                        <option class="option-format" value="Radio">Radio</option>
+                        
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="marks">
+                    <input type="text" class="width-100  font-14 text-darkblue exam-input" name="marks" id="marks_1" placeholder="Marks">
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <div id="add_question_row_1">
+                    <button type="button" id="add_new_row_question_1" onclick="Add_Question(this.id)" class="add_row_for_questions fas fa-plus-circle  font-30"></button>
+                </div>
+            </div>
+        </div> 
+        <div class="card-body_1">
+                <div class="uploaded-image">
+                    <img id="frame_1" src="" class="img-fluid" />
+                </div>
+                <div class="optionrows_question_1" id="optionrows_question_1">
+                    <div class="row" id="row_question_1_option_1">
+                        <div class="col-sm-3">
+                            <div class="select-options options">
+                                <input type="text" class="width-100 font-14 text-darkblue mb-3  exam-input" placeholder="Option 1" id="question_1_option_1">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="options_add_new">
+                                <button type="button" id="add_new_row_question_1_option_1" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle  font-30"></button>
+                            </div>
+                        </div>
+                    </div>
+                <div>
+            </div>
+    </div>
+    
+</div>
+            
+        </div>
+       
+        `); 
+        
+
+    }
+
+    function Add_Row(id){
+        console.log(id);
+        var first_split = id.replace('add_new_row_question_',"");
+        console.log(first_split);
+        var split_data = first_split.split('_option_');
+        var question_no = split_data[0];
+        document.getElementById(id).remove();
+        var next_option_no = parseInt(split_data[1]) + 1;
+        console.log(`optionrows_question_${question_no}`)
+        $(`.optionrows_question_${question_no}`).append(`
+            <div class="row" id="row_question_${question_no}_option_${next_option_no}">
+                <div class="col-sm-3">
+                    <div class="options pt-2">
+                        <input type="text" class="width-100 font-14 text-darkblue  mb-3" placeholder="Option ${next_option_no}" id="question_${question_no}_option_${next_option_no}">
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="options_add_new pt-2">
+                        <button type="button" id="add_new_row_question_${question_no}_option_${next_option_no}" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle  font-30"></button>
+                    </div>
+                </div>
+            </div>
+        `);
+    }
+
+
+    function Add_Question(id){
+        console.log("id :",id)
+        var data = "add_new_row_question_1"
+        var question_no = id.replace('add_new_row_question_',"")
+        var next_question_no = parseInt(question_no) + 1;
+        console.log(question_no,next_question_no)
+        document.getElementById(id).remove();
+        $(`#add_question_row_${question_no}`).append(`
+        <button type="button" id="add_new_row_question_${question_no}" onclick="Remove_Question(this.id)" class="add_row_for_questions fas fa-minus-circle  font-30"></button>
+        `);
+        $('#form_values').append(`
+       
+          
+        <div class="card mb-5" id="question_row_${next_question_no}">
+    <div class="outer-rectangle">
+        <div class="card-header inner-block p-4" id="question_row_${next_question_no}">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="question">
+                    <input type="text" class="width-100  font-14 text-darkblue" placeholder="Question" id="question_${next_question_no}">
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="upload-image">
+                    <label for="upload_image_${next_question_no}" class="width-100  font-20 text-white"><i class="fa fa-upload">Upload</i></label>
+                    <input class="form-control" type="file" id="upload_image_${next_question_no}" onchange="preview(this.id)" hidden>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="question-type">
+                    <select class="width-100  font-14 text-darkblue questiontype" onchange="myFunction(this.id,this.value)" name="question_type" id="questiontype_${next_question_no}"
+                        aria-label="Default select example">
+                        <option class="option-format" selected value="Multiple Choice(Single)">Multiple Choice(Single)</option>
+                        <option class="option-format" value="Multiple Choice(Multiple)">Multiple Choice(Multiple)</option>
+                        <option class="option-format" value="Short Answer">Short Answer</option>
+                        <option class="option-format" value="Radio">Radio</option>
+                        
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="marks">
+                    <input type="text" class="width-100  font-14 text-darkblue exam-input" name="marks" id="marks_${next_question_no}" placeholder="Marks">
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <div id="add_question_row_1">
+                    <button type="button" id="add_new_row_question_${next_question_no}" onclick="Add_Question(this.id)" class="add_row_for_questions fas fa-plus-circle  font-30"></button>
+                </div>
+            </div>
+        </div> 
+        <div class="card-body_${next_question_no}">
+                <div class="uploaded-image">
+                    <img id="frame_${next_question_no}" src="" class="img-fluid" />
+                </div>
+                <div class="optionrows_question_${next_question_no}" id="optionrows_question_${next_question_no}">
+                    <div class="row" id="row_question_${next_question_no}_option_1">
+                        <div class="col-sm-3">
+                            <div class="select-options options">
+                                <input type="text" class="width-100 font-14 text-darkblue mb-3  exam-input" placeholder="Option 1" id="question_${next_question_no}_option_1">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="options_add_new">
+                                <button type="button" id="add_new_row_question_${next_question_no}_option_1" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle  font-30"></button>
+                            </div>
+                        </div>
+                    </div>
+                <div>
+            </div>
+        </div>
+
+        </div>
+            
+        </div>
+    </div>
+</div>
+        `); }
+    function Remove_Question(id){
+        console.log(id);
+        var question_no = id.replace('add_new_row_question_',"")
+        console.log(question_no)
+        document.getElementById(`question_row_${question_no}`).remove();
+    }
+
+    function myFunction(id,value){
+        console.log(id,value);
+        var question_no = id.replace('questiontype_','');
+        console.log("Question no = " , question_no)
+        
+        
+        if(value == "Radio"){
+            document.getElementById(`optionrows_question_${question_no}`).remove();
+            $(`.card-body_${question_no}`).append(`
+                <div class="optionrows_question_${question_no}" id="optionrows_question_${question_no}">
+                    <div class="row" id="row_question_${question_no}_option_1">
+                        <div class="col-sm-3">
+                            <div class="options">
+                                <input type="text" class="width-100 font-14 text-darkblue exam-input" placeholder="Option 1" id="question_${question_no}_option_1">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="options_add_new">
+                                <button type="button" id="add_new_row_question_${question_no}_option_1" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle  font-30"></button>
+                            </div>
+                        </div>
+                    </div>
+                <div>
+            `);
+            console.log("change to Radio");
+            
+        }
+        else if(value == "Short Answer"){
+            document.getElementById(`optionrows_question_${question_no}`).remove();
+            $(`.card-body_${question_no}`).append(`
+                <div class="optionrows_question_${question_no}" id="optionrows_question_${question_no}">
+                    <div class="row" id="row_question_${question_no}_option_1">
+                        <div class="col-sm-3">
+                            <div class="options">
+                                <input type="text" class="width-100 font-14 text-darkblue exam-input" placeholder="Option 1" id="question_${question_no}_option_1">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="options_add_new">
+                                <button type="button" id="add_new_row_question_${question_no}_option_1" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle  font-30"></button>
+                            </div>
+                        </div>
+                    </div>
+                <div>
+            `);
+            console.log("change to short answer")
+        }
+        else if(value == "Multiple Choice(Multiple)"){
+            document.getElementById(`optionrows_question_${question_no}`).remove();
+            $(`.card-body_${question_no}`).append(`
+                <div class="optionrows_question_${question_no}" id="optionrows_question_${question_no}">
+                    <div class="row" id="row_question_${question_no}_option_1">
+                        <div class="col-sm-3">
+                            <div class="options">
+                                <input type="text" class="width-100 font-14 text-darkblue exam-input" placeholder="Option 1" id="question_${question_no}_option_1">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="options_add_new">
+                                <button type="button" id="add_new_row_question_${question_no}_option_1" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle font-30"></button>
+                            </div>
+                        </div>
+                    </div>
+                <div>
+            `);
+            console.log(" change to multiple choice muliple")
+        }
+        else if(value == "Multiple Choice(Single)"){
+            document.getElementById(`optionrows_question_${question_no}`).remove();
+            $(`.card-body_${question_no}`).append(`
+                <div class="optionrows_question_${question_no}" id="optionrows_question_${question_no}">
+                    <div class="row" id="row_question_${question_no}_option_1">
+                        <div class="col-sm-3">
+                            <div class="options">
+                                <input type="text" class="width-100 font-14 text-darkblue exam-input" placeholder="Option 1" id="question_${question_no}_option_1">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="options_add_new">
+                                <button type="button" id="add_new_row_question_${question_no}_option_1" onclick="Add_Row(this.id)" class="add_row_for_options fas fa-plus-circle  font-30"></button>
+                            </div>
+                        </div>
+                    </div>
+                <div>
+            `);
+            console.log("change to multiple choice single")
+        }
+    }
+   
+
+    
+</script>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock script %}

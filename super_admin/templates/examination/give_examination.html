@@ -1,0 +1,2598 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+
+<script type="text/javascript" src="{% static 'dict/js1/examination.js' %}"></script>
+
+{% endblock head %}
+
+{% block nav %}
+{% if request.user.is_authenticated %}
+{% include 'sidebar.html' %}
+{% endif %}
+{% endblock nav%}
+
+
+{% block body %}
+
+
+
+
+
+
+<!-- <div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card" id="start_test_card">
+                <div class="card-header">
+                  Examination
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Rules of Exam.</h5>
+                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                  <button class="btn btn-success" onclick="startTest()">Start Test</button>
+                </div>
+              </div>
+        </div>
+    </div>
+    
+</div> -->
+<div class="container py-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="error-container">
+    
+            </div>
+            <div class="exam-start-card" id="start_test_card">
+                <div class="row">
+                    {% for i in exams %}
+                    <div class="col-lg-6 pt-3">
+                        <div class="exam-block p-5 ">
+                            <div class="exam-heading">
+                                <div class="row ">
+                               
+                                    <div class=" exam-title d-flex align-middle justify-content-left">
+                                        
+                                            <h2 class="font-26 font-roboto text=text-darkblue px-2"> {{i.examname}}</h2> 
+                                            <input type="hidden" name="" id="exam_id_to_save">
+                                    </div>
+                                    <div class="exam-body pt-3">
+                                        <h5 class="font-30 font-roboto text-darkblue">Rules of Exam.</h5>
+                                        <p class="font-18 text-lightgray">With supporting text below as a natural lead-in to additional content.</p>
+                                        <button class="submit-exam-button font-14 font-bold text-purewhite text-uppercase mt-2" onclick="startTest('{{i.id}}')">Start Test</button>
+                                    </div>
+                                           
+                                   
+                                </div>
+                            </div>
+                            
+                                
+                        </div>
+                       
+                    </div>
+                           
+                           
+                     
+                    
+                    {% endfor %}
+                </div>
+            
+            </div>
+            <div class="exam-start-card" id="exam_given">
+                <div class="row">
+                    {% for i in givenexams %}
+                    <div class="col-lg-6 pt-3">
+                        <div class="exam-block p-5 ">
+                            <div class="exam-heading">
+                                <div class="row ">
+                               
+                                    <div class=" exam-title d-flex align-middle justify-content-left">
+                                        
+                                            <h2 class="font-26 font-roboto text=text-darkblue px-2"> {{i.examname}}</h2> 
+                                            <input type="hidden" name="" id="exam_id_to_save">
+                                    </div>
+                                    <div class="exam-body pt-3">
+                                        <h5 class="font-30 font-roboto text-darkblue">Rules of Exam.</h5>
+                                        <p class="font-18 text-lightgray">With supporting text below as a natural lead-in to additional content.</p>
+                                        <button class="submit-exam-button font-14 font-bold text-purewhite text-uppercase mt-2" disabled >Exam Given</button>
+                                    </div>
+                                           
+                                   
+                                </div>
+                            </div>
+                            
+                                
+                        </div>
+                       
+                    </div>
+                           
+                           
+                     
+                    
+                    {% endfor %}
+                </div>
+            
+            </div>
+            <div id="clockdiv" class="text-center pt-3" style="display:none;">
+                
+                    <div class="row">
+                        <div class="col-4 col-md-2 offset-md-3">
+                            <div class="green-block p-2 p-md-3">
+                                <span class="text-purewhite font-18 font-roboto hours"></span>
+                                <div class="text-purewhite font-18 font-roboto">Hours</div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-4 col-md-2">
+                            <div class="green-block p-2 p-md-3">
+                                <span class="text-purewhite font-18 font-roboto minutes"></span>
+                                <div class="text-purewhite font-18 font-roboto">Minutes</div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-4 col-md-2">
+                            <div class="green-block p-2 p-md-3">
+                                <span class="text-purewhite font-18 font-roboto seconds"></span>
+                                <div class="text-purewhite font-18 font-roboto">Seconds</div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h4 id="attempted_count" class="font-24 text-darkblue pt-4">
+                    
+                            </h4>
+                            
+                        </div>
+            
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <input type="text" id="exam-id" style="display:none;" class="width-100  font-14 text-extralightgray">
+                        </div>
+                    </div>
+                
+            </div>
+            <div class="counter">
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" id="counter" style="display:none;" class="width-100  font-14 text-extralightgray">
+                    </div>  
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" id="attempted_questions" style="display:none;">
+                    </div>
+                </div>
+               
+            </div>
+            <div class="current_question">
+                <input type="text" id="current_question_count" value="1" style="display:none">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div class="container pagination">
+
+</div>
+
+<div class="show-questions py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+               
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-8">
+                <input type="text" id="current_row" style="display:none;">
+                <div class="form" id="form" style="display:none;">
+                   <form action="" method="POST" id="dataform">
+                       {% csrf_token %}
+                       <h1 class="font-30 text-darkblue py-3" id="submit_exam_text" style="display:none;">Submit Exam</h1>
+    
+                   </form>
+    
+                </div>
+                <div class="btn-row pt-4">
+                    <div class="row">
+                        <!--<div class="col-3" id="first_btn_container">
+                            <button class="edit-btn" id="first_btn" style="display:none;" onclick="first_question()">First</button>
+                        </div> -->
+                        <div class=" col-6 col-sm-4 col-md-2" id="previous_btn_container">
+                            <button class="edit-btn prev-btn" id="previous_btn" style="display:none;" onclick="previous_question()">Previous</button>
+                        </div>
+                        <div class="col-6 col-sm-4 col-md-2" id="next_btn_container">
+                            <button class="edit-btn next-btn" id="next_btn" style="display:none;" onclick="next_question()">Next</button>
+                        </div>
+                        <div class="col-6 col-sm-4 col-md-2 mt-3 mt-sm-0" id="last_btn_container">
+                            <button class="edit-btn last-btn" id="last_btn" style="display:none;" onclick="last_question()">Last</button>
+                        </div>
+                        
+                
+                
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-12 col-md-4">
+                <!--<div class="alert alert-primary" id="remaining_questions" role="alert" style="display:none;">
+                  
+                </div> -->
+                <div class="unattempted-questions card text-center p-3 mt-3 mt-md-0 totalexam" id="remaining_questions" style="display:none;">
+                    <table id="unattempted-questions" class="table py-3" style="display:none;">
+
+                    </table>
+                </div>
+               
+            </div>
+        </div>
+           
+        
+      
+        <!-- <button class="btn btn-primary" id="saveexambtn" style="display:none;" onclick="saveExam($('#counter').val(),$('#exam_id_to_save').val())">Submit</button> -->
+    </div>
+</div>
+
+
+
+<script>
+
+    function CheckTiming(id){
+        // console.log("clicked on check_timing")
+        $.ajax({
+            type: "POST",
+            url: "{% url 'giveexamination' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'check_timing': id
+            },
+            success: function (response) {
+                console.log(response)
+                if(response.error){
+                    $('.error-container').empty();
+                    $('.error-container').append(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong id="error">${response.error}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    `);
+                    setTimeout(() => {
+                        $('.alert').alert('close');
+                    }, 3000);
+                }
+                else if(response.exam_id){
+                    // console.log(response.exam_id);
+                    startTest(response.exam_id);
+                }
+            }
+        });
+    }
+
+
+
+
+    function startTest(id) {
+        window.onbeforeunload = function(){
+            
+            return '';
+        };
+        window.close = function(){
+            
+            return '';
+        };
+       
+        $('#current_row').val(1)
+        var exam_id = $('#exam-id').val(id);
+        
+        $('#clockdiv').css('display', 'block');
+        $('#previous_btn').css('display', 'block');
+        $('#previous_btn').prop('disabled', true);
+        $('#next_btn').css('display', 'block');
+        $('#last_btn').css('display', 'block');
+
+        function printEnd() {
+            alert("Time up")
+            saveExam($('#counter').val(),$('#exam_id_to_save').val())
+            // console.log("end is here")
+        }
+        function getTimeRemaining(endtime) {
+            //console.log("getTimeRemaining", endtime);
+            const total = Date.parse(endtime) - Date.parse(new Date());
+            //if (total <= 0) printEnd();
+            const seconds = Math.floor((total / 1000) % 60);
+            const minutes = Math.floor((total / 1000 / 60) % 60);
+            const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+            const days = Math.floor(total / (1000 * 60 * 60 * 24));
+            if (hours == 0 & minutes == 0 & seconds == 0) {
+               // alert("dfdfgfgf")
+                printEnd();
+            }
+            return {
+                total,
+                days,
+                hours,
+                minutes,
+                seconds
+            };
+        }
+
+        function initializeClock(id, endtime) {
+            const clock = document.getElementById(id);
+            const daysSpan = clock.querySelector('.days');
+            const hoursSpan = clock.querySelector('.hours');
+            const minutesSpan = clock.querySelector('.minutes');
+            const secondsSpan = clock.querySelector('.seconds');
+
+            function updateClock() {
+                const t = getTimeRemaining(endtime);
+
+                hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+                // document.getElementById("time").innerHTML = ('0' + t.hours).slice(-2) + "h "
+                // + ('0' + t.minutes).slice(-2) + "m " + ('0' + t.seconds).slice(-2) + "s ";
+
+                if (t.total <= 0) {
+
+                    clearInterval(timeinterval);
+                }
+            }
+
+            updateClock();
+            const timeinterval = setInterval(updateClock, 1000);
+
+            function update_data() {
+                // console.log("data added to database");
+                const t = getTimeRemaining(endtime);
+
+                var hours = ('0' + t.hours).slice(-2);
+                var minutes = ('0' + t.minutes).slice(-2);
+                // console.log(hours + " : " + minutes )
+                var time_in_minutes = parseInt(hours) * 60 + (parseInt(minutes))
+                //modified by Avani to stop the timer at 0.
+                if (time_in_minutes >= 0) { 
+                    var exam_id = $('#exam-id').val();
+                    //console.log(exam_id + " rrfgfgf " + time_in_minutes);
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'giveexamination' %}",
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                        data: {
+                            'exam_id_timer': exam_id,
+                            'exam_in_minutes': time_in_minutes
+                        },
+                        success: function (response) {
+                            // console.log("sent data to server")
+                        }
+                    });
+                }
+            }
+            const set_data = setInterval(update_data, 5000);
+        }
+
+        // const deadline = new Date(Date.parse(new Date()) + 1 * 1 * 1 * 10 * 1000);
+        // initializeClock('clockdiv', deadline);
+
+
+
+
+
+        // var exam_id = $('#exam-id').val(id);
+        // console.log("exam_id = " , id);
+        // const date = new Date();
+        // const newDate = addHours(date, 3);
+        // var countDownDate = new Date(newDate).getTime();
+        // console.log(countDownDate)
+        // var x = setInterval(function() {
+
+        // // Get today's date and time
+        // var now = new Date().getTime();
+
+        // // Find the distance between now and the count down date
+        // var distance = countDownDate - now;
+
+        // // Time calculations for days, hours, minutes and seconds
+        // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        // var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        // var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // // Output the result in an element with id="demo"
+        // document.getElementById("time").innerHTML = hours + "h "
+        // + minutes + "m " + seconds + "s ";
+
+        // // If the count down is over, write some text 
+        // if (distance < 0) {
+        //     clearInterval(x);
+        //     document.getElementById("time").innerHTML = "EXPIRED";
+        // }
+        // }, 1000);
+
+        // var y = setInterval(function() {
+
+        // // Get today's date and time
+        // var now = new Date().getTime();
+
+        // // Find the distance between now and the count down date
+        // var distance = countDownDate - now;
+
+        // // Time calculations for days, hours, minutes and seconds
+        // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        // var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        // var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // // Output the result in an element with id="demo"
+        // document.getElementById("time").innerHTML = hours + "h "
+        // + minutes + "m " + seconds + "s ";
+
+        // // If the count down is over, write some teyt 
+        // if (distance < 0) {
+        //     clearInterval(y);
+        //     document.getElementById("time").innerHTML = "EXPIRED";
+        // }
+        // $.ajax({ // create an AJAX call...
+        //     type: "POST",
+        //     url: "{% url 'giveexamination' %}",
+        //     headers: {'X-CSRFToken': '{{ csrf_token }}'},
+        //     data: {
+        //         'exam_id_timer':id,
+        //         'hours':hours,
+        //         'minutes':minutes,
+        //         'seconds':seconds
+        //     },
+        //     success: function(response) {
+        //     }
+        // });
+        // }, 60000);
+
+
+
+        $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'giveexamination' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'exam_id': id
+            },
+            success: function (response) {
+                console.log("rrrrrr" + response.hours)
+                
+
+
+
+
+                var hours = parseInt(response.hours);
+                var minutes = parseInt(response.minutes);
+                if (hours == 0 & minutes == 0) {
+                    let dt = new Date();
+                    dt.setHours(dt.getHours() + 3);
+                    initializeClock('clockdiv', dt);
+                }
+                else {
+                    let dt = new Date();
+                    dt.setHours(dt.getHours() + hours);
+                    dt.setMinutes(dt.getMinutes() + minutes)
+                    initializeClock('clockdiv', dt);
+                }
+
+                var data = response.data;
+                $('#exam_id_to_save').val(response.exam_id)
+                data.forEach(myFunction);
+                var count = 0
+                function myFunction(item, count) {
+                    //console.log("dgfgfgfgF", item)
+                    count = count + 1;
+                    // console.log(item.type)
+                    if ((item.type == "radio") ) {
+                        // console.log("radio")
+                        $('#dataform').append(`
+                    <div class="card pb-4 totalexam" id="question_row_${count}">
+                        <div class="card-header p-4">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="display:none;" class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="display:none;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count} py-4">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options px-4">
+                                        <div class="form-check pb-3">
+                                            
+                                            <input class="form-style form-check-input" type="radio" name="question_option_${count}"  id="question_${count}_option_1" value="A" >
+                                            <label class="font-18 font-roboto text-blackish text-upper" for="question_${count}_option_1">
+                                            ${item.option1}
+                                            </label>
+                                        </div>
+                                        <div class="form-check pb-3 ">
+                                             <input class="form-style form-check-input" type="radio" name="question_option_${count}"  id="question_${count}_option_2" value="B" >
+                                           <label class="font-18 font-roboto text-blackish text-upper" for="question_${count}_option_2">
+                                            ${item.option2}
+                                            </label>
+                                        </div>
+                                        <div class="form-check pb-3">
+                                            <input class="form-check-input" type="radio" name="question_option_${count}" id="question_${count}_option_3" value="C" >
+                                            <label class="font-18 font-roboto text-blackish text-upper" for="question_${count}_option_3">
+                                            ${item.option3}
+                                            </label>
+                                        </div>
+                                        <div class="form-check pb-3">
+                                            <input class="form-check-input" type="radio" name="question_option_${count}" id="question_${count}_option_4" value="D" >
+                                            <label class="font-18 font-roboto text-blackish text-upper" for="question_${count}_option_4">
+                                            ${item.option4}
+                                            </label>
+                                        </div>
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                `);
+
+                    }
+                    else if ((item.type == "mcq(single)") || (item.type == "multi")) { /* modified by Avani on 16/10 for including question type multi */   
+                    //    console.log("mcq(single)")
+                        
+                        $('#dataform').append(`
+                        <div class="card pb-4 totalexam" id="question_row_${count}">
+                            <div class="card-header p-4">
+                                <div class="row">
+                                    <div class="question">
+                                        <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="display:none;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="display:none;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                    </div>
+                                </div>       
+                            </div>
+                            <div class="card-body_${count} py-4">
+                                <div class="uploaded-image_${count}">
+                                    
+                                </div>
+                                <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                    <div class="row">
+                                        <div class="options px-4">
+                                            
+                                            <div class="form-check pb-3">
+                                                <input class="form-check-input box-background" type="checkbox" id="question_${count}_option_1" name="question_option_${count}" onclick="onlyOne(this)"  value="A">
+                                                <label class="font-18 font-roboto text-blackish text-upper">${item.option1}</label>
+                                            </div> 
+                                            <div class="form-check pb-3">
+                                                <input class="form-check-input box-background" type="checkbox" id="question_${count}_option_2" name="question_option_${count}" onclick="onlyOne(this)" value="B">
+                                                <label class="font-18 font-roboto text-blackish text-upper">${item.option2}</label>
+                                            </div> 
+                                            <div class="form-check pb-3">
+                                                <input class="form-check-input box-background" type="checkbox" id="question_${count}_option_3" name="question_option_${count}" onclick="onlyOne(this)" value="C">
+                                                <label class="font-18 font-roboto text-blackish text-upper">${item.option3}</label>
+                                            </div> 
+                                            <div class="form-check pb-3">
+                                                <input class="form-check-input box-background" type="checkbox" id="question_${count}_option_4" name="question_option_${count}" onclick="onlyOne(this)" value="D">
+                                                <label class="font-18 font-roboto text-blackish text-upper">${item.option4}</label>
+                                            </div> 
+                                            
+                                            
+                                        </div>          
+                                    </div>           
+                            </div>
+                            </div>
+                        </div>
+                        `);
+                        // console.log(item.submitted_answer , count);
+                        if(item.submitted_answer == "A"){
+                            $(`#question_${count}_option_1`).prop('checked', true);
+                        }
+                        else if(item.submitted_answer == "B"){
+                            $(`#question_${count}_option_2`).prop('checked', true);
+                        }
+                        else if(item.submitted_answer == "C"){
+                            $(`#question_${count}_option_3`).prop('checked', true);
+                        }
+                        else if(item.submitted_answer == "D"){   
+                                              
+                            $(`#question_${count}_option_4`).prop('checked', true);
+                        }
+                    }
+                    else if (item.type == "mcq(multiple)") {
+                        
+                        $('#dataform').append(`
+                    <div class="card pb-4 totalexam" id="question_row_${count}">
+                        <div class="card-header py-4">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="display:none;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="display:none;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count} py-4">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count} " id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options px-4">
+                                        
+                                        <div class="form-check pb-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_1" name="question_option_${count}"   value="A">
+                                            <label class="font-18 font-roboto text-blackish text-upper">${item.option1}</label>
+                                        </div> 
+                                        <div class="form-check pb-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_2" name="question_option_${count}"  value="B">
+                                            <label class="font-18 font-roboto text-blackish text-upper">${item.option2}</label>
+                                        </div> 
+                                        <div class="form-check pb-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_3" name="question_option_${count}"  value="C">
+                                            <label class="font-18 font-roboto text-blackish text-upper">${item.option3}</label>
+                                        </div> 
+                                        <div class="form-check pb-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_4" name="question_option_${count}"  value="D">
+                                            <label class="font-18 font-roboto text-blackish text-upper">${item.option4}</label>
+                                        </div> 
+                                        
+                                        
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                `);
+                    }
+                    else if (item.type == "shortanswer") {
+                        $('#dataform').append(`
+                    <div class="card pb-4 totalexam" id="question_row_${count}">
+                        <div class="card-header py-4">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="display:none;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="display:none;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count} py-4">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options px-4">
+                                        
+                                        
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="question_shortanswer_${count}" name="question_shortanswer_${count}" style="height: 100px"></textarea>
+                                            <label for="floatingTextarea2">Answer</label>
+                                        </div>
+                                        
+                                        
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                `);
+                    }
+                    else if (item.type == "long_desc") {
+                        $('#dataform').append(`
+                    <div class="card pb-4 totalexam" id="question_row_${count}">
+                        <div class="card-header py-4">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="display:none;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="display:none;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count} container py-4">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count} mb-3 mt-3" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options px-4">
+                                        
+                                        
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="question_shortanswer_${count}" name="question_shortanswer_${count}" style="height: 100px"></textarea>
+                                            <label for="floatingTextarea2">Answer</label>
+                                        </div>
+                                        
+                                        
+                                    </div>          
+                                </div>           
+                            </div>
+                            <div class="upload images_multiple mb-3" style="width:30%;">
+                                <input type="file" class="form-control" id="student_uploads_${count}" multiple>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                    }
+
+
+                    if (item.image != "nan") {
+                        if(item.image == null){
+                            // console.log("yes null")
+                        }
+                        else{
+                            // console.log(item.image);
+                            // $(`.uploaded-image_${count}`).append(`
+                            //     <img id="frame_${count}" src="https://erp.ciisindia.in/media/${item.image}" style="height:400px;width:290px;" class="img-fluid" />
+                            // `);
+                        }
+                    }
+                    $('#form').css('display', 'block');
+                    $('#saveexambtn').css('display', 'block');
+                    
+                    $('#counter').val(count)
+                }
+                // var question_count = $('#counter').val();
+                // console.log(question_count/2);
+                
+                // if(question_count/2 > 10){
+                //     var second_last = question_count - 1;
+                //     var third_last = question_count - 2;
+                //     for(var i = 1; i <= 10; i++) {
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary" id="pagination_${i}">${i}</button>
+                //     `);
+                //     }
+                //     $('.pagination').append(`
+                //         <p style="margin-right:5px;">...</p>
+                //     `);
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary">${third_last}</button>
+                //     `);
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary">${second_last}</button>
+                //     `);
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary">${question_count}</button>
+                //     `);
+                // }
+                
+                
+                // console.log("count :",$('#counter').val())
+                var total_questions = $('#counter').val();
+                var numItems = $('.totalexam').length;
+                // console.log("number of questions :",numItems)
+                for (var i = 2; i <= total_questions; i++) {
+                    $(`#question_row_${i}`).css('display', 'none');
+                }
+                //added by Avani on 16/10 - to show the table of unattempted questions on first page
+                PendingQuestions()
+
+            }
+            
+        });
+
+
+
+
+
+        $('#start_test_card').css('display', 'none');
+        $('#exam_given').css('display', 'none');
+
+    }
+
+    
+
+    function next_question() {
+        
+        PendingQuestions();
+        $('#current_question_count').val(parseInt($('#current_question_count').val())+1)
+        console.log("the value of current in next_question is " + $('#current_question_count').val);
+        var abc  = document.querySelector(`#student_uploads_${parseInt($('#current_row').val())}`);
+        var current_row_data = parseInt($('#current_row').val());
+        // console.log("current row :",current_row_data)
+        // uploaded_data = $(`#student_uploads_${parseInt($('#current_row').val())}`).get(0).files
+        // console.log("student upload :",uploaded_data)
+        $('#current_row').val(parseInt($('#current_row').val()) + 1)
+        if( parseInt($('#current_row').val()) > 1 ){
+            $('#first_btn').css('display', 'block');
+            $('#previous_btn').prop('disabled', false);
+        }
+        exam_id = $('#exam-id').val();
+        // console.log("exam_id = ", exam_id);
+        // var numItems = $('.totalexam').length;
+        // console.log("Total Questions   : ", numItems);
+        var non_hidden = 0;
+        var numItems = $('#counter').val();
+        // console.log("count of questions :",numItems)
+        for (var i = 1; i <= numItems; i++) {
+            const element = document.querySelector(`#question_row_${i}`);
+            if(element){
+                
+                // console.log(element.style.display)
+                if (element.style.display != "none") {
+                    // console.log(i)
+                    var non_hidden = i
+                    var selectedValue = $(`input[name="question_option_${non_hidden}"]:checked`).val();
+                    // // console.log(selectedValue)
+                    // if(selectedValue){
+                    //     if($('#attempted_questions').val().length == 0){
+                    //         $('#attempted_questions').val(non_hidden)
+                    //         PendingQuestions();
+                    //     }
+                    //     else{
+                    //         $('#attempted_questions').val( $('#attempted_questions').val() + ',' + non_hidden);
+                            
+                    //     }
+                    // }
+                    $(`#question_row_${i}`).css('display', 'none');
+                    var x = $("form").serializeArray();
+                    // console.log(x)
+                    temp = []
+                    var data_type = $(`#question_type_${i}`).val();
+                    // console.log("data_type: ", data_type)
+                    var data = x.filter(a => a.name == `question_option_${i}`)
+                    // console.log("data: ", data)
+
+                    // console.log(data);
+                    // data.forEach((a)=>console.log(a.value));
+                    // // console.log(data?.value)
+                    var question = $(`#question_${i}`).text();
+                    if(abc != null){
+                        // console.log(current_row_data,": present");
+                        var uploaded_data = $(`#student_uploads_${current_row_data}`).get(0).files
+                        // console.log("student upload :",uploaded_data)
+                    }
+                    else{
+                        // console.log(current_row_data,": absent")
+                        var uploaded_data = "none"
+                    }
+                    // console.log("uploaded data :",uploaded_data)
+                    var quesArr = {
+                        "question_no": i,
+                        "question_id": $(`#question_id_${i}`).val(),
+                        "question_type": $(`#question_type_${i}`).val(),
+                        "question": question,
+                        "value": ""
+                    }
+                   
+                    if(data.length >0){
+                        data.forEach(a => {
+                        if (quesArr["value"] !== "") {
+                            quesArr["value"] = quesArr["value"] + ","  + a.value
+                        }else{
+                            quesArr["value"] = a.value
+                        }
+                    })
+                    }else{
+                        quesArr["value"] =x.filter(a=> a.name == `question_shortanswer_${i}`).length > 0 ? x.filter(a=> a.name == `question_shortanswer_${i}`)[0].value : ""
+                    }
+ 
+                    // console.log("data sent to server :",quesArr);
+                    // console.log(quesArr);
+                    // $.ajax({
+                    //     type: "POST",
+                    //     url: "{% url 'giveexamination' %}",
+                    //     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    //     data: {
+                            // 'save_question_no':quesArr.question_no,
+                            // 'save_question_id':quesArr.question_id,
+                            // 'save_question_type':quesArr.question_type,
+                            // 'save_question':quesArr.question,
+                            // 'save_value':quesArr.value
+                            
+                    //     },
+                    //     success: function (response) {
+                    //         // console.log("data sent to server")
+                    //     }
+                    // });
+                    
+                    var data = new FormData();
+                    data.append("save_question_no", quesArr.question_no);
+                    data.append("save_question_id", quesArr.question_id);
+                    data.append("save_question_type", quesArr.question_type);
+                    data.append("save_question", quesArr.question);
+                    data.append("save_value", quesArr.value);
+                    if(uploaded_data == "none"){
+                        // console.log("no file hence not uploaded")
+                    }
+                    else{
+                        // console.log("uploaded file to views")
+                        $.each($(`#student_uploads_${current_row_data}`)[0].files, function(i, file) {
+                            data.append("uploaded_files", file);
+                        });
+                    }
+                    
+                    
+                    data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+                    console.log("AAAAAAAAAA" + data);
+
+                   
+                    $.ajax({
+                        method: "POST",
+                        url: "{% url 'giveexamination' %}",
+                        processData: false,
+                        contentType: false,
+                        mimeType: "multipart/form-data",
+                        data: data,
+                        success: function (res) {
+                            console.log("AVANI..." )
+                        }
+                    });
+                }
+            }
+        }
+        var next_element = parseInt(non_hidden) + 1;
+        if ($(`#question_row_${next_element}`).length > 0) {
+
+            $(`#question_row_${next_element}`).css('display', 'block');
+        }
+        else {
+            // $(`#question_row_1`).css('display','block');
+            $('#next_btn_container').empty();
+            $('#next_btn_container').append(`
+        <button class="edit-btn exam-save-btn" id="saveexambtn" style="display:block;" onclick="saveExam($('#counter').val(),$('#exam_id_to_save').val())">Submit</button>
+        `);
+        $('#submit_exam_text').css('display', 'block');
+        $('#last_btn').css('display', 'none');
+        $('#remaining_questions').css('display', 'none');
+        $('#unattempted-questions').css('display', 'none');
+        
+        }
+    }
+
+    function PendingQuestions(){
+        $('#attempted_questions').val('');
+        var numItems = $('#counter').val();
+        // console.log("count of questions :",numItems)
+        for (var i = 1; i <= numItems; i++) {
+            var selectedValue = $(`input[name="question_option_${i}"]:checked`).val();
+            // console.log(selectedValue)
+            if(selectedValue){
+               
+            }
+            else{
+                if($('#attempted_questions').val().length == 0){
+                    $('#attempted_questions').val(i)
+                }
+                else{
+                    $('#attempted_questions').val($('#attempted_questions').val() + "," + i)
+                }
+            }
+            // if($(`input[name="question_option_${i}"]:checked`).val()){
+
+            // }
+            // else{
+            //     console.log("Attempted Question no :",i)
+            // }
+            
+        }
+        console.log("counter: ", parseInt($('#counter').val()));
+        console.log("attempted: ", $('#attempted_questions').val());
+        var attempt
+        if ($('#attempted_questions').val() != "")
+            attempt = parseInt($('#counter').val()) - $('#attempted_questions').val().split(',').length
+        else
+            attempt = parseInt($('#counter').val())
+        // console.log(attempt + " of " + $('#counter').val())
+        $('#attempted_count').text("Number of questions attempted " + attempt + " of " + $('#counter').val())
+        UpdateAttempted();
+    }
+
+    function UpdateAttempted(){
+        var attempted_questions = $('#attempted_questions').val();
+        var total_questions = $('#counter').val();
+        
+        // $('#remaining_questions').text("Remaining Questions :" + attempted_questions);
+        var length = $('#attempted_questions').val().split(',').length;
+        var new_array = $('#attempted_questions').val().split(',');
+       
+       generateTable(new_array,length, total_questions );
+       
+       /* $('#remaining_questions').text("Remaining Questions :" + attempted_questions); */
+        $('#remaining_questions').css('display', 'block');
+        $('#unattempted-questions').css('display', 'table');
+        
+    }
+
+    function generateTable(proc_array, array_length, total_q) {
+      
+        let num_rows = Math.round(total_q/5);
+       
+        if(num_rows<10 && num_rows!=0) {num_rows=10;}
+        
+        const tbl = document.getElementById("unattempted-questions");
+        tbl.innerHTML="";
+        var tr="";
+        var td="";
+        let k=0, l=1;
+       
+        if (num_rows!=0) {
+           
+        for (let i = 0; i < num_rows; i++) {
+            // creates a table row
+        tr+="<tr>";
+        
+
+            for (let j = 0; j < 5; j++) {
+                
+                if (l>total_q){
+                    tr+='<td class="font-16 text-blackish border-cells ">  </td>';
+                } else {
+                    if (proc_array.includes(`${l}`) ) {
+                       
+                        tr+=`<td class="font-16 text-red border-cells "><a href="#" class="text-red" onclick="go_to_question(${l}); return false;">${l}</a></td>`;
+                    }
+                    else {
+                        tr+=`<td class="font-16 text-red border-cells "><a href="#"  onclick="go_to_question(${l}); return false;">${l}</a></td>`;
+                    }
+                }
+                
+                    k++;
+                    l++;
+            }
+            tr+='</tr>';
+        
+        
+        }
+
+        tbl.innerHTML+=tr;
+        }
+        else {
+            tbl.innerHTML="<tr><td class='font-20 text-center text-blackish'>All questions answered</td></tr>";
+        }
+
+    }
+
+    function go_to_question(q_no) {
+        $('#next_btn_container').empty();
+            $('#next_btn_container').append(`
+            <button class="edit-btn next-btn" id="next_btn" style="display:none;" onclick="next_question()">Next</button>
+        `);
+        $('#next_btn').css('display', 'block');
+
+        if (($('#counter').val()) == q_no){
+            
+          console.log("inside");
+            $('#last_btn').css('display', 'none');
+        }
+       else {
+        $('#last_btn').css('display', 'block');
+       }
+        PendingQuestions();
+        var current_row = parseInt($('#current_row').val());
+        //console.log("current row :",current_row)
+        if(current_row == 1) {
+            // console.log("count :",$('#counter').val())
+            $('#current_row').val(parseInt($('#counter').val()))
+        }
+        else{
+            $('#current_row').val(parseInt($('#current_row').val()) - 1)
+        }
+        var numItems = $('.totalexam').length;
+        
+        var non_hidden = 0;
+        
+        var current_quest = parseInt($('#current_question_count').val())
+        var new_quest = q_no;
+      
+        const element = document.querySelector(`#question_row_${new_quest}`);
+          
+            if (element.style.display == "none") {
+                // console.log(i)
+                
+                $(`#question_row_${current_quest}`).css('display', 'none');
+                $(`#question_row_${new_quest}`).css('display', 'block');
+                $('#current_question_count').val(q_no);
+                
+            }
+
+    }
+
+
+    function previous_question() {
+
+        //if coming from Submit exam we need to clear the submit exam text, do not show the submit button and show the next button
+        $('#submit_exam_text').css('display', 'none');
+        $('#next_btn_container').empty();
+            $('#next_btn_container').append(`
+            <button class="edit-btn next-btn" id="next_btn" style="display:none;" onclick="next_question()">Next</button>
+        `);
+        $('#next_btn').css('display', 'block');
+
+        if (($('#counter').val()) == ($('#current_question_count').val()-1)){
+            
+          console.log("inside");
+            $('#last_btn').css('display', 'none');
+        }
+       else {
+        $('#last_btn').css('display', 'block');
+       }
+       
+       //end of add by avani
+        
+        PendingQuestions();
+        
+       
+        var current_row = parseInt($('#current_row').val());
+        //console.log("current row :",current_row)
+        if(current_row == 1) {
+            // console.log("count :",$('#counter').val())
+            $('#current_row').val(parseInt($('#counter').val()))
+        }
+        else{
+            $('#current_row').val(parseInt($('#current_row').val()) - 1)
+        }
+        var numItems = $('.totalexam').length;
+        //console.log("numItems :",numItems)
+        // console.log("numItems   : " , numItems);
+        var non_hidden = 0;
+        // for (var i = numItems; i >= 1; i--) {
+        //     console.log(i)
+        //     const element = document.querySelector(`#question_row_${i}`);
+        //     console.log(element)
+        //     // console.log(element.style.display)
+        //     if (element.style.display != "none") {
+        //         // console.log(i)
+        //         var non_hidden = i
+        //         $(`#question_row_${i}`).css('display', 'none');
+        //     }
+        // }
+
+        var current_quest = parseInt($('#current_question_count').val())
+           // console.log("teh current q is" + current_quest)
+        const element = document.querySelector(`#question_row_${current_quest-1}`);
+           // console.log(element)
+            // console.log(element.style.display)
+            if (element.style.display == "none") {
+                // console.log(i)
+                
+                $(`#question_row_${current_quest-1}`).css('display', 'block');
+                $(`#question_row_${current_quest}`).css('display', 'none');
+                
+            }
+
+        
+        // var next_element = parseInt(non_hidden) - 1;
+        // if ($(`#question_row_${next_element}`).length > 0) {
+        //     // console.log(`$(#question_row_${next_element})`)
+        //     $(`#question_row_${next_element}`).css('display', 'block');
+        // }
+        // else {
+            // console.log("yes :", numItems)
+            
+        //     $('#next_btn_container').empty();
+        //     $('#next_btn_container').append(`
+        // <button class="btn btn-secondary" id="next_btn" onclick="next_question()">Next</button>
+        // `);
+        // }
+        $('#current_question_count').val(parseInt($('#current_question_count').val())-1)
+    }
+
+    function first_question() {
+        PendingQuestions();
+        
+        var counter = parseInt($('#counter').val());
+        console.log("counter :",counter)
+        // console.log("counter :",counter)
+        for(var i = 1; i <= counter; i++){
+            $(`#question_row_${i}`).css('display', 'none');
+        }
+        $(`#question_row_${1}`).css('display', 'block');
+        $('#current_row').val(1);
+        $('#first_btn').css('display', 'none');
+        $('#last_btn').css('display', 'block');
+    }
+
+    function last_question(){
+        PendingQuestions();
+        var counter = parseInt($('#counter').val());
+
+        //console.log("counter :",counter)
+        $('#current_question_count').val(counter)
+        for(var i = 1; i < counter; i++){
+            $(`#question_row_${i}`).css('display', 'none');
+        }
+        $(`#question_row_${counter}`).css('display', 'block');
+        $('#current_row').val(counter)
+        $('#last_btn').css('display', 'none');
+        $('#first_btn').css('display', 'block');
+    }
+
+    $("#current_row").val();
+
+    function onlyOne(checkbox) {
+        var checkbox_name = checkbox.name
+        var checkboxes = document.getElementsByName(checkbox_name)
+        checkboxes.forEach((item) => {
+            if (item !== checkbox) item.checked = false
+        })
+    }
+
+
+
+    function saveExam(count, exam_id) {
+        window.onbeforeunload=null;
+        // window.removeEventListener("beforeunload", f_beforeunload);
+        // console.log(count, exam_id)
+        // console.log("total question count = ", count);
+        var questions_list = []
+        var x = $("form").serializeArray();
+        // console.log("form =",x)
+        $.each(x, function (i, field) {
+            if (field.name.includes("question_option_")) {
+                var question_no = field.name.replace("question_option_", "")
+            }
+            else {
+                var question_no = field.name.replace("question_shortanswer_", "")
+            }
+            var question = $(`#question_${question_no}`).text();
+            
+            var quesArr = {
+                "question_no": question_no,
+                "question_id": $(`#question_id_${question_no}`).val(),
+                "question_type": $(`#question_type_${question_no}`).val(),
+                "question": question,
+                "value": field.value,
+                
+
+            
+            }
+            if (question_no == "csrfmiddlewaretoken") {
+                // console.log("csrfmiddlewaretoken")
+            }
+            else {
+                // console.log(quesArr)
+                questions_list.push(quesArr);
+            }
+
+        });
+        var testArr = [];
+        function AddData(data) {
+            // console.log(data);
+            var found = false;
+            for (index in testArr) {
+                if (testArr[index].question_no == data.question_no) {
+                    found = true;
+                    console.log("data found :", data);
+                    testArr[index].value = testArr[index].value + ',' + data.value;
+                    break;
+                }
+            }
+            if (!found) {
+                testArr.push(data);
+                 console.log("data not found");
+            }
+        }
+        questions_list.forEach(myFunction);
+        function myFunction(item) {
+            AddData(item)
+        }
+         console.log(testArr)
+         console.log("array length : =", testArr.length)
+        $.ajax({
+            type: "POST",
+            url: "{% url 'giveexamination' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'examdata': testArr,
+                'count': testArr.length,
+                'result_exam_id': exam_id
+            },
+            success: function (response) {
+                // console.log("data sent to server", response)
+                if(response.added == "yes"){
+                    window.location = "{% url 'examsubmitted' %}"
+                }
+            }
+        });
+
+
+
+    }
+
+
+    
+
+</script>
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+
+<script type="text/javascript" src="{% static 'dict/js1/examination.js' %}"></script>
+
+{% endblock head %}
+
+{% block nav %}
+{% if request.user.is_authenticated %}
+{% include 'sidebar.html' %}
+{% endif %}
+{% endblock nav%}
+
+
+{% block body %}
+
+
+
+
+
+
+<!-- <div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card" id="start_test_card">
+                <div class="card-header">
+                  Examination
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Rules of Exam.</h5>
+                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                  <button class="btn btn-success" onclick="startTest()">Start Test</button>
+                </div>
+              </div>
+        </div>
+    </div>
+    
+</div> -->
+<div class="container py-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="error-container">
+    
+            </div>
+            <div class="exam-start-card" id="start_test_card">
+                <div class="row">
+                    {% for i in exams %}
+                    <div class="col-lg-6 pt-3">
+                        <div class="exam-block p-5 ">
+                            <div class="exam-heading">
+                                <div class="row ">
+                               
+                                    <div class=" exam-title d-flex align-middle justify-content-left">
+                                        
+                                            <h2 class="font-26 font-roboto text=text-darkblue px-2"> {{i.examname}}</h2> 
+                                            <input type="hidden" name="" id="exam_id_to_save">
+                                    </div>
+                                    <div class="exam-body pt-3">
+                                        <h5 class="font-30 font-roboto text-darkblue">Rules of Exam.</h5>
+                                        <p class="font-18 text-lightgray">With supporting text below as a natural lead-in to additional content.</p>
+                                        <button class="submit-exam-button font-14 font-bold text-purewhite text-uppercase mt-2" onclick="startTest('{{i.id}}')">Start Test</button>
+                                    </div>
+                                           
+                                   
+                                </div>
+                            </div>
+                            
+                                
+                        </div>
+                       
+                    </div>
+                           
+                           
+                     
+                    
+                    {% endfor %}
+                </div>
+            
+            </div>
+            <div class="exam-start-card" id="exam_given">
+                <div class="row">
+                    {% for i in givenexams %}
+                    <div class="col-lg-6 pt-3">
+                        <div class="exam-block p-5 ">
+                            <div class="exam-heading">
+                                <div class="row ">
+                               
+                                    <div class=" exam-title d-flex align-middle justify-content-left">
+                                        
+                                            <h2 class="font-26 font-roboto text=text-darkblue px-2"> {{i.examname}}</h2> 
+                                            <input type="hidden" name="" id="exam_id_to_save">
+                                    </div>
+                                    <div class="exam-body pt-3">
+                                        <h5 class="font-30 font-roboto text-darkblue">Rules of Exam.</h5>
+                                        <p class="font-18 text-lightgray">With supporting text below as a natural lead-in to additional content.</p>
+                                        <button class="submit-exam-button font-14 font-bold text-purewhite text-uppercase mt-2" disabled >Exam Given</button>
+                                    </div>
+                                           
+                                   
+                                </div>
+                            </div>
+                            
+                                
+                        </div>
+                       
+                    </div>
+                           
+                           
+                     
+                    
+                    {% endfor %}
+                </div>
+            
+            </div>
+            <div id="clockdiv" class="text-center pt-3" style="display:none;">
+                
+                    <div class="row">
+                        <div class="col-4 col-md-2 offset-md-3">
+                            <div class="green-block p-2 p-md-3">
+                                <span class="text-purewhite font-18 font-roboto hours"></span>
+                                <div class="text-purewhite font-18 font-roboto">Hours</div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-4 col-md-2">
+                            <div class="green-block p-2 p-md-3">
+                                <span class="text-purewhite font-18 font-roboto minutes"></span>
+                                <div class="text-purewhite font-18 font-roboto">Minutes</div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-4 col-md-2">
+                            <div class="green-block p-2 p-md-3">
+                                <span class="text-purewhite font-18 font-roboto seconds"></span>
+                                <div class="text-purewhite font-18 font-roboto">Seconds</div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h4 id="attempted_count" class="font-24 text-darkblue pt-4">
+                    
+                            </h4>
+                            
+                        </div>
+            
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <input type="text" id="exam-id" style="display:none;" class="width-100  font-14 text-extralightgray">
+                        </div>
+                    </div>
+                
+            </div>
+            <div class="counter">
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" id="counter" style="display:none;" class="width-100  font-14 text-extralightgray">
+                    </div>  
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" id="attempted_questions" style="display:none;">
+                    </div>
+                </div>
+               
+            </div>
+            <div class="current_question">
+                <input type="text" id="current_question_count" value="1" style="display:none">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div class="container pagination">
+
+</div>
+
+<div class="show-questions py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+               
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-8">
+                <input type="text" id="current_row" style="display:none;">
+                <div class="form" id="form" style="display:none;">
+                   <form action="" method="POST" id="dataform">
+                       {% csrf_token %}
+                       <h1 class="font-30 text-darkblue py-3" id="submit_exam_text" style="display:none;">Submit Exam</h1>
+    
+                   </form>
+    
+                </div>
+                <div class="btn-row pt-4">
+                    <div class="row">
+                        <!--<div class="col-3" id="first_btn_container">
+                            <button class="edit-btn" id="first_btn" style="display:none;" onclick="first_question()">First</button>
+                        </div> -->
+                        <div class=" col-6 col-sm-4 col-md-2" id="previous_btn_container">
+                            <button class="edit-btn prev-btn" id="previous_btn" style="display:none;" onclick="previous_question()">Previous</button>
+                        </div>
+                        <div class="col-6 col-sm-4 col-md-2" id="next_btn_container">
+                            <button class="edit-btn next-btn" id="next_btn" style="display:none;" onclick="next_question()">Next</button>
+                        </div>
+                        <div class="col-6 col-sm-4 col-md-2 mt-3 mt-sm-0" id="last_btn_container">
+                            <button class="edit-btn last-btn" id="last_btn" style="display:none;" onclick="last_question()">Last</button>
+                        </div>
+                        
+                
+                
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-12 col-md-4">
+                <!--<div class="alert alert-primary" id="remaining_questions" role="alert" style="display:none;">
+                  
+                </div> -->
+                <div class="unattempted-questions card text-center p-3 mt-3 mt-md-0 totalexam" id="remaining_questions" style="display:none;">
+                    <table id="unattempted-questions" class="table py-3" style="display:none;">
+
+                    </table>
+                </div>
+               
+            </div>
+        </div>
+           
+        
+      
+        <!-- <button class="btn btn-primary" id="saveexambtn" style="display:none;" onclick="saveExam($('#counter').val(),$('#exam_id_to_save').val())">Submit</button> -->
+    </div>
+</div>
+
+
+
+<script>
+
+    function CheckTiming(id){
+        // console.log("clicked on check_timing")
+        $.ajax({
+            type: "POST",
+            url: "{% url 'giveexamination' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'check_timing': id
+            },
+            success: function (response) {
+                console.log(response)
+                if(response.error){
+                    $('.error-container').empty();
+                    $('.error-container').append(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong id="error">${response.error}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    `);
+                    setTimeout(() => {
+                        $('.alert').alert('close');
+                    }, 3000);
+                }
+                else if(response.exam_id){
+                    // console.log(response.exam_id);
+                    startTest(response.exam_id);
+                }
+            }
+        });
+    }
+
+
+
+
+    function startTest(id) {
+        window.onbeforeunload = function(){
+            
+            return '';
+        };
+        window.close = function(){
+            
+            return '';
+        };
+       
+        $('#current_row').val(1)
+        var exam_id = $('#exam-id').val(id);
+        
+        $('#clockdiv').css('display', 'block');
+        $('#previous_btn').css('display', 'block');
+        $('#previous_btn').prop('disabled', true);
+        $('#next_btn').css('display', 'block');
+        $('#last_btn').css('display', 'block');
+
+        function printEnd() {
+            alert("Time up")
+            saveExam($('#counter').val(),$('#exam_id_to_save').val())
+            // console.log("end is here")
+        }
+        function getTimeRemaining(endtime) {
+            //console.log("getTimeRemaining", endtime);
+            const total = Date.parse(endtime) - Date.parse(new Date());
+            //if (total <= 0) printEnd();
+            const seconds = Math.floor((total / 1000) % 60);
+            const minutes = Math.floor((total / 1000 / 60) % 60);
+            const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+            const days = Math.floor(total / (1000 * 60 * 60 * 24));
+            if (hours == 0 & minutes == 0 & seconds == 0) {
+               // alert("dfdfgfgf")
+                printEnd();
+            }
+            return {
+                total,
+                days,
+                hours,
+                minutes,
+                seconds
+            };
+        }
+
+        function initializeClock(id, endtime) {
+            const clock = document.getElementById(id);
+            const daysSpan = clock.querySelector('.days');
+            const hoursSpan = clock.querySelector('.hours');
+            const minutesSpan = clock.querySelector('.minutes');
+            const secondsSpan = clock.querySelector('.seconds');
+
+            function updateClock() {
+                const t = getTimeRemaining(endtime);
+
+                hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+                // document.getElementById("time").innerHTML = ('0' + t.hours).slice(-2) + "h "
+                // + ('0' + t.minutes).slice(-2) + "m " + ('0' + t.seconds).slice(-2) + "s ";
+
+                if (t.total <= 0) {
+
+                    clearInterval(timeinterval);
+                }
+            }
+
+            updateClock();
+            const timeinterval = setInterval(updateClock, 1000);
+
+            function update_data() {
+                // console.log("data added to database");
+                const t = getTimeRemaining(endtime);
+
+                var hours = ('0' + t.hours).slice(-2);
+                var minutes = ('0' + t.minutes).slice(-2);
+                // console.log(hours + " : " + minutes )
+                var time_in_minutes = parseInt(hours) * 60 + (parseInt(minutes))
+                //modified by Avani to stop the timer at 0.
+                if (time_in_minutes >= 0) { 
+                    var exam_id = $('#exam-id').val();
+                    //console.log(exam_id + " rrfgfgf " + time_in_minutes);
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'giveexamination' %}",
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                        data: {
+                            'exam_id_timer': exam_id,
+                            'exam_in_minutes': time_in_minutes
+                        },
+                        success: function (response) {
+                            // console.log("sent data to server")
+                        }
+                    });
+                }
+            }
+            const set_data = setInterval(update_data, 5000);
+        }
+
+        // const deadline = new Date(Date.parse(new Date()) + 1 * 1 * 1 * 10 * 1000);
+        // initializeClock('clockdiv', deadline);
+
+
+
+
+
+        // var exam_id = $('#exam-id').val(id);
+        // console.log("exam_id = " , id);
+        // const date = new Date();
+        // const newDate = addHours(date, 3);
+        // var countDownDate = new Date(newDate).getTime();
+        // console.log(countDownDate)
+        // var x = setInterval(function() {
+
+        // // Get today's date and time
+        // var now = new Date().getTime();
+
+        // // Find the distance between now and the count down date
+        // var distance = countDownDate - now;
+
+        // // Time calculations for days, hours, minutes and seconds
+        // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        // var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        // var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // // Output the result in an element with id="demo"
+        // document.getElementById("time").innerHTML = hours + "h "
+        // + minutes + "m " + seconds + "s ";
+
+        // // If the count down is over, write some text 
+        // if (distance < 0) {
+        //     clearInterval(x);
+        //     document.getElementById("time").innerHTML = "EXPIRED";
+        // }
+        // }, 1000);
+
+        // var y = setInterval(function() {
+
+        // // Get today's date and time
+        // var now = new Date().getTime();
+
+        // // Find the distance between now and the count down date
+        // var distance = countDownDate - now;
+
+        // // Time calculations for days, hours, minutes and seconds
+        // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        // var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        // var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // // Output the result in an element with id="demo"
+        // document.getElementById("time").innerHTML = hours + "h "
+        // + minutes + "m " + seconds + "s ";
+
+        // // If the count down is over, write some teyt 
+        // if (distance < 0) {
+        //     clearInterval(y);
+        //     document.getElementById("time").innerHTML = "EXPIRED";
+        // }
+        // $.ajax({ // create an AJAX call...
+        //     type: "POST",
+        //     url: "{% url 'giveexamination' %}",
+        //     headers: {'X-CSRFToken': '{{ csrf_token }}'},
+        //     data: {
+        //         'exam_id_timer':id,
+        //         'hours':hours,
+        //         'minutes':minutes,
+        //         'seconds':seconds
+        //     },
+        //     success: function(response) {
+        //     }
+        // });
+        // }, 60000);
+
+
+
+        $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'giveexamination' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'exam_id': id
+            },
+            success: function (response) {
+                console.log("rrrrrr" + response.hours)
+                
+
+
+
+
+                var hours = parseInt(response.hours);
+                var minutes = parseInt(response.minutes);
+                if (hours == 0 & minutes == 0) {
+                    let dt = new Date();
+                    dt.setHours(dt.getHours() + 3);
+                    initializeClock('clockdiv', dt);
+                }
+                else {
+                    let dt = new Date();
+                    dt.setHours(dt.getHours() + hours);
+                    dt.setMinutes(dt.getMinutes() + minutes)
+                    initializeClock('clockdiv', dt);
+                }
+
+                var data = response.data;
+                $('#exam_id_to_save').val(response.exam_id)
+                data.forEach(myFunction);
+                var count = 0
+                function myFunction(item, count) {
+                    //console.log("dgfgfgfgF", item)
+                    count = count + 1;
+                    // console.log(item.type)
+                    if ((item.type == "radio") ) {
+                        // console.log("radio")
+                        $('#dataform').append(`
+                    <div class="card pb-4 totalexam" id="question_row_${count}">
+                        <div class="card-header p-4">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="display:none;" class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="display:none;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count} py-4">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options px-4">
+                                        <div class="form-check pb-3">
+                                            
+                                            <input class="form-style form-check-input" type="radio" name="question_option_${count}"  id="question_${count}_option_1" value="A" >
+                                            <label class="font-18 font-roboto text-blackish text-upper" for="question_${count}_option_1">
+                                            ${item.option1}
+                                            </label>
+                                        </div>
+                                        <div class="form-check pb-3 ">
+                                             <input class="form-style form-check-input" type="radio" name="question_option_${count}"  id="question_${count}_option_2" value="B" >
+                                           <label class="font-18 font-roboto text-blackish text-upper" for="question_${count}_option_2">
+                                            ${item.option2}
+                                            </label>
+                                        </div>
+                                        <div class="form-check pb-3">
+                                            <input class="form-check-input" type="radio" name="question_option_${count}" id="question_${count}_option_3" value="C" >
+                                            <label class="font-18 font-roboto text-blackish text-upper" for="question_${count}_option_3">
+                                            ${item.option3}
+                                            </label>
+                                        </div>
+                                        <div class="form-check pb-3">
+                                            <input class="form-check-input" type="radio" name="question_option_${count}" id="question_${count}_option_4" value="D" >
+                                            <label class="font-18 font-roboto text-blackish text-upper" for="question_${count}_option_4">
+                                            ${item.option4}
+                                            </label>
+                                        </div>
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                `);
+
+                    }
+                    else if ((item.type == "mcq(single)") || (item.type == "multi")) { /* modified by Avani on 16/10 for including question type multi */   
+                    //    console.log("mcq(single)")
+                        
+                        $('#dataform').append(`
+                        <div class="card pb-4 totalexam" id="question_row_${count}">
+                            <div class="card-header p-4">
+                                <div class="row">
+                                    <div class="question">
+                                        <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="display:none;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="display:none;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                    </div>
+                                </div>       
+                            </div>
+                            <div class="card-body_${count} py-4">
+                                <div class="uploaded-image_${count}">
+                                    
+                                </div>
+                                <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                    <div class="row">
+                                        <div class="options px-4">
+                                            
+                                            <div class="form-check pb-3">
+                                                <input class="form-check-input box-background" type="checkbox" id="question_${count}_option_1" name="question_option_${count}" onclick="onlyOne(this)"  value="A">
+                                                <label class="font-18 font-roboto text-blackish text-upper">${item.option1}</label>
+                                            </div> 
+                                            <div class="form-check pb-3">
+                                                <input class="form-check-input box-background" type="checkbox" id="question_${count}_option_2" name="question_option_${count}" onclick="onlyOne(this)" value="B">
+                                                <label class="font-18 font-roboto text-blackish text-upper">${item.option2}</label>
+                                            </div> 
+                                            <div class="form-check pb-3">
+                                                <input class="form-check-input box-background" type="checkbox" id="question_${count}_option_3" name="question_option_${count}" onclick="onlyOne(this)" value="C">
+                                                <label class="font-18 font-roboto text-blackish text-upper">${item.option3}</label>
+                                            </div> 
+                                            <div class="form-check pb-3">
+                                                <input class="form-check-input box-background" type="checkbox" id="question_${count}_option_4" name="question_option_${count}" onclick="onlyOne(this)" value="D">
+                                                <label class="font-18 font-roboto text-blackish text-upper">${item.option4}</label>
+                                            </div> 
+                                            
+                                            
+                                        </div>          
+                                    </div>           
+                            </div>
+                            </div>
+                        </div>
+                        `);
+                        // console.log(item.submitted_answer , count);
+                        if(item.submitted_answer == "A"){
+                            $(`#question_${count}_option_1`).prop('checked', true);
+                        }
+                        else if(item.submitted_answer == "B"){
+                            $(`#question_${count}_option_2`).prop('checked', true);
+                        }
+                        else if(item.submitted_answer == "C"){
+                            $(`#question_${count}_option_3`).prop('checked', true);
+                        }
+                        else if(item.submitted_answer == "D"){   
+                                              
+                            $(`#question_${count}_option_4`).prop('checked', true);
+                        }
+                    }
+                    else if (item.type == "mcq(multiple)") {
+                        
+                        $('#dataform').append(`
+                    <div class="card pb-4 totalexam" id="question_row_${count}">
+                        <div class="card-header py-4">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="display:none;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="display:none;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count} py-4">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count} " id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options px-4">
+                                        
+                                        <div class="form-check pb-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_1" name="question_option_${count}"   value="A">
+                                            <label class="font-18 font-roboto text-blackish text-upper">${item.option1}</label>
+                                        </div> 
+                                        <div class="form-check pb-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_2" name="question_option_${count}"  value="B">
+                                            <label class="font-18 font-roboto text-blackish text-upper">${item.option2}</label>
+                                        </div> 
+                                        <div class="form-check pb-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_3" name="question_option_${count}"  value="C">
+                                            <label class="font-18 font-roboto text-blackish text-upper">${item.option3}</label>
+                                        </div> 
+                                        <div class="form-check pb-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_4" name="question_option_${count}"  value="D">
+                                            <label class="font-18 font-roboto text-blackish text-upper">${item.option4}</label>
+                                        </div> 
+                                        
+                                        
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                `);
+                    }
+                    else if (item.type == "shortanswer") {
+                        $('#dataform').append(`
+                    <div class="card pb-4 totalexam" id="question_row_${count}">
+                        <div class="card-header py-4">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="display:none;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="display:none;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count} py-4">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options px-4">
+                                        
+                                        
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="question_shortanswer_${count}" name="question_shortanswer_${count}" style="height: 100px"></textarea>
+                                            <label for="floatingTextarea2">Answer</label>
+                                        </div>
+                                        
+                                        
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                `);
+                    }
+                    else if (item.type == "long_desc") {
+                        $('#dataform').append(`
+                    <div class="card pb-4 totalexam" id="question_row_${count}">
+                        <div class="card-header py-4">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="display:none;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="display:none;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count} container py-4">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count} mb-3 mt-3" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options px-4">
+                                        
+                                        
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="question_shortanswer_${count}" name="question_shortanswer_${count}" style="height: 100px"></textarea>
+                                            <label for="floatingTextarea2">Answer</label>
+                                        </div>
+                                        
+                                        
+                                    </div>          
+                                </div>           
+                            </div>
+                            <div class="upload images_multiple mb-3" style="width:30%;">
+                                <input type="file" class="form-control" id="student_uploads_${count}" multiple>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                    }
+
+
+                    if (item.image != "nan") {
+                        if(item.image == null){
+                            // console.log("yes null")
+                        }
+                        else{
+                            // console.log(item.image);
+                            // $(`.uploaded-image_${count}`).append(`
+                            //     <img id="frame_${count}" src="https://erp.ciisindia.in/media/${item.image}" style="height:400px;width:290px;" class="img-fluid" />
+                            // `);
+                        }
+                    }
+                    $('#form').css('display', 'block');
+                    $('#saveexambtn').css('display', 'block');
+                    
+                    $('#counter').val(count)
+                }
+                // var question_count = $('#counter').val();
+                // console.log(question_count/2);
+                
+                // if(question_count/2 > 10){
+                //     var second_last = question_count - 1;
+                //     var third_last = question_count - 2;
+                //     for(var i = 1; i <= 10; i++) {
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary" id="pagination_${i}">${i}</button>
+                //     `);
+                //     }
+                //     $('.pagination').append(`
+                //         <p style="margin-right:5px;">...</p>
+                //     `);
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary">${third_last}</button>
+                //     `);
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary">${second_last}</button>
+                //     `);
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary">${question_count}</button>
+                //     `);
+                // }
+                
+                
+                // console.log("count :",$('#counter').val())
+                var total_questions = $('#counter').val();
+                var numItems = $('.totalexam').length;
+                // console.log("number of questions :",numItems)
+                for (var i = 2; i <= total_questions; i++) {
+                    $(`#question_row_${i}`).css('display', 'none');
+                }
+                //added by Avani on 16/10 - to show the table of unattempted questions on first page
+                PendingQuestions()
+
+            }
+            
+        });
+
+
+
+
+
+        $('#start_test_card').css('display', 'none');
+        $('#exam_given').css('display', 'none');
+
+    }
+
+    
+
+    function next_question() {
+        
+        PendingQuestions();
+        $('#current_question_count').val(parseInt($('#current_question_count').val())+1)
+        console.log("the value of current in next_question is " + $('#current_question_count').val);
+        var abc  = document.querySelector(`#student_uploads_${parseInt($('#current_row').val())}`);
+        var current_row_data = parseInt($('#current_row').val());
+        // console.log("current row :",current_row_data)
+        // uploaded_data = $(`#student_uploads_${parseInt($('#current_row').val())}`).get(0).files
+        // console.log("student upload :",uploaded_data)
+        $('#current_row').val(parseInt($('#current_row').val()) + 1)
+        if( parseInt($('#current_row').val()) > 1 ){
+            $('#first_btn').css('display', 'block');
+            $('#previous_btn').prop('disabled', false);
+        }
+        exam_id = $('#exam-id').val();
+        // console.log("exam_id = ", exam_id);
+        // var numItems = $('.totalexam').length;
+        // console.log("Total Questions   : ", numItems);
+        var non_hidden = 0;
+        var numItems = $('#counter').val();
+        // console.log("count of questions :",numItems)
+        for (var i = 1; i <= numItems; i++) {
+            const element = document.querySelector(`#question_row_${i}`);
+            if(element){
+                
+                // console.log(element.style.display)
+                if (element.style.display != "none") {
+                    // console.log(i)
+                    var non_hidden = i
+                    var selectedValue = $(`input[name="question_option_${non_hidden}"]:checked`).val();
+                    // // console.log(selectedValue)
+                    // if(selectedValue){
+                    //     if($('#attempted_questions').val().length == 0){
+                    //         $('#attempted_questions').val(non_hidden)
+                    //         PendingQuestions();
+                    //     }
+                    //     else{
+                    //         $('#attempted_questions').val( $('#attempted_questions').val() + ',' + non_hidden);
+                            
+                    //     }
+                    // }
+                    $(`#question_row_${i}`).css('display', 'none');
+                    var x = $("form").serializeArray();
+                    // console.log(x)
+                    temp = []
+                    var data_type = $(`#question_type_${i}`).val();
+                    // console.log("data_type: ", data_type)
+                    var data = x.filter(a => a.name == `question_option_${i}`)
+                    // console.log("data: ", data)
+
+                    // console.log(data);
+                    // data.forEach((a)=>console.log(a.value));
+                    // // console.log(data?.value)
+                    var question = $(`#question_${i}`).text();
+                    if(abc != null){
+                        // console.log(current_row_data,": present");
+                        var uploaded_data = $(`#student_uploads_${current_row_data}`).get(0).files
+                        // console.log("student upload :",uploaded_data)
+                    }
+                    else{
+                        // console.log(current_row_data,": absent")
+                        var uploaded_data = "none"
+                    }
+                    // console.log("uploaded data :",uploaded_data)
+                    var quesArr = {
+                        "question_no": i,
+                        "question_id": $(`#question_id_${i}`).val(),
+                        "question_type": $(`#question_type_${i}`).val(),
+                        "question": question,
+                        "value": ""
+                    }
+                   
+                    if(data.length >0){
+                        data.forEach(a => {
+                        if (quesArr["value"] !== "") {
+                            quesArr["value"] = quesArr["value"] + ","  + a.value
+                        }else{
+                            quesArr["value"] = a.value
+                        }
+                    })
+                    }else{
+                        quesArr["value"] =x.filter(a=> a.name == `question_shortanswer_${i}`).length > 0 ? x.filter(a=> a.name == `question_shortanswer_${i}`)[0].value : ""
+                    }
+ 
+                    // console.log("data sent to server :",quesArr);
+                    // console.log(quesArr);
+                    // $.ajax({
+                    //     type: "POST",
+                    //     url: "{% url 'giveexamination' %}",
+                    //     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    //     data: {
+                            // 'save_question_no':quesArr.question_no,
+                            // 'save_question_id':quesArr.question_id,
+                            // 'save_question_type':quesArr.question_type,
+                            // 'save_question':quesArr.question,
+                            // 'save_value':quesArr.value
+                            
+                    //     },
+                    //     success: function (response) {
+                    //         // console.log("data sent to server")
+                    //     }
+                    // });
+                    
+                    var data = new FormData();
+                    data.append("save_question_no", quesArr.question_no);
+                    data.append("save_question_id", quesArr.question_id);
+                    data.append("save_question_type", quesArr.question_type);
+                    data.append("save_question", quesArr.question);
+                    data.append("save_value", quesArr.value);
+                    if(uploaded_data == "none"){
+                        // console.log("no file hence not uploaded")
+                    }
+                    else{
+                        // console.log("uploaded file to views")
+                        $.each($(`#student_uploads_${current_row_data}`)[0].files, function(i, file) {
+                            data.append("uploaded_files", file);
+                        });
+                    }
+                    
+                    
+                    data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+                    console.log("AAAAAAAAAA" + data);
+
+                   
+                    $.ajax({
+                        method: "POST",
+                        url: "{% url 'giveexamination' %}",
+                        processData: false,
+                        contentType: false,
+                        mimeType: "multipart/form-data",
+                        data: data,
+                        success: function (res) {
+                            console.log("AVANI..." )
+                        }
+                    });
+                }
+            }
+        }
+        var next_element = parseInt(non_hidden) + 1;
+        if ($(`#question_row_${next_element}`).length > 0) {
+
+            $(`#question_row_${next_element}`).css('display', 'block');
+        }
+        else {
+            // $(`#question_row_1`).css('display','block');
+            $('#next_btn_container').empty();
+            $('#next_btn_container').append(`
+        <button class="edit-btn exam-save-btn" id="saveexambtn" style="display:block;" onclick="saveExam($('#counter').val(),$('#exam_id_to_save').val())">Submit</button>
+        `);
+        $('#submit_exam_text').css('display', 'block');
+        $('#last_btn').css('display', 'none');
+        $('#remaining_questions').css('display', 'none');
+        $('#unattempted-questions').css('display', 'none');
+        
+        }
+    }
+
+    function PendingQuestions(){
+        $('#attempted_questions').val('');
+        var numItems = $('#counter').val();
+        // console.log("count of questions :",numItems)
+        for (var i = 1; i <= numItems; i++) {
+            var selectedValue = $(`input[name="question_option_${i}"]:checked`).val();
+            // console.log(selectedValue)
+            if(selectedValue){
+               
+            }
+            else{
+                if($('#attempted_questions').val().length == 0){
+                    $('#attempted_questions').val(i)
+                }
+                else{
+                    $('#attempted_questions').val($('#attempted_questions').val() + "," + i)
+                }
+            }
+            // if($(`input[name="question_option_${i}"]:checked`).val()){
+
+            // }
+            // else{
+            //     console.log("Attempted Question no :",i)
+            // }
+            
+        }
+        console.log("counter: ", parseInt($('#counter').val()));
+        console.log("attempted: ", $('#attempted_questions').val());
+        var attempt
+        if ($('#attempted_questions').val() != "")
+            attempt = parseInt($('#counter').val()) - $('#attempted_questions').val().split(',').length
+        else
+            attempt = parseInt($('#counter').val())
+        // console.log(attempt + " of " + $('#counter').val())
+        $('#attempted_count').text("Number of questions attempted " + attempt + " of " + $('#counter').val())
+        UpdateAttempted();
+    }
+
+    function UpdateAttempted(){
+        var attempted_questions = $('#attempted_questions').val();
+        var total_questions = $('#counter').val();
+        
+        // $('#remaining_questions').text("Remaining Questions :" + attempted_questions);
+        var length = $('#attempted_questions').val().split(',').length;
+        var new_array = $('#attempted_questions').val().split(',');
+       
+       generateTable(new_array,length, total_questions );
+       
+       /* $('#remaining_questions').text("Remaining Questions :" + attempted_questions); */
+        $('#remaining_questions').css('display', 'block');
+        $('#unattempted-questions').css('display', 'table');
+        
+    }
+
+    function generateTable(proc_array, array_length, total_q) {
+      
+        let num_rows = Math.round(total_q/5);
+       
+        if(num_rows<10 && num_rows!=0) {num_rows=10;}
+        
+        const tbl = document.getElementById("unattempted-questions");
+        tbl.innerHTML="";
+        var tr="";
+        var td="";
+        let k=0, l=1;
+       
+        if (num_rows!=0) {
+           
+        for (let i = 0; i < num_rows; i++) {
+            // creates a table row
+        tr+="<tr>";
+        
+
+            for (let j = 0; j < 5; j++) {
+                
+                if (l>total_q){
+                    tr+='<td class="font-16 text-blackish border-cells ">  </td>';
+                } else {
+                    if (proc_array.includes(`${l}`) ) {
+                       
+                        tr+=`<td class="font-16 text-red border-cells "><a href="#" class="text-red" onclick="go_to_question(${l}); return false;">${l}</a></td>`;
+                    }
+                    else {
+                        tr+=`<td class="font-16 text-red border-cells "><a href="#"  onclick="go_to_question(${l}); return false;">${l}</a></td>`;
+                    }
+                }
+                
+                    k++;
+                    l++;
+            }
+            tr+='</tr>';
+        
+        
+        }
+
+        tbl.innerHTML+=tr;
+        }
+        else {
+            tbl.innerHTML="<tr><td class='font-20 text-center text-blackish'>All questions answered</td></tr>";
+        }
+
+    }
+
+    function go_to_question(q_no) {
+        $('#next_btn_container').empty();
+            $('#next_btn_container').append(`
+            <button class="edit-btn next-btn" id="next_btn" style="display:none;" onclick="next_question()">Next</button>
+        `);
+        $('#next_btn').css('display', 'block');
+
+        if (($('#counter').val()) == q_no){
+            
+          console.log("inside");
+            $('#last_btn').css('display', 'none');
+        }
+       else {
+        $('#last_btn').css('display', 'block');
+       }
+        PendingQuestions();
+        var current_row = parseInt($('#current_row').val());
+        //console.log("current row :",current_row)
+        if(current_row == 1) {
+            // console.log("count :",$('#counter').val())
+            $('#current_row').val(parseInt($('#counter').val()))
+        }
+        else{
+            $('#current_row').val(parseInt($('#current_row').val()) - 1)
+        }
+        var numItems = $('.totalexam').length;
+        
+        var non_hidden = 0;
+        
+        var current_quest = parseInt($('#current_question_count').val())
+        var new_quest = q_no;
+      
+        const element = document.querySelector(`#question_row_${new_quest}`);
+          
+            if (element.style.display == "none") {
+                // console.log(i)
+                
+                $(`#question_row_${current_quest}`).css('display', 'none');
+                $(`#question_row_${new_quest}`).css('display', 'block');
+                $('#current_question_count').val(q_no);
+                
+            }
+
+    }
+
+
+    function previous_question() {
+
+        //if coming from Submit exam we need to clear the submit exam text, do not show the submit button and show the next button
+        $('#submit_exam_text').css('display', 'none');
+        $('#next_btn_container').empty();
+            $('#next_btn_container').append(`
+            <button class="edit-btn next-btn" id="next_btn" style="display:none;" onclick="next_question()">Next</button>
+        `);
+        $('#next_btn').css('display', 'block');
+
+        if (($('#counter').val()) == ($('#current_question_count').val()-1)){
+            
+          console.log("inside");
+            $('#last_btn').css('display', 'none');
+        }
+       else {
+        $('#last_btn').css('display', 'block');
+       }
+       
+       //end of add by avani
+        
+        PendingQuestions();
+        
+       
+        var current_row = parseInt($('#current_row').val());
+        //console.log("current row :",current_row)
+        if(current_row == 1) {
+            // console.log("count :",$('#counter').val())
+            $('#current_row').val(parseInt($('#counter').val()))
+        }
+        else{
+            $('#current_row').val(parseInt($('#current_row').val()) - 1)
+        }
+        var numItems = $('.totalexam').length;
+        //console.log("numItems :",numItems)
+        // console.log("numItems   : " , numItems);
+        var non_hidden = 0;
+        // for (var i = numItems; i >= 1; i--) {
+        //     console.log(i)
+        //     const element = document.querySelector(`#question_row_${i}`);
+        //     console.log(element)
+        //     // console.log(element.style.display)
+        //     if (element.style.display != "none") {
+        //         // console.log(i)
+        //         var non_hidden = i
+        //         $(`#question_row_${i}`).css('display', 'none');
+        //     }
+        // }
+
+        var current_quest = parseInt($('#current_question_count').val())
+           // console.log("teh current q is" + current_quest)
+        const element = document.querySelector(`#question_row_${current_quest-1}`);
+           // console.log(element)
+            // console.log(element.style.display)
+            if (element.style.display == "none") {
+                // console.log(i)
+                
+                $(`#question_row_${current_quest-1}`).css('display', 'block');
+                $(`#question_row_${current_quest}`).css('display', 'none');
+                
+            }
+
+        
+        // var next_element = parseInt(non_hidden) - 1;
+        // if ($(`#question_row_${next_element}`).length > 0) {
+        //     // console.log(`$(#question_row_${next_element})`)
+        //     $(`#question_row_${next_element}`).css('display', 'block');
+        // }
+        // else {
+            // console.log("yes :", numItems)
+            
+        //     $('#next_btn_container').empty();
+        //     $('#next_btn_container').append(`
+        // <button class="btn btn-secondary" id="next_btn" onclick="next_question()">Next</button>
+        // `);
+        // }
+        $('#current_question_count').val(parseInt($('#current_question_count').val())-1)
+    }
+
+    function first_question() {
+        PendingQuestions();
+        
+        var counter = parseInt($('#counter').val());
+        console.log("counter :",counter)
+        // console.log("counter :",counter)
+        for(var i = 1; i <= counter; i++){
+            $(`#question_row_${i}`).css('display', 'none');
+        }
+        $(`#question_row_${1}`).css('display', 'block');
+        $('#current_row').val(1);
+        $('#first_btn').css('display', 'none');
+        $('#last_btn').css('display', 'block');
+    }
+
+    function last_question(){
+        PendingQuestions();
+        var counter = parseInt($('#counter').val());
+
+        //console.log("counter :",counter)
+        $('#current_question_count').val(counter)
+        for(var i = 1; i < counter; i++){
+            $(`#question_row_${i}`).css('display', 'none');
+        }
+        $(`#question_row_${counter}`).css('display', 'block');
+        $('#current_row').val(counter)
+        $('#last_btn').css('display', 'none');
+        $('#first_btn').css('display', 'block');
+    }
+
+    $("#current_row").val();
+
+    function onlyOne(checkbox) {
+        var checkbox_name = checkbox.name
+        var checkboxes = document.getElementsByName(checkbox_name)
+        checkboxes.forEach((item) => {
+            if (item !== checkbox) item.checked = false
+        })
+    }
+
+
+
+    function saveExam(count, exam_id) {
+        window.onbeforeunload=null;
+        // window.removeEventListener("beforeunload", f_beforeunload);
+        // console.log(count, exam_id)
+        // console.log("total question count = ", count);
+        var questions_list = []
+        var x = $("form").serializeArray();
+        // console.log("form =",x)
+        $.each(x, function (i, field) {
+            if (field.name.includes("question_option_")) {
+                var question_no = field.name.replace("question_option_", "")
+            }
+            else {
+                var question_no = field.name.replace("question_shortanswer_", "")
+            }
+            var question = $(`#question_${question_no}`).text();
+            
+            var quesArr = {
+                "question_no": question_no,
+                "question_id": $(`#question_id_${question_no}`).val(),
+                "question_type": $(`#question_type_${question_no}`).val(),
+                "question": question,
+                "value": field.value,
+                
+
+            
+            }
+            if (question_no == "csrfmiddlewaretoken") {
+                // console.log("csrfmiddlewaretoken")
+            }
+            else {
+                // console.log(quesArr)
+                questions_list.push(quesArr);
+            }
+
+        });
+        var testArr = [];
+        function AddData(data) {
+            // console.log(data);
+            var found = false;
+            for (index in testArr) {
+                if (testArr[index].question_no == data.question_no) {
+                    found = true;
+                    console.log("data found :", data);
+                    testArr[index].value = testArr[index].value + ',' + data.value;
+                    break;
+                }
+            }
+            if (!found) {
+                testArr.push(data);
+                 console.log("data not found");
+            }
+        }
+        questions_list.forEach(myFunction);
+        function myFunction(item) {
+            AddData(item)
+        }
+         console.log(testArr)
+         console.log("array length : =", testArr.length)
+        $.ajax({
+            type: "POST",
+            url: "{% url 'giveexamination' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'examdata': testArr,
+                'count': testArr.length,
+                'result_exam_id': exam_id
+            },
+            success: function (response) {
+                // console.log("data sent to server", response)
+                if(response.added == "yes"){
+                    window.location = "{% url 'examsubmitted' %}"
+                }
+            }
+        });
+
+
+
+    }
+
+
+    
+
+</script>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

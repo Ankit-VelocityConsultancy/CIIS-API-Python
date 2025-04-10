@@ -1,0 +1,1475 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>PENDING VERIFICATION - CIIS</title>
+
+
+
+<style type="text/css" media="print">
+  
+  @page {
+  size: auto;   /* auto is the initial value */
+  margin: 0;  /* this affects the margin in the printer settings */
+}
+@media print {
+      body * {
+          visibility: hidden;
+      }
+      .print_form,
+      .print_form *:not(.print_button) {
+          
+          visibility: visible;
+          
+      }
+      
+  }
+</style>
+
+{% endblock head %}
+
+
+
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+
+
+
+<div class="pages-body-bg-color py-3">
+  <section class="pending-verification   mb-3">
+      <div class="row">
+          <div class="col-12">
+         
+              <div class="white-box">
+                  <div class="inner-block px-4">
+                      <div class="row">
+                          <div class="col-12">
+                              <div class="box-title pt-4 ">
+                                  <h5 class="font-18 text-uppercase font-bold text-black">Pending Verification</h5>
+                              </div>
+                              <div class="box-text  ">
+                                  <p class="font-16 text-xlightgray">List of students whose verification is pending</p>
+                              </div>
+                          </div>
+                      </div>
+                     
+                      <div class="entries-table pt-4" id="student_output">
+                  
+                        <table id="example" class="format-table text-center">
+                          <thead>
+                              <tr class="bottom-border-grey">
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Sr.No</th>
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Enrollment ID</th>
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Registration ID</th>
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Student Name</th>
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Father's Name</th>
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Date of Birth</th>
+                              </tr>
+                          </thead>
+                      </table>
+                      
+                  </div>
+                
+               
+              </div>
+          </div>
+      </div>
+     
+
+  </section>
+
+
+  
+
+</div>
+
+
+
+
+
+
+
+
+
+{% endif %}
+
+<div class="modal fade" id="feespaidmodal" tabindex="-1" aria-labelledby="feespaidmodalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="feespaidmodalLabel">Paid Fees</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="modal-body">
+              <div class="container" id="feesmodaldata">
+                  <table class="table table-bordered text-center">
+                      <thead id="fees_modal_head">
+
+                      </thead>
+                      <tbody id="table_body">
+
+
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="modal fade" id="reciept_modal" tabindex="-1" aria-labelledby="reciept_modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class=" font-22 text-darkblue font-bold" id="reciept_modalLabel">Receipt <span><button class="blue-bg text-blue font-bold font-12 no-border" data-title="Print" onclick="print_reciept()">
+                  <i class="mr-1 fa fa-print text-primary-m1 text-120 w-2"></i>
+                  Print
+              </button></span></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="modal-body">
+              <div class="container" id="reciept_modal_body">
+                  
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div class="modal fade" id="qualification" tabindex="-1" aria-labelledby="qualificationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="qualificationLabel">Qualification Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="qualification_body">
+            <table class="table">
+                <thead>
+                  <tr class="bottom-border-grey">
+                    <th class="font-14 font-bold text-darkgray  px-2" scope="col">Exam</th>
+                    <th class="font-14 font-bold text-darkgray  px-2" scope="col">Year of Passing</th>
+                    <th class="font-14 font-bold text-darkgray  px-2" scope="col">Board/University</th>
+                    <th class="font-14 font-bold text-darkgray  px-2" scope="col">Percentage(%)</th>
+                    <th class="font-14 font-bold text-darkgray  px-2" scope="col">Upload Document (only PDF/JPG)</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray width-10 px-2">Secondary/High School</th>
+                    <td class="font-14 text-extragray px-2">
+                      <select class=" text-extralightgray font-14 px-3" name="secondary_year" id="secondary_year" >
+                        
+                        
+            
+                      </select>
+                    </td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="secondary_board" id="secondary_board" class=" text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="secondary_percentage" id="secondary_percentage" class=" text-extralightgray widht-40 font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2">
+                    <a class="blue-bg text-blue font-bold font-12 no-border" id = "secondary_document" >View</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray width-10 px-2">Sr. Secondary</th>
+                    <td class="font-14 text-extragray px-2">
+                      <select class=" text-extralightgray font-14 px-3" name="sr_year" id="sr_year" aria-label="Default select example">
+                        
+                        
+            
+                      </select>
+                    </td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="sr_board" id="sr_board" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="sr_percentage" id="sr_percentage" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><a class="blue-bg text-blue font-bold font-12 no-border" id = "sr_document" >View</a></td>
+                  </tr>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray width-10 px-2">Under Graduation</th>
+                    <td class="font-14 text-extragray px-2">
+                      <select class="text-extralightgray font-14 px-3" name="under_year" id="under_year" aria-label="Default select example">
+                        
+                        
+            
+                      </select>
+                    </td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="under_board" id="under_board" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="under_percentage" id="under_percentage" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><a class="blue-bg text-blue font-bold font-12 no-border" id = "under_document" >View</a></td>
+                  </tr>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray width-10 px-2">Post Graduation</th>
+                    <td class="font-14 text-extragray px-2">
+                      <select class="text-extralightgray font-14 px-3" name="post_year" id="post_year" aria-label="Default select example">
+                        
+                        
+            
+                      </select>
+                    </td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="post_board" id="post_board" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="post_percentage" id="post_percentage" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><a class="blue-bg text-blue font-bold font-12 no-border" id = "post_document" >View</a></td>
+                  </tr>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray width-10 px-2">M.Phil</th>
+                    <td class="font-14 text-extragray px-2">
+                      <select class="text-extralightgray font-14 px-3" name="mphil_year" id="mphil_year" aria-label="Default select example">
+                        
+                        
+            
+                      </select>
+                    </td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="mphil_board" id="mphil_board" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="mphil_percentage" id="mphil_percentage" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><a class="blue-bg text-blue font-bold font-12 no-border" id = "mphil_document" >View</a></td>
+                  </tr>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray width-10 px-2">Others</th>
+                    <td class="font-14 text-extragray px-2">
+                      <select class="text-extralightgray font-14 px-3" name="other_year" id="other_year" aria-label="Default select example">
+                        
+                        
+            
+                      </select>
+                    </td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="other_board" id="other_board" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="other_percentage" id="other_percentage" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><a class="blue-bg text-blue font-bold font-12 no-border" id = "other_document" >View</a></td>
+                  </tr>
+            
+                </tbody>
+              </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="document" tabindex="-1" aria-labelledby="documentLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="documentLabel">Document</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="document_body">
+          <embed id="document_data" frameborder="0" type="application/pdf" width="100%" height="400px">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  {% endblock body %}
+
+
+  {% block script %}
+<script>
+    function format ( d ) {
+    // `d` is the original data object for the row
+    return '<table class=" width-80">'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Full Name:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.name+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Email:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.email+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Mobile:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.mobile+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">University:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.university+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Course:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.course+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Stream:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.stream+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Session:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.session+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Mode of Entry:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.entry_mode+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Study Pattern:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.course_pattern+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Semester / Year:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">' +d.semyear+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Action:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left"><button class="blue-bg text-blue font-bold font-12 no-border" onclick="getFees('+d.enrollment_id+')">Fees</button> <button class="blue-bg text-blue font-bold no-border font-12" onclick="getDocuments('+d.enrollment_id+')">Documents</button> <button class="blue-bg text-blue font-bold no-border font-12" onclick="VerifyStudent('+d.enrollment_id+')">Verify Student</button> <button class="blue-bg text-blue font-bold no-border font-12" onclick="DeleteStudent('+d.enrollment_id+')">Delete Student</button></td>'+
+        '</tr>'+
+    '</table>';
+}
+ 
+$(document).ready(function() {
+  $('#dashboard-collapse').addClass("show");
+  $("#pending_verification_link").removeClass("link-dark");
+  $('#pending_verification_link').addClass("link-primary");
+    var received_data = "{{allstudents|safe}}";
+    console.log(received_data);
+
+    var table = $('#example').DataTable( {
+        "ordering": false,
+        "ajax": "/testing_api",
+        "columns": [
+            {
+                "className":      'dt-control',
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": ''
+            },
+            { "data": "enrollment_id" },
+            { "data": "registration_id" },
+            { "data": "name" },
+            { "data": "father_name" },
+            { "data": "dateofbirth" },
+            
+        ],
+        "order": [[1, 'asc']]
+    } );
+     
+    // Add event listener for opening and closing details
+    $('#example tbody').on('click', 'td.dt-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        // var dataSet = JSON.parse( '{{dataSet | escapejs }}');
+        
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+        }
+    } );
+} );
+
+
+function getFees(id){
+  console.log("id :",id);
+  $.ajax({ 
+      data: {
+      'fees': id
+      },
+      type: 'POST',
+      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+      url: "{% url 'pendingverification_fees' %}",
+    success: function (response) {
+      var fees = response.fees
+      if (fees) {
+          $('#fees_modal_head').empty();
+          $('#fees_modal_head').append(`
+              <tr class="border-bottom-grey">
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Sr.No</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Year/Sem</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Session</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Transaction Date</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Transaction ID</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Mode</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">No</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Total Fees</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Paid Amount</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Advance Amount</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Pending Amount</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scopt="col">View Reciept</th>
+              </tr>
+          `);
+          $('#table_body').empty();
+          fees.forEach(myFunction);
+          var count = 0;
+          function myFunction(item, count) {
+              console.log(item)
+              count = count + 1;
+              if (item.paymentmode == "Cheque") {
+                var transaction_date = item.transaction_date;
+                var datePart = transaction_date.match(/\d+/g),
+                year = datePart[0].substring(0), // get only two digits
+                month = datePart[1], day = datePart[2];
+
+                var changedate =  day+'/'+month+'/'+year;
+                console.log("changed date :",changedate)
+                  $('#table_body').append(`
+                  <tr>
+                      <th class="font-14 font-bold text-darkgray width-10 px-2" scope="row">${count}</th>
+                      <td class="font-14 text-extragray px-2">  ${item.semyear}  </td>
+                      <td class="font-14 text-extragray px-2"> ${item.session} </td>
+                      <td class="font-14 text-extragray px-2">  ${changedate}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.transactionID}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.paymentmode}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.cheque_no}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.semyearfees}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.paidamount}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.advanceamount}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.pendingamount}  </td>
+                      <td class="font-14 text-extragray px-2">  <button class="blue-bg text-blue font-bold font-12 no-border" onclick="viewPaymentReciept(${item.id})" >View</button>  </td>                                   
+                  </tr>`)
+              }
+              else {
+                var transaction_date = item.transaction_date;
+                var datePart = transaction_date.match(/\d+/g),
+                year = datePart[0].substring(0), // get only two digits
+                month = datePart[1], day = datePart[2];
+
+                var changedate =  day+'/'+month+'/'+year;
+                console.log("changed date :",changedate)
+                  $('#table_body').append(`
+                  <tr>
+                      <th class="font-14 font-bold text-darkgray width-10 px-2" scope="row">${count}</th>
+                      <td class="font-14 text-extragray px-2">  ${item.semyear}  </td>
+                      <td class="font-14 text-extragray px-2"> ${item.session} </td>
+                      <td class="font-14 text-extragray px-2">  ${changedate}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.transactionID}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.paymentmode}  </td>
+                      <td class="font-14 text-extragray px-2">  NA </td>
+                      <td class="font-14 text-extragray px-2">  ${item.semyearfees}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.paidamount}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.advanceamount}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.pendingamount}  </td>
+                      <td class="font-14 text-extragray px-2">  <button class="blue-bg text-blue font-bold font-12 no-border" onclick="viewPaymentReciept(${item.id})" >View</button>  </td> 
+                  </tr>`)
+              }
+
+          }
+          $('#feespaidmodal').modal('show');
+
+      }
+
+
+                
+    }
+  });
+
+}
+
+function viewPaymentReciept(id){
+  $.ajax({ // create an AJAX call...
+      data: {
+          'getpayment_reciept': id
+      }, // get the form data
+      type: 'POST', // GET or POST
+      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+      url: "{% url 'pendingverification_feesview' %}", // the file to call
+      success: function (response) {  
+          console.log(response)
+          var transaction_date = response.view_reciept.transaction_date;
+          var datePart = transaction_date.match(/\d+/g),
+          year = datePart[0].substring(0), // get only two digits
+          month = datePart[1], day = datePart[2];
+
+          var changedate =  day+'/'+month+'/'+year;
+          // console.log("View Payment Reciept :",id)
+          $('#reciept_modal_body').empty();
+          
+          $('#reciept_modal_body').html(`
+          <div class="print_form page-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="receipt-header p-3">
+                    <h1 class="font-20 text-darkblue font-bold">
+                        Reciept
+                        <small class="font-18 text-darkblue">
+                            <i class="fa fa-angle-double-right text-80"></i>
+                            ID: `+response.view_reciept.transactionID+`
+                        </small>
+                    </h1>
+                </div>
+                
+               <div class="receipt-body px-3">
+                <div class="row">
+                    <div class="col-6 px-2">
+                        <div>
+                            <span class="text-black font-16 align-middle">To:</span>
+                            <span class="text-black font-16">`+response.personal.name + `</span>
+                        </div>
+                        <div class="">
+                            <div class="text-black font-16">
+                                `+response.personal.address + ', ' + response.personal.city +`
+                            </div>
+                            <div class="text-black font-16">
+                                `+response.personal.state + ', ' + response.personal.country +`
+                            </div>
+                            <div class="text-black font-16"><i class=""></i> <b class="text-black font-16">`+response.personal.mobile+`</b></div>
+                            <div class="text-black font-16"><i class=""></i> <b class="text-black font-16">`+response.personal.email+`</b></div>
+                        </div>
+                    </div>
+                    <div class="col-6 px-2">
+                        <div class="">
+                            <div class="text-black font-18">
+                                Invoice
+                            </div>
+    
+                            <div class="text-black font-16"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-black font-16">ID:</span>  #`+response.view_reciept.transactionID+`</div>
+    
+                            <div class="text-black font-16"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-black font-16">Issue Date:</span> `+changedate+`</div>
+    
+                            <div class="text-black font-16"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-black font-16">Status:</span> Paid </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-2 offset-1">
+                        <div class="receipt-header">
+                            <h6 class="font-16 text-black font-bold">Semester</h6>
+                        </div>
+                        <div class="receipt-content">
+                            <p class="font-16 text-black">`+response.view_reciept.semyear+`</p>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="receipt-header">
+                            <h6 class="font-16 text-black font-bold">Paid Amount</h6>
+                        </div>
+                        <div class="receipt-content">
+                            <p class="font-16 text-black">`+response.view_reciept.paidamount+`</p>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="receipt-header">
+                            <h6 class="font-16 text-black font-bold">Pending Amount</h6>
+                        </div>
+                        <div class="receipt-content">
+                            <p class="font-16 text-black">`+response.view_reciept.pendingamount+`</p>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="receipt-header">
+                            <h6 class="font-16 text-black font-bold">Transaction Date</h6>
+                        </div>
+                        <div class="receipt-content">
+                            <p class="font-16 text-black">`+changedate+`</p>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="receipt-header">
+                            <h6 class="font-16 text-black font-bold">Mode</h6>
+                        </div>
+                        <div class="receipt-content">
+                            <p class="font-16 text-black">`+response.view_reciept.paymentmode+`</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-12">
+                        <div>
+                            <span class="font-26 font-bold text-darkblue">Thank you for your Payment</span>  
+                        </div>
+                    </div>
+                </div>
+               </div>
+    
+            </div>
+        </div>
+    </div>
+</div>
+          `);
+          $('#reciept_modal').modal('show');
+      }
+  });
+    }
+
+    function getDocuments(id){
+    console.log(id);
+    if(id){
+        $.ajax({ // create an AJAX call...
+            data: {
+            'enrollid': id
+            }, // get the form data
+            type: 'POST', // GET or POST
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            url: "{% url 'pendingverification_getdocuments' %}", // the file to call
+        success: function (response) {
+            $('#qualification').modal('show');
+            console.log(response);
+            if (response.student == "yes"){
+                console.log("yes")
+                $('#secondary_year').append(`<option selected value="${response.qualification.secondary_year}" >${response.qualification.secondary_year} </option>`);
+                $('#sr_year').append(`<option selected value="${response.qualification.sr_year}" >${response.qualification.sr_year} </option>`);
+                $('#under_year').append(`<option selected value="${response.qualification.under_year}" >${response.qualification.under_year} </option>`);
+                $('#post_year').append(`<option selected value="${response.qualification.post_year}" >${response.qualification.post_year} </option>`);
+                $('#mphil_year').append(`<option selected value="${response.qualification.mphil_year}" >${response.qualification.mphil_year} </option>`);
+                $('#other_year').append(`<option selected value="${response.qualification.others_year}" >${response.qualification.others_year} </option>`);
+                
+
+                $('#secondary_board').val(response.qualification.secondary_board);
+                $('#sr_board').val(response.qualification.sr_board);
+                $('#under_board').val(response.qualification.under_board);
+                $('#post_board').val(response.qualification.post_board);
+                $('#mphil_board').val(response.qualification.mphil_board);
+                $('#other_board').val(response.qualification.others_board);
+
+                $('#secondary_percentage').val(response.qualification.secondary_percentage);
+                $('#sr_percentage').val(response.qualification.sr_percentage);
+                $('#under_percentage').val(response.qualification.under_percentage);
+                $('#post_percentage').val(response.qualification.post_percentage);
+                $('#mphil_percentage').val(response.qualification.mphil_percentage);
+                $('#other_percentage').val(response.qualification.others_percentage);
+                
+
+                $('#secondary_document').attr('onclick','ShowDocument("'+response.qualification.secondary_document+'")');
+                $('#sr_document').attr('onclick','ShowDocument("'+response.qualification.sr_document+'")');
+                $('#under_document').attr('onclick','ShowDocument("'+response.qualification.under_document+'")');
+                $('#post_document').attr('onclick','ShowDocument("'+response.qualification.post_document+'")');
+                $('#mphil_document').attr('onclick','ShowDocument("'+response.qualification.mphil_document+'")');
+                $('#other_document').attr('onclick','ShowDocument("'+response.qualification.others_document+'")');
+                
+                
+                // $('#secondary_document').attr('href',response.qualification.secondary_document)
+                // $('#sr_document').attr('href',response.qualification.sr_document)
+                // $('#under_document').attr('href',response.qualification.under_document)
+                // $('#post_document').attr('href',response.qualification.post_document)
+                // $('#mphil_document').attr('href',response.qualification.mphil_document)
+                // $('#other_document').attr('href',response.qualification.others_document)
+                
+            }
+        }
+    });
+    }
+    
+}
+function ShowDocument(link){
+    $('#document').modal('show');
+    if(link){
+        $('#document_data').attr("src",link)
+    }
+    else{
+        $('#document_data').html('No Document Present')
+    }
+    
+}
+
+function print_reciept(){
+  window.print();
+}
+
+function VerifyStudent(id){
+    
+    let confirmAction = confirm("Verify ?");
+        if (confirmAction) {
+            $.ajax(
+            {
+                data: {
+                'verified': id
+                }, // get the form data
+                type: 'POST', // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'pending_verification' %}", // the file to call
+            success: function (response) 
+            {
+              $('#student_output').append(`
+              <div class="alert outer-rectangle text-purewhite alert-dismissible fade show" role="alert">
+                  <strong>Student Registered Successfully</strong> 
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              `);
+            
+              setTimeout(() => {
+                  $('.alert').alert('close');
+              }, 500);
+              setTimeout(() => {
+                window.location = "{% url 'pending_verification' %}"
+              }, 1000);
+              
+            }
+        });
+        } else {
+          $('#student_output').append(`
+              <div class="alert outer-rectangle text-purewhite alert-dismissible fade show" role="alert">
+                  <strong>Action Cancelled</strong> 
+                  <button type="button" class="btn-close"  data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              `);
+            
+              setTimeout(() => {
+                  $('.alert').alert('close');
+              }, 2000);
+        }
+}
+
+function DeleteStudent(id){
+  $.ajax({ 
+      data: {
+      'delete_student': id
+      },
+      type: 'POST',
+      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+      url: "{% url 'pending_verification' %}",
+    success: function (response) {
+      console.log(response)
+      if(response.deleted == "yes"){
+        window.location = "{% url 'pending_verification' %}"
+      }
+    }
+  });
+}
+</script> 
+
+{% endblock script %}
+
+
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>PENDING VERIFICATION - CIIS</title>
+
+
+
+<style type="text/css" media="print">
+  
+  @page {
+  size: auto;   /* auto is the initial value */
+  margin: 0;  /* this affects the margin in the printer settings */
+}
+@media print {
+      body * {
+          visibility: hidden;
+      }
+      .print_form,
+      .print_form *:not(.print_button) {
+          
+          visibility: visible;
+          
+      }
+      
+  }
+</style>
+
+{% endblock head %}
+
+
+
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+
+
+
+<div class="pages-body-bg-color py-3">
+  <section class="pending-verification   mb-3">
+      <div class="row">
+          <div class="col-12">
+         
+              <div class="white-box">
+                  <div class="inner-block px-4">
+                      <div class="row">
+                          <div class="col-12">
+                              <div class="box-title pt-4 ">
+                                  <h5 class="font-18 text-uppercase font-bold text-black">Pending Verification</h5>
+                              </div>
+                              <div class="box-text  ">
+                                  <p class="font-16 text-xlightgray">List of students whose verification is pending</p>
+                              </div>
+                          </div>
+                      </div>
+                     
+                      <div class="entries-table pt-4" id="student_output">
+                  
+                        <table id="example" class="format-table text-center">
+                          <thead>
+                              <tr class="bottom-border-grey">
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Sr.No</th>
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Enrollment ID</th>
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Registration ID</th>
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Student Name</th>
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Father's Name</th>
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Date of Birth</th>
+                              </tr>
+                          </thead>
+                      </table>
+                      
+                  </div>
+                
+               
+              </div>
+          </div>
+      </div>
+     
+
+  </section>
+
+
+  
+
+</div>
+
+
+
+
+
+
+
+
+
+{% endif %}
+
+<div class="modal fade" id="feespaidmodal" tabindex="-1" aria-labelledby="feespaidmodalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="feespaidmodalLabel">Paid Fees</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="modal-body">
+              <div class="container" id="feesmodaldata">
+                  <table class="table table-bordered text-center">
+                      <thead id="fees_modal_head">
+
+                      </thead>
+                      <tbody id="table_body">
+
+
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="modal fade" id="reciept_modal" tabindex="-1" aria-labelledby="reciept_modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class=" font-22 text-darkblue font-bold" id="reciept_modalLabel">Receipt <span><button class="blue-bg text-blue font-bold font-12 no-border" data-title="Print" onclick="print_reciept()">
+                  <i class="mr-1 fa fa-print text-primary-m1 text-120 w-2"></i>
+                  Print
+              </button></span></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="modal-body">
+              <div class="container" id="reciept_modal_body">
+                  
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div class="modal fade" id="qualification" tabindex="-1" aria-labelledby="qualificationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="qualificationLabel">Qualification Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="qualification_body">
+            <table class="table">
+                <thead>
+                  <tr class="bottom-border-grey">
+                    <th class="font-14 font-bold text-darkgray  px-2" scope="col">Exam</th>
+                    <th class="font-14 font-bold text-darkgray  px-2" scope="col">Year of Passing</th>
+                    <th class="font-14 font-bold text-darkgray  px-2" scope="col">Board/University</th>
+                    <th class="font-14 font-bold text-darkgray  px-2" scope="col">Percentage(%)</th>
+                    <th class="font-14 font-bold text-darkgray  px-2" scope="col">Upload Document (only PDF/JPG)</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray width-10 px-2">Secondary/High School</th>
+                    <td class="font-14 text-extragray px-2">
+                      <select class=" text-extralightgray font-14 px-3" name="secondary_year" id="secondary_year" >
+                        
+                        
+            
+                      </select>
+                    </td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="secondary_board" id="secondary_board" class=" text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="secondary_percentage" id="secondary_percentage" class=" text-extralightgray widht-40 font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2">
+                    <a class="blue-bg text-blue font-bold font-12 no-border" id = "secondary_document" >View</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray width-10 px-2">Sr. Secondary</th>
+                    <td class="font-14 text-extragray px-2">
+                      <select class=" text-extralightgray font-14 px-3" name="sr_year" id="sr_year" aria-label="Default select example">
+                        
+                        
+            
+                      </select>
+                    </td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="sr_board" id="sr_board" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="sr_percentage" id="sr_percentage" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><a class="blue-bg text-blue font-bold font-12 no-border" id = "sr_document" >View</a></td>
+                  </tr>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray width-10 px-2">Under Graduation</th>
+                    <td class="font-14 text-extragray px-2">
+                      <select class="text-extralightgray font-14 px-3" name="under_year" id="under_year" aria-label="Default select example">
+                        
+                        
+            
+                      </select>
+                    </td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="under_board" id="under_board" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="under_percentage" id="under_percentage" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><a class="blue-bg text-blue font-bold font-12 no-border" id = "under_document" >View</a></td>
+                  </tr>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray width-10 px-2">Post Graduation</th>
+                    <td class="font-14 text-extragray px-2">
+                      <select class="text-extralightgray font-14 px-3" name="post_year" id="post_year" aria-label="Default select example">
+                        
+                        
+            
+                      </select>
+                    </td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="post_board" id="post_board" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="post_percentage" id="post_percentage" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><a class="blue-bg text-blue font-bold font-12 no-border" id = "post_document" >View</a></td>
+                  </tr>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray width-10 px-2">M.Phil</th>
+                    <td class="font-14 text-extragray px-2">
+                      <select class="text-extralightgray font-14 px-3" name="mphil_year" id="mphil_year" aria-label="Default select example">
+                        
+                        
+            
+                      </select>
+                    </td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="mphil_board" id="mphil_board" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="mphil_percentage" id="mphil_percentage" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><a class="blue-bg text-blue font-bold font-12 no-border" id = "mphil_document" >View</a></td>
+                  </tr>
+                  <tr>
+                    <th class="font-14 font-bold text-darkgray width-10 px-2">Others</th>
+                    <td class="font-14 text-extragray px-2">
+                      <select class="text-extralightgray font-14 px-3" name="other_year" id="other_year" aria-label="Default select example">
+                        
+                        
+            
+                      </select>
+                    </td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="other_board" id="other_board" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><input type="text" name="other_percentage" id="other_percentage" class="text-extralightgray font-14 px-3"></td>
+                    <td class="font-14 text-extragray px-2"><a class="blue-bg text-blue font-bold font-12 no-border" id = "other_document" >View</a></td>
+                  </tr>
+            
+                </tbody>
+              </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="document" tabindex="-1" aria-labelledby="documentLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="documentLabel">Document</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="document_body">
+          <embed id="document_data" frameborder="0" type="application/pdf" width="100%" height="400px">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  {% endblock body %}
+
+
+  {% block script %}
+<script>
+    function format ( d ) {
+    // `d` is the original data object for the row
+    return '<table class=" width-80">'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Full Name:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.name+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Email:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.email+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Mobile:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.mobile+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">University:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.university+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Course:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.course+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Stream:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.stream+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Session:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.session+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Mode of Entry:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.entry_mode+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Study Pattern:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">'+d.course_pattern+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Semester / Year:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left">' +d.semyear+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td class="font-14 text-extragray px-2 width-15 text-right">Action:</td>'+
+            '<td class="font-14 text-extragray px-2 text-left"><button class="blue-bg text-blue font-bold font-12 no-border" onclick="getFees('+d.enrollment_id+')">Fees</button> <button class="blue-bg text-blue font-bold no-border font-12" onclick="getDocuments('+d.enrollment_id+')">Documents</button> <button class="blue-bg text-blue font-bold no-border font-12" onclick="VerifyStudent('+d.enrollment_id+')">Verify Student</button> <button class="blue-bg text-blue font-bold no-border font-12" onclick="DeleteStudent('+d.enrollment_id+')">Delete Student</button></td>'+
+        '</tr>'+
+    '</table>';
+}
+ 
+$(document).ready(function() {
+  $('#dashboard-collapse').addClass("show");
+  $("#pending_verification_link").removeClass("link-dark");
+  $('#pending_verification_link').addClass("link-primary");
+    var received_data = "{{allstudents|safe}}";
+    console.log(received_data);
+
+    var table = $('#example').DataTable( {
+        "ordering": false,
+        "ajax": "/testing_api",
+        "columns": [
+            {
+                "className":      'dt-control',
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": ''
+            },
+            { "data": "enrollment_id" },
+            { "data": "registration_id" },
+            { "data": "name" },
+            { "data": "father_name" },
+            { "data": "dateofbirth" },
+            
+        ],
+        "order": [[1, 'asc']]
+    } );
+     
+    // Add event listener for opening and closing details
+    $('#example tbody').on('click', 'td.dt-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        // var dataSet = JSON.parse( '{{dataSet | escapejs }}');
+        
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+        }
+    } );
+} );
+
+
+function getFees(id){
+  console.log("id :",id);
+  $.ajax({ 
+      data: {
+      'fees': id
+      },
+      type: 'POST',
+      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+      url: "{% url 'pendingverification_fees' %}",
+    success: function (response) {
+      var fees = response.fees
+      if (fees) {
+          $('#fees_modal_head').empty();
+          $('#fees_modal_head').append(`
+              <tr class="border-bottom-grey">
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Sr.No</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Year/Sem</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Session</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Transaction Date</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Transaction ID</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Mode</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">No</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Total Fees</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Paid Amount</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Advance Amount</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Pending Amount</th>
+                  <th class="font-14 font-bold text-darkgray width-10 px-2" scopt="col">View Reciept</th>
+              </tr>
+          `);
+          $('#table_body').empty();
+          fees.forEach(myFunction);
+          var count = 0;
+          function myFunction(item, count) {
+              console.log(item)
+              count = count + 1;
+              if (item.paymentmode == "Cheque") {
+                var transaction_date = item.transaction_date;
+                var datePart = transaction_date.match(/\d+/g),
+                year = datePart[0].substring(0), // get only two digits
+                month = datePart[1], day = datePart[2];
+
+                var changedate =  day+'/'+month+'/'+year;
+                console.log("changed date :",changedate)
+                  $('#table_body').append(`
+                  <tr>
+                      <th class="font-14 font-bold text-darkgray width-10 px-2" scope="row">${count}</th>
+                      <td class="font-14 text-extragray px-2">  ${item.semyear}  </td>
+                      <td class="font-14 text-extragray px-2"> ${item.session} </td>
+                      <td class="font-14 text-extragray px-2">  ${changedate}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.transactionID}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.paymentmode}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.cheque_no}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.semyearfees}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.paidamount}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.advanceamount}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.pendingamount}  </td>
+                      <td class="font-14 text-extragray px-2">  <button class="blue-bg text-blue font-bold font-12 no-border" onclick="viewPaymentReciept(${item.id})" >View</button>  </td>                                   
+                  </tr>`)
+              }
+              else {
+                var transaction_date = item.transaction_date;
+                var datePart = transaction_date.match(/\d+/g),
+                year = datePart[0].substring(0), // get only two digits
+                month = datePart[1], day = datePart[2];
+
+                var changedate =  day+'/'+month+'/'+year;
+                console.log("changed date :",changedate)
+                  $('#table_body').append(`
+                  <tr>
+                      <th class="font-14 font-bold text-darkgray width-10 px-2" scope="row">${count}</th>
+                      <td class="font-14 text-extragray px-2">  ${item.semyear}  </td>
+                      <td class="font-14 text-extragray px-2"> ${item.session} </td>
+                      <td class="font-14 text-extragray px-2">  ${changedate}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.transactionID}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.paymentmode}  </td>
+                      <td class="font-14 text-extragray px-2">  NA </td>
+                      <td class="font-14 text-extragray px-2">  ${item.semyearfees}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.paidamount}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.advanceamount}  </td>
+                      <td class="font-14 text-extragray px-2">  ${item.pendingamount}  </td>
+                      <td class="font-14 text-extragray px-2">  <button class="blue-bg text-blue font-bold font-12 no-border" onclick="viewPaymentReciept(${item.id})" >View</button>  </td> 
+                  </tr>`)
+              }
+
+          }
+          $('#feespaidmodal').modal('show');
+
+      }
+
+
+                
+    }
+  });
+
+}
+
+function viewPaymentReciept(id){
+  $.ajax({ // create an AJAX call...
+      data: {
+          'getpayment_reciept': id
+      }, // get the form data
+      type: 'POST', // GET or POST
+      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+      url: "{% url 'pendingverification_feesview' %}", // the file to call
+      success: function (response) {  
+          console.log(response)
+          var transaction_date = response.view_reciept.transaction_date;
+          var datePart = transaction_date.match(/\d+/g),
+          year = datePart[0].substring(0), // get only two digits
+          month = datePart[1], day = datePart[2];
+
+          var changedate =  day+'/'+month+'/'+year;
+          // console.log("View Payment Reciept :",id)
+          $('#reciept_modal_body').empty();
+          
+          $('#reciept_modal_body').html(`
+          <div class="print_form page-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="receipt-header p-3">
+                    <h1 class="font-20 text-darkblue font-bold">
+                        Reciept
+                        <small class="font-18 text-darkblue">
+                            <i class="fa fa-angle-double-right text-80"></i>
+                            ID: `+response.view_reciept.transactionID+`
+                        </small>
+                    </h1>
+                </div>
+                
+               <div class="receipt-body px-3">
+                <div class="row">
+                    <div class="col-6 px-2">
+                        <div>
+                            <span class="text-black font-16 align-middle">To:</span>
+                            <span class="text-black font-16">`+response.personal.name + `</span>
+                        </div>
+                        <div class="">
+                            <div class="text-black font-16">
+                                `+response.personal.address + ', ' + response.personal.city +`
+                            </div>
+                            <div class="text-black font-16">
+                                `+response.personal.state + ', ' + response.personal.country +`
+                            </div>
+                            <div class="text-black font-16"><i class=""></i> <b class="text-black font-16">`+response.personal.mobile+`</b></div>
+                            <div class="text-black font-16"><i class=""></i> <b class="text-black font-16">`+response.personal.email+`</b></div>
+                        </div>
+                    </div>
+                    <div class="col-6 px-2">
+                        <div class="">
+                            <div class="text-black font-18">
+                                Invoice
+                            </div>
+    
+                            <div class="text-black font-16"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-black font-16">ID:</span>  #`+response.view_reciept.transactionID+`</div>
+    
+                            <div class="text-black font-16"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-black font-16">Issue Date:</span> `+changedate+`</div>
+    
+                            <div class="text-black font-16"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-black font-16">Status:</span> Paid </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-2 offset-1">
+                        <div class="receipt-header">
+                            <h6 class="font-16 text-black font-bold">Semester</h6>
+                        </div>
+                        <div class="receipt-content">
+                            <p class="font-16 text-black">`+response.view_reciept.semyear+`</p>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="receipt-header">
+                            <h6 class="font-16 text-black font-bold">Paid Amount</h6>
+                        </div>
+                        <div class="receipt-content">
+                            <p class="font-16 text-black">`+response.view_reciept.paidamount+`</p>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="receipt-header">
+                            <h6 class="font-16 text-black font-bold">Pending Amount</h6>
+                        </div>
+                        <div class="receipt-content">
+                            <p class="font-16 text-black">`+response.view_reciept.pendingamount+`</p>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="receipt-header">
+                            <h6 class="font-16 text-black font-bold">Transaction Date</h6>
+                        </div>
+                        <div class="receipt-content">
+                            <p class="font-16 text-black">`+changedate+`</p>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="receipt-header">
+                            <h6 class="font-16 text-black font-bold">Mode</h6>
+                        </div>
+                        <div class="receipt-content">
+                            <p class="font-16 text-black">`+response.view_reciept.paymentmode+`</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-12">
+                        <div>
+                            <span class="font-26 font-bold text-darkblue">Thank you for your Payment</span>  
+                        </div>
+                    </div>
+                </div>
+               </div>
+    
+            </div>
+        </div>
+    </div>
+</div>
+          `);
+          $('#reciept_modal').modal('show');
+      }
+  });
+    }
+
+    function getDocuments(id){
+    console.log(id);
+    if(id){
+        $.ajax({ // create an AJAX call...
+            data: {
+            'enrollid': id
+            }, // get the form data
+            type: 'POST', // GET or POST
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            url: "{% url 'pendingverification_getdocuments' %}", // the file to call
+        success: function (response) {
+            $('#qualification').modal('show');
+            console.log(response);
+            if (response.student == "yes"){
+                console.log("yes")
+                $('#secondary_year').append(`<option selected value="${response.qualification.secondary_year}" >${response.qualification.secondary_year} </option>`);
+                $('#sr_year').append(`<option selected value="${response.qualification.sr_year}" >${response.qualification.sr_year} </option>`);
+                $('#under_year').append(`<option selected value="${response.qualification.under_year}" >${response.qualification.under_year} </option>`);
+                $('#post_year').append(`<option selected value="${response.qualification.post_year}" >${response.qualification.post_year} </option>`);
+                $('#mphil_year').append(`<option selected value="${response.qualification.mphil_year}" >${response.qualification.mphil_year} </option>`);
+                $('#other_year').append(`<option selected value="${response.qualification.others_year}" >${response.qualification.others_year} </option>`);
+                
+
+                $('#secondary_board').val(response.qualification.secondary_board);
+                $('#sr_board').val(response.qualification.sr_board);
+                $('#under_board').val(response.qualification.under_board);
+                $('#post_board').val(response.qualification.post_board);
+                $('#mphil_board').val(response.qualification.mphil_board);
+                $('#other_board').val(response.qualification.others_board);
+
+                $('#secondary_percentage').val(response.qualification.secondary_percentage);
+                $('#sr_percentage').val(response.qualification.sr_percentage);
+                $('#under_percentage').val(response.qualification.under_percentage);
+                $('#post_percentage').val(response.qualification.post_percentage);
+                $('#mphil_percentage').val(response.qualification.mphil_percentage);
+                $('#other_percentage').val(response.qualification.others_percentage);
+                
+
+                $('#secondary_document').attr('onclick','ShowDocument("'+response.qualification.secondary_document+'")');
+                $('#sr_document').attr('onclick','ShowDocument("'+response.qualification.sr_document+'")');
+                $('#under_document').attr('onclick','ShowDocument("'+response.qualification.under_document+'")');
+                $('#post_document').attr('onclick','ShowDocument("'+response.qualification.post_document+'")');
+                $('#mphil_document').attr('onclick','ShowDocument("'+response.qualification.mphil_document+'")');
+                $('#other_document').attr('onclick','ShowDocument("'+response.qualification.others_document+'")');
+                
+                
+                // $('#secondary_document').attr('href',response.qualification.secondary_document)
+                // $('#sr_document').attr('href',response.qualification.sr_document)
+                // $('#under_document').attr('href',response.qualification.under_document)
+                // $('#post_document').attr('href',response.qualification.post_document)
+                // $('#mphil_document').attr('href',response.qualification.mphil_document)
+                // $('#other_document').attr('href',response.qualification.others_document)
+                
+            }
+        }
+    });
+    }
+    
+}
+function ShowDocument(link){
+    $('#document').modal('show');
+    if(link){
+        $('#document_data').attr("src",link)
+    }
+    else{
+        $('#document_data').html('No Document Present')
+    }
+    
+}
+
+function print_reciept(){
+  window.print();
+}
+
+function VerifyStudent(id){
+    
+    let confirmAction = confirm("Verify ?");
+        if (confirmAction) {
+            $.ajax(
+            {
+                data: {
+                'verified': id
+                }, // get the form data
+                type: 'POST', // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'pending_verification' %}", // the file to call
+            success: function (response) 
+            {
+              $('#student_output').append(`
+              <div class="alert outer-rectangle text-purewhite alert-dismissible fade show" role="alert">
+                  <strong>Student Registered Successfully</strong> 
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              `);
+            
+              setTimeout(() => {
+                  $('.alert').alert('close');
+              }, 500);
+              setTimeout(() => {
+                window.location = "{% url 'pending_verification' %}"
+              }, 1000);
+              
+            }
+        });
+        } else {
+          $('#student_output').append(`
+              <div class="alert outer-rectangle text-purewhite alert-dismissible fade show" role="alert">
+                  <strong>Action Cancelled</strong> 
+                  <button type="button" class="btn-close"  data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              `);
+            
+              setTimeout(() => {
+                  $('.alert').alert('close');
+              }, 2000);
+        }
+}
+
+function DeleteStudent(id){
+  $.ajax({ 
+      data: {
+      'delete_student': id
+      },
+      type: 'POST',
+      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+      url: "{% url 'pending_verification' %}",
+    success: function (response) {
+      console.log(response)
+      if(response.deleted == "yes"){
+        window.location = "{% url 'pending_verification' %}"
+      }
+    }
+  });
+}
+</script> 
+
+{% endblock script %}
+
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049

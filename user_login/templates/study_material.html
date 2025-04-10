@@ -1,0 +1,920 @@
+<<<<<<< HEAD
+{% extends 'includes/admin.html' %}
+{% load static %}
+{% block head %}
+<style>
+    body {
+      margin-left: 50px;
+    }
+    .large_buttons{
+      height:100px;
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+  
+      
+#main-navbar .logo{
+    width:70%;
+}
+#main-navbar .logo img{
+    width:12%;
+}
+#sidebarMenu {top: 40px;}
+.main-body {margin-top: 120px !important}
+  </style>
+  <script src="{% static 'dict/js/student.js' %}"></script>
+{% endblock head %}
+
+
+{% block nav %}
+<header>
+  <!-- Sidebar -->
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+    <div class="position-sticky">
+      <div class="list-group list-group-flush mx-3 mt-4">
+        <a href="{% url 'profile' %}" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Home</span>
+        </a>
+
+        <a href="{% url 'studentdashboard' %}" class="list-group-item list-group-item-action py-2 ripple"
+          aria-current="true">
+          <i class="fas fa-id-card fa-fw me-3"></i><span>DashBoard</span>
+        </a>
+        <a href="{% url 'StudentStudyMaterial' %}" class="list-group-item list-group-item-action py-2 ripple"
+          aria-current="true">
+          <i class="fas fa-book fa-fw me-3"></i><span>Study Materials</span>
+        </a>
+        <a href="{% url 'StudentVideoMaterial' %}" class="list-group-item list-group-item-action py-2 ripple"
+          aria-current="true">
+          <i class="fas fa-video fa-fw me-3"></i><span>Video Materials</span>
+        </a>
+
+        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+            class="fas fa-lock fa-fw me-3"></i><span>Logout</span></a>
+
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+
+  <!-- Navbar -->
+  <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+      <!-- Toggle button -->
+      <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
+        aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <!-- Brand -->
+      <a class="navbar-brand" href="#">
+        <img src="" height="25" alt="" loading="lazy" />
+      </a>
+      <!-- Search form -->
+      <form class="d-none d-md-flex input-group w-auto my-auto">
+        <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+          style="min-width: 225px" />
+        <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+      </form>
+      
+      <div class="logo text-center">
+            <img src="/media/ciis_logo/logo.jpg" class="logo" alt="logo_img" />
+        </div>
+
+      <!-- Right links -->
+      <ul class="navbar-nav ms-auto d-flex flex-row">
+        <!-- Notification dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink"
+            role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bell"></i>
+            <span class="badge rounded-pill badge-notification bg-danger">1</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="#">Some news</a></li>
+            <li><a class="dropdown-item" href="#">Another news</a></li>
+            <li>
+              <a class="dropdown-item" href="#">Something else</a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Icon -->
+        <li class="nav-item">
+          <a class="nav-link me-3 me-lg-0" href="#">
+            <i class="fas fa-fill-drip"></i>
+          </a>
+        </li>
+        <!-- Icon -->
+        <li class="nav-item me-3 me-lg-0">
+          <a class="nav-link" href="#">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+
+        <!-- Icon dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button"
+            data-mdb-toggle="dropdown" aria-expanded="false">
+            <i class="united kingdom flag m-0"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li>
+              <a class="dropdown-item" href="#"><i class="united kingdom flag"></i>English
+                <i class="fa fa-check text-success ms-2"></i></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider" />
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="poland flag"></i>Polski</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="china flag"></i>中文</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="japan flag"></i>日本語</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="germany flag"></i>Deutsch</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="france flag"></i>Français</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="spain flag"></i>Español</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="russia flag"></i>Русский</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="portugal flag"></i>Português</a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Avatar -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#"
+            id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt=""
+              loading="lazy" />
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="#">My profile</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><a class="dropdown-item" href="#">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <!-- Container wrapper -->
+  </nav>
+  <!-- Navbar -->
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if request.user.is_student%}
+<div class="container" style="margin-top:150px !important">
+    <div class="modal_output">
+  
+    </div>
+    <div class="row">
+      
+      <div class="col-xl-3 col-lg-6">
+        <div class="card mb-3">
+          <button class="btn btn-warning large_buttons" data-bs-toggle="modal" data-bs-target="#BED_1">BED Study Material 1</button>
+        </div>
+      </div>
+      <div class="col-xl-3 col-lg-6">
+        <div class="card mb-3">
+          <button class="btn btn-danger large_buttons" data-bs-toggle="modal" data-bs-target="#BED_2">BED Study Material 2</button>
+        </div>
+      </div>
+      <div class="col-xl-3 col-lg-6">
+        <div class="card mb-3">
+          <button class="btn btn-success large_buttons" data-bs-toggle="modal" data-bs-target="#MA_Psychology">MA Psychology</button>
+        </div>
+      </div>
+      <!-- <div class="col-xl-3 col-lg-6">
+        <div class="card mb-3">
+          <button class="btn btn-success large_buttons" onclick="getsyllabus()">Syllabus</button>
+        </div>
+      </div> -->
+      <!-- <div class="col-xl-3 col-lg-6">
+        <div class="card mb-3">
+          <button class="btn btn-primary large_buttons" onclick="getexamination()">Examination</button>
+        </div>
+      </div> -->
+      
+    </div>
+    <div class="row">
+      
+      
+    </div>
+    
+  </div>
+
+  <div class="modal fade" id="BED_1" tabindex="-1" aria-labelledby="BED_1Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="BED_1Label">BED Study Material 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>ASSESSMENT FOR LEARNING</td>
+                  <td><a href="/media/studentsyllabus/b-ed-study-material/ASSESSMENT FOR LEARNING.pdf" target="_blank">View</a></td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>BED SYLLABUS</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/BED SYLLABUS.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>CHILDHOOD AND GROWING UP</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/CHILDHOOD AND GROWING UP.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">4</th>
+                    <td>CONTEMPORARY INDIA AND EDUCATION</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/CONTEMPORARY INDIA AND EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">5</th>
+                    <td>DRAMA AND ARTS IN EDUCATION</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/DRAMA AND ARTS IN EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">6</th>
+                    <td>KNOWLEDGE AND CURRICULUM</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/KNOWLEDGE AND CURRICULUM.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">7</th>
+                    <td>LEARNING AND TEACHING</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/LEARNING AND TEACHING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">8</th>
+                    <td>READING AND REFLECTING</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/READING AND REFLECTING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">9</th>
+                    <td>UNDERSTANDING DISCIPLINE AND SCHOOL SUBJECTS</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/UNDERSTANDING DISCIPLINE AND SCHOOL SUBJECTS.pdf" target="_blank">View</a></td>
+                  </tr>
+                                
+                
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="BED_2" tabindex="-1" aria-labelledby="BED_1Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="BED_1Label">BED Study Material 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>CREATIVE AND INCLUSIVE SCHOOL</td>
+                  <td><a href="/media/studentsyllabus/b-ed-study-material2/CREATIVE AND INCLUSIVE SCHOOL.pdf" target="_blank">View</a></td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>CRITICAL UNDERSTANDING OF ICT</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/CRITICAL UNDERSTANDING OF ICT.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>EDUCATIONAL MANAGEMENT</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/EDUCATIONAL MANAGEMENT.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">4</th>
+                    <td>ENVIRONMENTAL EDUCATION</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/ENVIRONMENTAL EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">5</th>
+                    <td>GENDER, SCHOOL, SOCIETY</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/GENDER, SCHOOL, SOCIETY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">6</th>
+                    <td>GUIDANCE AND COUNSELLING</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/GUIDANCE AND COUNSELLING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">7</th>
+                    <td>LANGUAGE ACROSS THE CURRICULUM</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/LANGUAGE ACROSS THE CURRICULUM.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">8</th>
+                    <td>PEACE EDUCATION</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/PEACE EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">9</th>
+                    <td>PHYSICAL EDUCATION & YOGA</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/PHYSICAL EDUCATION & YOGA.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">10</th>
+                    <td>UNDERSTANDING THE SELF</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/UNDERSTANDING THE SELF.pdf" target="_blank">View</a></td>
+                  </tr>
+                                  
+                
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="MA_Psychology" tabindex="-1" aria-labelledby="BED_1Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="BED_1Label">BED Study Material 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>ADVANCED SOCIAL PSYCHOLOGY</td>
+                  <td><a href="/media/studentsyllabus/ma-psychology-study-material/ADVANCED SOCIAL PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>COGNITIVE PSYCHOLOGY, LEARNING MEMORY</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/COGNITIVE PSYCHOLOGY, LEARNING MEMORY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>LIFESPAN PSYCHOLOGY</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/LIFESPAN PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">4</th>
+                    <td>MA Psychology syllabus</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/MA Psychology syllabus.xlsx" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">5</th>
+                    <td>PERSONALITY THEORIES AND ASSESSMENT</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/PERSONALITY THEORIES AND ASSESSMENT.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">6</th>
+                    <td>PRACTICAL EXPERIMENTAL PSYCHOLOGY AND PSYCHOLOGICAL TESTING</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/PRACTICAL EXPERIMENTAL PSYCHOLOGY AND PSYCHOLOGICAL TESTING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">7</th>
+                    <td>RESEARCH METHODS IN PSYCHOLOGY</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/RESEARCH METHODS IN PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">8</th>
+                    <td>STATISTICS IN PSYCHOLOGY</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/STATISTICS IN PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                  </tr>
+
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+=======
+{% extends 'includes/admin.html' %}
+{% load static %}
+{% block head %}
+<style>
+    body {
+      margin-left: 50px;
+    }
+    .large_buttons{
+      height:100px;
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+  
+      
+#main-navbar .logo{
+    width:70%;
+}
+#main-navbar .logo img{
+    width:12%;
+}
+#sidebarMenu {top: 40px;}
+.main-body {margin-top: 120px !important}
+  </style>
+  <script src="{% static 'dict/js/student.js' %}"></script>
+{% endblock head %}
+
+
+{% block nav %}
+<header>
+  <!-- Sidebar -->
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+    <div class="position-sticky">
+      <div class="list-group list-group-flush mx-3 mt-4">
+        <a href="{% url 'profile' %}" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Home</span>
+        </a>
+
+        <a href="{% url 'studentdashboard' %}" class="list-group-item list-group-item-action py-2 ripple"
+          aria-current="true">
+          <i class="fas fa-id-card fa-fw me-3"></i><span>DashBoard</span>
+        </a>
+        <a href="{% url 'StudentStudyMaterial' %}" class="list-group-item list-group-item-action py-2 ripple"
+          aria-current="true">
+          <i class="fas fa-book fa-fw me-3"></i><span>Study Materials</span>
+        </a>
+        <a href="{% url 'StudentVideoMaterial' %}" class="list-group-item list-group-item-action py-2 ripple"
+          aria-current="true">
+          <i class="fas fa-video fa-fw me-3"></i><span>Video Materials</span>
+        </a>
+
+        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+            class="fas fa-lock fa-fw me-3"></i><span>Logout</span></a>
+
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+
+  <!-- Navbar -->
+  <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+      <!-- Toggle button -->
+      <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
+        aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <!-- Brand -->
+      <a class="navbar-brand" href="#">
+        <img src="" height="25" alt="" loading="lazy" />
+      </a>
+      <!-- Search form -->
+      <form class="d-none d-md-flex input-group w-auto my-auto">
+        <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+          style="min-width: 225px" />
+        <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+      </form>
+      
+      <div class="logo text-center">
+            <img src="/media/ciis_logo/logo.jpg" class="logo" alt="logo_img" />
+        </div>
+
+      <!-- Right links -->
+      <ul class="navbar-nav ms-auto d-flex flex-row">
+        <!-- Notification dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink"
+            role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bell"></i>
+            <span class="badge rounded-pill badge-notification bg-danger">1</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="#">Some news</a></li>
+            <li><a class="dropdown-item" href="#">Another news</a></li>
+            <li>
+              <a class="dropdown-item" href="#">Something else</a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Icon -->
+        <li class="nav-item">
+          <a class="nav-link me-3 me-lg-0" href="#">
+            <i class="fas fa-fill-drip"></i>
+          </a>
+        </li>
+        <!-- Icon -->
+        <li class="nav-item me-3 me-lg-0">
+          <a class="nav-link" href="#">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+
+        <!-- Icon dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button"
+            data-mdb-toggle="dropdown" aria-expanded="false">
+            <i class="united kingdom flag m-0"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li>
+              <a class="dropdown-item" href="#"><i class="united kingdom flag"></i>English
+                <i class="fa fa-check text-success ms-2"></i></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider" />
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="poland flag"></i>Polski</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="china flag"></i>中文</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="japan flag"></i>日本語</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="germany flag"></i>Deutsch</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="france flag"></i>Français</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="spain flag"></i>Español</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="russia flag"></i>Русский</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"><i class="portugal flag"></i>Português</a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Avatar -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#"
+            id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt=""
+              loading="lazy" />
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="#">My profile</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><a class="dropdown-item" href="#">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <!-- Container wrapper -->
+  </nav>
+  <!-- Navbar -->
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if request.user.is_student%}
+<div class="container" style="margin-top:150px !important">
+    <div class="modal_output">
+  
+    </div>
+    <div class="row">
+      
+      <div class="col-xl-3 col-lg-6">
+        <div class="card mb-3">
+          <button class="btn btn-warning large_buttons" data-bs-toggle="modal" data-bs-target="#BED_1">BED Study Material 1</button>
+        </div>
+      </div>
+      <div class="col-xl-3 col-lg-6">
+        <div class="card mb-3">
+          <button class="btn btn-danger large_buttons" data-bs-toggle="modal" data-bs-target="#BED_2">BED Study Material 2</button>
+        </div>
+      </div>
+      <div class="col-xl-3 col-lg-6">
+        <div class="card mb-3">
+          <button class="btn btn-success large_buttons" data-bs-toggle="modal" data-bs-target="#MA_Psychology">MA Psychology</button>
+        </div>
+      </div>
+      <!-- <div class="col-xl-3 col-lg-6">
+        <div class="card mb-3">
+          <button class="btn btn-success large_buttons" onclick="getsyllabus()">Syllabus</button>
+        </div>
+      </div> -->
+      <!-- <div class="col-xl-3 col-lg-6">
+        <div class="card mb-3">
+          <button class="btn btn-primary large_buttons" onclick="getexamination()">Examination</button>
+        </div>
+      </div> -->
+      
+    </div>
+    <div class="row">
+      
+      
+    </div>
+    
+  </div>
+
+  <div class="modal fade" id="BED_1" tabindex="-1" aria-labelledby="BED_1Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="BED_1Label">BED Study Material 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>ASSESSMENT FOR LEARNING</td>
+                  <td><a href="/media/studentsyllabus/b-ed-study-material/ASSESSMENT FOR LEARNING.pdf" target="_blank">View</a></td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>BED SYLLABUS</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/BED SYLLABUS.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>CHILDHOOD AND GROWING UP</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/CHILDHOOD AND GROWING UP.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">4</th>
+                    <td>CONTEMPORARY INDIA AND EDUCATION</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/CONTEMPORARY INDIA AND EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">5</th>
+                    <td>DRAMA AND ARTS IN EDUCATION</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/DRAMA AND ARTS IN EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">6</th>
+                    <td>KNOWLEDGE AND CURRICULUM</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/KNOWLEDGE AND CURRICULUM.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">7</th>
+                    <td>LEARNING AND TEACHING</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/LEARNING AND TEACHING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">8</th>
+                    <td>READING AND REFLECTING</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/READING AND REFLECTING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">9</th>
+                    <td>UNDERSTANDING DISCIPLINE AND SCHOOL SUBJECTS</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material/UNDERSTANDING DISCIPLINE AND SCHOOL SUBJECTS.pdf" target="_blank">View</a></td>
+                  </tr>
+                                
+                
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="BED_2" tabindex="-1" aria-labelledby="BED_1Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="BED_1Label">BED Study Material 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>CREATIVE AND INCLUSIVE SCHOOL</td>
+                  <td><a href="/media/studentsyllabus/b-ed-study-material2/CREATIVE AND INCLUSIVE SCHOOL.pdf" target="_blank">View</a></td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>CRITICAL UNDERSTANDING OF ICT</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/CRITICAL UNDERSTANDING OF ICT.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>EDUCATIONAL MANAGEMENT</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/EDUCATIONAL MANAGEMENT.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">4</th>
+                    <td>ENVIRONMENTAL EDUCATION</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/ENVIRONMENTAL EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">5</th>
+                    <td>GENDER, SCHOOL, SOCIETY</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/GENDER, SCHOOL, SOCIETY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">6</th>
+                    <td>GUIDANCE AND COUNSELLING</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/GUIDANCE AND COUNSELLING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">7</th>
+                    <td>LANGUAGE ACROSS THE CURRICULUM</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/LANGUAGE ACROSS THE CURRICULUM.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">8</th>
+                    <td>PEACE EDUCATION</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/PEACE EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">9</th>
+                    <td>PHYSICAL EDUCATION & YOGA</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/PHYSICAL EDUCATION & YOGA.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">10</th>
+                    <td>UNDERSTANDING THE SELF</td>
+                    <td><a href="/media/studentsyllabus/b-ed-study-material2/UNDERSTANDING THE SELF.pdf" target="_blank">View</a></td>
+                  </tr>
+                                  
+                
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="MA_Psychology" tabindex="-1" aria-labelledby="BED_1Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="BED_1Label">BED Study Material 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>ADVANCED SOCIAL PSYCHOLOGY</td>
+                  <td><a href="/media/studentsyllabus/ma-psychology-study-material/ADVANCED SOCIAL PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>COGNITIVE PSYCHOLOGY, LEARNING MEMORY</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/COGNITIVE PSYCHOLOGY, LEARNING MEMORY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>LIFESPAN PSYCHOLOGY</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/LIFESPAN PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">4</th>
+                    <td>MA Psychology syllabus</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/MA Psychology syllabus.xlsx" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">5</th>
+                    <td>PERSONALITY THEORIES AND ASSESSMENT</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/PERSONALITY THEORIES AND ASSESSMENT.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">6</th>
+                    <td>PRACTICAL EXPERIMENTAL PSYCHOLOGY AND PSYCHOLOGICAL TESTING</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/PRACTICAL EXPERIMENTAL PSYCHOLOGY AND PSYCHOLOGICAL TESTING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">7</th>
+                    <td>RESEARCH METHODS IN PSYCHOLOGY</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/RESEARCH METHODS IN PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">8</th>
+                    <td>STATISTICS IN PSYCHOLOGY</td>
+                    <td><a href="/media/studentsyllabus/ma-psychology-study-material/STATISTICS IN PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                  </tr>
+
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+  {% endblock body %}

@@ -1,0 +1,1329 @@
+<<<<<<< HEAD
+{% extends 'master.html' %}
+{% load static %}
+{% block head %}
+
+
+{% endblock head %}
+
+
+
+
+{% block body %}
+{% if display == "yes" and found_student == "yes" %}
+
+<div class="edit-student pages-body-bg-color py-5">
+
+  <section class="message-display-section" id="message">
+
+  </section>
+
+  
+    {% for i in student %}
+    <section class="edit-personal-details-section mx-3">
+              
+      <div class="row">
+          <div class="col-12">
+            <div class="outer-rectangle">
+              <div class="inner-block px-4">
+                  <div class="row">
+                      <div class="col-12">
+                          <div class="box-title pt-4 ">
+                              <h5 class="font-18 text-uppercase font-bold text-purewhite">Personal Details <input type="text" id="student_enrollment_id" value="{{i.enrollment_id}}" style="height:40px;width:100px;font-size: 15px;"></h5>
+                          </div>
+                          
+                      </div>
+                  </div>
+                  <div class="select-options py-4">
+                    <div class="row">
+                      <div class="col-md-6 col-12">
+                        <div class="detail-block py-2">
+                          <select name="university" id="university" class="select-formatting font-14 font-bold text-purewhite transparent-input">
+                            <option value="{{i.university.registrationID}}" >{{i.university.university_name}}</option>
+                            {% for i in university %}
+                            <option value="{{i.registrationID}}">{{i.university_name}}</option>
+                            {% endfor %}
+                          
+                          </select>
+                 
+                  
+                
+                        </div>
+              
+                    
+                      </div>
+                      <div class="col-md-6 col-12">
+                      <div class="detail-block py-2">
+                        <div class="file-upload">
+                                  
+                          <div class="button-wrapper select-formatting font-14 font-bold text-purewhite transparent-input ">
+                              <label for="student_image" class="select-formatting font-14 font-bold  text-purewhite transparent-input file-btn-form">Choose File for Student Image</label>                                    
+                              <input type="file" id="student_image" style="display:none" value="{{i.image}}"> 
+                              <label id="uploaded-file-image" class="select-formatting font-14 font-bold text-purewhite transparent-input" style="border:none">No files chosen</label>
+                          </div>
+                                          
+                      </div>
+         
+                    
+                
+            </div>
+                        
+                           
+                        
+                             
+                      </div>
+                                        
+                    </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                  <div class="detail-block py-2">
+                                    <input class="select-formatting font-14 font-bold text-purewhite transparent-input"  type="text" placeholder="Name" id="name" name="firstname"  value="{{i.name}}">
+                                  </div>
+                                  
+                                </div>
+                                <div class="col-md-6 col-12">
+                                  <div class="detail-block py-2">
+                                    <input  class="select-formatting font-14 font-bold text-purewhite transparent-input" type="text" name="dob" id="dateofbirth"  onfocus="(this.type='date')" placeholder="Date of Birth" value="{{i.dateofbirth}}">
+                                   
+                                  </div>
+                                    
+                                </div>
+                            </div>  
+                            <div class="row">
+  
+                                <div class="col-md-3 col-6">
+                                  <div class="detail-block py-2">
+                                    <input class="select-formatting font-14 font-bold text-purewhite transparent-input" type="text" name="fathername" id="fathers_name" placeholder="Father's/Husband's Name" value="{{i.father_name}}">
+                                    
+                                  </div>
+                                   
+                                </div>
+                                <div class="col-md-3 col-6">
+                                  <div class="detail-block py-2">
+                                    <input class="select-formatting font-14 font-bold text-purewhite transparent-input" type="text" name="mothername" placeholder="Mother's Name" id="mothers_name" value="{{i.mother_name}}">
+                                   
+                                  </div>
+                                    
+                                </div>
+                                <div class="col-md-3 col-6">
+                                  <div class="detail-block py-2">
+                                    <input class="select-formatting font-14 font-bold text-purewhite transparent-input" type="email" name="email"  placeholder="Email Address" id="email" value="{{i.email}}">
+                                
+                                  </div>
+                                   
+                                </div>
+                                <div class="col-md-3 col-6">
+                                  <div class="detail-block py-2">
+                                    <input class="select-formatting font-14 font-bold text-purewhite transparent-input" type="email" name="alt-email" placeholder="Alternate Email Address" id="alternateemail" value="{{i.alternateemail}}">
+                                   
+                                  </div>
+                                   
+                                </div>
+                            </div>  
+                            <div class="row">
+  
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                                  <input class="select-formatting font-14 font-bold text-purewhite transparent-input" type="text" required name="mobile" id="mobile" placeholder="Mobile Number" value="{{i.mobile}}">
+                                
+                                </div>
+                                 
+                              </div>
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                              
+                                  <input class="select-formatting font-14 font-bold text-purewhite transparent-input" type="text" name="alternatemobile1" placeholder="Alternate Mobile" id="alternatemobile1" value="{{i.alternate_mobile1}}" >
+                                 
+                                </div>
+                                  
+                              </div>
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                                
+                                  <select placeholder="Gender" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="gender" id="gender" >
+                                  <option   class="option-format"   selected>{{i.gender}}</option>
+                                  <option    class="option-format"   value="Male">Male</option>
+                                  <option    class="option-format"   value="Female">Female</option>
+                                  <option   class="option-format"   value="Rather Not SAY">Rather Not SAY</option>
+                                </select>
+                              
+                                </div>
+                                 
+                              </div>
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                              
+                                
+                                  <select class="select-formatting font-14 font-bold text-purewhite transparent-input" id="category" name="category" aria-placeholder="Category">
+                                    <option class="option-format" selected value="{{i.category}}">{{i.category}}</option>
+                                      <option   class="option-format"   value="General(Open)">General(Open)</option>
+                                      <option    class="option-format"   value="Other Backward Class(OBC)">Other Backward Class(OBC)</option>
+                                      <option    class="option-format"   value="Scheduled Cast(SC)">Scheduled Cast(SC)</option>
+                                      <option    class="option-format"   value="Scheduled Tribe(ST)">Scheduled Tribe(ST)</option>
+                                    </select>
+                                </div>
+                                 
+                              </div>
+                          </div>   
+                          <div class="row">
+                            <div class="col-md-6 col-12">
+                              <div class="detail-block py-2">
+                                <textarea type="text" name="address" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="address" placeholder="Current Address">{{i.address}}</textarea>
+                              </div>
+                              
+                               
+                              </div>
+                              <div class="col-md-6 col-12">
+                                <div class="detail-block py-2">
+                                  <textarea type="text" name="address" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="alternateaddress" placeholder="Alternate Address">{{i.alternateaddress}}</textarea>
+                                </div>
+                              </div>
+                          </div>
+                            
+                          <div class="row">
+                            
+                          <div class="col-4">
+                            <div class="detail-block py-2">
+                              <select name="country" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="countryId" >
+                                <option   class="option-format" value="{{i.country}}">{{i.country}}</option>
+                                {% for j in countries %}
+                                  <option   class="option-format"   value="{{j.id}}">{{j.name}}</option>
+                                {% endfor %}
+                              </select>
+                            
+                            </div>
+                          </div>
+                         
+                          <div class="col-4">
+                            <div class="detail-block py-2">
+                              <select name="state" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="stateId" >
+                                <option   class="option-format"   value="{{i.state}}">{{i.state}}</option>
+                             
+                              </select>
+                             
+                            </div>
+                          </div>
+                          <div class="col-4">
+                            <div class="detail-block py-2">
+                              <select name="city" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="cityId" >
+                                <option    class="option-format"   value="{{i.city}}">{{i.city}}</option>
+                             
+                              </select>
+                            </div>
+                          </div>
+                          </div>
+                            <div class="row">
+                              <div class="col-6">
+                                <div class="detail-block py-2">
+                                  <input type="text" name="nationality" value="{{i.nationality}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="nationality" placeholder="Nationality">
+                                </div>
+                               </div>
+                               <div class="col-6">
+                                <div class="detail-block py-2">
+                                  <input type="text" name="pincode" placeholder="Pincode" value="{{i.pincode}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="Pincode" placeholder="Pincode">
+                                </div>
+                               </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-6">
+                                <div class="detail-block py-2">
+                                  <textarea type="text" name="student_remarks" class="select-formatting font-14 font-bold text-purewhite transparent-input  " id="student_remarks" placeholder="Student Remarks" >{{i.student_remarks}}</textarea>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                            
+                              <div class="col-4">
+                                <div class="detail-block py-2">
+                                  
+                                  <input type="text" class="select-formatting font-14 font-bold text-purewhite transparent-input" value="{{i.additionalenrollmentdetails.counselor_name}}" id="counselor_name" placeholder="Counselor Name">
+                                </div>
+                              </div>
+                             
+                              <div class="col-4">
+                                <div class="detail-block py-2">
+                                  <input type="text" class="select-formatting font-14 font-bold text-purewhite transparent-input" value="{{i.additionalenrollmentdetails.reference_name}}" id="reference_name" placeholder="Reference Name">
+                                </div>
+                              </div>
+                              <div class="col-4">
+                                <div class="detail-block py-2">
+                                  <input type="text" class="select-formatting font-14 font-bold text-purewhite transparent-input"  value="{{i.additionalenrollmentdetails.university_enrollment_id}}" id="university_enrollment_number" placeholder="University Enrollment Number">
+                                </div>
+                              </div>
+                              </div>
+                            
+                            
+                           
+                </div> 
+              </div>
+            </div>
+          </div>
+      </div>
+    </section>
+    <section class="edit-qualification-details-section mx-3 mt-4" >
+      <div class="row">
+        <div class="col-12">
+          <div class="outer-rectangle">
+            <div class="inner-block px-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="box-title pt-4 ">
+                            <h5 class="font-18 text-uppercase font-bold text-purewhite">Qualification Documents</h5>
+                        </div>
+                        
+                    </div>
+                </div>
+              
+                <div class="select-options py-4">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="document-table">
+                        <table class="table format-form-table">
+                          <thead>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite  px-2" scope="col">Exam</th>
+                              <th class="font-14 font-bold text-purewhite  px-2" scope="col">Year of Passing</th>
+                              <th class="font-14 font-bold text-purewhite  px-2" scope="col">Board/University</th>
+                              <th class="font-14 font-bold text-purewhite  px-2" scope="col">Percentage(%)</th>
+                              <th class="font-14 font-bold text-purewhite  px-2" scope="col">Upload Document (only PDF/JPG)</th>
+                              
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite  px-2">Secondary/High School</th>
+                              <td >
+                                <input type="text" value="{{i.qualification.secondary_year}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="secondary_year" id="secondary_year">
+                              </td>
+                              <td><input type="text" value="{{i.qualification.secondary_board}}" class="select-formatting font-14 font-bold text-purewhite transparent-input"  name="secondary_board" id="secondary_board"></td>
+                              <td><input type="text" value="{{i.qualification.secondary_percentage}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="secondary_percentage" id="secondary_percentage"></td>
+                              <td>
+                                <div class="button-wrapper transparent-input">
+                                  <label for="secondary_document" class="text-purewhite file-btn font-14 transparent-input">Choose Document</label>                                    
+                                   <input type="file" id="secondary_document" style="display:none"> 
+                                   <label id="uploaded-doc-secondary" class="text-purewhite font-14 px-3 transparent-input">No documents chosen</label>
+                              </div>
+                                
+                              </td>
+                            </tr>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite  px-2">Sr. Secondary</th>
+                              <td>
+                                <input type="text"  value="{{i.qualification.sr_year}}" class="select-formatting font-14 font-bold text-purewhite transparent-input"  name="sr_year" id="sr_year">
+                              </td>
+                              <td><input type="text" value="{{i.qualification.sr_board}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="sr_board" id="sr_board"></td>
+                              <td><input type="text" value="{{i.qualification.sr_percentage}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="sr_percentage" id="sr_percentage"></td>
+                              <td>
+                                
+                                <div class="button-wrapper transparent-input ">
+                                  <label for="sr_document" class="text-purewhite transparent-input file-btn font-14 ">Choose Document</label>                                    
+                                   <input type="file" id="sr_document" style="display:none"> 
+                                   <label id="uploaded-doc-sr" class="text-purewhite font-14 px-3">No documents chosen</label>
+                              </div>
+                                
+                               </td>
+                            </tr>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite  px-2">Under Graduation</th>
+                              <td>
+                                <input type="text" value="{{i.qualification.under_year}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="under_year" id="under_year">
+                              </td>
+                              <td><input type="text" value="{{i.qualification.under_board}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="under_board" id="under_board"></td>
+                              <td><input type="text" value="{{i.qualification.under_percentage}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="under_percentage" id="under_percentage"></td>
+                              <td>
+                                <div class="button-wrapper transparent-input">
+                                  <label for="under_document" class="text-purewhite transparent-input file-btn font-14">Choose Document</label>                                    
+                                   <input type="file" id="under_document" style="display:none"> 
+                                   <label id="uploaded-doc-under" class="text-purewhite font-14 px-3">No documents chosen</label>
+                              </div>
+                                
+                               </td>
+                            </tr>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite px-2">Post Graduation</th>
+                              <td>
+                                <input type="text" value="{{i.qualification.post_year}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="post_year" id="post_year">
+                              </td>
+                              <td><input type="text" value="{{i.qualification.post_board}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="post_board" id="post_board"></td>
+                              <td><input type="text" value="{{i.qualification.post_percentage}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="post_percentage" id="post_percentage"></td>
+                              <td>
+                                <div class="button-wrapper transparent-input">
+                                  <label for="post_document" class="text-purewhite transparent-input file-btn font-14">Choose Document</label>                                    
+                                   <input type="file" id="post_document" style="display:none"> 
+                                   <label id="uploaded-doc-post" class="text-purewhite font-14 px-3">No documents chosen</label>
+                              </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite  px-2">M.Phil</th>
+                              <td>
+                                <input type="text" value="{{i.qualification.mphil_year}}" class="select-formatting font-14 font-bold text-purewhite transparent-input name="mphil_year" id="mphil_year">
+                              </td>
+                              <td><input type="text" value="{{i.qualification.mphil_board}}"class="select-formatting font-14 font-bold text-purewhite transparent-input" name="mphil_board" id="mphil_board"></td>
+                              <td><input type="text" value="{{i.qualification.mphil_percentage}}" class="select-formatting font-14 font-bold text-purewhite transparent-input name="mphil_percentage" id="mphil_percentage"></td>
+                              <td>
+                                <div class="button-wrapper transparent-input">
+                                  <label for="mphil_document" class="text-purewhite transparent-input file-btn font-14">Choose Document</label>                                    
+                                   <input type="file" id="mphil_document" style="display:none"> 
+                                   <label id="uploaded-doc-mphil" class="text-purewhite font-14 px-3">No documents chosen</label>
+                              </div>
+                                </td>
+                            </tr>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite  px-2">Others</th>
+                              <td>
+                                <input type="text" value="{{i.qualification.others_year}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="other_year" id="other_year">
+                              </td>
+                              <td><input type="text" value="{{i.qualification.others_board}}" class="select-formatting font-14 font-bold text-purewhite transparent-input name="other_board" id="other_board"></td>
+                              <td><input type="text" value="{{i.qualification.others_percentage}}" class="select-formatting font-14 font-bold text-purewhite transparent-input name="other_percentage" id="other_percentage"></td>
+                              <td>
+                                <div class="button-wrapper transparent-input">
+                                  <label for="other_document" class="text-purewhite transparent-input file-btn font-14">Choose Document</label>                                    
+                                   <input type="file" id="other_document" style="display:none"> 
+                                   <label id="uploaded-doc-other" class="text-purewhite font-14 px-3">No documents chosen</label>
+                              </div>
+                                
+                             </td>
+                            </tr>
+                      
+                          </tbody>
+                        </table>
+                      </div>
+                
+                    </div>
+                  </div>
+                
+                            
+    
+                           
+                </div> 
+            </div>
+        </div>   
+      </div>
+    </div> 
+    
+    
+    </section>         
+
+   <section class="submit-section mx-3">
+    <div class="row">
+      <div class="col-sm-12">
+        <div id="student_output"></div>
+      </div>
+    </div>
+    
+    <div class="row">
+  
+      <div class="col-4 col-sm-3">
+        <div class="detail-block py-2">
+          <button type="submit" class="save-btn" onclick="savestudent()">Save</button>
+        </div>
+
+
+      
+      </div>
+    </div>
+   </section>
+
+    {% endfor %}
+  </div>
+
+
+
+
+
+{% else %}
+<h1 class="text-center">Student Not Found</h1>
+{% endif %}
+
+
+<script language="JavaScript">
+$('#no_of_documents').val()
+  $(document).ready(function () {
+    $('#no_of_documents').val()
+    var t = $('#example').DataTable();
+    var counter = 1;
+    
+    $('#addRow').on('click', function () {
+        t.row.add([
+          `<select class="form-select" name="document${counter}" id="document${counter}" aria-label="Default select example">
+            <option selected>Select</option>
+            <option value="Aadhar Card">Aadhar Card</option>
+            <option value="Pan Card">Pan Card</option>
+            <option value="Passport">Passport</option>
+            <option value="Voter ID">Voter ID</option>
+            <option value="Driving License">Driving License</option>  
+          </select>`,
+          `<input type="text" name="DocumentName${counter}" class="form-control" id="DocumentName${counter}">
+          `, 
+          `<input type="text" name="DocumentID${counter}" class="form-control" id="DocumentID${counter}">
+          `, 
+          `<input type="file" name="DocumentUpload${counter}" class="form-control" multiple id="DocumentUpload${counter}">
+          `, 
+        ]).draw(false);
+ 
+        counter++;
+        $('#no_of_documents').val(counter - 1)
+    });
+  
+ 
+    // Automatically add a first row of data
+    $('#addRow').click();
+  });
+
+
+  document.getElementById("country").onchange = function () {
+    var get_country_id = this.value;
+    console.log(get_country_id)
+    if(get_country_id == "Select Country"){
+
+    }
+    else{
+      $.ajax({ // create an AJAX call...
+            type: "GET",
+            url: "{% url 'addstudent' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'get_country_id':get_country_id
+            },
+            success: function(response) {
+              console.log(response)
+              if(response.states){
+                $('#stateId').empty();
+                $('#stateId').append(`
+                    <option>Select States</option>
+                  `);
+                var data = response.states
+                data.forEach(myFunction);
+
+                function myFunction(item){
+                  $('#stateId').append(`
+                    <option value="${item.id}">${item.name}</option>
+                  `);
+                }
+
+              }
+            }
+          });
+          
+    }
+}
+
+document.getElementById("stateId").onchange = function () {
+    var get_cities_id = this.value;
+    console.log(get_cities_id)
+    if(get_cities_id == "Select State"){
+
+    }
+    else{
+      $.ajax({ // create an AJAX call...
+            type: "GET",
+            url: "{% url 'addstudent' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'get_cities_id':get_cities_id
+            },
+            success: function(response) {
+              console.log(response)
+              if(response.cities){
+                $('#cityId').empty();
+                $('#cityId').append(`
+                    <option>Select City</option>
+                  `);
+                var data = response.cities
+                data.forEach(myFunction);
+
+                function myFunction(item){
+                  $('#cityId').append(`
+                    <option value="${item.id}">${item.name}</option>
+                  `);
+                }
+
+              }
+            }
+          });
+          
+    }
+}
+</script>
+
+
+
+<script language="JavaScript">
+function savestudent(){
+    var data = new FormData();
+    data.append("university", $('#university').val());
+    data.append("student_image", $('#student_image')[0].files[0]);
+    data.append("name", $('#name').val());
+    data.append("dateofbirth", $('#dateofbirth').val());
+    data.append("fathers_name", $('#fathers_name').val());
+    data.append("mothers_name", $('#mothers_name').val());
+    data.append("email", $('#email').val());
+    data.append("alternateemail", $('#alternateemail').val());
+    data.append("mobile", $('#mobile').val());
+    data.append("alternatemobile1", $('#alternatemobile1').val());
+
+    data.append("gender", $('#gender').val());
+    data.append("category", $('#category').val());
+    data.append("identity_type", $('#identity_type').val());
+    data.append("identity_no", $('#identity_no').val());
+    data.append("address", $('#address').val());
+    data.append("alternateaddress", $('#alternateaddress').val());
+
+    data.append("nationality", $('#nationality').val());
+    data.append("country", $('#country').val());
+    data.append("stateId", $('#stateId').val());
+    data.append("cityId", $('#cityId').val());
+    data.append("Pincode", $('#Pincode').val());
+    data.append("student_remarks", $('#student_remarks').val());
+
+    data.append("counselor_name", $('#counselor_name').val());
+    data.append("reference_name", $('#reference_name').val());
+    data.append("university_enrollment_number", $('#university_enrollment_number').val());
+    
+
+
+
+   
+
+
+
+    
+    data.append("secondary_year", $('#secondary_year').val());
+    data.append("secondary_board", $('#secondary_board').val());
+    data.append("secondary_percentage", $('#secondary_percentage').val());
+    data.append("secondary_document", $('#secondary_document')[0].files[0]);
+
+    data.append("sr_year", $('#sr_year').val());
+    data.append("sr_board", $('#sr_board').val());
+    data.append("sr_percentage", $('#sr_percentage').val());
+    data.append("sr_document", $('#sr_document')[0].files[0]);
+
+    data.append("under_year", $('#under_year').val());
+    data.append("under_board", $('#under_board').val());
+    data.append("under_percentage", $('#under_percentage').val());
+    data.append("under_document", $('#under_document')[0].files[0]);
+
+    data.append("post_year", $('#post_year').val());
+    data.append("post_board", $('#post_board').val());
+    data.append("post_percentage", $('#post_percentage').val());
+    data.append("post_document", $('#post_document')[0].files[0]);
+
+    data.append("mphil_year", $('#mphil_year').val());
+    data.append("mphil_board", $('#mphil_board').val());
+    data.append("mphil_percentage", $('#mphil_percentage').val());
+    data.append("mphil_document", $('#mphil_document')[0].files[0]);
+
+    data.append("other_year", $('#other_year').val());
+    data.append("other_board", $('#other_board').val());
+    data.append("other_percentage", $('#other_percentage').val());
+    data.append("other_document", $('#other_document')[0].files[0]);
+    var student_enrollment_id = $('#student_enrollment_id').val();
+    var url = "https://erp.ciisindia.in/edit/" + student_enrollment_id+"/"
+    data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+    $.ajax({
+      method: "POST",
+      url: url,
+      processData: false,
+      contentType: false,
+      mimeType: "multipart/form-data",
+      data: data,
+      success: function (res) {
+        
+        const response = JSON.parse(res);
+        console.log(response);
+        if(response.match == "email"){
+          alert("Email already present in the system");
+          $( "#email" ).focus();
+        }
+        else if(response.match == "alternateemail"){
+          alert("Alternate Email already present in the system");
+          $( "#alternateemail" ).focus();
+        }
+        else if(response.match == "mobile"){
+          alert("Mobile already present in the system");
+          $( "#mobile" ).focus();
+        }
+        else if(response.match == "alternatemobile"){
+          alert("Alternate Mobile already present in the system");
+          $( "#alternatemobile1" ).focus();
+        }
+        if(response.saved == "yes"){
+          window.location.reload();
+        }
+      }
+    });
+}
+</script>
+
+{% endblock body %}
+
+
+
+
+=======
+{% extends 'master.html' %}
+{% load static %}
+{% block head %}
+
+
+{% endblock head %}
+
+
+
+
+{% block body %}
+{% if display == "yes" and found_student == "yes" %}
+
+<div class="edit-student pages-body-bg-color py-5">
+
+  <section class="message-display-section" id="message">
+
+  </section>
+
+  
+    {% for i in student %}
+    <section class="edit-personal-details-section mx-3">
+              
+      <div class="row">
+          <div class="col-12">
+            <div class="outer-rectangle">
+              <div class="inner-block px-4">
+                  <div class="row">
+                      <div class="col-12">
+                          <div class="box-title pt-4 ">
+                              <h5 class="font-18 text-uppercase font-bold text-purewhite">Personal Details <input type="text" id="student_enrollment_id" value="{{i.enrollment_id}}" style="height:40px;width:100px;font-size: 15px;"></h5>
+                          </div>
+                          
+                      </div>
+                  </div>
+                  <div class="select-options py-4">
+                    <div class="row">
+                      <div class="col-md-6 col-12">
+                        <div class="detail-block py-2">
+                          <select name="university" id="university" class="select-formatting font-14 font-bold text-purewhite transparent-input">
+                            <option value="{{i.university.registrationID}}" >{{i.university.university_name}}</option>
+                            {% for i in university %}
+                            <option value="{{i.registrationID}}">{{i.university_name}}</option>
+                            {% endfor %}
+                          
+                          </select>
+                 
+                  
+                
+                        </div>
+              
+                    
+                      </div>
+                      <div class="col-md-6 col-12">
+                      <div class="detail-block py-2">
+                        <div class="file-upload">
+                                  
+                          <div class="button-wrapper select-formatting font-14 font-bold text-purewhite transparent-input ">
+                              <label for="student_image" class="select-formatting font-14 font-bold  text-purewhite transparent-input file-btn-form">Choose File for Student Image</label>                                    
+                              <input type="file" id="student_image" style="display:none" value="{{i.image}}"> 
+                              <label id="uploaded-file-image" class="select-formatting font-14 font-bold text-purewhite transparent-input" style="border:none">No files chosen</label>
+                          </div>
+                                          
+                      </div>
+         
+                    
+                
+            </div>
+                        
+                           
+                        
+                             
+                      </div>
+                                        
+                    </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                  <div class="detail-block py-2">
+                                    <input class="select-formatting font-14 font-bold text-purewhite transparent-input"  type="text" placeholder="Name" id="name" name="firstname"  value="{{i.name}}">
+                                  </div>
+                                  
+                                </div>
+                                <div class="col-md-6 col-12">
+                                  <div class="detail-block py-2">
+                                    <input  class="select-formatting font-14 font-bold text-purewhite transparent-input" type="text" name="dob" id="dateofbirth"  onfocus="(this.type='date')" placeholder="Date of Birth" value="{{i.dateofbirth}}">
+                                   
+                                  </div>
+                                    
+                                </div>
+                            </div>  
+                            <div class="row">
+  
+                                <div class="col-md-3 col-6">
+                                  <div class="detail-block py-2">
+                                    <input class="select-formatting font-14 font-bold text-purewhite transparent-input" type="text" name="fathername" id="fathers_name" placeholder="Father's/Husband's Name" value="{{i.father_name}}">
+                                    
+                                  </div>
+                                   
+                                </div>
+                                <div class="col-md-3 col-6">
+                                  <div class="detail-block py-2">
+                                    <input class="select-formatting font-14 font-bold text-purewhite transparent-input" type="text" name="mothername" placeholder="Mother's Name" id="mothers_name" value="{{i.mother_name}}">
+                                   
+                                  </div>
+                                    
+                                </div>
+                                <div class="col-md-3 col-6">
+                                  <div class="detail-block py-2">
+                                    <input class="select-formatting font-14 font-bold text-purewhite transparent-input" type="email" name="email"  placeholder="Email Address" id="email" value="{{i.email}}">
+                                
+                                  </div>
+                                   
+                                </div>
+                                <div class="col-md-3 col-6">
+                                  <div class="detail-block py-2">
+                                    <input class="select-formatting font-14 font-bold text-purewhite transparent-input" type="email" name="alt-email" placeholder="Alternate Email Address" id="alternateemail" value="{{i.alternateemail}}">
+                                   
+                                  </div>
+                                   
+                                </div>
+                            </div>  
+                            <div class="row">
+  
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                                  <input class="select-formatting font-14 font-bold text-purewhite transparent-input" type="text" required name="mobile" id="mobile" placeholder="Mobile Number" value="{{i.mobile}}">
+                                
+                                </div>
+                                 
+                              </div>
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                              
+                                  <input class="select-formatting font-14 font-bold text-purewhite transparent-input" type="text" name="alternatemobile1" placeholder="Alternate Mobile" id="alternatemobile1" value="{{i.alternate_mobile1}}" >
+                                 
+                                </div>
+                                  
+                              </div>
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                                
+                                  <select placeholder="Gender" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="gender" id="gender" >
+                                  <option   class="option-format"   selected>{{i.gender}}</option>
+                                  <option    class="option-format"   value="Male">Male</option>
+                                  <option    class="option-format"   value="Female">Female</option>
+                                  <option   class="option-format"   value="Rather Not SAY">Rather Not SAY</option>
+                                </select>
+                              
+                                </div>
+                                 
+                              </div>
+                              <div class="col-md-3 col-6">
+                                <div class="detail-block py-2">
+                              
+                                
+                                  <select class="select-formatting font-14 font-bold text-purewhite transparent-input" id="category" name="category" aria-placeholder="Category">
+                                    <option class="option-format" selected value="{{i.category}}">{{i.category}}</option>
+                                      <option   class="option-format"   value="General(Open)">General(Open)</option>
+                                      <option    class="option-format"   value="Other Backward Class(OBC)">Other Backward Class(OBC)</option>
+                                      <option    class="option-format"   value="Scheduled Cast(SC)">Scheduled Cast(SC)</option>
+                                      <option    class="option-format"   value="Scheduled Tribe(ST)">Scheduled Tribe(ST)</option>
+                                    </select>
+                                </div>
+                                 
+                              </div>
+                          </div>   
+                          <div class="row">
+                            <div class="col-md-6 col-12">
+                              <div class="detail-block py-2">
+                                <textarea type="text" name="address" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="address" placeholder="Current Address">{{i.address}}</textarea>
+                              </div>
+                              
+                               
+                              </div>
+                              <div class="col-md-6 col-12">
+                                <div class="detail-block py-2">
+                                  <textarea type="text" name="address" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="alternateaddress" placeholder="Alternate Address">{{i.alternateaddress}}</textarea>
+                                </div>
+                              </div>
+                          </div>
+                            
+                          <div class="row">
+                            
+                          <div class="col-4">
+                            <div class="detail-block py-2">
+                              <select name="country" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="countryId" >
+                                <option   class="option-format" value="{{i.country}}">{{i.country}}</option>
+                                {% for j in countries %}
+                                  <option   class="option-format"   value="{{j.id}}">{{j.name}}</option>
+                                {% endfor %}
+                              </select>
+                            
+                            </div>
+                          </div>
+                         
+                          <div class="col-4">
+                            <div class="detail-block py-2">
+                              <select name="state" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="stateId" >
+                                <option   class="option-format"   value="{{i.state}}">{{i.state}}</option>
+                             
+                              </select>
+                             
+                            </div>
+                          </div>
+                          <div class="col-4">
+                            <div class="detail-block py-2">
+                              <select name="city" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="cityId" >
+                                <option    class="option-format"   value="{{i.city}}">{{i.city}}</option>
+                             
+                              </select>
+                            </div>
+                          </div>
+                          </div>
+                            <div class="row">
+                              <div class="col-6">
+                                <div class="detail-block py-2">
+                                  <input type="text" name="nationality" value="{{i.nationality}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="nationality" placeholder="Nationality">
+                                </div>
+                               </div>
+                               <div class="col-6">
+                                <div class="detail-block py-2">
+                                  <input type="text" name="pincode" placeholder="Pincode" value="{{i.pincode}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" id="Pincode" placeholder="Pincode">
+                                </div>
+                               </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-6">
+                                <div class="detail-block py-2">
+                                  <textarea type="text" name="student_remarks" class="select-formatting font-14 font-bold text-purewhite transparent-input  " id="student_remarks" placeholder="Student Remarks" >{{i.student_remarks}}</textarea>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                            
+                              <div class="col-4">
+                                <div class="detail-block py-2">
+                                  
+                                  <input type="text" class="select-formatting font-14 font-bold text-purewhite transparent-input" value="{{i.additionalenrollmentdetails.counselor_name}}" id="counselor_name" placeholder="Counselor Name">
+                                </div>
+                              </div>
+                             
+                              <div class="col-4">
+                                <div class="detail-block py-2">
+                                  <input type="text" class="select-formatting font-14 font-bold text-purewhite transparent-input" value="{{i.additionalenrollmentdetails.reference_name}}" id="reference_name" placeholder="Reference Name">
+                                </div>
+                              </div>
+                              <div class="col-4">
+                                <div class="detail-block py-2">
+                                  <input type="text" class="select-formatting font-14 font-bold text-purewhite transparent-input"  value="{{i.additionalenrollmentdetails.university_enrollment_id}}" id="university_enrollment_number" placeholder="University Enrollment Number">
+                                </div>
+                              </div>
+                              </div>
+                            
+                            
+                           
+                </div> 
+              </div>
+            </div>
+          </div>
+      </div>
+    </section>
+    <section class="edit-qualification-details-section mx-3 mt-4" >
+      <div class="row">
+        <div class="col-12">
+          <div class="outer-rectangle">
+            <div class="inner-block px-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="box-title pt-4 ">
+                            <h5 class="font-18 text-uppercase font-bold text-purewhite">Qualification Documents</h5>
+                        </div>
+                        
+                    </div>
+                </div>
+              
+                <div class="select-options py-4">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="document-table">
+                        <table class="table format-form-table">
+                          <thead>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite  px-2" scope="col">Exam</th>
+                              <th class="font-14 font-bold text-purewhite  px-2" scope="col">Year of Passing</th>
+                              <th class="font-14 font-bold text-purewhite  px-2" scope="col">Board/University</th>
+                              <th class="font-14 font-bold text-purewhite  px-2" scope="col">Percentage(%)</th>
+                              <th class="font-14 font-bold text-purewhite  px-2" scope="col">Upload Document (only PDF/JPG)</th>
+                              
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite  px-2">Secondary/High School</th>
+                              <td >
+                                <input type="text" value="{{i.qualification.secondary_year}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="secondary_year" id="secondary_year">
+                              </td>
+                              <td><input type="text" value="{{i.qualification.secondary_board}}" class="select-formatting font-14 font-bold text-purewhite transparent-input"  name="secondary_board" id="secondary_board"></td>
+                              <td><input type="text" value="{{i.qualification.secondary_percentage}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="secondary_percentage" id="secondary_percentage"></td>
+                              <td>
+                                <div class="button-wrapper transparent-input">
+                                  <label for="secondary_document" class="text-purewhite file-btn font-14 transparent-input">Choose Document</label>                                    
+                                   <input type="file" id="secondary_document" style="display:none"> 
+                                   <label id="uploaded-doc-secondary" class="text-purewhite font-14 px-3 transparent-input">No documents chosen</label>
+                              </div>
+                                
+                              </td>
+                            </tr>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite  px-2">Sr. Secondary</th>
+                              <td>
+                                <input type="text"  value="{{i.qualification.sr_year}}" class="select-formatting font-14 font-bold text-purewhite transparent-input"  name="sr_year" id="sr_year">
+                              </td>
+                              <td><input type="text" value="{{i.qualification.sr_board}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="sr_board" id="sr_board"></td>
+                              <td><input type="text" value="{{i.qualification.sr_percentage}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="sr_percentage" id="sr_percentage"></td>
+                              <td>
+                                
+                                <div class="button-wrapper transparent-input ">
+                                  <label for="sr_document" class="text-purewhite transparent-input file-btn font-14 ">Choose Document</label>                                    
+                                   <input type="file" id="sr_document" style="display:none"> 
+                                   <label id="uploaded-doc-sr" class="text-purewhite font-14 px-3">No documents chosen</label>
+                              </div>
+                                
+                               </td>
+                            </tr>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite  px-2">Under Graduation</th>
+                              <td>
+                                <input type="text" value="{{i.qualification.under_year}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="under_year" id="under_year">
+                              </td>
+                              <td><input type="text" value="{{i.qualification.under_board}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="under_board" id="under_board"></td>
+                              <td><input type="text" value="{{i.qualification.under_percentage}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="under_percentage" id="under_percentage"></td>
+                              <td>
+                                <div class="button-wrapper transparent-input">
+                                  <label for="under_document" class="text-purewhite transparent-input file-btn font-14">Choose Document</label>                                    
+                                   <input type="file" id="under_document" style="display:none"> 
+                                   <label id="uploaded-doc-under" class="text-purewhite font-14 px-3">No documents chosen</label>
+                              </div>
+                                
+                               </td>
+                            </tr>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite px-2">Post Graduation</th>
+                              <td>
+                                <input type="text" value="{{i.qualification.post_year}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="post_year" id="post_year">
+                              </td>
+                              <td><input type="text" value="{{i.qualification.post_board}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="post_board" id="post_board"></td>
+                              <td><input type="text" value="{{i.qualification.post_percentage}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="post_percentage" id="post_percentage"></td>
+                              <td>
+                                <div class="button-wrapper transparent-input">
+                                  <label for="post_document" class="text-purewhite transparent-input file-btn font-14">Choose Document</label>                                    
+                                   <input type="file" id="post_document" style="display:none"> 
+                                   <label id="uploaded-doc-post" class="text-purewhite font-14 px-3">No documents chosen</label>
+                              </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite  px-2">M.Phil</th>
+                              <td>
+                                <input type="text" value="{{i.qualification.mphil_year}}" class="select-formatting font-14 font-bold text-purewhite transparent-input name="mphil_year" id="mphil_year">
+                              </td>
+                              <td><input type="text" value="{{i.qualification.mphil_board}}"class="select-formatting font-14 font-bold text-purewhite transparent-input" name="mphil_board" id="mphil_board"></td>
+                              <td><input type="text" value="{{i.qualification.mphil_percentage}}" class="select-formatting font-14 font-bold text-purewhite transparent-input name="mphil_percentage" id="mphil_percentage"></td>
+                              <td>
+                                <div class="button-wrapper transparent-input">
+                                  <label for="mphil_document" class="text-purewhite transparent-input file-btn font-14">Choose Document</label>                                    
+                                   <input type="file" id="mphil_document" style="display:none"> 
+                                   <label id="uploaded-doc-mphil" class="text-purewhite font-14 px-3">No documents chosen</label>
+                              </div>
+                                </td>
+                            </tr>
+                            <tr>
+                              <th class="font-14 font-bold text-purewhite  px-2">Others</th>
+                              <td>
+                                <input type="text" value="{{i.qualification.others_year}}" class="select-formatting font-14 font-bold text-purewhite transparent-input" name="other_year" id="other_year">
+                              </td>
+                              <td><input type="text" value="{{i.qualification.others_board}}" class="select-formatting font-14 font-bold text-purewhite transparent-input name="other_board" id="other_board"></td>
+                              <td><input type="text" value="{{i.qualification.others_percentage}}" class="select-formatting font-14 font-bold text-purewhite transparent-input name="other_percentage" id="other_percentage"></td>
+                              <td>
+                                <div class="button-wrapper transparent-input">
+                                  <label for="other_document" class="text-purewhite transparent-input file-btn font-14">Choose Document</label>                                    
+                                   <input type="file" id="other_document" style="display:none"> 
+                                   <label id="uploaded-doc-other" class="text-purewhite font-14 px-3">No documents chosen</label>
+                              </div>
+                                
+                             </td>
+                            </tr>
+                      
+                          </tbody>
+                        </table>
+                      </div>
+                
+                    </div>
+                  </div>
+                
+                            
+    
+                           
+                </div> 
+            </div>
+        </div>   
+      </div>
+    </div> 
+    
+    
+    </section>         
+
+   <section class="submit-section mx-3">
+    <div class="row">
+      <div class="col-sm-12">
+        <div id="student_output"></div>
+      </div>
+    </div>
+    
+    <div class="row">
+  
+      <div class="col-4 col-sm-3">
+        <div class="detail-block py-2">
+          <button type="submit" class="save-btn" onclick="savestudent()">Save</button>
+        </div>
+
+
+      
+      </div>
+    </div>
+   </section>
+
+    {% endfor %}
+  </div>
+
+
+
+
+
+{% else %}
+<h1 class="text-center">Student Not Found</h1>
+{% endif %}
+
+
+<script language="JavaScript">
+$('#no_of_documents').val()
+  $(document).ready(function () {
+    $('#no_of_documents').val()
+    var t = $('#example').DataTable();
+    var counter = 1;
+    
+    $('#addRow').on('click', function () {
+        t.row.add([
+          `<select class="form-select" name="document${counter}" id="document${counter}" aria-label="Default select example">
+            <option selected>Select</option>
+            <option value="Aadhar Card">Aadhar Card</option>
+            <option value="Pan Card">Pan Card</option>
+            <option value="Passport">Passport</option>
+            <option value="Voter ID">Voter ID</option>
+            <option value="Driving License">Driving License</option>  
+          </select>`,
+          `<input type="text" name="DocumentName${counter}" class="form-control" id="DocumentName${counter}">
+          `, 
+          `<input type="text" name="DocumentID${counter}" class="form-control" id="DocumentID${counter}">
+          `, 
+          `<input type="file" name="DocumentUpload${counter}" class="form-control" multiple id="DocumentUpload${counter}">
+          `, 
+        ]).draw(false);
+ 
+        counter++;
+        $('#no_of_documents').val(counter - 1)
+    });
+  
+ 
+    // Automatically add a first row of data
+    $('#addRow').click();
+  });
+
+
+  document.getElementById("country").onchange = function () {
+    var get_country_id = this.value;
+    console.log(get_country_id)
+    if(get_country_id == "Select Country"){
+
+    }
+    else{
+      $.ajax({ // create an AJAX call...
+            type: "GET",
+            url: "{% url 'addstudent' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'get_country_id':get_country_id
+            },
+            success: function(response) {
+              console.log(response)
+              if(response.states){
+                $('#stateId').empty();
+                $('#stateId').append(`
+                    <option>Select States</option>
+                  `);
+                var data = response.states
+                data.forEach(myFunction);
+
+                function myFunction(item){
+                  $('#stateId').append(`
+                    <option value="${item.id}">${item.name}</option>
+                  `);
+                }
+
+              }
+            }
+          });
+          
+    }
+}
+
+document.getElementById("stateId").onchange = function () {
+    var get_cities_id = this.value;
+    console.log(get_cities_id)
+    if(get_cities_id == "Select State"){
+
+    }
+    else{
+      $.ajax({ // create an AJAX call...
+            type: "GET",
+            url: "{% url 'addstudent' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'get_cities_id':get_cities_id
+            },
+            success: function(response) {
+              console.log(response)
+              if(response.cities){
+                $('#cityId').empty();
+                $('#cityId').append(`
+                    <option>Select City</option>
+                  `);
+                var data = response.cities
+                data.forEach(myFunction);
+
+                function myFunction(item){
+                  $('#cityId').append(`
+                    <option value="${item.id}">${item.name}</option>
+                  `);
+                }
+
+              }
+            }
+          });
+          
+    }
+}
+</script>
+
+
+
+<script language="JavaScript">
+function savestudent(){
+    var data = new FormData();
+    data.append("university", $('#university').val());
+    data.append("student_image", $('#student_image')[0].files[0]);
+    data.append("name", $('#name').val());
+    data.append("dateofbirth", $('#dateofbirth').val());
+    data.append("fathers_name", $('#fathers_name').val());
+    data.append("mothers_name", $('#mothers_name').val());
+    data.append("email", $('#email').val());
+    data.append("alternateemail", $('#alternateemail').val());
+    data.append("mobile", $('#mobile').val());
+    data.append("alternatemobile1", $('#alternatemobile1').val());
+
+    data.append("gender", $('#gender').val());
+    data.append("category", $('#category').val());
+    data.append("identity_type", $('#identity_type').val());
+    data.append("identity_no", $('#identity_no').val());
+    data.append("address", $('#address').val());
+    data.append("alternateaddress", $('#alternateaddress').val());
+
+    data.append("nationality", $('#nationality').val());
+    data.append("country", $('#country').val());
+    data.append("stateId", $('#stateId').val());
+    data.append("cityId", $('#cityId').val());
+    data.append("Pincode", $('#Pincode').val());
+    data.append("student_remarks", $('#student_remarks').val());
+
+    data.append("counselor_name", $('#counselor_name').val());
+    data.append("reference_name", $('#reference_name').val());
+    data.append("university_enrollment_number", $('#university_enrollment_number').val());
+    
+
+
+
+   
+
+
+
+    
+    data.append("secondary_year", $('#secondary_year').val());
+    data.append("secondary_board", $('#secondary_board').val());
+    data.append("secondary_percentage", $('#secondary_percentage').val());
+    data.append("secondary_document", $('#secondary_document')[0].files[0]);
+
+    data.append("sr_year", $('#sr_year').val());
+    data.append("sr_board", $('#sr_board').val());
+    data.append("sr_percentage", $('#sr_percentage').val());
+    data.append("sr_document", $('#sr_document')[0].files[0]);
+
+    data.append("under_year", $('#under_year').val());
+    data.append("under_board", $('#under_board').val());
+    data.append("under_percentage", $('#under_percentage').val());
+    data.append("under_document", $('#under_document')[0].files[0]);
+
+    data.append("post_year", $('#post_year').val());
+    data.append("post_board", $('#post_board').val());
+    data.append("post_percentage", $('#post_percentage').val());
+    data.append("post_document", $('#post_document')[0].files[0]);
+
+    data.append("mphil_year", $('#mphil_year').val());
+    data.append("mphil_board", $('#mphil_board').val());
+    data.append("mphil_percentage", $('#mphil_percentage').val());
+    data.append("mphil_document", $('#mphil_document')[0].files[0]);
+
+    data.append("other_year", $('#other_year').val());
+    data.append("other_board", $('#other_board').val());
+    data.append("other_percentage", $('#other_percentage').val());
+    data.append("other_document", $('#other_document')[0].files[0]);
+    var student_enrollment_id = $('#student_enrollment_id').val();
+    var url = "https://erp.ciisindia.in/edit/" + student_enrollment_id+"/"
+    data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+    $.ajax({
+      method: "POST",
+      url: url,
+      processData: false,
+      contentType: false,
+      mimeType: "multipart/form-data",
+      data: data,
+      success: function (res) {
+        
+        const response = JSON.parse(res);
+        console.log(response);
+        if(response.match == "email"){
+          alert("Email already present in the system");
+          $( "#email" ).focus();
+        }
+        else if(response.match == "alternateemail"){
+          alert("Alternate Email already present in the system");
+          $( "#alternateemail" ).focus();
+        }
+        else if(response.match == "mobile"){
+          alert("Mobile already present in the system");
+          $( "#mobile" ).focus();
+        }
+        else if(response.match == "alternatemobile"){
+          alert("Alternate Mobile already present in the system");
+          $( "#alternatemobile1" ).focus();
+        }
+        if(response.saved == "yes"){
+          window.location.reload();
+        }
+      }
+    });
+}
+</script>
+
+{% endblock body %}
+
+
+
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049

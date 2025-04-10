@@ -1,0 +1,3696 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>REGISTRATION - CIIS</title>
+
+<style>
+    #spinner {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        top: -100px;
+        left: 0;
+        z-index: 9999;
+        width: 100vw;
+        height: 100vh;
+
+        transition: opacity 0.2s;
+    }
+
+    /* (B) CENTER LOADING SPINNER */
+    #spinner img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%);
+    }
+
+    /* (C) SHOW & HIDE */
+    #spinner {
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    #spinner.show {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    #example_info{
+        color:#000 !important;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+
+        $("#student_image").change(function () {
+            $("#uploaded-file-image").text(this.files[0].name);
+        });
+        $("#secondary_document").change(function () {
+            $("#uploaded-doc-secondary").text(this.files[0].name);
+        });
+        $("#sr_document").change(function () {
+            $("#uploaded-doc-sr").text(this.files[0].name);
+        });
+        $("#under_document").change(function () {
+            $("#uploaded-doc-under").text(this.files[0].name);
+        });
+        $("#post_document").change(function () {
+            $("#uploaded-doc-post").text(this.files[0].name);
+        });
+
+        $("#post_document").change(function () {
+            $("#uploaded-doc-post").text(this.files[0].name);
+        });
+        $("#other_document").change(function () {
+            $("#uploaded-doc-other").text(this.files[0].name);
+        });
+        init();
+        $("#qual_other_counter").change(function () {
+            init();
+    })
+    });
+    function init(){
+            
+            var qualcounter = 1 
+            if ($("#qual_other_counter").val() != ''){
+             
+                temp = $("#qual_other_counter").val();
+                qualcounter = parseInt(temp)
+            }
+
+            for (var i = 1; i <= qualcounter; i++) {
+                    (function(i) {
+                        var otherdoc = `#other_document_${i}`;
+                        var doc = `#uploaded-doc-other_${i}`;
+                       
+                        $(document).on('change', otherdoc, function() {
+                        $(doc).text(this.files[0].name);
+                    });
+                   
+                    })(i);
+            }
+        
+        }
+</script>
+<script src="{% static 'dict/js/studentregistration.js' %}"></script>
+{% endblock head %}
+
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+<div id="spinner">
+    <img src="{% static 'dict/gif/loader.gif' %}" />
+</div>
+
+
+
+
+
+
+<div class="add-student pages-body-bg-color">
+
+    <form method="POST" action="{% url 'savestudent' %}" id="save_student_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <section class="message-display-section" id="message">
+
+        </section>
+        <section class="personal-details-section  ">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12">
+                           <div class="section-header">
+                                <h1 class="font-26 font-bold text-black text-uppercase">Student Registration</h1>
+
+                            </div> 
+                            <div class="outer-rectangle">
+                                <div class="inner-block px-4">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="box-title pt-4 ">
+                                                <h5 class="font-18 text-uppercase font-bold text-black">Personal
+                                                    Details</h5>
+                                                    <p class="font-16 font-medium text-light-gray">A task is accomplished by a set deadline, and must contribute toward work-related objectives.</p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="select-options py-4">
+                                        <div class="row">
+                                            <div class="col-md-6 col-12">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired"> University</label>
+                                                    <select name="university" id="university"
+                                                        class="required  width-100 font-14 font-bold text-extralightgray " >
+
+                                                        <option class="option-format required" value="" >Select
+                                                            
+                                                        </option>
+                                                        {% for i in university %}
+                                                        <option class="option-format" value="{{i.registrationID}}">
+                                                            {{i.university_name}}</option>
+                                                        {% endfor %}
+                                                    </select>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <div class="detail-block py-2 pt-4">
+                                                    <div class="file-upload" >
+
+                                                        <div
+                                                            class="button-wrapper     width-100 font-14 font-bold text-extralightgray" id="imagefile" >
+                                                            <label for="student_image"
+                                                                class="labelrequired bg-darkgray width-100 font-14 font-bold  text-extralightgray  file-btn-form">Choose
+                                                                File for Student Image</label>
+                                                            <input type="file" id="student_image" name="student_image"
+                                                                style="display:none">
+                                                            <label id="uploaded-file-image"
+                                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                                style="border:none">No files chosen</label>
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                </div>
+
+
+
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Name</label>
+                                                    <input
+                                                        class="required  width-100 font-14 font-bold text-extralightgray "
+                                                        type="text" placeholder="" id="name" name="firstname" required>
+                                                </div>
+
+                                            </div>
+                                           
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Father's/Husband's Name</label>
+                                                    <input
+                                                        class="required  width-100 font-14 font-bold text-extralightgray "
+                                                        type="text" name="fathername" id="fathers_name"
+                                                        placeholder="" required>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Mother's Name</label>
+                                                    <input
+                                                        class="required  width-100 font-14 font-bold text-extralightgray "
+                                                        type="text" name="mothername" placeholder=""
+                                                        id="mothers_name" required>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Date of Birth</label>
+                                                    <input
+                                                        class="required  width-100 font-14 font-bold text-extralightgray "
+                                                        type="text" name="dob" id="dateofbirth"
+                                                        onfocus="(this.type='date')" placeholder=""  required>
+
+                                                </div>
+                                              
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+
+                                          
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Email Address</label>
+                                                    <div class="d-flex">
+                                                       
+                                                        <input
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        type="email" name="email" placeholder=""
+                                                        id="email"  required>
+                                                        <img src="{% static 'dict/images/plus.png' %}" alt="Add" onclick="showAlternate('email')" class="showhand">
+                                                    </div>
+                                                    <label for="email" id="is_email_available" ></label>
+
+                                                </div>
+                                                <div class="detail-block py-2 d-none" id="emaildiv">
+                                                    <label for="alt_email" class="labelnotrequired">Alternate Email Adress</label>
+                                                    <input
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        type="email" name="alt_email"
+                                                        placeholder="" id="alternateemail">
+                                                        <label for="alternateemail" id="is_alt_email_available"></label>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Mobile Number</label>
+                                                    <div class="d-flex">
+                                                        <input
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        type="text" name="mobile" id="mobile"
+                                                        placeholder=""  required pattern="[0-9]*" maxlength="10">
+                                                        <img src="{% static 'dict/images/plus.png' %}" alt="Add" onclick="showAlternate('mobile')" class="showhand">
+                                                    
+                                                    
+                                                    </div>
+                                                    <label for="mobile" id="is_mobile_available" ></label>
+                                                    
+                                                </div>
+                                                <div class="detail-block py-2 d-none" id="mobilediv">
+                                                    <label for="" class="labelmotrequired">Alternate Mobile Number</label>
+                                                    <input
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        type="text" name="alternatemobile1"
+                                                        placeholder="" id="alternatemobile" pattern="[0-9]*" maxlength="10">
+                                                        <label for="alternatemobile1" id="is_alt_mobile_available"></label>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelnotrequired">Gender</label>
+                                                    <select placeholder="Gender"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        name="gender" id="gender">
+                                                        <option class="option-format" value="" selected>Select</option>
+                                                        <option class="option-format" value="Male">Male</option>
+                                                        <option class="option-format" value="Female">Female</option>
+                                                        <option class="option-format" value="Rather Not SAY">Rather Not
+                                                            SAY</option>
+                                                    </select>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+
+                                                    <label for="" class="labelnotrequired">Category</label>
+                                                    <select
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="category" name="category" aria-placeholder="Category">
+                                                        <option class="option-format" value="" selected>Select
+                                                        </option>
+                                                        <option class="option-format" value="General(Open)">
+                                                            General(Open)</option>
+                                                        <option class="option-format" value="Other Backward Class(OBC)">
+                                                            Other Backward Class(OBC)</option>
+                                                        <option class="option-format" value="Scheduled Cast(SC)">
+                                                            Scheduled Cast(SC)</option>
+                                                        <option class="option-format" value="Scheduled Tribe(ST)">
+                                                            Scheduled Tribe(ST)</option>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-12">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Current Address</label>
+                                                    <textarea type="text" name="address"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="address" placeholder="" required></textarea>
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelnotrequired">Alternate Address</label>
+                                                    <textarea type="text" name="alternate_address"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="alternateaddress"
+                                                        placeholder=""></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+
+                                            <div class="col-4">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Country</label>
+                                                    <select name="country"
+                                                        class="width-100 font-14 font-bold text-extralightgray "
+                                                        id="countryId" required>
+                                                        <option class="option-format" value="">Select</option>
+                                                        {% for i in countries %}
+                                                        <option class="option-format" value="{{i.id}}">{{i.name}}
+                                                        </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-4">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">State</label>
+                                                    <select name="state"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="stateId" required>
+                                                        <option class="option-format" value="">Select</option>
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">City</label>
+                                                    <select name="city"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="cityId" required>
+                                                        <option class="option-format" value="">Select</option>
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Nationality</label>
+                                                    <input type="text" name="nationality"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="nationality" placeholder="" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Pincode</label>
+                                                    <input type="text" name="pincode" 
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="Pincode" placeholder="" required pattern="[0-9]*" maxlength="6">
+                                                </div>
+                                                <label for="pincode" id="pin_error"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelnotrequired">Student Remarks</label>
+                                                    <textarea type="text" name="student_remarks"
+                                                        class="  width-100 font-14 font-bold text-extralightgray   "
+                                                        id="student_remarks" placeholder=""></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Counselor Name</label>
+                                                    <input type="text"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="counselor_name" name="counselor_name"
+                                                        placeholder="" required>
+                                                </div>
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelnotrequired">University Enrollment Number</label>
+                                                    <input type="text"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="university_enrollment_number"
+                                                        name="university_enroll_number"
+                                                        placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelnotrequired">Reference Name</label>
+                                                    <input type="text"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="reference_name" name="reference_name"
+                                                        placeholder="">
+                                                </div>
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelnotrequired">Registration Number</label>
+                                                    <input type="text"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="registration_number"
+                                                        name="registration_number"
+                                                        placeholder="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                      
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="personal-documents-section   mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="outer-rectangle">
+                        <div class="inner-block px-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="box-title pt-4 ">
+                                        <h5 class="font-18 text-uppercase font-bold text-black">Personal Documents
+                                        </h5>
+                                    </div>
+
+                                </div>
+                                <div class="col-6">
+                                    <input type="hidden" id="no_of_documents" name="no_of_documents" style="visibility: visible;">
+                                </div>
+                            </div>
+
+                            <div class="select-options py-4">
+
+                                <div class="row">
+                                    <div class="col-12">
+
+                                        <div class="document-table ">
+                                            <table id="example" class="table format-form-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="font-bold text-extralightgray  px-2" scope="col">
+                                                            Document Type<span class="labelrequired"></span> </th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Name as on Document</th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            ID Number</th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Upload Front (only PDF/JPG)<span class="labelrequired"></span></th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Upload Back(only PDF/JPG)</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 col-md-2">
+                                        <a class="  width-100" id="addRow" >
+                                            <button type="button" onclick="AddDocumentRow(0)"  class="edit-btn red-btn ">Add new row</button></a>
+                                    </div>
+                                </div>
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="qualification-details-section   mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="outer-rectangle">
+                        <div class="inner-block px-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="box-title pt-4 ">
+                                        <h5 class="font-18 text-uppercase font-bold text-black">Qualification
+                                            Documents</h5>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="select-options py-4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="document-table">
+                                            <table class="table format-form-table" id="qualification">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Exam</th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Year of Passing</th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Board/University</th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Percentage(%)</th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Upload Document (only PDF/JPG)</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2">
+                                                            Secondary/High School</th>
+                                                        <td>
+                                                            <input type="text" class="  width-100 font-14 font-bold text-extralightgray "
+                                                                name="secondary_year" id="secondary_year">
+                                                        </td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray "
+                                                                name="secondary_board" id="secondary_board"></td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray "
+                                                                name="secondary_percentage" id="secondary_percentage">
+                                                        </td>
+                                                        <td>
+                                                            <div class="button-wrapper ">
+                                                                <label for="secondary_document" class="text-extralightgray file-btn font-14 ">Choose
+                                                                    Document</label>
+                                                                <input type="file" id="secondary_document" name="secondary_document" style="display:none">
+                                                                <label id="uploaded-doc-secondary" class="text-extralightgray font-14 px-3 ">No
+                                                                    documents chosen</label>
+                                                            </div>
+                                                
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2">Sr. Secondary
+                                                        </th>
+                                                        <td>
+                                                            <input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="sr_year"
+                                                                id="sr_year">
+                                                        </td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="sr_board"
+                                                                id="sr_board"></td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray "
+                                                                name="sr_percentage" id="sr_percentage"></td>
+                                                        <td>
+                                                
+                                                            <div class="button-wrapper  ">
+                                                                <label for="sr_document" class="text-extralightgray  file-btn font-14 ">Choose
+                                                                    Document</label>
+                                                                <input type="file" id="sr_document" name="sr_document" style="display:none">
+                                                                <label id="uploaded-doc-sr" class="text-extralightgray font-14 px-3">No documents
+                                                                    chosen</label>
+                                                            </div>
+                                                
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2">Under
+                                                            Graduation</th>
+                                                        <td>
+                                                            <input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="under_year"
+                                                                id="under_year">
+                                                        </td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="under_board"
+                                                                id="under_board"></td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray "
+                                                                name="under_percentage" id="under_percentage"></td>
+                                                        <td>
+                                                            <div class="button-wrapper ">
+                                                                <label for="under_document" class="text-extralightgray  file-btn font-14">Choose
+                                                                    Document</label>
+                                                                <input type="file" id="under_document" name="under_document" style="display:none">
+                                                                <label id="uploaded-doc-under" class="text-extralightgray font-14 px-3">No documents
+                                                                    chosen</label>
+                                                            </div>
+                                                
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="font-14 font-bold text-extralightgray px-2">Post
+                                                            Graduation</th>
+                                                        <td>
+                                                            <input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="post_year"
+                                                                id="post_year">
+                                                        </td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="post_board"
+                                                                id="post_board"></td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray "
+                                                                name="post_percentage" id="post_percentage"></td>
+                                                        <td>
+                                                            <div class="button-wrapper ">
+                                                                <label for="post_document" class="text-extralightgray  file-btn font-14">Choose
+                                                                    Document</label>
+                                                                <input type="file" id="post_document" name="post_document" style="display:none">
+                                                                <label id="uploaded-doc-post" class="text-extralightgray font-14 px-3">No documents
+                                                                    chosen</label>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2">Eng. Diploma / ITI</th>
+                                                        <td>
+                                                            <input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="mphil_year"
+                                                                id="mphil_year">
+                                                        </td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="mphil_board"
+                                                                id="mphil_board"></td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="mphil_percentage" id="mphil_percentage"></td>
+                                                        <td>
+                                                            <div class="button-wrapper ">
+                                                                <label for="mphil_document" class="text-extralightgray  file-btn font-14">Choose
+                                                                    Document</label>
+                                                                <input type="file" id="mphil_document" name="mphil_document" style="display:none">
+                                                                <label id="uploaded-doc-mphil" class="text-extralightgray font-14 px-3">No documents
+                                                                    chosen</label>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <input type="hidden" id="qual_other_counter" name="qual_other_counter" value="1">
+                                                        <th class="font-14 font-bold text-extralightgray  px-2"> <input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_1"
+                                                            id="other_1" placeholder="Others"></th>
+                                                        <td>
+                                                            <input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_year_1"
+                                                                id="other_year_1">
+                                                        </td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_board_1"
+                                                                id="other_board_1"></td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_percentage_1"
+                                                                 id="other_percentage_1"></td>
+                                                        <td>
+                                                            <div class="button-wrapper ">
+                                                                <label for="other_document_1" class="text-extralightgray  file-btn font-14">Choose
+                                                                    Document</label>
+                                                                <input type="file" id="other_document_1" name="other_document_1" style="display:none">
+                                                                <label id="uploaded-doc-other_1" class="text-extralightgray font-14 px-3">No documents
+                                                                    chosen</label>
+                                                            </div>
+                                                
+                                                        </td>
+                                                    </tr>
+                                                
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 col-md-2">
+                                        <a class="  width-100" id="addRow" >
+                                            <button type="button" onclick="AddQualificationRow()"  class="edit-btn red-btn ">Add new row</button></a>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+
+        <section class="course-details-section   mt-4">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="outer-rectangle">
+                        <div class="inner-block px-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="box-title pt-4 ">
+                                        <h5 class="font-18 text-uppercase font-bold text-black">Course/ Program
+                                            Details</h5>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="select-options py-4">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Course </label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="course" id="course" required>
+                                                <option class="option-format" value="" selected> Course</option>
+                                                {% for i in course %}
+                                                <option class="option-format" value="{{i.id}}">{{i.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <div class="col-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Stream </label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="Stream" id="Stream" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3" id="hideSubStream">
+                                        <div class="detail-block py-2 " >
+                                            <label for="" class="labelnotrequired">Sub Stream </label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="SubStream" id="SubStream" >
+                                                <option class="option-format" value="" selected>Select</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Session</label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="session" id="session" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                              
+                                                {% for i in sessionnames %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                                {% endfor %}
+                                                
+                                                
+                                                
+
+
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Study Pattern</label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="studypattern" id="studypattern" required>
+                                                <option class="option-format" value="" selected>Select
+                                                </option>
+                                                <option class="option-format" value="Semester">Semester</option>
+                                                <option class="option-format" value="Annual">Annual</option>
+                                                <option class="option-format" value="Full Course">Full Course</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Admission Type</label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="entry_mode" id="entry_mode" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                                <option class="option-format" value="Regular">Regular</option>
+                                                <option class="option-format" value="Distance">Distance</option>
+                                                <option class="option-format" value="Lateral Entry">Lateral Entry
+                                                </option>
+                                                <option class="option-format" value="Credit Transfer">Credit Transfer
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                  
+                                   
+                               
+                                    <div class="col-3" id="semyear_hide">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Semester/Year </label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="semyear" id="semyear" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Course Duration (in years)</label>
+                                            <input type="text" name="course_duration" id="course_duration" class="  width-100 font-14 font-bold text-extralightgray " readonly>
+                                          
+                                        </div>
+
+                                    </div>
+                                 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+
+        <section class="payment-details-section   mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="outer-rectangle">
+                        <div class="inner-block px-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="box-title pt-4 ">
+                                        <h5 class="font-18 text-uppercase font-bold text-black">Payment Details</h5>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="select-options py-4">
+                               
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Fees Receipt </label>
+                                           
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="fees_reciept" id="fees_reciept" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                                {% for i in feereceiptoptions %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                                {% endfor %}
+                                                
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <!-- <div class="col-6" id="other_data">
+                                        <div class="detail-block py-2">
+                                            <input type="others" name="others"
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="others" placeholder="Others">
+                                        </div>
+
+                                    </div> -->
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3 col-6">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelnotrequired">Total Fees </label>
+                                            <input type="number" placeholder="" name="total_fees"
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="total_fees" readonly>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-3 col-6">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Amount Paid </label>
+                                            <input type="number" name="fees" placeholder=""
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="fees" required onchange="calculateDues()">
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-3 col-6">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelnotrequired">Due </label>
+                                            <input type="number" name="dues" placeholder=""
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="dues" readonly>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-3 col-6">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Transaction Date </label>
+                                            <input type="text" placeholder="" name="date_of_transaction"
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="date_of_transaction" onfocus="(this.type='date')" required>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Payment Mode </label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="payment_mode" id="payment_mode" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                                {% for i in paymentmodes %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                                {% endfor %}
+                                                
+
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="detail-block py-2">
+                                             <label for="" class="labelnotrequired">Cheque/DD/CC Number </label>
+                                            <input type="text" placeholder="" name="cheque_no"
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="cheque_no">
+                                        </div>
+
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelnotrequired">Bank Name </label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="bank_name" id="bank_name">
+                                                <option class="option-format" selected value="">Select</option>
+                                                {% for i in banknames %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Remarks </label>
+                                            <input type="text" name="remarks"
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="remarks" placeholder="" required>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="detail-block py-2">
+                                            <div id="other_bank_name">
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <!-- <div class="row">
+                                    <div class="col-12">
+                                        <div id="other_bank_name">
+
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div id="student_output"></div>
+                                    </div>
+                                </div>
+                                <!-- <div class="row">
+                    <div class="col-md-2 col-4">
+                    <div class="detail-block py-2">
+                        <button type="submit" id="student_save_button" class="edit-btn   width-100" >Add Student</button>
+                    </div>
+                    
+                    </div>
+                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 col-4">
+                    <div class="detail-block py-2">
+                        <button type="button" class="edit-btn red-btn width-100" id="save_student_button" onclick="validateForm('add')">Add Student</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </form>
+</div>
+
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+<div id="exampleModal" class="modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <div class="container" id="output_container">
+                    <h3 class=" font-16 text-darkblue">Course / Programme Details is Mandatory ..!!</h3>
+                    <div class="output_course" id="output_course"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="blue-bg text-blue font-bold font-12 no-border"
+                    data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
+{% block script %}
+
+<script type="text/javascript">
+    // $('#save_student_button').attr('disabled', 'disabled');
+    var streamdata;
+    $('input#Pincode').on('input', function (e) {
+        console.log(this.value)
+        const mob_reg= /^[0-9]\d*$/;
+        var check = mob_reg.test(this.value);
+        if (check) {
+            if (this.value.length != 6 ){
+                $('#pin_error').html("Pincode must be 6 digits");
+                
+            }
+            else
+            $('#pin_error').html("");
+        }
+        else {
+            $('#pin_error').html("Invalid Pincode. Enter only digits")
+        }
+    });
+    $('input#mobile').on('input', function (e) {
+        console.log(this.value)
+        const mob_reg= /^[0-9]\d*$/;
+        var check = mob_reg.test(this.value);
+        if (check) {
+            if (this.value.length != 10){
+                $('#is_mobile_available').html("Mobile Number must be 10 digits");
+                $('#is_mobile_available').css('color', 'black');
+            }
+            else {
+                $.ajax({ // create an AJAX call...
+                    type: "POST",
+                    url: "{% url 'check_mobile_unique' %}",
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    data: {
+                        'mobile_unique': this.value
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.unique == "true") {
+                            $('#is_mobile_available').html("Available")
+                            $('#is_mobile_available').css('color', 'green');
+                            $('#save_student_button').removeAttr("disabled")
+                        }
+                        else {
+                            $('#save_student_button').attr('disabled', 'disabled');
+                            $('#is_mobile_available').html("Not Available")
+                            $('#is_mobile_available').css('color', 'red');
+                            text = `Student ${response.studentname} has been registered with this mobile number by ${response.createdby}`;
+                            alert(text);
+                        }
+                    }
+                });
+            }
+        }
+        else {
+            $('#is_mobile_available').html("Invalid Mobile Number")
+            $('#is_mobile_available').css('color', 'red');
+        }
+    });
+    $('input#alternatemobile').on('input', function (e) {
+        console.log(this.value)
+        const mob_reg= /^[0-9]\d*$/;
+        var check = mob_reg.test(this.value);
+        if (check) {
+            if (this.value.length != 10){
+                $('#is_alt_mobile_available').html("Mobile Number must be 10 digits");
+                $('#is_alt_mobile_available').css('color', 'black');
+            }
+            else {
+                $.ajax({ // create an AJAX call...
+                    type: "POST",
+                    url: "{% url 'check_mobile_unique' %}",
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    data: {
+                        'mobile_unique': this.value
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.unique == "true") {
+                            $('#is_alt_mobile_available').html("Available")
+                            $('#is_alt_mobile_available').css('color', 'green');
+                            $('#save_student_button').removeAttr("disabled")
+                        }
+                        else {
+                            $('#save_student_button').attr('disabled', 'disabled');
+                            $('#is_alt_mobile_available').html("Not Available")
+                            $('#is_alt_mobile_available').css('color', 'red');
+                            text = `Student ${response.studentname} has been registered with this mobile number by ${response.createdby}`;
+                            alert(text);
+                        }
+                    }
+                });
+            }
+        }
+        else {
+            $('#is_alt_mobile_available').html("Invalid mobile number")
+            $('#is_alt_mobile_available').css('color', 'red');
+            }
+        
+    });
+    
+    $('input#email').on('input', function (e) {
+        console.log(this.value)
+        var check = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.value)
+        if (check){
+            $.ajax({ // create an AJAX call...
+                type: "POST",
+                url: "{% url 'check_email_unique' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'email_unique': this.value
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (response.unique == "true") {
+                        $('#is_email_available').html("Available")
+                        $('#is_email_available').css('color', 'green');
+                        $('#save_student_button').removeAttr("disabled")
+                    }
+                    else {
+                        $('#save_student_button').attr('disabled', 'disabled');
+                        $('#is_email_available').html("Not Available")
+                        $('#is_email_available').css('color', 'red');
+                        
+                        text = `Student ${response.studentname} has been registered with this email address by ${response.createdby}`;
+                        alert(text);
+
+                    }
+                }
+            });
+        }
+        else {
+            $('#is_email_available').html("Invalid email address")
+            $('#is_email_available').css('color', 'red');
+        }
+    });
+    $('input#alternateemail').on('input', function (e) {
+        console.log(this.value)
+        var check = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.value)
+        if (check){
+            $.ajax({ // create an AJAX call...
+                type: "POST",
+                url: "{% url 'check_email_unique' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'email_unique': this.value
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (response.unique == "true") {
+                        $('#is_alt_email_available').html("Available")
+                        $('#is_alt_email_available').css('color', 'green');
+                        $('#save_student_button').removeAttr("disabled")
+                    }
+                    else {
+                        $('#save_student_button').attr('disabled', 'disabled');
+                        $('#is_alt_email_available').html("Not Available")
+                        $('#is_alt_email_available').css('color', 'red');
+                        text = `Student ${response.studentname} has been registered with this email address by ${response.createdby}`;
+                        alert(text);
+
+                    }
+                }
+            });
+        }
+        else {
+            $('#is_alt_email_available').html("Invalid email address")
+            $('#is_alt_email_available').css('color', 'red');
+        }
+    });
+    // is_alt_mobile_available
+    document.getElementById("university").onchange = function () {
+        var university = this.value;
+        document.getElementById("university").classList.remove("error");
+        if (university == "Select University") {
+
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_course':university
+                },
+                success: function (response) {
+                    $('#course').empty()
+                    $('#course').append('<option class="option-format" value="">Select course</option>')
+                    
+                    console.log(response)
+                    if(response.course){
+                        var data = response.course
+                        data.forEach(myFunction);
+                        function myFunction(item){
+                        console.log(item)
+                        $('#course').append(`
+                            <option class="option-format" value="${item.id}">${item.name}</option>
+                        `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+    }
+
+
+    document.getElementById("countryId").onchange = function () {
+        var get_country_id = this.value;
+        console.log(get_country_id)
+        if (get_country_id == "Select Country") {
+
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_country_id': get_country_id
+                },
+                success: function (response) {
+                    console.log(response)
+                    if (response.states) {
+                        $('#stateId').empty();
+                        $('#stateId').append(`
+                    <option      class="option-format" value=""  >Select States</option>
+                  `);
+                        var data = response.states
+                        data.forEach(myFunction);
+
+                        function myFunction(item) {
+                            $('#stateId').append(`
+                    <option      class="option-format"   value="${item.id}">${item.name}</option>
+                  `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+    }
+
+    document.getElementById("stateId").onchange = function () {
+        var get_cities_id = this.value;
+        console.log(get_cities_id)
+        if (get_cities_id == "Select State") {
+
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_cities_id': get_cities_id
+                },
+                success: function (response) {
+                    console.log(response)
+                    if (response.cities) {
+                        $('#cityId').empty();
+                        $('#cityId').append(`
+                    <option      class="option-format" value=""  >Select City</option>
+                  `);
+                        var data = response.cities
+                        data.forEach(myFunction);
+
+                        function myFunction(item) {
+                            $('#cityId').append(`
+                    <option      class="option-format"   value="${item.id}">${item.name}</option>
+                  `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+    }
+
+
+    document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        $.ajax({
+            type: "GET",
+            url: "{% url 'addstudent' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'selected_course': coursename,
+                
+            },
+            success: function (response) {
+                var data = response.data
+                var duration = ''
+                $('#Stream').empty();
+                $('#Stream').append('<option      class="option-format" value=""  selected>Select</option>');
+                streamdata = data;
+                data.forEach(myFunction);
+
+                function myFunction(item) {
+                    duration = item.sem
+                    $('#Stream').append(`<option class="option-format" value='${item.id}'>  ${item.name}  </option>`);
+                }
+            }
+        })
+    }
+
+    document.getElementById("Stream").onchange = function () {
+      
+        var stream = this.value;
+ 
+        var course_name = $('#course').val();
+        var study_pattern = $('#studypattern').val();
+        if (study_pattern !== '')
+            fillSemYear(course_name, stream, study_pattern)
+        $.ajax({
+            type: "POST",
+            url: "{% url 'getsubstream' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'streamid': stream,
+                
+            },
+            success: function (response) {
+                var data = response.substream
+                if (response.substream.length > 0) {
+                    $('#hideSubStream').css('display', 'block');
+                    $('#SubStream').empty();
+                    $('#SubStream').append('<option      class="option-format" value=""  selected>Select</option>');
+                    streamdata = data;
+                    data.forEach(myFunction);
+
+                    function myFunction(item) {
+                    
+                    $('#SubStream').append(`<option class="option-format" value='${item.id}'>  ${item.name}  </option>`);
+                    }
+                }
+                else {
+                    $('#hideSubStream').css('display', 'none');
+                }
+            }
+        })
+    }
+
+    document.getElementById("studypattern").onchange = function () {
+        var course_name = $('#course').val();
+        var stream_name = $('#Stream').val();
+        var studypattern = this.value;
+        if (studypattern == "Full Course") {
+                console.log("Full Course Given")
+                $('#semyear_hide').css('display', 'none');
+                $('#total_fees').prop('readonly', false)
+        }
+        else {
+                $('#semyear_hide').css('display', 'block')
+                $('#total_fees').prop('readonly', true)
+
+        }
+        if (course_name != '' && stream_name != '')
+        fillSemYear(course_name,stream_name, studypattern)
+    }
+
+    document.getElementById("semyear").onchange = function () {
+            var c_id = $('#course').val();
+            var s_id = $('#Stream').val();
+            var ss_id = $('#SubStream').val();
+            var studypattern = $('#studypattern').val();
+            var semyear = $('#semyear').val();
+            if (c_id && s_id && studypattern && semyear) {
+                    $.ajax({
+                            type: "POST",
+                            url: "{% url 'addstudent' %}",
+                            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                            data: {
+                                    'c_id': c_id, // from form
+                                    's_id': s_id,
+                                    'ss_id': ss_id,
+                                    'studypattern': studypattern,
+                                     'semyear': semyear
+                                },
+                            success: function (response) {
+                                 if (response.data) {
+                                         var total_fees = response.data.totalfees;
+                                        $('#total_fees').val(total_fees);
+                                    }
+                            }
+                         });
+                }
+
+        }
+
+              
+
+
+function fillSemYear(course_name, stream_name, study_pattern) {
+  
+  console.log(course_name, stream_name, study_pattern)
+      if (course_name && stream_name && study_pattern != "Full Course") {
+        $.ajax({
+          type: "POST",
+          url: "{% url 'addstudent' %}",
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          data: {
+            'course_name': course_name, // from form
+            'stream_name': stream_name,
+            'study_pattern': study_pattern
+          },
+          success: function (response) {
+           // console.log(response)
+            $('#semyear').empty();
+            
+            if(response.obj){
+                
+              if(response.obj.study_pattern == "Semester"){
+                $('#course_duration').val(parseInt(response.obj.semyear, 10) / 2);
+
+                $('#semyear').append('<option class="option-format">Select Semester</option>');
+                for(var i=1;i<=response.obj.semyear;i++){
+                  $('#semyear').append('<option  class="option-format" value=' + i + '>' + i + ' Semester' + '</option>');
+                }
+              }
+              else if(response.obj.study_pattern == "Annual"){
+                $('#course_duration').val(response.obj.semyear);
+                $('#semyear').append('<option class="option-format">Select Annual</option>');
+                for(var i=1;i<=response.obj.semyear;i++){
+                  $('#semyear').append('<option class="option-format" value=' + i + '>' + i + ' Year' + '</option>');
+                }
+              }
+            }
+          }
+        })
+      }
+  }
+  
+ 
+    
+   
+
+ 
+  
+
+</script>
+
+<script>
+     $('#dashboard-collapse').addClass("show");
+        $("#add_student_link").removeClass("link-dark");
+        $('#add_student_link').addClass("link-primary");
+
+        var t = $('#example').DataTable({searching:false});
+    function AddDocumentRow(type){
+    //  $('#no_of_documents').val()
+    //   $(document).ready(function () {
+
+       if(type == 1){
+        var counter = 1;
+       }
+       else if(type == 0){
+        var current_counter = parseInt($('#no_of_documents').val());
+        // console.log(current_counter)
+        $('#no_of_documents').val(current_counter + 1)
+        // console.log($('#no_of_documents').val())
+        var counter = $('#no_of_documents').val();
+        // var counter = 2;
+       }
+        // add_student_link
+        // $('#no_of_documents').val()
+        
+        
+        let no_of_doc = $('#no_of_documents').val()
+        // let_curr_no_of_doc = $('#no_of_documents').val($('#no_of_documents').val() + 1)
+        // $('#addRow').on('click', function () {
+            // console.log("yes")
+            t.row.add([
+              `<select class="personaldocument  width-100 font-14 font-bold text-extralightgray " name="document${counter}" id="document${counter}" onChange="checkType(this, ${counter})" aria-label="Default select example" >
+                <option      class="option-format"   selected>Select</option>
+                <option      class="option-format"   value="Aadhar Card">Aadhar Card</option>
+                <option      class="option-format"   value="Pan Card">Pan Card</option>
+                <option      class="option-format"   value="Passport">Passport</option>
+                <option      class="option-format"   value="Voter ID">Voter ID</option>
+                <option      class="option-format"   value="Driving License">Driving License</option> 
+                <option      class="option-format"   value="Other">Other</option> 
+
+              </select>  <div id="popupInput${counter}" class="popup d-none">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="popup">Enter Document Type</label>
+                                        <input type="text"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="other${counter}"
+                                            name="other${counter}"
+                                            placeholder="">
+                                       
+                                    </div>
+                                    
+                                </div>`,
+              `<input type="text" name="DocumentName${counter}" class="  width-100 font-14 font-bold text-extralightgray " id="DocumentName${counter}">
+              `, 
+              `<input type="text" name="DocumentID${counter}" class="  width-100 font-14 font-bold text-extralightgray " id="DocumentID${counter}">
+              `, 
+              `<input type="file" name="DocumentFront${counter}" class="  width-100 font-14 font-bold text-extralightgray " id="DocumentFront${counter}">
+              `, 
+              `<input type="file" name="DocumentBack${counter}" class="   width-100  font-14 font-bold text-extralightgray " id="DocumentBack${counter}">
+              `, 
+
+            ]).draw(false);
+
+            // counter++;
+            // $('#no_of_documents').val(counter - 1)
+        // });
+            }
+      
+            function AddQualificationRow(){
+
+                var counter = document.getElementById('qual_other_counter').value;
+                counter++;
+                document.getElementById("qual_other_counter").value = counter;
+                $('#qual_other_counter').trigger('change');
+                let other = `other_${counter}`;
+                let other_year = `other_year_${counter}`;
+                let other_board = `other_board_${counter}`;
+                let other_percentage = `other_percentage_${counter}`;
+                let other_document = `other_document_${counter}`;
+
+
+                var table = document.getElementById("qualification");
+                var rowCount = table.rows.length;
+
+                // Calculate the index where you want to insert the new row
+                var indexToInsert = rowCount; // For example, insert between the 2nd and 3rd row
+
+                // Insert the new row
+                var newRow = table.insertRow(indexToInsert);
+                //newRow.classList.add('body-row');
+
+                // Insert cells into the new row
+                var cell1 = newRow.insertCell(0);
+                var cell2 = newRow.insertCell(1);
+                var cell3 = newRow.insertCell(2);
+                var cell4 = newRow.insertCell(3);
+                var cell5 = newRow.insertCell(4);
+                // Add content to the cells
+                    // cell1.classList.add("w-30");
+                    // cell2.classList.add("w-20");
+                    // cell3.classList.add("w-20");
+                    // cell4.classList.add("w-30");
+                    // cell1.classList.add("border-right");
+                    // cell2.classList.add("border-right");
+                    // cell3.classList.add("border-right");
+                    // cell4.classList.add("border-right");
+
+                    
+
+
+cell1.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_' + counter + '" id="other_' + counter +'" placeholder="Others">';
+cell2.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_year_' + counter + '" id="other_year_' + counter +'">';
+cell3.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_board_' + counter + '" id="other_board_' + counter +'">';
+
+cell4.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_percentage_' + counter + '" id="other_percentage_' + counter +'">';
+
+cell5.innerHTML = '<div class="button-wrapper "> <label for="other_document_' + counter + '" class="text-extralightgray  file-btn font-14">Choose Document</label> <input type="file" id="other_document_' + counter + '" name="other_document_' + counter + '" style="display:none"><label id="uploaded-doc-other_' + counter + '" class="text-extralightgray font-14 px-3">No documents chosen</label> </div>'
+ }       
+        $(document).ready(function () {
+            AddDocumentRow(1);
+            $('#no_of_documents').val(1);
+
+        });
+        $('#hideSubStream').css('display', 'none');
+</script>
+
+
+<script type="text/javascript">
+   
+
+    $(function () {
+        $("#fees_reciept").change(function () {
+            var selected_option = $('option:selected', this).text()
+            if (selected_option == "Others") {
+                $('#other_data').css('visibility', 'visible');
+            }
+            else {
+                $('#other_data').css('visibility', 'hidden');
+            }
+        });
+    });
+
+    $(function () {
+        $("#bank_name").change(function () {
+            var selected_option = $('option:selected', this).text()
+            if (selected_option == "Others") {
+                console.log("yes other")
+                $('#other_bank_name').css('display', 'block');
+                $('#other_bank_name').append(`
+
+                <input type="text" name="other_bank"
+                                                    class="  width-100 font-14 font-bold text-extralightgray "
+                                                    id="other_bank" placeholder="Bank Name">
+
+          `);
+            }
+            else {
+                console.log("no other")
+                $('#other_bank_name').empty();
+                $('#other_bank_name').css('display', 'none');
+            }
+        });
+    });
+
+    $(document).ready(function() {
+     $('input.required, select.required').addClass('rem_err');
+    // Function to handle the change event and remove a specific class
+    function handleInputChange() {
+       
+        $(this).removeClass('error');
+    }
+
+  
+    $('input.rem_err, select.rem_err').on('change', handleInputChange);
+    
+    
+           
+    
+});
+
+
+
+
+
+</script>
+
+<!--<script>
+    $('#save_student_form').validate({
+        rules: {
+            firstname: {
+                required: true,
+                alphabets_and_spaces: true,
+
+            },
+            dob: {
+                required: true,
+            },
+            email: {
+                required: true,
+                emailcheck: true,
+            },
+            alt_email: {
+                required: false,
+            },
+
+            mobile: {
+                required: true,
+                number: true,
+                minlength: 10,
+                maxlength: 10,
+            },
+            university: {
+                required: true,
+            },
+            country: {
+                required: true,
+            },
+            state: {
+                required: true,
+            },
+            city: {
+                required: true,
+            },
+            university_enroll_number: {
+                required: true,
+                number: true,
+            },
+            course: {
+                required: true,
+            },
+            Stream: {
+                required: true,
+            },
+            studypattern: {
+                required: true,
+            },
+            semyear: {
+                required: true,
+            },
+            session: {
+                required: true,
+            },
+            entry_mode: {
+                required: true,
+            },
+            fees_reciept: {
+                required: true,
+            },
+
+            payment_mode: {
+                required: true,
+            },
+            date_of_transaction: {
+                required: true,
+            },
+            fees: {
+                required: true,
+                number: true,
+            },
+
+
+
+
+
+
+
+
+
+        },
+        messages: {
+            firstname: {
+                required: "Please Enter Name",
+                alphabets_and_spaces: "Invalid Name"
+            },
+            dob: {
+                required: "Enter Date",
+            },
+            email: {
+                required: "Please Enter Email",
+                emailcheck: "Invalid Email",
+            },
+            alt_email: {
+                required: "",
+            },
+            mobile: {
+                required: "Please Enter Student Mobile",
+                number: "Please enter a valid mobile number",
+                minlength: "Please enter 10 digit Mobile Number",
+                maxlength: "Please enter 10 digit Mobile Number",
+            },
+            university: {
+                required: "Please Select a University",
+            },
+            country: {
+                required: "Please Select Country",
+            },
+            state: {
+                required: "Please Select State",
+            },
+
+            city: {
+                required: "Please Select City",
+            },
+            university_enroll_number: {
+                required: "Please Enter University Enrollment Number",
+                number: "Only Numbers Allowed",
+            },
+            course: {
+                required: "Please Select Course",
+            },
+            Stream: {
+                required: "Please Select Stream",
+            },
+            studypattern: {
+                required: "Please Select Study Pattern",
+            },
+            semyear: {
+                required: "Please Select Semester/Year",
+            },
+            session: {
+                required: "Please Select Session",
+            },
+            entry_mode: {
+                required: "Please Select Entry Mode",
+            },
+            fees_reciept: {
+                required: "Please Select Fees Reciept Type",
+            },
+
+            payment_mode: {
+                required: "Please Select Payment Mode",
+            },
+            date_of_transaction: {
+                required: "Please Enter Transaction Date",
+            },
+            fees: {
+                required: "Please Enter Paid Amount",
+                number: "Only Numbers Allowed",
+            },
+
+
+
+
+        },
+        submitHandler: function (form) {
+            form.submit();
+        }
+    });
+</script>-->
+
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>REGISTRATION - CIIS</title>
+
+<style>
+    #spinner {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        top: -100px;
+        left: 0;
+        z-index: 9999;
+        width: 100vw;
+        height: 100vh;
+
+        transition: opacity 0.2s;
+    }
+
+    /* (B) CENTER LOADING SPINNER */
+    #spinner img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%);
+    }
+
+    /* (C) SHOW & HIDE */
+    #spinner {
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    #spinner.show {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    #example_info{
+        color:#000 !important;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+
+        $("#student_image").change(function () {
+            $("#uploaded-file-image").text(this.files[0].name);
+        });
+        $("#secondary_document").change(function () {
+            $("#uploaded-doc-secondary").text(this.files[0].name);
+        });
+        $("#sr_document").change(function () {
+            $("#uploaded-doc-sr").text(this.files[0].name);
+        });
+        $("#under_document").change(function () {
+            $("#uploaded-doc-under").text(this.files[0].name);
+        });
+        $("#post_document").change(function () {
+            $("#uploaded-doc-post").text(this.files[0].name);
+        });
+
+        $("#post_document").change(function () {
+            $("#uploaded-doc-post").text(this.files[0].name);
+        });
+        $("#other_document").change(function () {
+            $("#uploaded-doc-other").text(this.files[0].name);
+        });
+        init();
+        $("#qual_other_counter").change(function () {
+            init();
+    })
+    });
+    function init(){
+            
+            var qualcounter = 1 
+            if ($("#qual_other_counter").val() != ''){
+             
+                temp = $("#qual_other_counter").val();
+                qualcounter = parseInt(temp)
+            }
+
+            for (var i = 1; i <= qualcounter; i++) {
+                    (function(i) {
+                        var otherdoc = `#other_document_${i}`;
+                        var doc = `#uploaded-doc-other_${i}`;
+                       
+                        $(document).on('change', otherdoc, function() {
+                        $(doc).text(this.files[0].name);
+                    });
+                   
+                    })(i);
+            }
+        
+        }
+</script>
+<script src="{% static 'dict/js/studentregistration.js' %}"></script>
+{% endblock head %}
+
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+<div id="spinner">
+    <img src="{% static 'dict/gif/loader.gif' %}" />
+</div>
+
+
+
+
+
+
+<div class="add-student pages-body-bg-color">
+
+    <form method="POST" action="{% url 'savestudent' %}" id="save_student_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <section class="message-display-section" id="message">
+
+        </section>
+        <section class="personal-details-section  ">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12">
+                           <div class="section-header">
+                                <h1 class="font-26 font-bold text-black text-uppercase">Student Registration</h1>
+
+                            </div> 
+                            <div class="outer-rectangle">
+                                <div class="inner-block px-4">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="box-title pt-4 ">
+                                                <h5 class="font-18 text-uppercase font-bold text-black">Personal
+                                                    Details</h5>
+                                                    <p class="font-16 font-medium text-light-gray">A task is accomplished by a set deadline, and must contribute toward work-related objectives.</p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="select-options py-4">
+                                        <div class="row">
+                                            <div class="col-md-6 col-12">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired"> University</label>
+                                                    <select name="university" id="university"
+                                                        class="required  width-100 font-14 font-bold text-extralightgray " >
+
+                                                        <option class="option-format required" value="" >Select
+                                                            
+                                                        </option>
+                                                        {% for i in university %}
+                                                        <option class="option-format" value="{{i.registrationID}}">
+                                                            {{i.university_name}}</option>
+                                                        {% endfor %}
+                                                    </select>
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <div class="detail-block py-2 pt-4">
+                                                    <div class="file-upload" >
+
+                                                        <div
+                                                            class="button-wrapper     width-100 font-14 font-bold text-extralightgray" id="imagefile" >
+                                                            <label for="student_image"
+                                                                class="labelrequired bg-darkgray width-100 font-14 font-bold  text-extralightgray  file-btn-form">Choose
+                                                                File for Student Image</label>
+                                                            <input type="file" id="student_image" name="student_image"
+                                                                style="display:none">
+                                                            <label id="uploaded-file-image"
+                                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                                style="border:none">No files chosen</label>
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                </div>
+
+
+
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Name</label>
+                                                    <input
+                                                        class="required  width-100 font-14 font-bold text-extralightgray "
+                                                        type="text" placeholder="" id="name" name="firstname" required>
+                                                </div>
+
+                                            </div>
+                                           
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Father's/Husband's Name</label>
+                                                    <input
+                                                        class="required  width-100 font-14 font-bold text-extralightgray "
+                                                        type="text" name="fathername" id="fathers_name"
+                                                        placeholder="" required>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Mother's Name</label>
+                                                    <input
+                                                        class="required  width-100 font-14 font-bold text-extralightgray "
+                                                        type="text" name="mothername" placeholder=""
+                                                        id="mothers_name" required>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Date of Birth</label>
+                                                    <input
+                                                        class="required  width-100 font-14 font-bold text-extralightgray "
+                                                        type="text" name="dob" id="dateofbirth"
+                                                        onfocus="(this.type='date')" placeholder=""  required>
+
+                                                </div>
+                                              
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+
+                                          
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Email Address</label>
+                                                    <div class="d-flex">
+                                                       
+                                                        <input
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        type="email" name="email" placeholder=""
+                                                        id="email"  required>
+                                                        <img src="{% static 'dict/images/plus.png' %}" alt="Add" onclick="showAlternate('email')" class="showhand">
+                                                    </div>
+                                                    <label for="email" id="is_email_available" ></label>
+
+                                                </div>
+                                                <div class="detail-block py-2 d-none" id="emaildiv">
+                                                    <label for="alt_email" class="labelnotrequired">Alternate Email Adress</label>
+                                                    <input
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        type="email" name="alt_email"
+                                                        placeholder="" id="alternateemail">
+                                                        <label for="alternateemail" id="is_alt_email_available"></label>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Mobile Number</label>
+                                                    <div class="d-flex">
+                                                        <input
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        type="text" name="mobile" id="mobile"
+                                                        placeholder=""  required pattern="[0-9]*" maxlength="10">
+                                                        <img src="{% static 'dict/images/plus.png' %}" alt="Add" onclick="showAlternate('mobile')" class="showhand">
+                                                    
+                                                    
+                                                    </div>
+                                                    <label for="mobile" id="is_mobile_available" ></label>
+                                                    
+                                                </div>
+                                                <div class="detail-block py-2 d-none" id="mobilediv">
+                                                    <label for="" class="labelmotrequired">Alternate Mobile Number</label>
+                                                    <input
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        type="text" name="alternatemobile1"
+                                                        placeholder="" id="alternatemobile" pattern="[0-9]*" maxlength="10">
+                                                        <label for="alternatemobile1" id="is_alt_mobile_available"></label>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelnotrequired">Gender</label>
+                                                    <select placeholder="Gender"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        name="gender" id="gender">
+                                                        <option class="option-format" value="" selected>Select</option>
+                                                        <option class="option-format" value="Male">Male</option>
+                                                        <option class="option-format" value="Female">Female</option>
+                                                        <option class="option-format" value="Rather Not SAY">Rather Not
+                                                            SAY</option>
+                                                    </select>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <div class="detail-block py-2">
+
+                                                    <label for="" class="labelnotrequired">Category</label>
+                                                    <select
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="category" name="category" aria-placeholder="Category">
+                                                        <option class="option-format" value="" selected>Select
+                                                        </option>
+                                                        <option class="option-format" value="General(Open)">
+                                                            General(Open)</option>
+                                                        <option class="option-format" value="Other Backward Class(OBC)">
+                                                            Other Backward Class(OBC)</option>
+                                                        <option class="option-format" value="Scheduled Cast(SC)">
+                                                            Scheduled Cast(SC)</option>
+                                                        <option class="option-format" value="Scheduled Tribe(ST)">
+                                                            Scheduled Tribe(ST)</option>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-12">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Current Address</label>
+                                                    <textarea type="text" name="address"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="address" placeholder="" required></textarea>
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelnotrequired">Alternate Address</label>
+                                                    <textarea type="text" name="alternate_address"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="alternateaddress"
+                                                        placeholder=""></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+
+                                            <div class="col-4">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Country</label>
+                                                    <select name="country"
+                                                        class="width-100 font-14 font-bold text-extralightgray "
+                                                        id="countryId" required>
+                                                        <option class="option-format" value="">Select</option>
+                                                        {% for i in countries %}
+                                                        <option class="option-format" value="{{i.id}}">{{i.name}}
+                                                        </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-4">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">State</label>
+                                                    <select name="state"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="stateId" required>
+                                                        <option class="option-format" value="">Select</option>
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">City</label>
+                                                    <select name="city"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="cityId" required>
+                                                        <option class="option-format" value="">Select</option>
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Nationality</label>
+                                                    <input type="text" name="nationality"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="nationality" placeholder="" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Pincode</label>
+                                                    <input type="text" name="pincode" 
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="Pincode" placeholder="" required pattern="[0-9]*" maxlength="6">
+                                                </div>
+                                                <label for="pincode" id="pin_error"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelnotrequired">Student Remarks</label>
+                                                    <textarea type="text" name="student_remarks"
+                                                        class="  width-100 font-14 font-bold text-extralightgray   "
+                                                        id="student_remarks" placeholder=""></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelrequired">Counselor Name</label>
+                                                    <input type="text"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="counselor_name" name="counselor_name"
+                                                        placeholder="" required>
+                                                </div>
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelnotrequired">University Enrollment Number</label>
+                                                    <input type="text"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="university_enrollment_number"
+                                                        name="university_enroll_number"
+                                                        placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelnotrequired">Reference Name</label>
+                                                    <input type="text"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="reference_name" name="reference_name"
+                                                        placeholder="">
+                                                </div>
+                                                <div class="detail-block py-2">
+                                                    <label for="" class="labelnotrequired">Registration Number</label>
+                                                    <input type="text"
+                                                        class="  width-100 font-14 font-bold text-extralightgray "
+                                                        id="registration_number"
+                                                        name="registration_number"
+                                                        placeholder="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                      
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="personal-documents-section   mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="outer-rectangle">
+                        <div class="inner-block px-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="box-title pt-4 ">
+                                        <h5 class="font-18 text-uppercase font-bold text-black">Personal Documents
+                                        </h5>
+                                    </div>
+
+                                </div>
+                                <div class="col-6">
+                                    <input type="hidden" id="no_of_documents" name="no_of_documents" style="visibility: visible;">
+                                </div>
+                            </div>
+
+                            <div class="select-options py-4">
+
+                                <div class="row">
+                                    <div class="col-12">
+
+                                        <div class="document-table ">
+                                            <table id="example" class="table format-form-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="font-bold text-extralightgray  px-2" scope="col">
+                                                            Document Type<span class="labelrequired"></span> </th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Name as on Document</th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            ID Number</th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Upload Front (only PDF/JPG)<span class="labelrequired"></span></th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Upload Back(only PDF/JPG)</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 col-md-2">
+                                        <a class="  width-100" id="addRow" >
+                                            <button type="button" onclick="AddDocumentRow(0)"  class="edit-btn red-btn ">Add new row</button></a>
+                                    </div>
+                                </div>
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="qualification-details-section   mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="outer-rectangle">
+                        <div class="inner-block px-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="box-title pt-4 ">
+                                        <h5 class="font-18 text-uppercase font-bold text-black">Qualification
+                                            Documents</h5>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="select-options py-4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="document-table">
+                                            <table class="table format-form-table" id="qualification">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Exam</th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Year of Passing</th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Board/University</th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Percentage(%)</th>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                            Upload Document (only PDF/JPG)</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2">
+                                                            Secondary/High School</th>
+                                                        <td>
+                                                            <input type="text" class="  width-100 font-14 font-bold text-extralightgray "
+                                                                name="secondary_year" id="secondary_year">
+                                                        </td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray "
+                                                                name="secondary_board" id="secondary_board"></td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray "
+                                                                name="secondary_percentage" id="secondary_percentage">
+                                                        </td>
+                                                        <td>
+                                                            <div class="button-wrapper ">
+                                                                <label for="secondary_document" class="text-extralightgray file-btn font-14 ">Choose
+                                                                    Document</label>
+                                                                <input type="file" id="secondary_document" name="secondary_document" style="display:none">
+                                                                <label id="uploaded-doc-secondary" class="text-extralightgray font-14 px-3 ">No
+                                                                    documents chosen</label>
+                                                            </div>
+                                                
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2">Sr. Secondary
+                                                        </th>
+                                                        <td>
+                                                            <input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="sr_year"
+                                                                id="sr_year">
+                                                        </td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="sr_board"
+                                                                id="sr_board"></td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray "
+                                                                name="sr_percentage" id="sr_percentage"></td>
+                                                        <td>
+                                                
+                                                            <div class="button-wrapper  ">
+                                                                <label for="sr_document" class="text-extralightgray  file-btn font-14 ">Choose
+                                                                    Document</label>
+                                                                <input type="file" id="sr_document" name="sr_document" style="display:none">
+                                                                <label id="uploaded-doc-sr" class="text-extralightgray font-14 px-3">No documents
+                                                                    chosen</label>
+                                                            </div>
+                                                
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2">Under
+                                                            Graduation</th>
+                                                        <td>
+                                                            <input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="under_year"
+                                                                id="under_year">
+                                                        </td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="under_board"
+                                                                id="under_board"></td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray "
+                                                                name="under_percentage" id="under_percentage"></td>
+                                                        <td>
+                                                            <div class="button-wrapper ">
+                                                                <label for="under_document" class="text-extralightgray  file-btn font-14">Choose
+                                                                    Document</label>
+                                                                <input type="file" id="under_document" name="under_document" style="display:none">
+                                                                <label id="uploaded-doc-under" class="text-extralightgray font-14 px-3">No documents
+                                                                    chosen</label>
+                                                            </div>
+                                                
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="font-14 font-bold text-extralightgray px-2">Post
+                                                            Graduation</th>
+                                                        <td>
+                                                            <input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="post_year"
+                                                                id="post_year">
+                                                        </td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="post_board"
+                                                                id="post_board"></td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray "
+                                                                name="post_percentage" id="post_percentage"></td>
+                                                        <td>
+                                                            <div class="button-wrapper ">
+                                                                <label for="post_document" class="text-extralightgray  file-btn font-14">Choose
+                                                                    Document</label>
+                                                                <input type="file" id="post_document" name="post_document" style="display:none">
+                                                                <label id="uploaded-doc-post" class="text-extralightgray font-14 px-3">No documents
+                                                                    chosen</label>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="font-14 font-bold text-extralightgray  px-2">Eng. Diploma / ITI</th>
+                                                        <td>
+                                                            <input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="mphil_year"
+                                                                id="mphil_year">
+                                                        </td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="mphil_board"
+                                                                id="mphil_board"></td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="mphil_percentage" id="mphil_percentage"></td>
+                                                        <td>
+                                                            <div class="button-wrapper ">
+                                                                <label for="mphil_document" class="text-extralightgray  file-btn font-14">Choose
+                                                                    Document</label>
+                                                                <input type="file" id="mphil_document" name="mphil_document" style="display:none">
+                                                                <label id="uploaded-doc-mphil" class="text-extralightgray font-14 px-3">No documents
+                                                                    chosen</label>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <input type="hidden" id="qual_other_counter" name="qual_other_counter" value="1">
+                                                        <th class="font-14 font-bold text-extralightgray  px-2"> <input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_1"
+                                                            id="other_1" placeholder="Others"></th>
+                                                        <td>
+                                                            <input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_year_1"
+                                                                id="other_year_1">
+                                                        </td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_board_1"
+                                                                id="other_board_1"></td>
+                                                        <td><input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_percentage_1"
+                                                                 id="other_percentage_1"></td>
+                                                        <td>
+                                                            <div class="button-wrapper ">
+                                                                <label for="other_document_1" class="text-extralightgray  file-btn font-14">Choose
+                                                                    Document</label>
+                                                                <input type="file" id="other_document_1" name="other_document_1" style="display:none">
+                                                                <label id="uploaded-doc-other_1" class="text-extralightgray font-14 px-3">No documents
+                                                                    chosen</label>
+                                                            </div>
+                                                
+                                                        </td>
+                                                    </tr>
+                                                
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 col-md-2">
+                                        <a class="  width-100" id="addRow" >
+                                            <button type="button" onclick="AddQualificationRow()"  class="edit-btn red-btn ">Add new row</button></a>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+
+        <section class="course-details-section   mt-4">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="outer-rectangle">
+                        <div class="inner-block px-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="box-title pt-4 ">
+                                        <h5 class="font-18 text-uppercase font-bold text-black">Course/ Program
+                                            Details</h5>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="select-options py-4">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Course </label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="course" id="course" required>
+                                                <option class="option-format" value="" selected> Course</option>
+                                                {% for i in course %}
+                                                <option class="option-format" value="{{i.id}}">{{i.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <div class="col-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Stream </label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="Stream" id="Stream" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3" id="hideSubStream">
+                                        <div class="detail-block py-2 " >
+                                            <label for="" class="labelnotrequired">Sub Stream </label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="SubStream" id="SubStream" >
+                                                <option class="option-format" value="" selected>Select</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Session</label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="session" id="session" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                              
+                                                {% for i in sessionnames %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                                {% endfor %}
+                                                
+                                                
+                                                
+
+
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Study Pattern</label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="studypattern" id="studypattern" required>
+                                                <option class="option-format" value="" selected>Select
+                                                </option>
+                                                <option class="option-format" value="Semester">Semester</option>
+                                                <option class="option-format" value="Annual">Annual</option>
+                                                <option class="option-format" value="Full Course">Full Course</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Admission Type</label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="entry_mode" id="entry_mode" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                                <option class="option-format" value="Regular">Regular</option>
+                                                <option class="option-format" value="Distance">Distance</option>
+                                                <option class="option-format" value="Lateral Entry">Lateral Entry
+                                                </option>
+                                                <option class="option-format" value="Credit Transfer">Credit Transfer
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                  
+                                   
+                               
+                                    <div class="col-3" id="semyear_hide">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Semester/Year </label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="semyear" id="semyear" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Course Duration (in years)</label>
+                                            <input type="text" name="course_duration" id="course_duration" class="  width-100 font-14 font-bold text-extralightgray " readonly>
+                                          
+                                        </div>
+
+                                    </div>
+                                 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+
+        <section class="payment-details-section   mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="outer-rectangle">
+                        <div class="inner-block px-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="box-title pt-4 ">
+                                        <h5 class="font-18 text-uppercase font-bold text-black">Payment Details</h5>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="select-options py-4">
+                               
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Fees Receipt </label>
+                                           
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="fees_reciept" id="fees_reciept" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                                {% for i in feereceiptoptions %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                                {% endfor %}
+                                                
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <!-- <div class="col-6" id="other_data">
+                                        <div class="detail-block py-2">
+                                            <input type="others" name="others"
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="others" placeholder="Others">
+                                        </div>
+
+                                    </div> -->
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3 col-6">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelnotrequired">Total Fees </label>
+                                            <input type="number" placeholder="" name="total_fees"
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="total_fees" readonly>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-3 col-6">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Amount Paid </label>
+                                            <input type="number" name="fees" placeholder=""
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="fees" required onchange="calculateDues()">
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-3 col-6">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelnotrequired">Due </label>
+                                            <input type="number" name="dues" placeholder=""
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="dues" readonly>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-3 col-6">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Transaction Date </label>
+                                            <input type="text" placeholder="" name="date_of_transaction"
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="date_of_transaction" onfocus="(this.type='date')" required>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Payment Mode </label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="payment_mode" id="payment_mode" required>
+                                                <option class="option-format" value="" selected>Select</option>
+                                                {% for i in paymentmodes %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                                {% endfor %}
+                                                
+
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="detail-block py-2">
+                                             <label for="" class="labelnotrequired">Cheque/DD/CC Number </label>
+                                            <input type="text" placeholder="" name="cheque_no"
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="cheque_no">
+                                        </div>
+
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelnotrequired">Bank Name </label>
+                                            <select
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                name="bank_name" id="bank_name">
+                                                <option class="option-format" selected value="">Select</option>
+                                                {% for i in banknames %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="detail-block py-2">
+                                            <label for="" class="labelrequired">Remarks </label>
+                                            <input type="text" name="remarks"
+                                                class="  width-100 font-14 font-bold text-extralightgray "
+                                                id="remarks" placeholder="" required>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="detail-block py-2">
+                                            <div id="other_bank_name">
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <!-- <div class="row">
+                                    <div class="col-12">
+                                        <div id="other_bank_name">
+
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div id="student_output"></div>
+                                    </div>
+                                </div>
+                                <!-- <div class="row">
+                    <div class="col-md-2 col-4">
+                    <div class="detail-block py-2">
+                        <button type="submit" id="student_save_button" class="edit-btn   width-100" >Add Student</button>
+                    </div>
+                    
+                    </div>
+                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 col-4">
+                    <div class="detail-block py-2">
+                        <button type="button" class="edit-btn red-btn width-100" id="save_student_button" onclick="validateForm('add')">Add Student</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </form>
+</div>
+
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+<div id="exampleModal" class="modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <div class="container" id="output_container">
+                    <h3 class=" font-16 text-darkblue">Course / Programme Details is Mandatory ..!!</h3>
+                    <div class="output_course" id="output_course"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="blue-bg text-blue font-bold font-12 no-border"
+                    data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
+{% block script %}
+
+<script type="text/javascript">
+    // $('#save_student_button').attr('disabled', 'disabled');
+    var streamdata;
+    $('input#Pincode').on('input', function (e) {
+        console.log(this.value)
+        const mob_reg= /^[0-9]\d*$/;
+        var check = mob_reg.test(this.value);
+        if (check) {
+            if (this.value.length != 6 ){
+                $('#pin_error').html("Pincode must be 6 digits");
+                
+            }
+            else
+            $('#pin_error').html("");
+        }
+        else {
+            $('#pin_error').html("Invalid Pincode. Enter only digits")
+        }
+    });
+    $('input#mobile').on('input', function (e) {
+        console.log(this.value)
+        const mob_reg= /^[0-9]\d*$/;
+        var check = mob_reg.test(this.value);
+        if (check) {
+            if (this.value.length != 10){
+                $('#is_mobile_available').html("Mobile Number must be 10 digits");
+                $('#is_mobile_available').css('color', 'black');
+            }
+            else {
+                $.ajax({ // create an AJAX call...
+                    type: "POST",
+                    url: "{% url 'check_mobile_unique' %}",
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    data: {
+                        'mobile_unique': this.value
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.unique == "true") {
+                            $('#is_mobile_available').html("Available")
+                            $('#is_mobile_available').css('color', 'green');
+                            $('#save_student_button').removeAttr("disabled")
+                        }
+                        else {
+                            $('#save_student_button').attr('disabled', 'disabled');
+                            $('#is_mobile_available').html("Not Available")
+                            $('#is_mobile_available').css('color', 'red');
+                            text = `Student ${response.studentname} has been registered with this mobile number by ${response.createdby}`;
+                            alert(text);
+                        }
+                    }
+                });
+            }
+        }
+        else {
+            $('#is_mobile_available').html("Invalid Mobile Number")
+            $('#is_mobile_available').css('color', 'red');
+        }
+    });
+    $('input#alternatemobile').on('input', function (e) {
+        console.log(this.value)
+        const mob_reg= /^[0-9]\d*$/;
+        var check = mob_reg.test(this.value);
+        if (check) {
+            if (this.value.length != 10){
+                $('#is_alt_mobile_available').html("Mobile Number must be 10 digits");
+                $('#is_alt_mobile_available').css('color', 'black');
+            }
+            else {
+                $.ajax({ // create an AJAX call...
+                    type: "POST",
+                    url: "{% url 'check_mobile_unique' %}",
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    data: {
+                        'mobile_unique': this.value
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.unique == "true") {
+                            $('#is_alt_mobile_available').html("Available")
+                            $('#is_alt_mobile_available').css('color', 'green');
+                            $('#save_student_button').removeAttr("disabled")
+                        }
+                        else {
+                            $('#save_student_button').attr('disabled', 'disabled');
+                            $('#is_alt_mobile_available').html("Not Available")
+                            $('#is_alt_mobile_available').css('color', 'red');
+                            text = `Student ${response.studentname} has been registered with this mobile number by ${response.createdby}`;
+                            alert(text);
+                        }
+                    }
+                });
+            }
+        }
+        else {
+            $('#is_alt_mobile_available').html("Invalid mobile number")
+            $('#is_alt_mobile_available').css('color', 'red');
+            }
+        
+    });
+    
+    $('input#email').on('input', function (e) {
+        console.log(this.value)
+        var check = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.value)
+        if (check){
+            $.ajax({ // create an AJAX call...
+                type: "POST",
+                url: "{% url 'check_email_unique' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'email_unique': this.value
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (response.unique == "true") {
+                        $('#is_email_available').html("Available")
+                        $('#is_email_available').css('color', 'green');
+                        $('#save_student_button').removeAttr("disabled")
+                    }
+                    else {
+                        $('#save_student_button').attr('disabled', 'disabled');
+                        $('#is_email_available').html("Not Available")
+                        $('#is_email_available').css('color', 'red');
+                        
+                        text = `Student ${response.studentname} has been registered with this email address by ${response.createdby}`;
+                        alert(text);
+
+                    }
+                }
+            });
+        }
+        else {
+            $('#is_email_available').html("Invalid email address")
+            $('#is_email_available').css('color', 'red');
+        }
+    });
+    $('input#alternateemail').on('input', function (e) {
+        console.log(this.value)
+        var check = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.value)
+        if (check){
+            $.ajax({ // create an AJAX call...
+                type: "POST",
+                url: "{% url 'check_email_unique' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'email_unique': this.value
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (response.unique == "true") {
+                        $('#is_alt_email_available').html("Available")
+                        $('#is_alt_email_available').css('color', 'green');
+                        $('#save_student_button').removeAttr("disabled")
+                    }
+                    else {
+                        $('#save_student_button').attr('disabled', 'disabled');
+                        $('#is_alt_email_available').html("Not Available")
+                        $('#is_alt_email_available').css('color', 'red');
+                        text = `Student ${response.studentname} has been registered with this email address by ${response.createdby}`;
+                        alert(text);
+
+                    }
+                }
+            });
+        }
+        else {
+            $('#is_alt_email_available').html("Invalid email address")
+            $('#is_alt_email_available').css('color', 'red');
+        }
+    });
+    // is_alt_mobile_available
+    document.getElementById("university").onchange = function () {
+        var university = this.value;
+        document.getElementById("university").classList.remove("error");
+        if (university == "Select University") {
+
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_course':university
+                },
+                success: function (response) {
+                    $('#course').empty()
+                    $('#course').append('<option class="option-format" value="">Select course</option>')
+                    
+                    console.log(response)
+                    if(response.course){
+                        var data = response.course
+                        data.forEach(myFunction);
+                        function myFunction(item){
+                        console.log(item)
+                        $('#course').append(`
+                            <option class="option-format" value="${item.id}">${item.name}</option>
+                        `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+    }
+
+
+    document.getElementById("countryId").onchange = function () {
+        var get_country_id = this.value;
+        console.log(get_country_id)
+        if (get_country_id == "Select Country") {
+
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_country_id': get_country_id
+                },
+                success: function (response) {
+                    console.log(response)
+                    if (response.states) {
+                        $('#stateId').empty();
+                        $('#stateId').append(`
+                    <option      class="option-format" value=""  >Select States</option>
+                  `);
+                        var data = response.states
+                        data.forEach(myFunction);
+
+                        function myFunction(item) {
+                            $('#stateId').append(`
+                    <option      class="option-format"   value="${item.id}">${item.name}</option>
+                  `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+    }
+
+    document.getElementById("stateId").onchange = function () {
+        var get_cities_id = this.value;
+        console.log(get_cities_id)
+        if (get_cities_id == "Select State") {
+
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_cities_id': get_cities_id
+                },
+                success: function (response) {
+                    console.log(response)
+                    if (response.cities) {
+                        $('#cityId').empty();
+                        $('#cityId').append(`
+                    <option      class="option-format" value=""  >Select City</option>
+                  `);
+                        var data = response.cities
+                        data.forEach(myFunction);
+
+                        function myFunction(item) {
+                            $('#cityId').append(`
+                    <option      class="option-format"   value="${item.id}">${item.name}</option>
+                  `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+    }
+
+
+    document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        $.ajax({
+            type: "GET",
+            url: "{% url 'addstudent' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'selected_course': coursename,
+                
+            },
+            success: function (response) {
+                var data = response.data
+                var duration = ''
+                $('#Stream').empty();
+                $('#Stream').append('<option      class="option-format" value=""  selected>Select</option>');
+                streamdata = data;
+                data.forEach(myFunction);
+
+                function myFunction(item) {
+                    duration = item.sem
+                    $('#Stream').append(`<option class="option-format" value='${item.id}'>  ${item.name}  </option>`);
+                }
+            }
+        })
+    }
+
+    document.getElementById("Stream").onchange = function () {
+      
+        var stream = this.value;
+ 
+        var course_name = $('#course').val();
+        var study_pattern = $('#studypattern').val();
+        if (study_pattern !== '')
+            fillSemYear(course_name, stream, study_pattern)
+        $.ajax({
+            type: "POST",
+            url: "{% url 'getsubstream' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'streamid': stream,
+                
+            },
+            success: function (response) {
+                var data = response.substream
+                if (response.substream.length > 0) {
+                    $('#hideSubStream').css('display', 'block');
+                    $('#SubStream').empty();
+                    $('#SubStream').append('<option      class="option-format" value=""  selected>Select</option>');
+                    streamdata = data;
+                    data.forEach(myFunction);
+
+                    function myFunction(item) {
+                    
+                    $('#SubStream').append(`<option class="option-format" value='${item.id}'>  ${item.name}  </option>`);
+                    }
+                }
+                else {
+                    $('#hideSubStream').css('display', 'none');
+                }
+            }
+        })
+    }
+
+    document.getElementById("studypattern").onchange = function () {
+        var course_name = $('#course').val();
+        var stream_name = $('#Stream').val();
+        var studypattern = this.value;
+        if (studypattern == "Full Course") {
+                console.log("Full Course Given")
+                $('#semyear_hide').css('display', 'none');
+                $('#total_fees').prop('readonly', false)
+        }
+        else {
+                $('#semyear_hide').css('display', 'block')
+                $('#total_fees').prop('readonly', true)
+
+        }
+        if (course_name != '' && stream_name != '')
+        fillSemYear(course_name,stream_name, studypattern)
+    }
+
+    document.getElementById("semyear").onchange = function () {
+            var c_id = $('#course').val();
+            var s_id = $('#Stream').val();
+            var ss_id = $('#SubStream').val();
+            var studypattern = $('#studypattern').val();
+            var semyear = $('#semyear').val();
+            if (c_id && s_id && studypattern && semyear) {
+                    $.ajax({
+                            type: "POST",
+                            url: "{% url 'addstudent' %}",
+                            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                            data: {
+                                    'c_id': c_id, // from form
+                                    's_id': s_id,
+                                    'ss_id': ss_id,
+                                    'studypattern': studypattern,
+                                     'semyear': semyear
+                                },
+                            success: function (response) {
+                                 if (response.data) {
+                                         var total_fees = response.data.totalfees;
+                                        $('#total_fees').val(total_fees);
+                                    }
+                            }
+                         });
+                }
+
+        }
+
+              
+
+
+function fillSemYear(course_name, stream_name, study_pattern) {
+  
+  console.log(course_name, stream_name, study_pattern)
+      if (course_name && stream_name && study_pattern != "Full Course") {
+        $.ajax({
+          type: "POST",
+          url: "{% url 'addstudent' %}",
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          data: {
+            'course_name': course_name, // from form
+            'stream_name': stream_name,
+            'study_pattern': study_pattern
+          },
+          success: function (response) {
+           // console.log(response)
+            $('#semyear').empty();
+            
+            if(response.obj){
+                
+              if(response.obj.study_pattern == "Semester"){
+                $('#course_duration').val(parseInt(response.obj.semyear, 10) / 2);
+
+                $('#semyear').append('<option class="option-format">Select Semester</option>');
+                for(var i=1;i<=response.obj.semyear;i++){
+                  $('#semyear').append('<option  class="option-format" value=' + i + '>' + i + ' Semester' + '</option>');
+                }
+              }
+              else if(response.obj.study_pattern == "Annual"){
+                $('#course_duration').val(response.obj.semyear);
+                $('#semyear').append('<option class="option-format">Select Annual</option>');
+                for(var i=1;i<=response.obj.semyear;i++){
+                  $('#semyear').append('<option class="option-format" value=' + i + '>' + i + ' Year' + '</option>');
+                }
+              }
+            }
+          }
+        })
+      }
+  }
+  
+ 
+    
+   
+
+ 
+  
+
+</script>
+
+<script>
+     $('#dashboard-collapse').addClass("show");
+        $("#add_student_link").removeClass("link-dark");
+        $('#add_student_link').addClass("link-primary");
+
+        var t = $('#example').DataTable({searching:false});
+    function AddDocumentRow(type){
+    //  $('#no_of_documents').val()
+    //   $(document).ready(function () {
+
+       if(type == 1){
+        var counter = 1;
+       }
+       else if(type == 0){
+        var current_counter = parseInt($('#no_of_documents').val());
+        // console.log(current_counter)
+        $('#no_of_documents').val(current_counter + 1)
+        // console.log($('#no_of_documents').val())
+        var counter = $('#no_of_documents').val();
+        // var counter = 2;
+       }
+        // add_student_link
+        // $('#no_of_documents').val()
+        
+        
+        let no_of_doc = $('#no_of_documents').val()
+        // let_curr_no_of_doc = $('#no_of_documents').val($('#no_of_documents').val() + 1)
+        // $('#addRow').on('click', function () {
+            // console.log("yes")
+            t.row.add([
+              `<select class="personaldocument  width-100 font-14 font-bold text-extralightgray " name="document${counter}" id="document${counter}" onChange="checkType(this, ${counter})" aria-label="Default select example" >
+                <option      class="option-format"   selected>Select</option>
+                <option      class="option-format"   value="Aadhar Card">Aadhar Card</option>
+                <option      class="option-format"   value="Pan Card">Pan Card</option>
+                <option      class="option-format"   value="Passport">Passport</option>
+                <option      class="option-format"   value="Voter ID">Voter ID</option>
+                <option      class="option-format"   value="Driving License">Driving License</option> 
+                <option      class="option-format"   value="Other">Other</option> 
+
+              </select>  <div id="popupInput${counter}" class="popup d-none">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="popup">Enter Document Type</label>
+                                        <input type="text"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="other${counter}"
+                                            name="other${counter}"
+                                            placeholder="">
+                                       
+                                    </div>
+                                    
+                                </div>`,
+              `<input type="text" name="DocumentName${counter}" class="  width-100 font-14 font-bold text-extralightgray " id="DocumentName${counter}">
+              `, 
+              `<input type="text" name="DocumentID${counter}" class="  width-100 font-14 font-bold text-extralightgray " id="DocumentID${counter}">
+              `, 
+              `<input type="file" name="DocumentFront${counter}" class="  width-100 font-14 font-bold text-extralightgray " id="DocumentFront${counter}">
+              `, 
+              `<input type="file" name="DocumentBack${counter}" class="   width-100  font-14 font-bold text-extralightgray " id="DocumentBack${counter}">
+              `, 
+
+            ]).draw(false);
+
+            // counter++;
+            // $('#no_of_documents').val(counter - 1)
+        // });
+            }
+      
+            function AddQualificationRow(){
+
+                var counter = document.getElementById('qual_other_counter').value;
+                counter++;
+                document.getElementById("qual_other_counter").value = counter;
+                $('#qual_other_counter').trigger('change');
+                let other = `other_${counter}`;
+                let other_year = `other_year_${counter}`;
+                let other_board = `other_board_${counter}`;
+                let other_percentage = `other_percentage_${counter}`;
+                let other_document = `other_document_${counter}`;
+
+
+                var table = document.getElementById("qualification");
+                var rowCount = table.rows.length;
+
+                // Calculate the index where you want to insert the new row
+                var indexToInsert = rowCount; // For example, insert between the 2nd and 3rd row
+
+                // Insert the new row
+                var newRow = table.insertRow(indexToInsert);
+                //newRow.classList.add('body-row');
+
+                // Insert cells into the new row
+                var cell1 = newRow.insertCell(0);
+                var cell2 = newRow.insertCell(1);
+                var cell3 = newRow.insertCell(2);
+                var cell4 = newRow.insertCell(3);
+                var cell5 = newRow.insertCell(4);
+                // Add content to the cells
+                    // cell1.classList.add("w-30");
+                    // cell2.classList.add("w-20");
+                    // cell3.classList.add("w-20");
+                    // cell4.classList.add("w-30");
+                    // cell1.classList.add("border-right");
+                    // cell2.classList.add("border-right");
+                    // cell3.classList.add("border-right");
+                    // cell4.classList.add("border-right");
+
+                    
+
+
+cell1.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_' + counter + '" id="other_' + counter +'" placeholder="Others">';
+cell2.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_year_' + counter + '" id="other_year_' + counter +'">';
+cell3.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_board_' + counter + '" id="other_board_' + counter +'">';
+
+cell4.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_percentage_' + counter + '" id="other_percentage_' + counter +'">';
+
+cell5.innerHTML = '<div class="button-wrapper "> <label for="other_document_' + counter + '" class="text-extralightgray  file-btn font-14">Choose Document</label> <input type="file" id="other_document_' + counter + '" name="other_document_' + counter + '" style="display:none"><label id="uploaded-doc-other_' + counter + '" class="text-extralightgray font-14 px-3">No documents chosen</label> </div>'
+ }       
+        $(document).ready(function () {
+            AddDocumentRow(1);
+            $('#no_of_documents').val(1);
+
+        });
+        $('#hideSubStream').css('display', 'none');
+</script>
+
+
+<script type="text/javascript">
+   
+
+    $(function () {
+        $("#fees_reciept").change(function () {
+            var selected_option = $('option:selected', this).text()
+            if (selected_option == "Others") {
+                $('#other_data').css('visibility', 'visible');
+            }
+            else {
+                $('#other_data').css('visibility', 'hidden');
+            }
+        });
+    });
+
+    $(function () {
+        $("#bank_name").change(function () {
+            var selected_option = $('option:selected', this).text()
+            if (selected_option == "Others") {
+                console.log("yes other")
+                $('#other_bank_name').css('display', 'block');
+                $('#other_bank_name').append(`
+
+                <input type="text" name="other_bank"
+                                                    class="  width-100 font-14 font-bold text-extralightgray "
+                                                    id="other_bank" placeholder="Bank Name">
+
+          `);
+            }
+            else {
+                console.log("no other")
+                $('#other_bank_name').empty();
+                $('#other_bank_name').css('display', 'none');
+            }
+        });
+    });
+
+    $(document).ready(function() {
+     $('input.required, select.required').addClass('rem_err');
+    // Function to handle the change event and remove a specific class
+    function handleInputChange() {
+       
+        $(this).removeClass('error');
+    }
+
+  
+    $('input.rem_err, select.rem_err').on('change', handleInputChange);
+    
+    
+           
+    
+});
+
+
+
+
+
+</script>
+
+<!--<script>
+    $('#save_student_form').validate({
+        rules: {
+            firstname: {
+                required: true,
+                alphabets_and_spaces: true,
+
+            },
+            dob: {
+                required: true,
+            },
+            email: {
+                required: true,
+                emailcheck: true,
+            },
+            alt_email: {
+                required: false,
+            },
+
+            mobile: {
+                required: true,
+                number: true,
+                minlength: 10,
+                maxlength: 10,
+            },
+            university: {
+                required: true,
+            },
+            country: {
+                required: true,
+            },
+            state: {
+                required: true,
+            },
+            city: {
+                required: true,
+            },
+            university_enroll_number: {
+                required: true,
+                number: true,
+            },
+            course: {
+                required: true,
+            },
+            Stream: {
+                required: true,
+            },
+            studypattern: {
+                required: true,
+            },
+            semyear: {
+                required: true,
+            },
+            session: {
+                required: true,
+            },
+            entry_mode: {
+                required: true,
+            },
+            fees_reciept: {
+                required: true,
+            },
+
+            payment_mode: {
+                required: true,
+            },
+            date_of_transaction: {
+                required: true,
+            },
+            fees: {
+                required: true,
+                number: true,
+            },
+
+
+
+
+
+
+
+
+
+        },
+        messages: {
+            firstname: {
+                required: "Please Enter Name",
+                alphabets_and_spaces: "Invalid Name"
+            },
+            dob: {
+                required: "Enter Date",
+            },
+            email: {
+                required: "Please Enter Email",
+                emailcheck: "Invalid Email",
+            },
+            alt_email: {
+                required: "",
+            },
+            mobile: {
+                required: "Please Enter Student Mobile",
+                number: "Please enter a valid mobile number",
+                minlength: "Please enter 10 digit Mobile Number",
+                maxlength: "Please enter 10 digit Mobile Number",
+            },
+            university: {
+                required: "Please Select a University",
+            },
+            country: {
+                required: "Please Select Country",
+            },
+            state: {
+                required: "Please Select State",
+            },
+
+            city: {
+                required: "Please Select City",
+            },
+            university_enroll_number: {
+                required: "Please Enter University Enrollment Number",
+                number: "Only Numbers Allowed",
+            },
+            course: {
+                required: "Please Select Course",
+            },
+            Stream: {
+                required: "Please Select Stream",
+            },
+            studypattern: {
+                required: "Please Select Study Pattern",
+            },
+            semyear: {
+                required: "Please Select Semester/Year",
+            },
+            session: {
+                required: "Please Select Session",
+            },
+            entry_mode: {
+                required: "Please Select Entry Mode",
+            },
+            fees_reciept: {
+                required: "Please Select Fees Reciept Type",
+            },
+
+            payment_mode: {
+                required: "Please Select Payment Mode",
+            },
+            date_of_transaction: {
+                required: "Please Enter Transaction Date",
+            },
+            fees: {
+                required: "Please Enter Paid Amount",
+                number: "Only Numbers Allowed",
+            },
+
+
+
+
+        },
+        submitHandler: function (form) {
+            form.submit();
+        }
+    });
+</script>-->
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock script %}

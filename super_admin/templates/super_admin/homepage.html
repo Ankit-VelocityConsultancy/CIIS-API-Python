@@ -1,0 +1,375 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+
+{% block title %} {% endblock title %}
+
+{% block head %}{% endblock head %}
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+    
+       
+<div class="home-page">
+ 
+  <section class="dashboard-section  mb-3 ">
+    <div class="row">
+      <div class="col-12 col-sm-6  col-md-4  gr-sm-2">
+        <div class="box-bg-color">
+          <div class="section-block pt-4 pb-3 pl-20">
+            <div class="section-header">
+              <h6 class="text-uppercase font-bold text-darkgray font-18">Number of Students</h6>
+            </div>
+            <div class="section-text">
+              <p class="font-16 text-lightgray ">Students in total</p>
+            </div>
+            <div class="section-count pt-3">
+              <p class="font-bold font-27 circle blue-circle text-lightblue">{{total_student}}</p>
+            </div>
+
+          </div>
+        </div>
+
+        
+      </div>
+      <div class="col-12 mt-2 col-sm-6 col-md-4 mt-sm-0  gx-sm-2">
+        <div class="box-bg-color">
+          <div class="section-block pt-4 pb-3 pl-20">
+            <div class="section-header">
+              <h6 class="text-uppercase font-bold text-darkgray font-18">Registered Students</h6>
+            </div>
+            <div class="section-text">
+              <p class="font-16 text-lightgray ">Registered students from total</p>
+            </div>
+            <div class="section-count pt-3">
+              <p class="font-bold font-27 pink-circle circle text-pink">{{registered_student}}</p>
+            </div>
+
+          </div>
+        </div>
+
+        
+      </div>
+      <div class="col-12 offset-sm-3 col-sm-6 offset-md-0 col-md-4  gy-2 gy-md-0 gl-2">
+        <div class="box-bg-color">
+          <div class="section-block pt-4 pb-3 pl-20">
+            <div class="section-header">
+              <h6 class="text-uppercase font-bold text-darkgray font-18">Pending Students</h6>
+            </div>
+            <div class="section-text">
+              <p class="font-16 text-lightgray ">Pending students from total</p>
+            </div>
+            <div class="section-count pt-3">
+              <p class="font-bold font-27 yellow-circle circle text-yellow">{{pending_student}}</p>
+            </div>
+
+          </div>
+        </div>
+
+        
+      </div>
+    </div>
+  
+
+
+  </section>
+  <section class="courses-section  mb-3">
+    <div class="row ">
+      <div class="col-12">
+        <div class="box-bg-color">
+          <div class="course-block pt-4 pl-20">
+            <div class="section-header">
+              <h6 class="text-uppercase font-bold text-darkgray font-18">Number of Courses</h6>
+            </div>
+            <div class="section-text">
+              <p class="font-16 text-lightgray">A task is accomplished by a set deadline, and must contribute toward work related objectives.</p>
+            </div>
+            <div class="section-names py-3 px-3">
+                <div class="row">
+                    {% for i in courses %}
+                        <div class="zero-padding-column col-6 col-md-4 ">
+                            <div class="text-darkgray pt-2 font-18">{{i.name}}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+  </section>
+  <section class="footer-section   mb-3">
+    <div class="row">
+      <div class="col-12 col-sm-6 gy-3 gy-sm-0">
+        <div class="top-courses-section box-bg-color ">
+          <div class="section-block pt-4 pb-3 px-3">
+            <div class="section-header">
+              <h6 class="text-uppercase font-bold text-darkgray font-18">Top Courses</h6>
+            </div>
+            <div class="section-text">
+              <p class="font-16 text-lightgray">Top courses that we offer</p>
+            </div>
+            <div class="section-names">
+              <div class="row">
+                <div class="col-12">
+                  <div class="course-dashboard">
+                    <div class="text-uppercase font-bold text-darkgray pt-2 font-18 ">B.Ed</div>
+                    <div class="mt-3 mb-3 mx-4 small-rectangle-50"></div>
+                  </div>
+                  <div class="course-dashboard">
+                    <div class="text-uppercase font-bold text-darkgray pt-2 font-18">Mba</div>
+                    <div class="mt-3 mb-3 mx-4 small-rectangle-80"></div>
+                  </div>
+                  <div class="course-dashboard">
+                    <div class="text-uppercase font-bold text-darkgray pt-2 font-18 ">phd</div>
+                    <div class="mt-3 mb-3 mx-4 small-rectangle-50"></div>
+                  </div>
+                  <div class="course-dashboard">
+                    <div class="text-uppercase font-bold text-darkgray pt-2 font-18">b.tech</div>
+                    <div class="mt-3 mb-3 mx-4 small-rectangle-40"></div>
+                  </div>
+                  <div class="course-dashboard">
+                    <div class="text-uppercase font-bold text-darkgray pt-2 font-18">diploma</div>
+                    <div class="mt-3 mb-3 mx-4 small-rectangle-80"></div>
+                  </div>
+                  
+
+                </div>
+                
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 gy-3 gy-sm-0 mb-3">
+        <div class="top-courses-section box-bg-color ">
+          <div class="section-block pt-4 pb-3 px-3">
+            <div class="section-header">
+              <h6 class="text-uppercase font-bold text-darkgray font-18">Contact Us</h6>
+            </div>
+            <div class="section-text">
+              <p class="font-16 text-lightgray">Email us for quick updates or more information!</p>
+            </div>
+            <div class="contact-form pt-4 ">
+              <form action="">
+                <input type="text" placeholder="Email address"  class="mb-2 width-100">
+                <div class="submit-button my-2 py-1 text-center  width-100">
+                <a href="#" class="text-purewhite font-medium text-decoration-none text-uppercase">Submit</a>
+                </div>
+                
+                
+              </form>
+            </div>
+            
+              <div class="section-smalltext max-width-350 pt-2 py-3 pt-md-4 pb-md-4  py-lg-4 pt-xl-3 pb-xl-4">
+                <p class="font-16 text-lightgray">Check out website for more information on distance education</p>
+              </div>
+              
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+        
+
+
+
+
+</div>
+     
+{% endif %}
+{% endblock body %}
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+
+{% block title %} {% endblock title %}
+
+{% block head %}{% endblock head %}
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+    
+       
+<div class="home-page">
+ 
+  <section class="dashboard-section  mb-3 ">
+    <div class="row">
+      <div class="col-12 col-sm-6  col-md-4  gr-sm-2">
+        <div class="box-bg-color">
+          <div class="section-block pt-4 pb-3 pl-20">
+            <div class="section-header">
+              <h6 class="text-uppercase font-bold text-darkgray font-18">Number of Students</h6>
+            </div>
+            <div class="section-text">
+              <p class="font-16 text-lightgray ">Students in total</p>
+            </div>
+            <div class="section-count pt-3">
+              <p class="font-bold font-27 circle blue-circle text-lightblue">{{total_student}}</p>
+            </div>
+
+          </div>
+        </div>
+
+        
+      </div>
+      <div class="col-12 mt-2 col-sm-6 col-md-4 mt-sm-0  gx-sm-2">
+        <div class="box-bg-color">
+          <div class="section-block pt-4 pb-3 pl-20">
+            <div class="section-header">
+              <h6 class="text-uppercase font-bold text-darkgray font-18">Registered Students</h6>
+            </div>
+            <div class="section-text">
+              <p class="font-16 text-lightgray ">Registered students from total</p>
+            </div>
+            <div class="section-count pt-3">
+              <p class="font-bold font-27 pink-circle circle text-pink">{{registered_student}}</p>
+            </div>
+
+          </div>
+        </div>
+
+        
+      </div>
+      <div class="col-12 offset-sm-3 col-sm-6 offset-md-0 col-md-4  gy-2 gy-md-0 gl-2">
+        <div class="box-bg-color">
+          <div class="section-block pt-4 pb-3 pl-20">
+            <div class="section-header">
+              <h6 class="text-uppercase font-bold text-darkgray font-18">Pending Students</h6>
+            </div>
+            <div class="section-text">
+              <p class="font-16 text-lightgray ">Pending students from total</p>
+            </div>
+            <div class="section-count pt-3">
+              <p class="font-bold font-27 yellow-circle circle text-yellow">{{pending_student}}</p>
+            </div>
+
+          </div>
+        </div>
+
+        
+      </div>
+    </div>
+  
+
+
+  </section>
+  <section class="courses-section  mb-3">
+    <div class="row ">
+      <div class="col-12">
+        <div class="box-bg-color">
+          <div class="course-block pt-4 pl-20">
+            <div class="section-header">
+              <h6 class="text-uppercase font-bold text-darkgray font-18">Number of Courses</h6>
+            </div>
+            <div class="section-text">
+              <p class="font-16 text-lightgray">A task is accomplished by a set deadline, and must contribute toward work related objectives.</p>
+            </div>
+            <div class="section-names py-3 px-3">
+                <div class="row">
+                    {% for i in courses %}
+                        <div class="zero-padding-column col-6 col-md-4 ">
+                            <div class="text-darkgray pt-2 font-18">{{i.name}}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+  </section>
+  <section class="footer-section   mb-3">
+    <div class="row">
+      <div class="col-12 col-sm-6 gy-3 gy-sm-0">
+        <div class="top-courses-section box-bg-color ">
+          <div class="section-block pt-4 pb-3 px-3">
+            <div class="section-header">
+              <h6 class="text-uppercase font-bold text-darkgray font-18">Top Courses</h6>
+            </div>
+            <div class="section-text">
+              <p class="font-16 text-lightgray">Top courses that we offer</p>
+            </div>
+            <div class="section-names">
+              <div class="row">
+                <div class="col-12">
+                  <div class="course-dashboard">
+                    <div class="text-uppercase font-bold text-darkgray pt-2 font-18 ">B.Ed</div>
+                    <div class="mt-3 mb-3 mx-4 small-rectangle-50"></div>
+                  </div>
+                  <div class="course-dashboard">
+                    <div class="text-uppercase font-bold text-darkgray pt-2 font-18">Mba</div>
+                    <div class="mt-3 mb-3 mx-4 small-rectangle-80"></div>
+                  </div>
+                  <div class="course-dashboard">
+                    <div class="text-uppercase font-bold text-darkgray pt-2 font-18 ">phd</div>
+                    <div class="mt-3 mb-3 mx-4 small-rectangle-50"></div>
+                  </div>
+                  <div class="course-dashboard">
+                    <div class="text-uppercase font-bold text-darkgray pt-2 font-18">b.tech</div>
+                    <div class="mt-3 mb-3 mx-4 small-rectangle-40"></div>
+                  </div>
+                  <div class="course-dashboard">
+                    <div class="text-uppercase font-bold text-darkgray pt-2 font-18">diploma</div>
+                    <div class="mt-3 mb-3 mx-4 small-rectangle-80"></div>
+                  </div>
+                  
+
+                </div>
+                
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 gy-3 gy-sm-0 mb-3">
+        <div class="top-courses-section box-bg-color ">
+          <div class="section-block pt-4 pb-3 px-3">
+            <div class="section-header">
+              <h6 class="text-uppercase font-bold text-darkgray font-18">Contact Us</h6>
+            </div>
+            <div class="section-text">
+              <p class="font-16 text-lightgray">Email us for quick updates or more information!</p>
+            </div>
+            <div class="contact-form pt-4 ">
+              <form action="">
+                <input type="text" placeholder="Email address"  class="mb-2 width-100">
+                <div class="submit-button my-2 py-1 text-center  width-100">
+                <a href="#" class="text-purewhite font-medium text-decoration-none text-uppercase">Submit</a>
+                </div>
+                
+                
+              </form>
+            </div>
+            
+              <div class="section-smalltext max-width-350 pt-2 py-3 pt-md-4 pb-md-4  py-lg-4 pt-xl-3 pb-xl-4">
+                <p class="font-16 text-lightgray">Check out website for more information on distance education</p>
+              </div>
+              
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+        
+
+
+
+
+</div>
+     
+{% endif %}
+{% endblock body %}
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049

@@ -1,0 +1,199 @@
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>Add Fee Receipt Options</title>
+
+
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_superuser %}
+<div class="pages-body-bg-color">
+  <section class="my-course mx-3">
+      <div class="row">
+          <div class="col-12">
+              <div class="outer-rectangle">
+                  <div class="inner-block px-4 pb-4">
+                      <div class="row">
+                          <div class="col-12">
+                              <div class="box-title pt-4 ">
+                                <div class="section-header">
+                                  <h1 class="font-26 font-bold text-black text-uppercase">Add Fee Receipt Options</h1>
+                
+                              </div>
+                              </div>
+                              
+                          </div>
+                      </div>
+                      <form action="" method="POST" id="add_feereceipt_form">
+                        {% csrf_token %}
+                      <div class="select-options pt-4">
+                          <div class="row">
+                           
+                              <div class="col-12 col-sm-5 col-md-4">
+                                  <label for="feereceipt" class="labelrequired">Fee Receipt Options</label>
+                                  <input type="text" name="feereceipt" id="feereceipt" class="  width-100  font-14 text-extralightgray" required />
+                                     
+                              </div>
+                              <div class="col-4 mt-3 col-sm-2">
+                                <input type="submit" value="Save" class="save-btn yellow-btn font-18 font-bold">
+                            </div>
+                             
+                        </form>
+                      
+                      </div>
+                  
+                      
+                  </div>
+                
+               
+              </div>
+        </div>
+  </section>
+     
+
+  {% if all_feereceipt_options|length > 0  %}
+  <section class="my-course-entries my-3 mx-3">
+      <div class="row">
+          <div class="col-12">
+              <div class="white-box">
+                  <div class="inner-block px-4">
+                      <div class="row">
+                          <div class="col-12">
+                              <div class="box-title pt-4 ">
+                                  <h5 class="font-18  font-bold text-black">Fee Receipt Optionss</h5>
+                              </div>
+                              <div>
+                                <p class="font-16">Edit your existing Fee Receipt Options and click on Save icon. To delete a Fee Receipt option, click on Delete icon.</p>
+                              </div>
+
+                          </div>
+                      </div>
+                      <div class="entries-table pt-4 pb-5">
+                          <table class="format-table" id="feereceipt_table">
+                              <thead class="bottom-border-grey">
+                                  <th class="font-14 font-bold text-darkgray width-10 px-2">Sr. No.</th>
+                                  <th class="font-14 font-bold text-darkgray width-40 px-2 text-left">Fee Receipt Option</th>
+                                  <th class="font-14 font-bold text-darkgray width-40 px-2 text-left">Status </th>
+                                  <th class="font-14 font-bold text-darkgray px-2 text-center">Action</th>
+                              </thead>
+                              <tbody id="paymentmode_table">
+                                {% for i in all_feereceipt_options %}
+                                <tr class="line-height-35 bottom-border-grey ">
+                                  <td class="font-14 font-bold text-light-yellow light-yellow-circle set-posn px-2">{{ forloop.counter }}</td>
+                                  <td class="font-14 text-extragray text-left w-50 px-2">
+                                    <input type="text" id="mod_name_{{forloop.counter}}" name="mod_name_{{forloop.counter}}" value="{{i.name}}"></td>
+                                  <td class="font-14 text-extragray text-left  px-2">
+                                    <select name="mod_status_{{forloop.counter}}" id="mod_status_{{forloop.counter}}">
+                                      <option value="1" {% if i.status == True %}selected {%endif %}>Active</option>
+                                      <option value="0" {% if i.status == False %}selected {%endif %}>Inactive</option>
+                                    </select>
+                                    </td>
+                                  <td class="font-12 font-bold text-blue text-left px-2 d-flex w-20">
+                                    <div  id="edit_{{i.id}}" class="showhand" onclick="Edit('{{i.id}}', '{{forloop.counter}}')"><img src="{% static 'dict/images/save.png' %}" class="resizeimg" alt="Edit Fee Reeipt Optione"></div>
+                                    <div id="delete_{{i.id}}" class="showhand" onclick="Delete('{{i.id}}')"><img src="{% static 'dict/images/delete.png' %}" class="resizeimg" alt="Delete Fee Receipt Option"></div>
+                                     </td>
+                                </tr>
+                                {% endfor %}
+                              </tbody>
+                        </table>
+                      </div>
+              </div>
+          </div>
+      </div>
+
+
+  </section>
+  {% endif %}
+  
+</div>
+
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+{% endblock body %}
+{% block script %}
+<script language="JavaScript">
+  $(document).ready(function() {
+   
+      
+      $('#add_feereceipt_form').submit(function() { // catch the form's submit event
+      
+          $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'feereceiptoption' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'feereceipt': $('#feereceipt').val(),
+              
+            },
+              success: function(response) { // on success..
+                  console.log(response);
+                  if(response.msg){
+                    alert(response.msg)
+                    window.location = "{% url 'feereceiptoption' %}"
+                  }
+                  else if(response.redirect == "yes"){
+                    window.location = "{% url 'feereceiptoption' %}"
+                  }
+              }
+          });
+          return false;
+      });
+  });
+</script>
+
+<script>
+
+ $(document).ready(function () {
+    var table =   $('#feereceipt_table').DataTable({
+      scrollX:false
+  });
+  
+ });
+
+    function Edit(id, num){
+      var feereceipt_id = id;
+      console.log(num);
+      var name = $(`#mod_name_${num}`).val();
+      console.log(name);
+      var status = $(`#mod_status_${num}`).val();
+      
+        $.ajax({
+          type: "POST",
+          url: "{% url 'editpaymentmode' %}",
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: {
+            "id":feereceipt_id,
+            'name': name, 
+            'status': status,
+          },
+          success: function(result){
+            console.log(result)
+            alert(response.msg)
+            
+          }
+        });
+      
+    }
+
+    function Delete(id){
+      
+      if (id){
+        $.ajax({
+          type: "POST",
+          url: "{% url 'deletepaymentmode' %}",
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: {
+            "id":id,
+          },
+          success: function(result){
+            console.log(result)
+            alert(result.msg)
+          }
+        });
+      }
+    }
+</script>
+{% endblock script %}

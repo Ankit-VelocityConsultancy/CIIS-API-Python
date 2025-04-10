@@ -1,0 +1,84 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>OVERVIEW - CIIS</title>
+
+<style>
+    
+    .large_buttons{
+      height:100px;
+    }
+    
+  </style>
+
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_student %}
+<div class="pages-body-bg-color py-5">
+    <section class="my-course mx-3">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <iframe title="vimeo-player" src="https://player.vimeo.com/video/751162800?h=84d0a8f4af" width="100%" height="360" frameborder="0"    allowfullscreen></iframe>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <iframe title="vimeo-player" src="https://player.vimeo.com/video/750614742?h=621d060b00" width="100%" height="360" frameborder="0"    allowfullscreen></iframe>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <iframe title="vimeo-player" src="https://player.vimeo.com/video/750611741?h=a6191d3fbb" width="100%" height="360" frameborder="0"    allowfullscreen></iframe>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <iframe title="vimeo-player" src="https://player.vimeo.com/video/735138218?h=7d7ddb1bdd" width="100%" height="360" frameborder="0"    allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+</div>
+{% endif %}
+{% endblock body %}
+
+{% block script %}
+
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>OVERVIEW - CIIS</title>
+
+<style>
+    
+    .large_buttons{
+      height:100px;
+    }
+    
+  </style>
+
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_student %}
+<div class="pages-body-bg-color py-5">
+    <section class="my-course mx-3">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <iframe title="vimeo-player" src="https://player.vimeo.com/video/751162800?h=84d0a8f4af" width="100%" height="360" frameborder="0"    allowfullscreen></iframe>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <iframe title="vimeo-player" src="https://player.vimeo.com/video/750614742?h=621d060b00" width="100%" height="360" frameborder="0"    allowfullscreen></iframe>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <iframe title="vimeo-player" src="https://player.vimeo.com/video/750611741?h=a6191d3fbb" width="100%" height="360" frameborder="0"    allowfullscreen></iframe>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <iframe title="vimeo-player" src="https://player.vimeo.com/video/735138218?h=7d7ddb1bdd" width="100%" height="360" frameborder="0"    allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+</div>
+{% endif %}
+{% endblock body %}
+
+{% block script %}
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock script %}

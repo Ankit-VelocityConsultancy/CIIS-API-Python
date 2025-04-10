@@ -1,0 +1,385 @@
+
+{% load static %}
+{% block head %}
+<title>Student Details</title>
+<link rel="stylesheet" href="{% static 'dict/css/bootstrap.min.css' %}" />
+<link rel="stylesheet" href="{% static 'dict/css/google_fonts.css' %}">
+<link rel="stylesheet" href="{% static 'dict/css/style_homepage.css' %}" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+{% endblock head %}
+
+
+{% block body %}
+<div class="container">
+    <div class="row my-3">
+        <div class="col-3">
+            <button id="save" class="edit-btn user-btn red-btn font-jakarta font-semibold font-14">Save as PDF</button>
+        </div>
+    </div>   
+    <div class="add-student  bg-white px-5" id="pdf">
+    
+            <section class="header-section px-3">
+                <div class="row align-items-center py-3">
+                    <div class="col-2 offset-4">
+                        
+                            <div class="image">
+                                <img src="{% static 'dict/images/ciis.png' %}" alt="logo">
+                            </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="text text-uppercase font-ubuntu font-xbold font-24 lh-32">cognitive institute<span class="d-block">
+                            of interdisciplinary studies</span></div>
+                    </div>
+                            
+                        
+                    
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="font-16 text-center text-black fw-normal">
+                            F-10, Sej Plaza, Marve Road, Malad (W), Mumbai 400 064 (M.S. - INDIA)
+                        </div>
+                       
+                    </div>
+                </div>
+                <div class="row pt-4">
+                    <div class="col-4">
+                        <div class="font-18 font-semibold">Phone Number: <span class="font-red">+91-8447735517</span></div>
+                    </div>
+                    <div class="col-4">
+                        <div class="font-18 font-semibold text-center">Website: <span class="font-red">www.ciisindia.in</span></div>
+                    </div>
+                    <div class="col-4">
+                        <div class="font-18 font-semibold text-right">Email: <span class="font-red">ciismumbai@gmail.com</span></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="black-border pt-3"></div>
+                    </div>
+                </div>
+            </section>
+            <section class="registration-section px-3 ">
+    
+                        <div class="row">
+                            <div class="col-6 offset-3">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-28 text-uppercase text-center font-semibold text-black grey-border" id="pro">Provisional Registration Form</h5>
+                                    <div class="font-20 font-semibold py-2 text-center text-uppercase text-black">
+                                        Session: {% if coursedetails.session == '' %} - {% else %} {{coursedetails.session}} {% endif %}
+    
+                                   </div>
+                                   <div class=" py-2 text-center font-20 font-semibold text-uppercase text-black">
+                                    Course: {% if otherdetails.coursename == '' %} - {% else %} {{otherdetails.coursename}} {% endif %} 
+    
+                                    </div>
+                                    <div class="font-20 font-semibold py-2 text-center  text-uppercase text-black">
+                                        Stream: {% if otherdetails.streamname == '' %} - {% else %} {{otherdetails.streamname}} {% endif %} 
+    
+                                   </div>
+                                </div>
+    
+                            </div>
+                            <div class="col-3">
+                                <div class="image p-2">
+                                    
+                                    <img src="{{image}}" alt=""  class="pp-img">
+                                </div>
+                            </div>
+                        </div>
+                </section>
+                    
+                <section class="information-section mt-3  px-3">
+                    <div class="row black-full-border py-2">
+                        <div class=" col-12">
+                            <div class="box-title ">
+                                <h5 class="font-28 text-uppercase text-center font-bold text-blue mb-0">General Information</h5>
+    
+                            </div>
+    
+                        </div>
+                    </div>
+                    <div class="pt-3 pb-5">
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="detail-block py-2  font-20 text-black">Name of the Candidate:</div>
+                            </div>
+                            <div class="px-0 col-9 ">
+                                <div class="detail-block py-2  font-20 text-black black-border me-4">{{student.name}}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="detail-block py-2  font-20 text-black">Father's Name:</div>
+                            </div>
+                            <div class="px-0 col-3">
+                                <div class="detail-block py-2  font-20 text-black black-border me-4">{% if student.father_name == '' %} - {% else %} {{student.father_name}} {% endif %}</div>
+                            </div>
+                            <div class="col-2">
+                                <div class="detail-block py-2  font-20 text-black">Mother's Name:</div>
+                            </div>
+                            <div class="col-4 px-0">
+                                <div class="detail-block py-2  font-20 text-black black-border me-4">{% if student.mother_name == '' %} - {% else %} {{student.mother_name}} {% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="detail-block py-2  font-20 text-black">Date of Birth:</div>
+                            </div>
+                            <div class="col-3 px-0">
+                                <div class="detail-block py-2  font-20 black-border me-4 text-black">{% if student.dateofbirth == '' %} - {% else %} {{student.dateofbirth}} {% endif %}</div>
+                            </div>
+                            <div class="col-2">
+                                <div class="detail-block py-2  font-20 text-black">Nationality:</div>
+                            </div>
+                            <div class="col-4 px-0">
+                                <div class="detail-block py-2  font-20 black-border me-4 text-black">{% if student.nationality == '' %} - {% else %} {{student.nationality}} {% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="detail-block py-2  font-20 text-black">Aadhar No.:</div>
+                            </div>
+                            <div class="col-3 px-0">
+                                <div class="detail-block py-2  font-20 black-border me-4 text-black">{% if otherdetails.aadhar == '' %} - {% else %} {{otherdetails.aadhar}} {% endif %}</div>
+                            </div>
+                            <div class="col-2">
+                                <div class="detail-block py-2  font-20 text-black">Passport No.:</div>
+                            </div>
+                            <div class="col-4 px-0">
+                                <div class="detail-block py-2  font-20 black-border me-4 text-black">{% if otherdetails.passport == '' %} - {% else %} {{otherdetails.passport}} {% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="detail-block py-2  font-20 text-black">University Name:</div>
+                            </div>
+                            <div class="col-3 px-0">
+                                <div class="detail-block py-2  font-20 black-border me-4 text-black">{% if otherdetails.university == '' %} - {% else %} {{otherdetails.university}} {% endif %}</div>
+                            </div>
+                            <div class="col-2">
+                                <div class="detail-block py-2  font-20 text-black">Counselor's Name:</div>
+                            </div>
+                            <div class="col-4 px-0">
+                                <div class="detail-block py-2  font-20 black-border me-4 text-black">{% if otherdetails.counselor == '' %} - {% else %} {{otherdetails.counselor}} {% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="detail-block py-2  font-20 text-black">Category:</div>
+                            </div>
+                            <div class="col-3 px-0">
+                                <div class="detail-block py-2  font-20 black-border me-4 text-black">{% if student.category == '' %} - {% else %} {{student.category}} {% endif %}</div>
+                            </div>
+                            <div class="col-2">
+                                <div class="detail-block py-2  font-20 text-black">Gender:</div>
+                            </div>
+                            <div class="col-4 px-0">
+                                <div class="detail-block py-2  font-20 black-border me-4 text-black">{% if student.gender == '' %} - {% else %} {{student.gender}} {% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="detail-block py-2  font-20 text-black">Admission Type:</div>
+                            </div>
+                            <div class="col-3 px-0">
+                                <div class="detail-block py-2  font-20 black-border me-4 text-black">{% if coursedetails.entry_mode == '' %} - {% else %} {{coursedetails.entry_mode}} {% endif %}</div>
+                            </div>
+                            <div class="col-2">
+                                <div class="detail-block py-2  font-20 text-black">Year/Semester:</div>
+                            </div>
+                            <div class="col-4 px-0">
+                                <div class="detail-block py-2  font-20 black-border me-4 text-black">{% if coursedetails.current_semyear == '' %} - {% else %} {{coursedetails.current_semyear}} {% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="detail-block py-2  font-20 text-black">Contact Number:</div>
+                            </div>
+                            <div class="col-3 px-0">
+                                <div class="detail-block py-2  font-20 black-border me-4 text-black">{{student.mobile}} {% if student.alternate_mobile1 != '' %}  / {{student.alternate_mobile1}} {% endif %}</div>
+                            </div>
+                            <div class="col-2">
+                                <div class="detail-block py-2  font-20 text-black">Email Address:</div>
+                            </div>
+                            <div class="col-4 px-0">
+                                <div class="detail-block py-2  font-20 black-border me-4 text-black">{{student.email}} {% if student.alternateemail != '' %}  / {{student.alternateemail}} {% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="detail-block py-2  font-20 text-black">Candidate Address:</div>
+                            </div>
+                            <div class="col-9 px-0">
+                                <div class="detail-block py-2  font-20 text-black black-border me-4">{% if student.address == '' %} - {% else %} {{student.address}} {% endif %}</div>
+                            </div>
+                           
+                        </div>
+                        <div class="row">
+                            <div class="col-2 offset-3 px-0">
+                                <div class="detail-block py-2  font-20 text-black">District:</div>
+                            </div>
+                            <div class="col-2 px-0">
+                                <div class="detail-block py-2 me-4  font-20 text-black black-border">{% if addressdetails.district == '' %} - {% else %} {{addressdetails.district}} {% endif %}</div>
+                            </div>
+                            <div class="col-2">
+                                <div class="detail-block py-2  font-20 text-black">Pin Code:</div>
+                            </div>
+                            <div class="col-3 px-0">
+                                <div class="detail-block py-2 me-4 font-20 text-black black-border">{% if student.pincode == '' %} - {% else %} {{student.pincode}} {% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-2 offset-3 px-0">
+                                <div class="detail-block py-2  font-20 text-black">State:</div>
+                            </div>
+                            <div class="col-2 px-0">
+                                <div class="detail-block py-2 me-4 font-20 text-black black-border">{{addressdetails.state}}</div>
+                            </div>
+                            <div class="col-2">
+                                <div class="detail-block py-2  font-20 text-black">Country:</div>
+                            </div>
+                            <div class="col-3 px-0">
+                                <div class="detail-block py-2 me-4 font-20 text-black black-border">{{addressdetails.country}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                  
+    
+                
+    
+                </section>
+    
+    
+            <section class="qualification-section mt-3 px-3">
+                {% if qualificationdetails != '' %}
+                <table class=" w-100 format-table " id="pdftable">
+                    <thead>
+                        <tr><td colspan="5" class="py-2 font-28 text-uppercase text-blue text-center light-gray-bg">Qualification Information</td></tr>
+                        <tr>
+                            <td class="border text-left py-2 font-20 fw-bold">Examination</td>
+                            <td class=" border text-left py-2 font-20 fw-bold">Year</td>
+                            <td class="border text-left py-2 font-20 fw-bold">Board/University</td>
+                            <td class="border text-left py-2 font-20 fw-bold">Marks(%)</td>
+                            <td class="border text-left py-2 font-20 fw-bold">Subjects</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if qualificationdetails.secondary_year != '' or  qualificationdetails.secondary_board != '' or qualificationdetails.secondary_percentage != ''%}
+                        <tr>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">Secondary</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.secondary_year}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.secondary_board}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.secondary_percentage}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2"></td>
+                        </tr>
+                        {% endif %}
+                        {% if qualificationdetails.sr_year != '' or  qualificationdetails.sr_board != '' or qualificationdetails.sr_percentage != ''%}
+                        <tr>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">Sr. Secondary</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.sr_year}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.sr_board}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.sr_percentage}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2"></td>
+                        </tr>
+                        {% endif %}
+                        {% if qualificationdetails.under_year != '' or  qualificationdetails.under_board != '' or qualificationdetails.under_percentage != ''%}
+                        <tr>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">Graduation</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.under_year}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.under_board}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.under_percentage}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2"></td>
+                        </tr>
+                        {% endif %}
+                        {% if qualificationdetails.post_year != '' or  qualificationdetails.post_board != '' or qualificationdetails.post_percentage != ''%}
+                        <tr>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">Post Graduation</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.post_year}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.post_board}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.post_percentage}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2"></td>
+                        </tr>
+                        {% endif %}
+                        {% if qualificationdetails.mphil_year != '' or  qualificationdetails.mphil_board != '' or qualificationdetails.mphil_percentage != ''%}
+                        <tr>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">Eng. Diploma / ITI</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.mphil_year}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.mphil_board}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2">{{qualificationdetails.mphil_percentage}}</td>
+                            <td class="border py-2 text-left text-uppercase font-20 text-black px-2"></td>
+                        </tr>
+                        {% endif %}
+                       
+                    </tbody>
+                </table>
+                {% else %}
+                <table class="w-100 format-table">
+                    <thead>
+                        <tr><td colspan="5" class="py-2 font-28 text-uppercase text-blue text-center light-gray-bg">Qualification Information</td></tr>
+                        <tr>
+                            <td class="border text-left py-2 font-20 fw-bold text-center">No details found</td>
+                            
+                        </tr>
+                    </thead>
+                </table>
+                {% endif %}
+            </section>   
+            <section class="declaration-section my-3 pt-4 pb-5 px-3">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="font-28 fw-bold text-center">Declaration</div>
+                        <p>I hereby declare that entries made by me in this provisional registration form and the documents submitted by me alongwith it, are true to the best of my knowledge, in all respects and in any case, if any information is found to be false, thisshall entail automatic cancellation of my registration and forfeiture of all fee deposited, besides rendering me liable tosuch action as the University may deem proper.</p>
+                    <p>I take note that my registration to the University and continuation on its roll are subject to the provisions of rules of theUniversity, issued from time to time. I shall abide by the rules of discipline and proper conduct. I am fully aware of the lawregarding ragging as well as the punishment and that if found guilty on this account I am liable to be punishedappropriately. I hereby undertake that I shall not indulge in any act of ragging.</p>
+                    <p>Enrollment will only be issued after verification of documents and eligibility.</p>
+                    <p>In such circumstances, I will have no claim for refund of fees deposited by me at the University.</p>
+                </div>
+                <div class="row pt-5 mt-5">
+                    <div class="col-3">
+                        <p>Place:</p>
+                    </div>
+                    <div class="col-3 offset-6">
+                        <p>(Signature of Candidate)</p>
+                    </div>
+                </div>
+                </div>
+            </section>            
+                     
+    
+    </div>
+</div>
+
+{% endblock body %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+            $('#save').on('click', function () {
+                var name = "{{student.name}}"
+                var pdfname = `${name}.pdf`;
+                document.getElementById('pdf').classList.add('pdf-hidden');
+                html2canvas(document.getElementById('pdf'), {
+                    onrendered: function (canvas) {
+                        var imgData = canvas.toDataURL('image/png');
+                        var doc = new jsPDF('p', 'pt', 'a4');
+                        var margin = 20; // Define margin in points
+                        var pageWidth = doc.internal.pageSize.width;
+                        var pageHeight = doc.internal.pageSize.height;
+                        var canvasWidth = canvas.width;
+                        var canvasHeight = canvas.height;
+                        var ratio = Math.min((pageWidth - 2 * margin) / canvasWidth, (pageHeight - 2 * margin) / canvasHeight);
+                        var imgWidth = canvasWidth * ratio;
+                        var imgHeight = canvasHeight * ratio;
+
+                        doc.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+                        doc.save(pdfname);
+                    }
+                });
+             
+            });
+        });
+</script>
+{% endblock script %}

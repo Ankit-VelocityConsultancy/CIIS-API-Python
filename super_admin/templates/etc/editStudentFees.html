@@ -1,0 +1,168 @@
+<<<<<<< HEAD
+{% extends 'admin.html' %}
+
+{% block head %}
+<style>
+    body{
+        background: linear-gradient(45deg, #ce1e53, #8f00c7);
+    }
+</style>
+{% endblock head %}
+
+{% block body %}
+{% if display == "yes" %}
+<main>
+    <div class="flex-shrink-0 p-3 bg-white" style="width: 280px;">
+        <ul class="list-unstyled ps-0">
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#home-collapse" aria-expanded="false">
+                    Home
+                </button>
+                <div class="collapse show" id="home-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'overview' %}" class="link-dark rounded">Overview</a></li>
+                        <li><a href="{% url 'editfees' %}" class="nav-link active">Edit Student Fees</a></li>
+                        
+                    </ul>
+                </div>
+            </li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded" data-bs-toggle="collapse"
+                    data-bs-target="#dashboard-collapse" aria-expanded="true">
+                    Dashboard
+                </button>
+                <div class="collapse " id="dashboard-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'pendingfees' %}" class="link-dark rounded">Pending Fees</a></li>
+                        <li><a href="{% url 'paidfees' %}" class="link-dark rounded">Paid Fees</a></li>
+                        <li><a href="{% url 'studentreport' %}" class="link-dark rounded">Student Report</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#orders-collapse" aria-expanded="false">
+                    Add Data
+                </button>
+                <div class="collapse" id="orders-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'addcourse' %}" class="link-dark rounded">Add Courses</a></li>
+                        <li><a href="{% url 'addspecialization' %}" class="link-dark rounded">Add Specialization</a></li>
+                        <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Add Student</a></li>
+                        <li><a href="{% url 'readmission' %}" class="link-dark rounded">Student Re-Admission</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="border-top my-3"></li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#account-collapse" aria-expanded="false">
+                    Account
+                </button>
+                <div class="collapse" id="account-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="#" class="link-dark rounded">New...</a></li>
+                        <li><a href="#" class="link-dark rounded">Profile</a></li>
+                        <li><a href="#" class="link-dark rounded">Settings</a></li>
+                        <li><a href="{% url 'logout' %}" class="link-dark rounded">Sign out</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="b-example-divider"></div>
+
+    <div class="flex-shrink-0 p-3 bg-white" style="width:77%;">
+        
+    </div>
+</main>
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+=======
+{% extends 'admin.html' %}
+
+{% block head %}
+<style>
+    body{
+        background: linear-gradient(45deg, #ce1e53, #8f00c7);
+    }
+</style>
+{% endblock head %}
+
+{% block body %}
+{% if display == "yes" %}
+<main>
+    <div class="flex-shrink-0 p-3 bg-white" style="width: 280px;">
+        <ul class="list-unstyled ps-0">
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#home-collapse" aria-expanded="false">
+                    Home
+                </button>
+                <div class="collapse show" id="home-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'overview' %}" class="link-dark rounded">Overview</a></li>
+                        <li><a href="{% url 'editfees' %}" class="nav-link active">Edit Student Fees</a></li>
+                        
+                    </ul>
+                </div>
+            </li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded" data-bs-toggle="collapse"
+                    data-bs-target="#dashboard-collapse" aria-expanded="true">
+                    Dashboard
+                </button>
+                <div class="collapse " id="dashboard-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'pendingfees' %}" class="link-dark rounded">Pending Fees</a></li>
+                        <li><a href="{% url 'paidfees' %}" class="link-dark rounded">Paid Fees</a></li>
+                        <li><a href="{% url 'studentreport' %}" class="link-dark rounded">Student Report</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#orders-collapse" aria-expanded="false">
+                    Add Data
+                </button>
+                <div class="collapse" id="orders-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="{% url 'addcourse' %}" class="link-dark rounded">Add Courses</a></li>
+                        <li><a href="{% url 'addspecialization' %}" class="link-dark rounded">Add Specialization</a></li>
+                        <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Add Student</a></li>
+                        <li><a href="{% url 'readmission' %}" class="link-dark rounded">Student Re-Admission</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="border-top my-3"></li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                    data-bs-target="#account-collapse" aria-expanded="false">
+                    Account
+                </button>
+                <div class="collapse" id="account-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="#" class="link-dark rounded">New...</a></li>
+                        <li><a href="#" class="link-dark rounded">Profile</a></li>
+                        <li><a href="#" class="link-dark rounded">Settings</a></li>
+                        <li><a href="{% url 'logout' %}" class="link-dark rounded">Sign out</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="b-example-divider"></div>
+
+    <div class="flex-shrink-0 p-3 bg-white" style="width:77%;">
+        
+    </div>
+</main>
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

@@ -1,0 +1,502 @@
+<<<<<<< HEAD
+{% extends 'admin.html' %}
+{% load static %}
+{% block head %}
+<style>
+    body{ background-color: white;
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+</style>
+{% endblock head %}
+
+
+{% block nav %}
+<header>
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+        <div class="position-sticky">
+            <div class="list-group list-group-flush mx-3 mt-4">
+                <a href="{% url 'overview' %}" class="list-group-item list-group-item-action py-2 ripple"
+                    aria-current="true">
+                    <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+                </a>
+
+
+                <ul class="list-unstyled ps-0">
+                    <li class="">
+                        <button class="list-group-item list-group-item-action py-2 ripple active"
+                            data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+                            <i class="fas fa-users-cog fa-fw me-3"></i><span>Stud Management</span>
+                        </button>
+                        <div class="collapse show" id="dashboard-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Student Registration</a>
+                                </li>
+                                <li><a href="{% url 'addfees' %}" class="link-dark rounded">Add Student Fee</a></li>
+                                <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Pending Student
+                                        Verification</a></li>
+                                <li><a href="{% url 'registered' %}" class="link-dark rounded">Registered Student</a></li>
+                                <li><a href="#" class="link-dark rounded">Passout Student</a></li>
+                                <li><a href="{% url 'registrationcash' %}" class="link-dark rounded">Re-Registration Through Cash Challan</a></li>
+                                <li><a href="#" class="link-dark rounded">Re-Registration Through RTGS/NEFT</a></li>
+                                <li><a href="#" class="link-dark rounded">Enroll Student Cash/RTGS/NEFT</a></li>
+                                <li><a href="#" class="link-dark rounded">View CASH/RTGS/NEFT</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="list-unstyled ps-0">
+                    <li class="">
+                        <button class="list-group-item list-group-item-action py-2 ripple active"
+                            data-bs-toggle="collapse" data-bs-target="#course-collapse" aria-expanded="true">
+                            <i class="fas fa-users-cog fa-fw me-3"></i><span>My Course/Subject</span>
+                        </button>
+                        <div class="collapse " id="course-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li><a href="{% url 'addcourse' %}" class="link-dark rounded">My Course</a></li>
+                                <li><a href="{% url 'addstream' %}" class="link-dark rounded">My Subject</a></li>
+                                <li><a href="#" class="link-dark rounded">Add Center Subjects</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+
+
+
+
+
+                <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
+                        class="fas fa-lock fa-fw me-3"></i><span>Password</span></a>
+
+            </div>
+        </div>
+    </nav>
+    <!-- Sidebar -->
+
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
+                aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Brand -->
+            <a class="navbar-brand" href="#">
+                <img src="" height="25" alt="" loading="lazy" />
+            </a>
+            <!-- Search form -->
+            <form class="d-none d-md-flex input-group w-auto my-auto">
+                <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                    style="min-width: 225px" />
+                <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+            </form>
+
+            <!-- Right links -->
+            <ul class="navbar-nav ms-auto d-flex flex-row">
+                <!-- Notification dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink"
+                        role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">Some news</a></li>
+                        <li><a class="dropdown-item" href="#">Another news</a></li>
+                        <li>
+                            <a class="dropdown-item" href="#">Something else</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Icon -->
+                <li class="nav-item">
+                    <a class="nav-link me-3 me-lg-0" href="#">
+                        <i class="fas fa-fill-drip"></i>
+                    </a>
+                </li>
+                <!-- Icon -->
+                <li class="nav-item me-3 me-lg-0">
+                    <a class="nav-link" href="#">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </li>
+
+                <!-- Icon dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                        role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                        <i class="united kingdom flag m-0"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="united kingdom flag"></i>English
+                                <i class="fa fa-check text-success ms-2"></i></a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider" />
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="poland flag"></i>Polski</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="china flag"></i>中文</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="japan flag"></i>日本語</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="germany flag"></i>Deutsch</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="france flag"></i>Français</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="spain flag"></i>Español</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="russia flag"></i>Русский</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="portugal flag"></i>Português</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Avatar -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#"
+                        id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                        <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                            height="22" alt="" loading="lazy" />
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">My profile</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="#">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<div class="container">
+    <div class="form">
+      <div class="header-tag">
+        <h3>Enter Enrollment ID</h3>
+      </div>
+      <form action="" method="POST" id="enrollform">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="enroll_id" class="form-label">Enroll ID</label>
+              <input type="number" name="enrollid" class="form-control" id="enroll_id" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <button type="submit" class="btn btn-primary" style="margin-top:20px;">Search</button>
+          </div>
+          <div class="col-sm-5">
+  
+            <h3 id="notfound" style="color:green;margin-top:20px ;"></h3>
+  
+          </div>
+        </div>
+      </form>
+    </div>
+
+  
+      
+</div>
+{% endif %}
+
+
+<script language="JavaScript">
+    document.addEventListener("wheel", function (event) {
+        if (document.activeElement.type === "number") {
+            document.activeElement.blur();
+        }
+    });
+    $(document).ready(function() {
+        $('#enrollform').submit(function() { // catch the form's submit event
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'enrollid': $('#enroll_id').val()
+                }, // get the form data
+                type: "POST", // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'registrationcash' %}", // the file to call
+                success: function(response) { // on success..
+                   console.log("success")
+                }
+            });
+            return false;
+        });
+    });
+</script>
+=======
+{% extends 'admin.html' %}
+{% load static %}
+{% block head %}
+<style>
+    body{ background-color: white;
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+</style>
+{% endblock head %}
+
+
+{% block nav %}
+<header>
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+        <div class="position-sticky">
+            <div class="list-group list-group-flush mx-3 mt-4">
+                <a href="{% url 'overview' %}" class="list-group-item list-group-item-action py-2 ripple"
+                    aria-current="true">
+                    <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+                </a>
+
+
+                <ul class="list-unstyled ps-0">
+                    <li class="">
+                        <button class="list-group-item list-group-item-action py-2 ripple active"
+                            data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+                            <i class="fas fa-users-cog fa-fw me-3"></i><span>Stud Management</span>
+                        </button>
+                        <div class="collapse show" id="dashboard-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Student Registration</a>
+                                </li>
+                                <li><a href="{% url 'addfees' %}" class="link-dark rounded">Add Student Fee</a></li>
+                                <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Pending Student
+                                        Verification</a></li>
+                                <li><a href="{% url 'registered' %}" class="link-dark rounded">Registered Student</a></li>
+                                <li><a href="#" class="link-dark rounded">Passout Student</a></li>
+                                <li><a href="{% url 'registrationcash' %}" class="link-dark rounded">Re-Registration Through Cash Challan</a></li>
+                                <li><a href="#" class="link-dark rounded">Re-Registration Through RTGS/NEFT</a></li>
+                                <li><a href="#" class="link-dark rounded">Enroll Student Cash/RTGS/NEFT</a></li>
+                                <li><a href="#" class="link-dark rounded">View CASH/RTGS/NEFT</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="list-unstyled ps-0">
+                    <li class="">
+                        <button class="list-group-item list-group-item-action py-2 ripple active"
+                            data-bs-toggle="collapse" data-bs-target="#course-collapse" aria-expanded="true">
+                            <i class="fas fa-users-cog fa-fw me-3"></i><span>My Course/Subject</span>
+                        </button>
+                        <div class="collapse " id="course-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li><a href="{% url 'addcourse' %}" class="link-dark rounded">My Course</a></li>
+                                <li><a href="{% url 'addstream' %}" class="link-dark rounded">My Subject</a></li>
+                                <li><a href="#" class="link-dark rounded">Add Center Subjects</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+
+
+
+
+
+                <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
+                        class="fas fa-lock fa-fw me-3"></i><span>Password</span></a>
+
+            </div>
+        </div>
+    </nav>
+    <!-- Sidebar -->
+
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
+                aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Brand -->
+            <a class="navbar-brand" href="#">
+                <img src="" height="25" alt="" loading="lazy" />
+            </a>
+            <!-- Search form -->
+            <form class="d-none d-md-flex input-group w-auto my-auto">
+                <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                    style="min-width: 225px" />
+                <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+            </form>
+
+            <!-- Right links -->
+            <ul class="navbar-nav ms-auto d-flex flex-row">
+                <!-- Notification dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink"
+                        role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">Some news</a></li>
+                        <li><a class="dropdown-item" href="#">Another news</a></li>
+                        <li>
+                            <a class="dropdown-item" href="#">Something else</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Icon -->
+                <li class="nav-item">
+                    <a class="nav-link me-3 me-lg-0" href="#">
+                        <i class="fas fa-fill-drip"></i>
+                    </a>
+                </li>
+                <!-- Icon -->
+                <li class="nav-item me-3 me-lg-0">
+                    <a class="nav-link" href="#">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </li>
+
+                <!-- Icon dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                        role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                        <i class="united kingdom flag m-0"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="united kingdom flag"></i>English
+                                <i class="fa fa-check text-success ms-2"></i></a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider" />
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="poland flag"></i>Polski</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="china flag"></i>中文</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="japan flag"></i>日本語</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="germany flag"></i>Deutsch</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="france flag"></i>Français</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="spain flag"></i>Español</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="russia flag"></i>Русский</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="portugal flag"></i>Português</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Avatar -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#"
+                        id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                        <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                            height="22" alt="" loading="lazy" />
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">My profile</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="#">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<div class="container">
+    <div class="form">
+      <div class="header-tag">
+        <h3>Enter Enrollment ID</h3>
+      </div>
+      <form action="" method="POST" id="enrollform">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="enroll_id" class="form-label">Enroll ID</label>
+              <input type="number" name="enrollid" class="form-control" id="enroll_id" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <button type="submit" class="btn btn-primary" style="margin-top:20px;">Search</button>
+          </div>
+          <div class="col-sm-5">
+  
+            <h3 id="notfound" style="color:green;margin-top:20px ;"></h3>
+  
+          </div>
+        </div>
+      </form>
+    </div>
+
+  
+      
+</div>
+{% endif %}
+
+
+<script language="JavaScript">
+    document.addEventListener("wheel", function (event) {
+        if (document.activeElement.type === "number") {
+            document.activeElement.blur();
+        }
+    });
+    $(document).ready(function() {
+        $('#enrollform').submit(function() { // catch the form's submit event
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'enrollid': $('#enroll_id').val()
+                }, // get the form data
+                type: "POST", // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'registrationcash' %}", // the file to call
+                success: function(response) { // on success..
+                   console.log("success")
+                }
+            });
+            return false;
+        });
+    });
+</script>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

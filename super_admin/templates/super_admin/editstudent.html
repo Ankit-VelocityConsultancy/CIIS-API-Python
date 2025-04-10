@@ -1,0 +1,3346 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<script src="{% static 'dict/js/studentregistration.js' %}"></script>
+
+{% endblock head %}
+
+
+
+
+{% block body %}
+<script>
+    $(document).ready(function () {
+
+
+        $("#student_image").change(function () {
+            $("#uploaded-image").text(this.files[0].name);
+        });
+        $("#secondary_document").change(function () {
+            $("#uploaded-doc-secondary").text(this.files[0].name);
+        });
+        $("#sr_document").change(function () {
+            $("#uploaded-doc-sr").text(this.files[0].name);
+        });
+        $("#under_document").change(function () {
+            $("#uploaded-doc-under").text(this.files[0].name);
+        });
+        $("#post_document").change(function () {
+            $("#uploaded-doc-post").text(this.files[0].name);
+        });
+
+        $("#mphil_document").change(function () {
+            $("#uploaded-doc-mphil").text(this.files[0].name);
+        });
+        $("#other_document").change(function () {
+            $("#uploaded-doc-other").text(this.files[0].name);
+        });
+        uploadpersonaldocs();
+        uploadqualdoc();
+        $("#personaldocs_counter").change(function () {
+            uploadpersonaldocs();
+    })
+    $("#qual_other_counter").change(function () {
+            uploadqualdoc();
+    })
+       
+        
+    });
+    function uploadpersonaldocs(){
+            
+             
+            if ($("#personaldocs_counter").val() == ''){
+                personaldoccounter = '{{personaldoccounter}}';
+            }
+            else {
+                temp = $("#personaldocs_counter").val();
+                personaldoccounter = parseInt(temp)
+            }
+
+            for (var i = 1; i <= personaldoccounter; i++) {
+                    (function(i) {
+                        var docfront = `#uploaded-doc-front-${i}`;
+                        var front = `#DocumentFront${i}`;
+                        var docback = `#uploaded-doc-back-${i}`;
+                        var back = `#DocumentBack${i}`;
+                        $(document).on('change', front, function() {
+                        $(docfront).text(this.files[0].name);
+                    });
+                    $(document).on('change', back, function() {
+                        $(docback).text(this.files[0].name);
+                    });
+                    })(i);
+            }
+        
+        }
+
+        function uploadqualdoc(){
+            
+            
+                temp = $("#qual_other_counter").val();
+                personaldoccounter = parseInt(temp)
+            
+
+            for (var i = 1; i <= personaldoccounter; i++) {
+                    (function(i) {
+                        var docfront = `#uploaded-doc-other_${i}`;
+                        var front = `#other_document_${i}`;
+                       
+                        $(document).on('change', front, function() {
+                        
+                        $(docfront).text(this.files[0].name);
+                    });
+                   
+                    })(i);
+            }
+        
+        }
+</script>
+
+{% if request.user.is_superuser or request.user.is_data_entry %}
+
+<div class="edit-student pages-body-bg-color py-5">
+
+    <section class="message-display-section" id="message">
+
+    </section>
+
+    <form method="POST" action="{% url 'saveEditStudent' %}" id="edit_student_form" enctype="multipart/form-data">
+        {% csrf_token %}
+    {% for i in student %}
+    <section class="edit-personal-details-section  ">
+              <h1>{{student}}</h1>
+        <div class="row">
+            <div class="col-12">
+                <div class="outer-rectangle">
+                    <div class="inner-block px-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-18 text-uppercase font-bold text-black">Personal Details <input
+                                            type="text" id="student_enrollment_id" value="{{i.enrollment_id}}"
+                                            style="height:40px;width:100px;font-size: 15px;" name="student_enrollment_id"></h5>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="select-options py-4">
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired">University</label>
+                                        <input type="hidden" name="university" id="university" value="{{i.university.registrationID}}">
+                                        <input type="text"  class="width-100 font-14 font-bold text-extralightgray" readonly name="universityname" id="universityname" value=" {{i.university.university_name}}">
+                                        <!--select name="university" id="university"
+                                            class="width-100 font-14 font-bold text-extralightgray">
+                                            <option value="{{i.university.registrationID}}" class="option-format">
+                                                {{i.university.university_name}}</option>
+                                            {% for uni in university %}
+                                            <option value="{{uni.registrationID}}" class="option-format">{{uni.university_name}}</option>
+                                            {% endfor %}
+
+                                        </select-->
+
+
+
+                                    </div>
+
+
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="detail-block py-2 pt-4">
+                                        <div class="file-upload">
+
+                                            <div
+                                                class="button-wrapper     width-100 font-14 font-bold text-extralightgray  "id="imagefile">
+                                                <label for="student_image"
+                                                    class="labelrequired bg-darkgray width-100 font-14 font-bold  text-extralightgray  file-btn-form">Choose
+                                                    File for Student Image</label>
+                                                <input type="file" id="student_image" name="student_image"
+                                                    style="display:none">
+                                                {% if i.image == '' or i.image == undefined or i.image == 'False' %}
+                                                    <label id="uploaded-image"
+                                                        class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                        files chosen</label>
+                                                    {% else %}
+                                                        <a href="/media/{{i.image}}" target="new" style="cursor:pointer">
+                                                            <label id="uploaded-image" name="uploaded-image"
+                                                        class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Image</label>
+                                                        </a>
+                                                    {% endif %}
+                                                
+                                            </div>
+
+                                        </div>
+
+
+
+                                    </div>
+
+
+
+
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Name</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="text" placeholder="" id="name" name="name"
+                                            value="{{i.name}}">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Date of Birth</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="text" name="dateofbirth" id="dateofbirth" onfocus="(this.type='date')"
+                                            placeholder="" value="{{i.dateofbirth}}">
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Father's/Husband's Name</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="text" name="fathers_name" id="fathers_name"
+                                            placeholder="" value="{{i.father_name}}">
+
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Mother's Name</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="text" name="mothers_name" placeholder="" id="mothers_name"
+                                            value="{{i.mother_name}}">
+
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Email Address</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="email" name="email" placeholder="" id="email"
+                                            value="{{i.email}}">
+
+                                    </div>
+                                    <label for="email" id="is_email_available" ></label>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Alternate Email Address</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="email" name="alternateemail" placeholder=""
+                                            id="alternateemail" value="{{i.alternateemail}}">
+
+                                    </div>
+                                    <label for="alternateemail" id="is_alt_email_available"></label>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Mobile Number</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="text" required name="mobile" id="mobile" placeholder=""
+                                            value="{{i.mobile}}" pattern="[0-9]*" maxlength="10">
+
+                                    </div>
+                                    <label for="mobile" id="is_mobile_available" ></label>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Alternate Mobile Number</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="text" name="alternatemobile1" placeholder=""
+                                            id="alternatemobile1" value="{{i.alternate_mobile1}}" pattern="[0-9]*" maxlength="10">
+
+                                    </div>
+                                    <label for="alternatemobile1" id="is_alt_mobile_available"></label>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Gender</label>
+                                        <select placeholder=""
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            name="gender" id="gender">
+                                            <option class="option-format" selected>{{i.gender}}</option>
+                                            <option class="option-format" value="Male">Male</option>
+                                            <option class="option-format" value="Female">Female</option>
+                                            <option class="option-format" value="Rather Not SAY">Rather Not SAY</option>
+                                        </select>
+
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+
+                                        <label for="" class="labelnotrequired">Category</label>
+                                        <select
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="category" name="category" aria-placeholder="">
+                                            <option class="option-format" selected value="{{i.category}}">{{i.category}}
+                                            </option>
+                                            <option class="option-format" value="General(Open)">General(Open)</option>
+                                            <option class="option-format" value="Other Backward Class(OBC)">Other
+                                                Backward Class(OBC)</option>
+                                            <option class="option-format" value="Scheduled Cast(SC)">Scheduled Cast(SC)
+                                            </option>
+                                            <option class="option-format" value="Scheduled Tribe(ST)">Scheduled
+                                                Tribe(ST)</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Current Address</label>
+                                        <textarea type="text" name="address"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="address" placeholder="">{{i.address}}</textarea>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Alternate Address</label>
+                                        <textarea type="text" name="alternateaddress"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="alternateaddress"
+                                            placeholder="">{{i.alternateaddress}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-4">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Country</label>
+                                        <select name="country"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="countryId">
+                                            <option class="option-format" value="{{i.country.id}}">{{i.country.name}}
+                                            </option>
+                                            {% for j in country %}
+                                            <option class="option-format" value="{{j.id}}">{{j.name}}</option>
+                                            {% endfor %}
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">State</label>
+                                        <select name="state"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="stateId">
+                                            <option class="option-format" value="{{i.state.id}}">{{i.state.name}}
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">City</label>
+                                        <select name="city"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="cityId">
+                                            <option class="option-format" value="{{i.city.id}}">{{i.city.name}}</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Nationality</label>
+                                        <input type="text" name="nationality" value="{{i.nationality}}"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="nationality" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Pincode</label>
+                                        <input type="text" name="Pincode" placeholder="Pincode" value="{{i.pincode}}"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="Pincode"  placeholder="" required pattern="[0-9]*" maxlength="6">
+                                    </div>
+                                    <label for="Pincode" id="pin_error"></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Student Remarks</label>
+                                        <textarea type="text" name="student_remarks"
+                                            class="width-100 font-14 font-bold text-extralightgray  "
+                                            id="student_remarks"
+                                            placeholder="">{{i.student_remarks}}</textarea>
+                                    </div>
+                                </div>
+                            
+
+                                <div class="col-3">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Counselor Name</label>
+                                        <input type="text"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            value="{{i.additionalenrollmentdetails.counselor_name}}" id="counselor_name"
+                                            placeholder="" name="counselor_name">
+                                    </div>
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">University Enrollment Number</label>
+                                        <input type="text"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            value="{{i.additionalenrollmentdetails.university_enrollment_id}}"
+                                            id="university_enrollment_number"
+                                            placeholder="" name="university_enrollment_number">
+                                    </div>
+                                </div>
+
+                                <div class="col-3">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Reference Name</label>
+                                        <input type="text"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            value="{{i.additionalenrollmentdetails.reference_name}}" id="reference_name"
+                                            placeholder="" name="reference_name">
+                                    </div>
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Registration Number</label>
+                                        <input type="text"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="registration_number" value="{{i.additionalenrollmentdetails.registration_number}}"
+                                            name="registration_number"
+                                            placeholder="">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="personal-section   mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="outer-rectangle">
+                    <div class="inner-block px-4">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-18 text-uppercase font-bold text-black">Personal Documents
+                                    </h5>
+                                </div>
+
+                            </div>
+                            <div class="col-6">
+                                <input type="hidden" id="no_of_documents" name="no_of_documents" style="visibility: visible;">
+                            </div>
+                        </div>
+
+                        <div class="select-options py-4">
+
+                            <div class="row">
+                                <div class="col-12">
+
+                                    <div class="document-table ">
+                                        <table id="personaldocs" class="table format-form-table">
+                                           
+                                            <thead>
+                                                <tr>
+                                                    <th class="font-bold text-extralightgray  px-2" scope="col">
+                                                        Document Type<span class="labelrequired"></span> </th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        Name as on Document</th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        ID Number</th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        Upload Front (only PDF/JPG)<span class="labelrequired"></span></th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        Upload Back(only PDF/JPG)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <input type="hidden" id="personaldocs_counter" name="personaldocs_counter" value="{{ i.personaldocs|length }}">
+                                                {% for j in i.personaldocs %}
+                                                {% if forloop.last %}
+                                                
+                                                <!-- This block is executed on the last iteration -->
+                                                
+                                            {% endif %}
+                                                <tr>
+                                                    <td>
+                                                      
+                                                       <input type="hidden" name="docid{{forloop.counter}}" value = "{{j.id}}">
+                
+                                                        <input type="text" value="{{j.document}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="document{{forloop.counter}}" id="document{{forloop.counter}}">
+                                                       </td>
+                                                    <td>
+                                                        <input type="text" value=" {{j.document_name}}"
+                                                        class="width-100 font-14 font-bold text-extralightgray"
+                                                        name="DocumentName{{forloop.counter}}" id="DocumentName{{forloop.counter}}">
+                                                        </td>
+                                                    <td >
+                                                        <input type="text" value=" {{j.document_ID_no}}"
+                                                        class="width-100 font-14 font-bold text-extralightgray"
+                                                        name="DocumentID{{forloop.counter}}" id="DocumentID{{forloop.counter}}">
+                                                    </td>
+                                                    <td class="w-30">
+                                                        <div class="personal button-wrapper transparent-input">
+                                                            <label for="DocumentFront{{forloop.counter}}"
+                                                                class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                                Document</label>
+                                                            <input type="file" id="DocumentFront{{forloop.counter}}" name="DocumentFront{{forloop.counter}}"
+                                                                style="display:none" accept="application/pdf,image/jpeg" />
+                                                            {% if j.document_image_front == '' or j.document_image_front == 'False' %}
+                                                            <label id="uploaded-doc-front-{{forloop.counter}}"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                                Documents</label>
+                                                            {% else %}
+                                                                <a href="/media/{{j.document_image_front}}" target="new" style="cursor:pointer">
+                                                                    <label id="uploaded-doc-front-{{forloop.counter}}"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                                </a>
+                                                            {% endif %}
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-30"><div class="personal button-wrapper transparent-input">
+                                                        <label for="DocumentBack{{forloop.counter}}"
+                                                            class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                            Document</label>
+                                                        <input type="file" id="DocumentBack{{forloop.counter}}" name="DocumentBack{{forloop.counter}}"
+                                                            style="display:none" accept="application/pdf,image/jpeg">
+                                                        {% if j.document_image_back == '' or j.document_image_back == 'False' %}
+                                                        <label id="uploaded-doc-back-{{forloop.counter}}"
+                                                            class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                            documents</label>
+                                                        {% else %}
+                                                            <a href="/media/{{j.document_image_back}}" target="new" style="cursor:pointer">
+                                                                <label id="uploaded-doc-back-{{forloop.counter}}"
+                                                            class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                            </a>
+                                                        {% endif %}
+                                                    </div></td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 col-md-2">
+                                    <a class="  width-100" id="addRow" >
+                                        <button type="button" onclick="AddDocumentRow()"  class="edit-btn red-btn ">Add new row</button></a>
+                                </div>
+                            </div>
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="edit-qualification-details-section   mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="outer-rectangle">
+                    <div class="inner-block px-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-18 text-uppercase font-bold text-black">Qualification Documents
+                                    </h5>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="select-options py-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="document-table">
+                                        <table class="table format-form-table" id="qualification">
+                                            <thead>
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">Exam
+                                                    </th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">Year
+                                                        of Passing</th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        Board/University</th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        Percentage(%)</th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        Upload Document (only PDF/JPG)</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2">Secondary/High
+                                                        School</th>
+                                                    <td>
+                                                        <input type="text" value="{{i.qualification.secondary_year}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="secondary_year" id="secondary_year">
+                                                    </td>
+                                                    <td><input type="text" value="{{i.qualification.secondary_board}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="secondary_board" id="secondary_board"></td>
+                                                    <td><input type="text"
+                                                            value="{{i.qualification.secondary_percentage}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="secondary_percentage" id="secondary_percentage"></td>
+                                                    <td>
+                                                        <div class="button-wrapper transparent-input">
+                                                            <label for="secondary_document"
+                                                                class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                                Document</label>
+                                                            <input type="file" id="secondary_document" name="secondary_document"
+                                                                style="display:none">
+                                                            {% if i.qualification.secondary_document == '' or i.qualification.secondary_document == 'False' or i.qualification.secondary_document == undefined %}
+                                                            <label id="uploaded-doc-secondary"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                                Documents</label>
+                                                            {% else %}
+                                                                <a href="/media/{{i.qualification.secondary_document}}" target="new" style="cursor:pointer">
+                                                                    <label id="uploaded-doc-secondary"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                                </a>
+                                                            {% endif %}
+                                                        </div>
+                                                        
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2">Sr. Secondary
+                                                    </th>
+                                                    <td>
+                                                        <input type="text" value="{{i.qualification.sr_year}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="sr_year" id="sr_year">
+                                                    </td>
+                                                    <td><input type="text" value="{{i.qualification.sr_board}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="sr_board" id="sr_board"></td>
+                                                    <td><input type="text" value="{{i.qualification.sr_percentage}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="sr_percentage" id="sr_percentage"></td>
+                                                    <td>
+
+                                                        <div class="button-wrapper transparent-input ">
+                                                            <label for="sr_document"
+                                                                class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                                Document</label>
+                                                            <input type="file" id="sr_document" name="sr_document" style="display:none">
+                                                            {% if i.qualification.sr_document == '' or i.qualification.sr_document == 'False'  or i.qualification.sr_document == undefined %}
+                                                            <label id="uploaded-doc-sr"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                                Documents </label>
+                                                            {% else %}
+                                                                <a href="/media/{{i.qualification.sr_document}}" target="new" style="cursor:pointer">
+                                                                    <label id="uploaded-doc-sr"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                                </a>
+                                                            {% endif %}
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2">Under Graduation
+                                                    </th>
+                                                    <td>
+                                                        <input type="text" value="{{i.qualification.under_year}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="under_year" id="under_year">
+                                                    </td>
+                                                    <td><input type="text" value="{{i.qualification.under_board}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="under_board" id="under_board"></td>
+                                                    <td><input type="text" value="{{i.qualification.under_percentage}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="under_percentage" id="under_percentage"></td>
+                                                    <td>
+                                                        <div class="button-wrapper transparent-input">
+                                                        <label for="under_document"
+                                                            class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                            Document</label>
+                                                        <input type="file" id="under_document" name="under_document" style="display:none">
+                                                            {% if i.qualification.under_document == '' or i.qualification.under_document == 'False'  or i.qualification.under_document == undefined %}
+                                                            <label id="uploaded-doc-under"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                                Documents</label>
+                                                            {% else %}
+                                                                <a href="/media/{{i.qualification.under_document}}" target="new" style="cursor:pointer">
+                                                                    <label id="uploaded-doc-under"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                                </a>
+                                                            {% endif %}
+                                                          
+                                                           
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray px-2">Post Graduation
+                                                    </th>
+                                                    <td>
+                                                        <input type="text" value="{{i.qualification.post_year}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="post_year" id="post_year">
+                                                    </td>
+                                                    <td><input type="text" value="{{i.qualification.post_board}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="post_board" id="post_board"></td>
+                                                    <td><input type="text" value="{{i.qualification.post_percentage}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="post_percentage" id="post_percentage"></td>
+                                                    <td>
+                                                        <div class="button-wrapper transparent-input">
+                                                            <label for="post_document"
+                                                                class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                                Document</label>
+                                                            <input type="file" id="post_document" name="post_document" style="display:none">
+                                                            {% if i.qualification.post_document == '' or i.qualification.post_document == 'False' or i.qualification.post_document == undefined %}
+                                                            <label id="uploaded-doc-post"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                                Documents</label>
+                                                            {% else %}
+                                                                <a href="/media/{{i.qualification.post_document}}" target="new" style="cursor:pointer">
+                                                                    <label id="uploaded-doc-post"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                                </a>
+                                                            {% endif %}
+                                                            
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2">Eng. Diploma / ITI</th>
+                                                    <td>
+                                                        <input type="text" value="{{i.qualification.mphil_year}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray" name="mphil_year" id="mphil_year">
+                                                    </td>
+                                                    <td><input type="text" value="{{i.qualification.mphil_board}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="mphil_board" id="mphil_board"></td>
+                                                    <td><input type="text" value="{{i.qualification.mphil_percentage}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray" name="mphil_percentage" id="mphil_percentage"></td>
+                                                    <td>
+                                                        <div class="button-wrapper transparent-input">
+                                                            <label for="mphil_document" class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                                Document</label>
+                                                            <input type="file" name="mphil_document" id="mphil_document" style="display:none">
+                                                            {% if i.qualification.mphil_document == '' or i.qualification.mphil_document == 'False'  or i.qualification.mphil_document == undefined %}
+                                                            <label id="uploaded-doc-mphil"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                                Documents</label>
+                                                            {% else %}
+                                                                <a href="/media/{{i.qualification.mphil_document}}" target="new" style="cursor:pointer">
+                                                                    <label id="uploaded-doc-mphil"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                                </a>
+                                                            {% endif %}
+
+                                                        </div>
+                                                        
+                                                    </td>
+                                                   
+                                                    
+                                                </tr>
+                                                <input type="hidden" id="qual_other_counter" name="qual_other_counter" value ="{{i.qualification.others|length}}" />
+                                                {% if i.qualification.others != '' %}
+                                                {% for a in i.qualification.others %}
+                                                
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2">
+                                                        <input type="text" name="other_{{forloop.counter}}" id="other_{{forloop.counter}}" value="{{a.doctype}}" ></th>
+                                                    <td>
+                                                        <input type="text" value="{{a.year}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="other_year_{{forloop.counter}}" id="other_year_{{forloop.counter}}">
+                                                    </td>
+                                                    <td><input type="text" value="{{a.board}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray" name="other_board_{{forloop.counter}}" id="other_board_{{forloop.counter}}"></td>
+                                                    <td><input type="text" value="{{a.percentage}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray" name="other_percentage_{{forloop.counter}}" id="other_percentage_{{forloop.counter}}"></td>
+                                                    <td>
+                                                        <div class="button-wrapper transparent-input">
+                                                            <label for="other_document_{{forloop.counter}}"
+                                                                class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                                Document</label>
+                                                            <input type="file" id="other_document_{{forloop.counter}}" name="other_document_{{forloop.counter}}" style="display:none">
+
+                                                            {% if a.file_path == ''  %}
+                                                        <label id="uploaded-doc-other-{{forloop.counter}}"
+                                                            class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                            documents</label>
+                                                        {% else %}
+                                                            <input type="hidden" id="olddoc_{{forloop.counter}}" name="olddoc_{{forloop.counter}}" value="{{a.file_path}}">
+                                                            <a href="/media/{{a.file_path}}" target="new" style="cursor:pointer">
+                                                                <label id="uploaded-doc-other-{{forloop.counter}}"
+                                                            class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                            </a>
+                                                        {% endif %}
+                                                            
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                                {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4 col-md-2">
+                                            <a class="  width-100" id="addRow" >
+                                                <button type="button" onclick="AddQualificationRow()"  class="edit-btn red-btn ">Add new row</button></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+    <section class="edit-personal-details-section   mt-4">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="outer-rectangle">
+                    <div class="inner-block px-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-18 text-uppercase font-bold text-black">Course Details </h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="select-options py-4">
+                            <div class="row">
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Course Name</label>
+                                        <input type="text" id="course" class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.course.name}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Stream Name</label>
+                                        <input type="text" id="Stream" class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.stream.name}}">
+                                    </div>
+                                </div>
+                                {% if i.substream != '' %}
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Sub Stream Name</label>
+                                        <input type="text" id="SubStream" class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.substream.name}}">
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Session</label>
+                                        <input id="session" type="text" class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.session}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Study Pattern</label>
+                                        <input type="text" id="studypattern" class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.course_pattern}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Admission Type</label>
+                                        <input type="text" id="entry_mode" class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.entry_mode}}">
+                                    </div>
+                                </div>
+                               
+                            
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Semester / Year</label>
+                                        <input type="text" id="semyear"  class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.current_semyear}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Course Duration (in Years)</label>
+                                        <input type="text" id="courseduration"  class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.stream.sem}}">
+                                    </div>
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="payment-details-section   mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="outer-rectangle">
+                    <div class="inner-block px-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-18 text-uppercase font-bold text-black">Payment Details</h5>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="select-options py-4">
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Fees Receipt </label>
+                                        <select
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            name="fees_reciept" id="fees_reciept" required>
+                                            <option class="option-format" value="" selected>Select</option>
+                                            {% for i in feereceiptoptions %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <!-- <div class="col-6" id="other_data">
+                                    <div class="detail-block py-2">
+                                        <input type="others" name="others"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="others" placeholder="Others">
+                                    </div>
+
+                                </div> -->
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Total Fees </label>
+                                        <input type="number" placeholder="" name="total_fees"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="total_fees" readonly value="{{paymentdetails.semyearfees}}">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Amount Paid </label>
+                                        <input type="number" name="fees" placeholder=""
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="fees" required onchange="calculateDues()" value="{{paymentdetails.paidamount}}">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Due </label>
+                                        <input type="number" name="dues" placeholder=""
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="dues" readonly>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Transaction Date </label>
+                                        <input type="text" placeholder="" name="date_of_transaction"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="date_of_transaction" onfocus="(this.type='date')" required value="{{paymentdetails.transaction_date}}">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Payment Mode </label>
+                                        <select
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            name="payment_mode" id="payment_mode" required>
+                                            <option class="option-format" value="" selected>Select</option>
+                                            {% for i in paymentmodes %}
+                                            <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="col-4">
+                                    <div class="detail-block py-2">
+                                         <label for="" class="labelnotrequired">Cheque/DD/CC Number </label>
+                                        <input type="text" placeholder="" name="cheque_no"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="cheque_no" value="{{paymentdetails.cheque_no}}">
+                                    </div>
+
+                                </div>
+                                <div class="col-4">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Bank Name </label>
+                                        <select
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            name="bank_name" id="bank_name">
+                                            <option class="option-format" selected value="">Select</option>
+                                            {% for i in banknames %}
+                                            <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                            {% endfor %}
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Remarks </label>
+                                        <input type="text" name="remarks"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="remarks" placeholder="" value={{paymentdetails.remarks}} required>
+                                    </div>
+
+                                </div>
+                                <div class="col-6">
+                                    <div class="detail-block py-2">
+                                        <div id="other_bank_name">
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                          
+                           
+               
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     
+    </section>
+
+    <section class="submit-section  ">
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="student_output"></div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-4 col-sm-3">
+                <div class="detail-block py-2">
+                    <button type="submit" class="save-btn width-100" onclick="savestudent()">Save</button>
+                </div>
+
+
+
+            </div>
+        </div>
+    </section>
+</form>
+    {% endfor %}
+
+</div>
+
+<div id="exampleModal" class="modal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+    
+                <div class="modal-body">
+                    <div class="container" id="output_container">
+                        <h3 class=" font-16 text-darkblue">Course / Programme Details is Mandatory ..!!</h3>
+                        <div class="output_course" id="output_course"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="blue-bg text-blue font-bold font-12 no-border"
+                        data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% else %}
+<h1 class="text-center">Student Not Found</h1>
+{% endif %}
+
+
+
+<script language="JavaScript">
+
+
+
+    
+
+
+
+    $('#no_of_documents').val()
+    $(document).ready(function () {
+        var selectedValue = "{{ paymentdetails.paymentmode }}"; // Assuming you're using a templating engine
+        // Set the dropdown value
+        $('#payment_mode').val(selectedValue);
+        selectedValue = "{{ paymentdetails.bank_name }}"; // Assuming you're using a templating engine
+        // Set the dropdown value
+        $('#bank_name').val(selectedValue);
+        selectedValue = "{{ paymentdetails.fee_reciept_type }}"; // Assuming you're using a templating engine
+        // Set the dropdown value
+        $('#fees_reciept').val(selectedValue);
+        let dues = parseFloat('{{paymentdetails.semyearfees}}') - parseFloat('{{paymentdetails.paidamount}}');
+        $('#dues').val(dues)
+        $('#no_of_documents').val()
+        var t = $('#example').DataTable();
+        var counter = 1;
+
+        $('#addRow').on('click', function () {
+            t.row.add([
+                `<select class="form-select" name="document${counter}" id="document${counter}" aria-label="Default select example">
+            <option selected>Select</option>
+            <option value="Aadhar Card">Aadhar Card</option>
+            <option value="Pan Card">Pan Card</option>
+            <option value="Passport">Passport</option>
+            <option value="Voter ID">Voter ID</option>
+            <option value="Driving License">Driving License</option>  
+          </select>`,
+                `<input type="text" name="DocumentName${counter}" class="font-14 font-bold text-extralightgray w-100" id="DocumentName${counter}">
+          `,
+                `<input type="text" name="DocumentID${counter}" class="font-14 font-bold text-extralightgray w-100" id="DocumentID${counter}">
+          `,
+                `<input type="file" name="DocumentUpload${counter}" class="font-14 font-bold text-extralightgray w-100" multiple id="DocumentUpload${counter}">
+          `,
+            ]).draw(false);
+
+            counter++;
+            $('#no_of_documents').val(counter - 1)
+        });
+
+
+        // Automatically add a first row of data
+        $('#addRow').click();
+    });
+
+
+    document.getElementById("countryId").onchange = function () {
+        var get_country_id = this.value;
+        console.log(get_country_id)
+        if (get_country_id == "Select Country") {
+
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_country_id': get_country_id
+                },
+                success: function (response) {
+                    console.log(response)
+                    if (response.states) {
+                        $('#stateId').empty();
+                        $('#stateId').append(`
+                    <option class="option-format">Select States</option>
+                  `);
+                        var data = response.states
+                        data.forEach(myFunction);
+
+                        function myFunction(item) {
+                            $('#stateId').append(`
+                    <option class="option-format" value="${item.id}">${item.name}</option>
+                  `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+    }
+
+    document.getElementById("stateId").onchange = function () {
+        var get_cities_id = this.value;
+        console.log(get_cities_id)
+        if (get_cities_id == "Select State") {
+
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_cities_id': get_cities_id
+                },
+                success: function (response) {
+                    console.log(response)
+                    if (response.cities) {
+                        $('#cityId').empty();
+                        $('#cityId').append(`
+                    <option class="option-format">Select City</option>
+                  `);
+                        var data = response.cities
+                        data.forEach(myFunction);
+
+                        function myFunction(item) {
+                            $('#cityId').append(`
+                    <option class="option-format" value="${item.id}">${item.name}</option>
+                  `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+    }
+</script>
+
+
+
+<script language="JavaScript">
+    function AddQualificationRow(){
+
+var counter = document.getElementById('qual_other_counter').value;
+counter++;
+document.getElementById("qual_other_counter").value = counter;
+$('#qual_other_counter').trigger('change');
+let other = `other_${counter}`;
+let other_year = `other_year_${counter}`;
+let other_board = `other_board_${counter}`;
+let other_percentage = `other_percentage_${counter}`;
+let other_document = `other_document_${counter}`;
+
+
+var table = document.getElementById("qualification");
+var rowCount = table.rows.length;
+
+// Calculate the index where you want to insert the new row
+var indexToInsert = rowCount; // For example, insert between the 2nd and 3rd row
+
+// Insert the new row
+var newRow = table.insertRow(indexToInsert);
+//newRow.classList.add('body-row');
+
+// Insert cells into the new row
+var cell1 = newRow.insertCell(0);
+var cell2 = newRow.insertCell(1);
+var cell3 = newRow.insertCell(2);
+var cell4 = newRow.insertCell(3);
+var cell5 = newRow.insertCell(4);
+// Add content to the cells
+    // cell1.classList.add("w-30");
+    // cell2.classList.add("w-20");
+    // cell3.classList.add("w-20");
+    // cell4.classList.add("w-30");
+    // cell1.classList.add("border-right");
+    // cell2.classList.add("border-right");
+    // cell3.classList.add("border-right");
+    // cell4.classList.add("border-right");
+
+    
+
+
+cell1.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_' + counter + '" id="other_' + counter +'" placeholder="Others">';
+cell2.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_year_' + counter + '" id="other_year_' + counter +'">';
+cell3.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_board_' + counter + '" id="other_board_' + counter +'">';
+
+cell4.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_percentage_' + counter + '" id="other_percentage_' + counter +'">';
+
+cell5.innerHTML = '<div class="button-wrapper "> <label for="other_document_' + counter + '" class="text-extralightgray  file-btn font-14">Choose Document</label> <input type="file" id="other_document_' + counter + '" name="other_document_' + counter + '" style="display:none"><label id="uploaded-doc-other_' + counter + '" class="text-extralightgray font-14 px-3">No documents chosen</label> </div>'
+}       
+    function AddDocumentRow(){
+  
+
+  var counter = document.getElementById('personaldocs_counter').value;
+  counter++;
+  document.getElementById("personaldocs_counter").value = counter;
+$('#personaldocs_counter').trigger('change');
+
+
+var table = document.getElementById("personaldocs");
+var rowCount = table.rows.length;
+
+// Calculate the index where you want to insert the new row
+var indexToInsert = rowCount; // For example, insert between the 2nd and 3rd row
+
+// Insert the new row
+var newRow = table.insertRow(indexToInsert);
+//newRow.classList.add('body-row');
+
+// Insert cells into the new row
+var cell1 = newRow.insertCell(0);
+var cell2 = newRow.insertCell(1);
+var cell3 = newRow.insertCell(2);
+var cell4 = newRow.insertCell(3);
+var cell5 = newRow.insertCell(4);
+
+cell1.innerHTML = '<select class="personaldocument  width-100 font-14 font-bold text-extralightgray " name="document' + counter +'" id="document' + counter +'" onChange="checkType(this,' + counter + ')" aria-label="Default select example"><option class="option-format"   selected>Select</option> <option      class="option-format"   value="Aadhar Card">Aadhar Card</option> <option class="option-format"   value="Pan Card">Pan Card</option><option  class="option-format"   value="Passport">Passport</option><option class="option-format"   value="Voter ID">Voter ID</option><option class="option-format"   value="Driving License">Driving License</option> <option  class="option-format"   value="Other">Other</option> </select><div id="popupInput' + counter + '" class="popup d-none"> <div class="detail-block py-2"><label for="" class="popup">Enter Document Type</label><input type="text" class="  width-100 font-14 font-bold text-extralightgray " id="other' + counter + '" name="other' + counter + '" placeholder=""> </div> </div>';
+cell2.innerHTML = '<input type="text" name="DocumentName' + counter +'" class="  width-100 font-14 font-bold text-extralightgray " id="DocumentName' + counter +'">';
+cell3.innerHTML = '<input type="text" name="DocumentID' + counter +'" class="  width-100 font-14 font-bold text-extralightgray " id="DocumentID' + counter +'">';
+cell4.innerHTML = '<div class="personal button-wrapper transparent-input"> <label for="DocumentFront' + counter + '" class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose Document</label> <input type="file" id="DocumentFront' + counter + '" name="DocumentFront' + counter + '" style="display:none" accept="application/pdf,image/jpeg"><label id="uploaded-doc-front-' + counter + '" class="text-extralightgray font-14 px-3">No documents</label> </div>'
+
+cell5.innerHTML = '<div class="personal button-wrapper transparent-input"> <label for="DocumentBack' + counter + '" class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose Document</label> <input type="file" id="DocumentBack' + counter + '" name="DocumentBack' + counter + '" style="display:none" accept="application/pdf,image/jpeg"><label id="uploaded-doc-back-' + counter + '" class="text-extralightgray font-14 px-3">No documents</label> </div>'
+}    
+    function savestudent() {
+        flag = validateForm('edit');
+        if (flag) {
+            form = document.getElementById('edit_student_form');
+            form.submit();
+        }
+        // var data = new FormData();
+        // data.append("university", $('#university').val());
+        // data.append("student_image", $('#student_image')[0].files[0]);
+        // data.append("name", $('#name').val());
+        // data.append("dateofbirth", $('#dateofbirth').val());
+        // data.append("fathers_name", $('#fathers_name').val());
+        // data.append("mothers_name", $('#mothers_name').val());
+        // data.append("email", $('#email').val());
+        // data.append("alternateemail", $('#alternateemail').val());
+        // data.append("mobile", $('#mobile').val());
+        // data.append("alternatemobile1", $('#alternatemobile1').val());
+
+        // data.append("gender", $('#gender').val());
+        // data.append("category", $('#category').val());
+        // data.append("identity_type", $('#identity_type').val());
+        // data.append("identity_no", $('#identity_no').val());
+        // data.append("address", $('#address').val());
+        // data.append("alternateaddress", $('#alternateaddress').val());
+
+        // data.append("nationality", $('#nationality').val());
+        // data.append("country", $('#countryId').val());
+        // data.append("stateId", $('#stateId').val());
+        // data.append("cityId", $('#cityId').val());
+        // data.append("Pincode", $('#Pincode').val());
+        // data.append("student_remarks", $('#student_remarks').val());
+
+        // data.append("counselor_name", $('#counselor_name').val());
+        // data.append("reference_name", $('#reference_name').val());
+        // data.append("university_enrollment_number", $('#university_enrollment_number').val());
+
+
+
+
+
+
+
+
+
+        // data.append("secondary_year", $('#secondary_year').val());
+        // data.append("secondary_board", $('#secondary_board').val());
+        // data.append("secondary_percentage", $('#secondary_percentage').val());
+        // data.append("secondary_document", $('#secondary_document')[0].files[0]);
+
+        // data.append("sr_year", $('#sr_year').val());
+        // data.append("sr_board", $('#sr_board').val());
+        // data.append("sr_percentage", $('#sr_percentage').val());
+        // data.append("sr_document", $('#sr_document')[0].files[0]);
+
+        // data.append("under_year", $('#under_year').val());
+        // data.append("under_board", $('#under_board').val());
+        // data.append("under_percentage", $('#under_percentage').val());
+        // data.append("under_document", $('#under_document')[0].files[0]);
+
+        // data.append("post_year", $('#post_year').val());
+        // data.append("post_board", $('#post_board').val());
+        // data.append("post_percentage", $('#post_percentage').val());
+        // data.append("post_document", $('#post_document')[0].files[0]);
+
+        // data.append("mphil_year", $('#mphil_year').val());
+        // data.append("mphil_board", $('#mphil_board').val());
+        // data.append("mphil_percentage", $('#mphil_percentage').val());
+        // data.append("mphil_document", $('#mphil_document')[0].files[0]);
+
+        // //data.append("other_year", $('#other_year').val());
+        // //data.append("other_board", $('#other_board').val());
+        // //data.append("other_percentage", $('#other_percentage').val());
+        // //data.append("other_document", $('#other_document')[0].files[0]);
+
+ 
+        // //adding for payment details 
+        // data.append("fees_reciept", $('#fees_reciept').val());
+        // data.append("transaction_date", $('#date_of_transaction').val());
+        // data.append("total_fees", $('#total_fees').val());
+        // data.append("fees", $('#fees').val());
+        // data.append("payment_mode", $('#payment_mode').val());
+        // data.append("cheque_no", $('#cheque_no').val());
+        // data.append("bank_name", $('#bank_name').val());
+        // data.append("remarks", $('#remarks').val());
+        // data.append("dues", $('#dues').val());
+
+
+        // data.append("change_session",$('#change_session').val());
+
+        // console.log("Session :",$('#change_session').val());
+
+
+        // var student_enrollment_id = $('#student_enrollment_id').val();
+      
+
+        // //var url = "http://127.0.0.1:8000/edit/" + student_enrollment_id + "/"
+        // var url = "https://erp.ciisindia.in/edit/" + student_enrollment_id + "/"
+        // console.log(url)
+        // data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+        // $.ajax({
+        //     method: "POST",
+        //     url: url,
+        //     processData: false,
+        //     contentType: false,
+        //     mimeType: "multipart/form-data",
+        //     data: data,
+        //     success: function (res) {
+
+        //         const response = JSON.parse(res);
+        //         console.log(response);
+        //         if (response.match == "email") {
+        //             alert("Email already present in the system");
+        //             $("#email").focus();
+        //         }
+        //         else if (response.match == "alternateemail") {
+        //             alert("Alternate Email already present in the system");
+        //             $("#alternateemail").focus();
+        //         }
+        //         else if (response.match == "mobile") {
+        //             alert("Mobile already present in the system");
+        //             $("#mobile").focus();
+        //         }
+        //         else if (response.match == "alternatemobile") {
+        //             alert("Alternate Mobile already present in the system");
+        //             $("#alternatemobile1").focus();
+        //         }
+        //         if (response.saved == "yes") {
+        //             alert("Changes have been saved successfully");
+        //             window.location.reload();
+        //             $("#university").focus();
+        //         }
+        //     }
+        // });
+    //}
+    }
+    $('input#Pincode').on('input', function (e) {
+        console.log(this.value)
+        const mob_reg= /^[0-9]\d*$/;
+        var check = mob_reg.test(this.value);
+        if (check) {
+            if (this.value.length != 6 ){
+                $('#pin_error').html("Pincode must be 6 digits");
+                
+            }
+            else
+            $('#pin_error').html("");
+        }
+        else {
+            $('#pin_error').html("Invalid Pincode. Enter only digits")
+        }
+    });
+    $('input#mobile').on('input', function (e) {
+        var old_num = '{{mobile}}'
+        console.log(this.value)
+        const mob_reg= /^[0-9]\d*$/;
+        var check = mob_reg.test(this.value);
+        if (check) {
+            if (this.value.length != 10){
+                $('#is__mbile_available').html("Mobile Number must be 10 digits");
+                $('#is_mobile_available').css('color', 'black');
+            }
+            else {
+                if (old_num != this.value){
+                    $.ajax({ // create an AJAX call...
+                    type: "POST",
+                    url: "{% url 'check_mobile_unique' %}",
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    data: {
+                        'mobile_unique': this.value
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.unique == "true") {
+                            $('#is_mobile_available').html("Available")
+                            $('#is_mobile_available').css('color', 'green');
+                            $('#save_student_button').removeAttr("disabled")
+                        }
+                        else {
+                            $('#save_student_button').attr('disabled', 'disabled');
+                            $('#is_mobile_available').html("Not Available")
+                            $('#is_mobile_available').css('color', 'red');
+                            text = `Student ${response.studentname} has been registered with this mobile number by ${response.createdby}`;
+                            alert(text);
+                        }
+                    }
+                });
+            }
+        }
+    }
+    else {
+            $('#is_mobile_available').html("Invalid Mobile Number")
+            $('#is_mobile_available').css('color', 'red');
+        }
+    });
+
+    $('input#alternatemobile1').on('input', function (e) {
+        console.log(this.value)
+         var old_num = '{{alternate_mobile1}}'
+        const mob_reg= /^[0-9]\d*$/;
+        var check = mob_reg.test(this.value);
+        if (check) {
+            if (this.value.length != 10){
+                $('#is_alt_mobile_available').html("Mobile Number must be 10 digits");
+                $('#is_alt_mobile_available').css('color', 'black');
+            }
+            else {
+                if (old_num != this.value){
+                    $.ajax({ // create an AJAX call...
+                    type: "POST",
+                    url: "{% url 'check_mobile_unique' %}",
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    data: {
+                        'mobile_unique': this.value
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.unique == "true") {
+                            $('#is_alt_mobile_available').html("Available")
+                            $('#is_alt_mobile_available').css('color', 'green');
+                            $('#save_student_button').removeAttr("disabled")
+                        }
+                        else {
+                            $('#save_student_button').attr('disabled', 'disabled');
+                            $('#is_alt_mobile_available').html("Not Available")
+                            $('#is_alt_mobile_available').css('color', 'red');
+                            text = `Student ${response.studentname} has been registered with this mobile number by ${response.createdby}`;
+                            alert(text);
+                        }
+                    }
+                });
+
+                }
+                
+            }
+        }
+        else {
+            $('#is_alt_mobile_available').html("Invalid mobile number")
+            $('#is_alt_mobile_available').css('color', 'red');
+            }
+        
+    });
+    
+    $('input#email').on('input', function (e) {
+        console.log(this.value)
+        var old_email ='{{email}}';
+        var check = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.value)
+        if (check){
+            if (old_email != this.value){
+                $.ajax({ // create an AJAX call...
+                type: "POST",
+                url: "{% url 'check_email_unique' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'email_unique': this.value
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (response.unique == "true") {
+                        $('#is_email_available').html("Available")
+                        $('#is_email_available').css('color', 'green');
+                        $('#save_student_button').removeAttr("disabled")
+                    }
+                    else {
+                        $('#save_student_button').attr('disabled', 'disabled');
+                        $('#is_email_available').html("Not Available")
+                        $('#is_email_available').css('color', 'red');
+                        
+                        text = `Student ${response.studentname} has been registered with this email address by ${response.createdby}`;
+                        alert(text);
+
+                    }
+                }
+            });
+
+            }
+            
+        }
+        else {
+            $('#is_email_available').html("Invalid email address")
+            $('#is_email_available').css('color', 'red');
+        }
+    });
+    $('input#alternateemail').on('input', function (e) {
+        console.log(this.value)
+        var old_email = '{{alternateemail}}'
+        var check = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.value)
+        if (check){
+            if (old_email != this.value){
+                $.ajax({ // create an AJAX call...
+                type: "POST",
+                url: "{% url 'check_email_unique' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'email_unique': this.value
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (response.unique == "true") {
+                        $('#is_alt_email_available').html("Available")
+                        $('#is_alt_email_available').css('color', 'green');
+                        $('#save_student_button').removeAttr("disabled")
+                    }
+                    else {
+                        $('#save_student_button').attr('disabled', 'disabled');
+                        $('#is_alt_email_available').html("Not Available")
+                        $('#is_alt_email_available').css('color', 'red');
+                        text = `Student ${response.studentname} has been registered with this email address by ${response.createdby}`;
+                        alert(text);
+
+                    }
+                }
+            });
+
+            }
+
+            
+        }
+        else {
+            $('#is_alt_email_available').html("Invalid email address")
+            $('#is_alt_email_available').css('color', 'red');
+        }
+    });
+         
+</script>
+
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<script src="{% static 'dict/js/studentregistration.js' %}"></script>
+
+{% endblock head %}
+
+
+
+
+{% block body %}
+<script>
+    $(document).ready(function () {
+
+
+        $("#student_image").change(function () {
+            $("#uploaded-image").text(this.files[0].name);
+        });
+        $("#secondary_document").change(function () {
+            $("#uploaded-doc-secondary").text(this.files[0].name);
+        });
+        $("#sr_document").change(function () {
+            $("#uploaded-doc-sr").text(this.files[0].name);
+        });
+        $("#under_document").change(function () {
+            $("#uploaded-doc-under").text(this.files[0].name);
+        });
+        $("#post_document").change(function () {
+            $("#uploaded-doc-post").text(this.files[0].name);
+        });
+
+        $("#mphil_document").change(function () {
+            $("#uploaded-doc-mphil").text(this.files[0].name);
+        });
+        $("#other_document").change(function () {
+            $("#uploaded-doc-other").text(this.files[0].name);
+        });
+        uploadpersonaldocs();
+        uploadqualdoc();
+        $("#personaldocs_counter").change(function () {
+            uploadpersonaldocs();
+    })
+    $("#qual_other_counter").change(function () {
+            uploadqualdoc();
+    })
+       
+        
+    });
+    function uploadpersonaldocs(){
+            
+             
+            if ($("#personaldocs_counter").val() == ''){
+                personaldoccounter = '{{personaldoccounter}}';
+            }
+            else {
+                temp = $("#personaldocs_counter").val();
+                personaldoccounter = parseInt(temp)
+            }
+
+            for (var i = 1; i <= personaldoccounter; i++) {
+                    (function(i) {
+                        var docfront = `#uploaded-doc-front-${i}`;
+                        var front = `#DocumentFront${i}`;
+                        var docback = `#uploaded-doc-back-${i}`;
+                        var back = `#DocumentBack${i}`;
+                        $(document).on('change', front, function() {
+                        $(docfront).text(this.files[0].name);
+                    });
+                    $(document).on('change', back, function() {
+                        $(docback).text(this.files[0].name);
+                    });
+                    })(i);
+            }
+        
+        }
+
+        function uploadqualdoc(){
+            
+            
+                temp = $("#qual_other_counter").val();
+                personaldoccounter = parseInt(temp)
+            
+
+            for (var i = 1; i <= personaldoccounter; i++) {
+                    (function(i) {
+                        var docfront = `#uploaded-doc-other_${i}`;
+                        var front = `#other_document_${i}`;
+                       
+                        $(document).on('change', front, function() {
+                        
+                        $(docfront).text(this.files[0].name);
+                    });
+                   
+                    })(i);
+            }
+        
+        }
+</script>
+
+{% if request.user.is_superuser or request.user.is_data_entry %}
+
+<div class="edit-student pages-body-bg-color py-5">
+
+    <section class="message-display-section" id="message">
+
+    </section>
+
+    <form method="POST" action="{% url 'saveEditStudent' %}" id="edit_student_form" enctype="multipart/form-data">
+        {% csrf_token %}
+    {% for i in student %}
+    <section class="edit-personal-details-section  ">
+              <h1>{{student}}</h1>
+        <div class="row">
+            <div class="col-12">
+                <div class="outer-rectangle">
+                    <div class="inner-block px-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-18 text-uppercase font-bold text-black">Personal Details <input
+                                            type="text" id="student_enrollment_id" value="{{i.enrollment_id}}"
+                                            style="height:40px;width:100px;font-size: 15px;" name="student_enrollment_id"></h5>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="select-options py-4">
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired">University</label>
+                                        <input type="hidden" name="university" id="university" value="{{i.university.registrationID}}">
+                                        <input type="text"  class="width-100 font-14 font-bold text-extralightgray" readonly name="universityname" id="universityname" value=" {{i.university.university_name}}">
+                                        <!--select name="university" id="university"
+                                            class="width-100 font-14 font-bold text-extralightgray">
+                                            <option value="{{i.university.registrationID}}" class="option-format">
+                                                {{i.university.university_name}}</option>
+                                            {% for uni in university %}
+                                            <option value="{{uni.registrationID}}" class="option-format">{{uni.university_name}}</option>
+                                            {% endfor %}
+
+                                        </select-->
+
+
+
+                                    </div>
+
+
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="detail-block py-2 pt-4">
+                                        <div class="file-upload">
+
+                                            <div
+                                                class="button-wrapper     width-100 font-14 font-bold text-extralightgray  "id="imagefile">
+                                                <label for="student_image"
+                                                    class="labelrequired bg-darkgray width-100 font-14 font-bold  text-extralightgray  file-btn-form">Choose
+                                                    File for Student Image</label>
+                                                <input type="file" id="student_image" name="student_image"
+                                                    style="display:none">
+                                                {% if i.image == '' or i.image == undefined or i.image == 'False' %}
+                                                    <label id="uploaded-image"
+                                                        class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                        files chosen</label>
+                                                    {% else %}
+                                                        <a href="/media/{{i.image}}" target="new" style="cursor:pointer">
+                                                            <label id="uploaded-image" name="uploaded-image"
+                                                        class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Image</label>
+                                                        </a>
+                                                    {% endif %}
+                                                
+                                            </div>
+
+                                        </div>
+
+
+
+                                    </div>
+
+
+
+
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Name</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="text" placeholder="" id="name" name="name"
+                                            value="{{i.name}}">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Date of Birth</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="text" name="dateofbirth" id="dateofbirth" onfocus="(this.type='date')"
+                                            placeholder="" value="{{i.dateofbirth}}">
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Father's/Husband's Name</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="text" name="fathers_name" id="fathers_name"
+                                            placeholder="" value="{{i.father_name}}">
+
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Mother's Name</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="text" name="mothers_name" placeholder="" id="mothers_name"
+                                            value="{{i.mother_name}}">
+
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Email Address</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="email" name="email" placeholder="" id="email"
+                                            value="{{i.email}}">
+
+                                    </div>
+                                    <label for="email" id="is_email_available" ></label>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Alternate Email Address</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="email" name="alternateemail" placeholder=""
+                                            id="alternateemail" value="{{i.alternateemail}}">
+
+                                    </div>
+                                    <label for="alternateemail" id="is_alt_email_available"></label>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Mobile Number</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="text" required name="mobile" id="mobile" placeholder=""
+                                            value="{{i.mobile}}" pattern="[0-9]*" maxlength="10">
+
+                                    </div>
+                                    <label for="mobile" id="is_mobile_available" ></label>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Alternate Mobile Number</label>
+                                        <input
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            type="text" name="alternatemobile1" placeholder=""
+                                            id="alternatemobile1" value="{{i.alternate_mobile1}}" pattern="[0-9]*" maxlength="10">
+
+                                    </div>
+                                    <label for="alternatemobile1" id="is_alt_mobile_available"></label>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Gender</label>
+                                        <select placeholder=""
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            name="gender" id="gender">
+                                            <option class="option-format" selected>{{i.gender}}</option>
+                                            <option class="option-format" value="Male">Male</option>
+                                            <option class="option-format" value="Female">Female</option>
+                                            <option class="option-format" value="Rather Not SAY">Rather Not SAY</option>
+                                        </select>
+
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+
+                                        <label for="" class="labelnotrequired">Category</label>
+                                        <select
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="category" name="category" aria-placeholder="">
+                                            <option class="option-format" selected value="{{i.category}}">{{i.category}}
+                                            </option>
+                                            <option class="option-format" value="General(Open)">General(Open)</option>
+                                            <option class="option-format" value="Other Backward Class(OBC)">Other
+                                                Backward Class(OBC)</option>
+                                            <option class="option-format" value="Scheduled Cast(SC)">Scheduled Cast(SC)
+                                            </option>
+                                            <option class="option-format" value="Scheduled Tribe(ST)">Scheduled
+                                                Tribe(ST)</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Current Address</label>
+                                        <textarea type="text" name="address"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="address" placeholder="">{{i.address}}</textarea>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Alternate Address</label>
+                                        <textarea type="text" name="alternateaddress"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="alternateaddress"
+                                            placeholder="">{{i.alternateaddress}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-4">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Country</label>
+                                        <select name="country"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="countryId">
+                                            <option class="option-format" value="{{i.country.id}}">{{i.country.name}}
+                                            </option>
+                                            {% for j in country %}
+                                            <option class="option-format" value="{{j.id}}">{{j.name}}</option>
+                                            {% endfor %}
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">State</label>
+                                        <select name="state"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="stateId">
+                                            <option class="option-format" value="{{i.state.id}}">{{i.state.name}}
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">City</label>
+                                        <select name="city"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="cityId">
+                                            <option class="option-format" value="{{i.city.id}}">{{i.city.name}}</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Nationality</label>
+                                        <input type="text" name="nationality" value="{{i.nationality}}"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="nationality" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Pincode</label>
+                                        <input type="text" name="Pincode" placeholder="Pincode" value="{{i.pincode}}"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            id="Pincode"  placeholder="" required pattern="[0-9]*" maxlength="6">
+                                    </div>
+                                    <label for="Pincode" id="pin_error"></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Student Remarks</label>
+                                        <textarea type="text" name="student_remarks"
+                                            class="width-100 font-14 font-bold text-extralightgray  "
+                                            id="student_remarks"
+                                            placeholder="">{{i.student_remarks}}</textarea>
+                                    </div>
+                                </div>
+                            
+
+                                <div class="col-3">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Counselor Name</label>
+                                        <input type="text"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            value="{{i.additionalenrollmentdetails.counselor_name}}" id="counselor_name"
+                                            placeholder="" name="counselor_name">
+                                    </div>
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">University Enrollment Number</label>
+                                        <input type="text"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            value="{{i.additionalenrollmentdetails.university_enrollment_id}}"
+                                            id="university_enrollment_number"
+                                            placeholder="" name="university_enrollment_number">
+                                    </div>
+                                </div>
+
+                                <div class="col-3">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Reference Name</label>
+                                        <input type="text"
+                                            class="width-100 font-14 font-bold text-extralightgray"
+                                            value="{{i.additionalenrollmentdetails.reference_name}}" id="reference_name"
+                                            placeholder="" name="reference_name">
+                                    </div>
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Registration Number</label>
+                                        <input type="text"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="registration_number" value="{{i.additionalenrollmentdetails.registration_number}}"
+                                            name="registration_number"
+                                            placeholder="">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="personal-section   mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="outer-rectangle">
+                    <div class="inner-block px-4">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-18 text-uppercase font-bold text-black">Personal Documents
+                                    </h5>
+                                </div>
+
+                            </div>
+                            <div class="col-6">
+                                <input type="hidden" id="no_of_documents" name="no_of_documents" style="visibility: visible;">
+                            </div>
+                        </div>
+
+                        <div class="select-options py-4">
+
+                            <div class="row">
+                                <div class="col-12">
+
+                                    <div class="document-table ">
+                                        <table id="personaldocs" class="table format-form-table">
+                                           
+                                            <thead>
+                                                <tr>
+                                                    <th class="font-bold text-extralightgray  px-2" scope="col">
+                                                        Document Type<span class="labelrequired"></span> </th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        Name as on Document</th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        ID Number</th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        Upload Front (only PDF/JPG)<span class="labelrequired"></span></th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        Upload Back(only PDF/JPG)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <input type="hidden" id="personaldocs_counter" name="personaldocs_counter" value="{{ i.personaldocs|length }}">
+                                                {% for j in i.personaldocs %}
+                                                {% if forloop.last %}
+                                                
+                                                <!-- This block is executed on the last iteration -->
+                                                
+                                            {% endif %}
+                                                <tr>
+                                                    <td>
+                                                      
+                                                       <input type="hidden" name="docid{{forloop.counter}}" value = "{{j.id}}">
+                
+                                                        <input type="text" value="{{j.document}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="document{{forloop.counter}}" id="document{{forloop.counter}}">
+                                                       </td>
+                                                    <td>
+                                                        <input type="text" value=" {{j.document_name}}"
+                                                        class="width-100 font-14 font-bold text-extralightgray"
+                                                        name="DocumentName{{forloop.counter}}" id="DocumentName{{forloop.counter}}">
+                                                        </td>
+                                                    <td >
+                                                        <input type="text" value=" {{j.document_ID_no}}"
+                                                        class="width-100 font-14 font-bold text-extralightgray"
+                                                        name="DocumentID{{forloop.counter}}" id="DocumentID{{forloop.counter}}">
+                                                    </td>
+                                                    <td class="w-30">
+                                                        <div class="personal button-wrapper transparent-input">
+                                                            <label for="DocumentFront{{forloop.counter}}"
+                                                                class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                                Document</label>
+                                                            <input type="file" id="DocumentFront{{forloop.counter}}" name="DocumentFront{{forloop.counter}}"
+                                                                style="display:none" accept="application/pdf,image/jpeg" />
+                                                            {% if j.document_image_front == '' or j.document_image_front == 'False' %}
+                                                            <label id="uploaded-doc-front-{{forloop.counter}}"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                                Documents</label>
+                                                            {% else %}
+                                                                <a href="/media/{{j.document_image_front}}" target="new" style="cursor:pointer">
+                                                                    <label id="uploaded-doc-front-{{forloop.counter}}"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                                </a>
+                                                            {% endif %}
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-30"><div class="personal button-wrapper transparent-input">
+                                                        <label for="DocumentBack{{forloop.counter}}"
+                                                            class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                            Document</label>
+                                                        <input type="file" id="DocumentBack{{forloop.counter}}" name="DocumentBack{{forloop.counter}}"
+                                                            style="display:none" accept="application/pdf,image/jpeg">
+                                                        {% if j.document_image_back == '' or j.document_image_back == 'False' %}
+                                                        <label id="uploaded-doc-back-{{forloop.counter}}"
+                                                            class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                            documents</label>
+                                                        {% else %}
+                                                            <a href="/media/{{j.document_image_back}}" target="new" style="cursor:pointer">
+                                                                <label id="uploaded-doc-back-{{forloop.counter}}"
+                                                            class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                            </a>
+                                                        {% endif %}
+                                                    </div></td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 col-md-2">
+                                    <a class="  width-100" id="addRow" >
+                                        <button type="button" onclick="AddDocumentRow()"  class="edit-btn red-btn ">Add new row</button></a>
+                                </div>
+                            </div>
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="edit-qualification-details-section   mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="outer-rectangle">
+                    <div class="inner-block px-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-18 text-uppercase font-bold text-black">Qualification Documents
+                                    </h5>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="select-options py-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="document-table">
+                                        <table class="table format-form-table" id="qualification">
+                                            <thead>
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">Exam
+                                                    </th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">Year
+                                                        of Passing</th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        Board/University</th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        Percentage(%)</th>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2" scope="col">
+                                                        Upload Document (only PDF/JPG)</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2">Secondary/High
+                                                        School</th>
+                                                    <td>
+                                                        <input type="text" value="{{i.qualification.secondary_year}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="secondary_year" id="secondary_year">
+                                                    </td>
+                                                    <td><input type="text" value="{{i.qualification.secondary_board}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="secondary_board" id="secondary_board"></td>
+                                                    <td><input type="text"
+                                                            value="{{i.qualification.secondary_percentage}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="secondary_percentage" id="secondary_percentage"></td>
+                                                    <td>
+                                                        <div class="button-wrapper transparent-input">
+                                                            <label for="secondary_document"
+                                                                class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                                Document</label>
+                                                            <input type="file" id="secondary_document" name="secondary_document"
+                                                                style="display:none">
+                                                            {% if i.qualification.secondary_document == '' or i.qualification.secondary_document == 'False' or i.qualification.secondary_document == undefined %}
+                                                            <label id="uploaded-doc-secondary"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                                Documents</label>
+                                                            {% else %}
+                                                                <a href="/media/{{i.qualification.secondary_document}}" target="new" style="cursor:pointer">
+                                                                    <label id="uploaded-doc-secondary"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                                </a>
+                                                            {% endif %}
+                                                        </div>
+                                                        
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2">Sr. Secondary
+                                                    </th>
+                                                    <td>
+                                                        <input type="text" value="{{i.qualification.sr_year}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="sr_year" id="sr_year">
+                                                    </td>
+                                                    <td><input type="text" value="{{i.qualification.sr_board}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="sr_board" id="sr_board"></td>
+                                                    <td><input type="text" value="{{i.qualification.sr_percentage}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="sr_percentage" id="sr_percentage"></td>
+                                                    <td>
+
+                                                        <div class="button-wrapper transparent-input ">
+                                                            <label for="sr_document"
+                                                                class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                                Document</label>
+                                                            <input type="file" id="sr_document" name="sr_document" style="display:none">
+                                                            {% if i.qualification.sr_document == '' or i.qualification.sr_document == 'False'  or i.qualification.sr_document == undefined %}
+                                                            <label id="uploaded-doc-sr"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                                Documents </label>
+                                                            {% else %}
+                                                                <a href="/media/{{i.qualification.sr_document}}" target="new" style="cursor:pointer">
+                                                                    <label id="uploaded-doc-sr"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                                </a>
+                                                            {% endif %}
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2">Under Graduation
+                                                    </th>
+                                                    <td>
+                                                        <input type="text" value="{{i.qualification.under_year}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="under_year" id="under_year">
+                                                    </td>
+                                                    <td><input type="text" value="{{i.qualification.under_board}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="under_board" id="under_board"></td>
+                                                    <td><input type="text" value="{{i.qualification.under_percentage}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="under_percentage" id="under_percentage"></td>
+                                                    <td>
+                                                        <div class="button-wrapper transparent-input">
+                                                        <label for="under_document"
+                                                            class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                            Document</label>
+                                                        <input type="file" id="under_document" name="under_document" style="display:none">
+                                                            {% if i.qualification.under_document == '' or i.qualification.under_document == 'False'  or i.qualification.under_document == undefined %}
+                                                            <label id="uploaded-doc-under"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                                Documents</label>
+                                                            {% else %}
+                                                                <a href="/media/{{i.qualification.under_document}}" target="new" style="cursor:pointer">
+                                                                    <label id="uploaded-doc-under"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                                </a>
+                                                            {% endif %}
+                                                          
+                                                           
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray px-2">Post Graduation
+                                                    </th>
+                                                    <td>
+                                                        <input type="text" value="{{i.qualification.post_year}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="post_year" id="post_year">
+                                                    </td>
+                                                    <td><input type="text" value="{{i.qualification.post_board}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="post_board" id="post_board"></td>
+                                                    <td><input type="text" value="{{i.qualification.post_percentage}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="post_percentage" id="post_percentage"></td>
+                                                    <td>
+                                                        <div class="button-wrapper transparent-input">
+                                                            <label for="post_document"
+                                                                class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                                Document</label>
+                                                            <input type="file" id="post_document" name="post_document" style="display:none">
+                                                            {% if i.qualification.post_document == '' or i.qualification.post_document == 'False' or i.qualification.post_document == undefined %}
+                                                            <label id="uploaded-doc-post"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                                Documents</label>
+                                                            {% else %}
+                                                                <a href="/media/{{i.qualification.post_document}}" target="new" style="cursor:pointer">
+                                                                    <label id="uploaded-doc-post"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                                </a>
+                                                            {% endif %}
+                                                            
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2">Eng. Diploma / ITI</th>
+                                                    <td>
+                                                        <input type="text" value="{{i.qualification.mphil_year}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray" name="mphil_year" id="mphil_year">
+                                                    </td>
+                                                    <td><input type="text" value="{{i.qualification.mphil_board}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="mphil_board" id="mphil_board"></td>
+                                                    <td><input type="text" value="{{i.qualification.mphil_percentage}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray" name="mphil_percentage" id="mphil_percentage"></td>
+                                                    <td>
+                                                        <div class="button-wrapper transparent-input">
+                                                            <label for="mphil_document" class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                                Document</label>
+                                                            <input type="file" name="mphil_document" id="mphil_document" style="display:none">
+                                                            {% if i.qualification.mphil_document == '' or i.qualification.mphil_document == 'False'  or i.qualification.mphil_document == undefined %}
+                                                            <label id="uploaded-doc-mphil"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                                Documents</label>
+                                                            {% else %}
+                                                                <a href="/media/{{i.qualification.mphil_document}}" target="new" style="cursor:pointer">
+                                                                    <label id="uploaded-doc-mphil"
+                                                                class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                                </a>
+                                                            {% endif %}
+
+                                                        </div>
+                                                        
+                                                    </td>
+                                                   
+                                                    
+                                                </tr>
+                                                <input type="hidden" id="qual_other_counter" name="qual_other_counter" value ="{{i.qualification.others|length}}" />
+                                                {% if i.qualification.others != '' %}
+                                                {% for a in i.qualification.others %}
+                                                
+                                                <tr>
+                                                    <th class="font-14 font-bold text-extralightgray  px-2">
+                                                        <input type="text" name="other_{{forloop.counter}}" id="other_{{forloop.counter}}" value="{{a.doctype}}" ></th>
+                                                    <td>
+                                                        <input type="text" value="{{a.year}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray"
+                                                            name="other_year_{{forloop.counter}}" id="other_year_{{forloop.counter}}">
+                                                    </td>
+                                                    <td><input type="text" value="{{a.board}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray" name="other_board_{{forloop.counter}}" id="other_board_{{forloop.counter}}"></td>
+                                                    <td><input type="text" value="{{a.percentage}}"
+                                                            class="width-100 font-14 font-bold text-extralightgray" name="other_percentage_{{forloop.counter}}" id="other_percentage_{{forloop.counter}}"></td>
+                                                    <td>
+                                                        <div class="button-wrapper transparent-input">
+                                                            <label for="other_document_{{forloop.counter}}"
+                                                                class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose
+                                                                Document</label>
+                                                            <input type="file" id="other_document_{{forloop.counter}}" name="other_document_{{forloop.counter}}" style="display:none">
+
+                                                            {% if a.file_path == ''  %}
+                                                        <label id="uploaded-doc-other-{{forloop.counter}}"
+                                                            class="text-extralightgray font-14 px-3 transparent-input py-2">No
+                                                            documents</label>
+                                                        {% else %}
+                                                            <input type="hidden" id="olddoc_{{forloop.counter}}" name="olddoc_{{forloop.counter}}" value="{{a.file_path}}">
+                                                            <a href="/media/{{a.file_path}}" target="new" style="cursor:pointer">
+                                                                <label id="uploaded-doc-other-{{forloop.counter}}"
+                                                            class="text-extralightgray font-14 px-3 transparent-input py-2" style="cursor:pointer">View Document</label>
+                                                            </a>
+                                                        {% endif %}
+                                                            
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                                {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4 col-md-2">
+                                            <a class="  width-100" id="addRow" >
+                                                <button type="button" onclick="AddQualificationRow()"  class="edit-btn red-btn ">Add new row</button></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+    <section class="edit-personal-details-section   mt-4">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="outer-rectangle">
+                    <div class="inner-block px-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-18 text-uppercase font-bold text-black">Course Details </h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="select-options py-4">
+                            <div class="row">
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Course Name</label>
+                                        <input type="text" id="course" class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.course.name}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Stream Name</label>
+                                        <input type="text" id="Stream" class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.stream.name}}">
+                                    </div>
+                                </div>
+                                {% if i.substream != '' %}
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Sub Stream Name</label>
+                                        <input type="text" id="SubStream" class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.substream.name}}">
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Session</label>
+                                        <input id="session" type="text" class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.session}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Study Pattern</label>
+                                        <input type="text" id="studypattern" class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.course_pattern}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Admission Type</label>
+                                        <input type="text" id="entry_mode" class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.entry_mode}}">
+                                    </div>
+                                </div>
+                               
+                            
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Semester / Year</label>
+                                        <input type="text" id="semyear"  class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.current_semyear}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <div class="detail-block py-2">
+                                        <label class="labelrequired text-extralightgray">Course Duration (in Years)</label>
+                                        <input type="text" id="courseduration"  class="font-14 font-bold text-extralightgray w-100" disabled value="{{i.stream.sem}}">
+                                    </div>
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="payment-details-section   mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="outer-rectangle">
+                    <div class="inner-block px-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-18 text-uppercase font-bold text-black">Payment Details</h5>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="select-options py-4">
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Fees Receipt </label>
+                                        <select
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            name="fees_reciept" id="fees_reciept" required>
+                                            <option class="option-format" value="" selected>Select</option>
+                                            {% for i in feereceiptoptions %}
+                                                <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <!-- <div class="col-6" id="other_data">
+                                    <div class="detail-block py-2">
+                                        <input type="others" name="others"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="others" placeholder="Others">
+                                    </div>
+
+                                </div> -->
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Total Fees </label>
+                                        <input type="number" placeholder="" name="total_fees"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="total_fees" readonly value="{{paymentdetails.semyearfees}}">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Amount Paid </label>
+                                        <input type="number" name="fees" placeholder=""
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="fees" required onchange="calculateDues()" value="{{paymentdetails.paidamount}}">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Due </label>
+                                        <input type="number" name="dues" placeholder=""
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="dues" readonly>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Transaction Date </label>
+                                        <input type="text" placeholder="" name="date_of_transaction"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="date_of_transaction" onfocus="(this.type='date')" required value="{{paymentdetails.transaction_date}}">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Payment Mode </label>
+                                        <select
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            name="payment_mode" id="payment_mode" required>
+                                            <option class="option-format" value="" selected>Select</option>
+                                            {% for i in paymentmodes %}
+                                            <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="col-4">
+                                    <div class="detail-block py-2">
+                                         <label for="" class="labelnotrequired">Cheque/DD/CC Number </label>
+                                        <input type="text" placeholder="" name="cheque_no"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="cheque_no" value="{{paymentdetails.cheque_no}}">
+                                    </div>
+
+                                </div>
+                                <div class="col-4">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelnotrequired">Bank Name </label>
+                                        <select
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            name="bank_name" id="bank_name">
+                                            <option class="option-format" selected value="">Select</option>
+                                            {% for i in banknames %}
+                                            <option class="option-format" value="{{i.name}}" >{{i.name}}</option>
+                                            {% endfor %}
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="detail-block py-2">
+                                        <label for="" class="labelrequired">Remarks </label>
+                                        <input type="text" name="remarks"
+                                            class="  width-100 font-14 font-bold text-extralightgray "
+                                            id="remarks" placeholder="" value={{paymentdetails.remarks}} required>
+                                    </div>
+
+                                </div>
+                                <div class="col-6">
+                                    <div class="detail-block py-2">
+                                        <div id="other_bank_name">
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                          
+                           
+               
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     
+    </section>
+
+    <section class="submit-section  ">
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="student_output"></div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-4 col-sm-3">
+                <div class="detail-block py-2">
+                    <button type="submit" class="save-btn width-100" onclick="savestudent()">Save</button>
+                </div>
+
+
+
+            </div>
+        </div>
+    </section>
+</form>
+    {% endfor %}
+
+</div>
+
+<div id="exampleModal" class="modal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+    
+                <div class="modal-body">
+                    <div class="container" id="output_container">
+                        <h3 class=" font-16 text-darkblue">Course / Programme Details is Mandatory ..!!</h3>
+                        <div class="output_course" id="output_course"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="blue-bg text-blue font-bold font-12 no-border"
+                        data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% else %}
+<h1 class="text-center">Student Not Found</h1>
+{% endif %}
+
+
+
+<script language="JavaScript">
+
+
+
+    
+
+
+
+    $('#no_of_documents').val()
+    $(document).ready(function () {
+        var selectedValue = "{{ paymentdetails.paymentmode }}"; // Assuming you're using a templating engine
+        // Set the dropdown value
+        $('#payment_mode').val(selectedValue);
+        selectedValue = "{{ paymentdetails.bank_name }}"; // Assuming you're using a templating engine
+        // Set the dropdown value
+        $('#bank_name').val(selectedValue);
+        selectedValue = "{{ paymentdetails.fee_reciept_type }}"; // Assuming you're using a templating engine
+        // Set the dropdown value
+        $('#fees_reciept').val(selectedValue);
+        let dues = parseFloat('{{paymentdetails.semyearfees}}') - parseFloat('{{paymentdetails.paidamount}}');
+        $('#dues').val(dues)
+        $('#no_of_documents').val()
+        var t = $('#example').DataTable();
+        var counter = 1;
+
+        $('#addRow').on('click', function () {
+            t.row.add([
+                `<select class="form-select" name="document${counter}" id="document${counter}" aria-label="Default select example">
+            <option selected>Select</option>
+            <option value="Aadhar Card">Aadhar Card</option>
+            <option value="Pan Card">Pan Card</option>
+            <option value="Passport">Passport</option>
+            <option value="Voter ID">Voter ID</option>
+            <option value="Driving License">Driving License</option>  
+          </select>`,
+                `<input type="text" name="DocumentName${counter}" class="font-14 font-bold text-extralightgray w-100" id="DocumentName${counter}">
+          `,
+                `<input type="text" name="DocumentID${counter}" class="font-14 font-bold text-extralightgray w-100" id="DocumentID${counter}">
+          `,
+                `<input type="file" name="DocumentUpload${counter}" class="font-14 font-bold text-extralightgray w-100" multiple id="DocumentUpload${counter}">
+          `,
+            ]).draw(false);
+
+            counter++;
+            $('#no_of_documents').val(counter - 1)
+        });
+
+
+        // Automatically add a first row of data
+        $('#addRow').click();
+    });
+
+
+    document.getElementById("countryId").onchange = function () {
+        var get_country_id = this.value;
+        console.log(get_country_id)
+        if (get_country_id == "Select Country") {
+
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_country_id': get_country_id
+                },
+                success: function (response) {
+                    console.log(response)
+                    if (response.states) {
+                        $('#stateId').empty();
+                        $('#stateId').append(`
+                    <option class="option-format">Select States</option>
+                  `);
+                        var data = response.states
+                        data.forEach(myFunction);
+
+                        function myFunction(item) {
+                            $('#stateId').append(`
+                    <option class="option-format" value="${item.id}">${item.name}</option>
+                  `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+    }
+
+    document.getElementById("stateId").onchange = function () {
+        var get_cities_id = this.value;
+        console.log(get_cities_id)
+        if (get_cities_id == "Select State") {
+
+        }
+        else {
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'addstudent' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_cities_id': get_cities_id
+                },
+                success: function (response) {
+                    console.log(response)
+                    if (response.cities) {
+                        $('#cityId').empty();
+                        $('#cityId').append(`
+                    <option class="option-format">Select City</option>
+                  `);
+                        var data = response.cities
+                        data.forEach(myFunction);
+
+                        function myFunction(item) {
+                            $('#cityId').append(`
+                    <option class="option-format" value="${item.id}">${item.name}</option>
+                  `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+    }
+</script>
+
+
+
+<script language="JavaScript">
+    function AddQualificationRow(){
+
+var counter = document.getElementById('qual_other_counter').value;
+counter++;
+document.getElementById("qual_other_counter").value = counter;
+$('#qual_other_counter').trigger('change');
+let other = `other_${counter}`;
+let other_year = `other_year_${counter}`;
+let other_board = `other_board_${counter}`;
+let other_percentage = `other_percentage_${counter}`;
+let other_document = `other_document_${counter}`;
+
+
+var table = document.getElementById("qualification");
+var rowCount = table.rows.length;
+
+// Calculate the index where you want to insert the new row
+var indexToInsert = rowCount; // For example, insert between the 2nd and 3rd row
+
+// Insert the new row
+var newRow = table.insertRow(indexToInsert);
+//newRow.classList.add('body-row');
+
+// Insert cells into the new row
+var cell1 = newRow.insertCell(0);
+var cell2 = newRow.insertCell(1);
+var cell3 = newRow.insertCell(2);
+var cell4 = newRow.insertCell(3);
+var cell5 = newRow.insertCell(4);
+// Add content to the cells
+    // cell1.classList.add("w-30");
+    // cell2.classList.add("w-20");
+    // cell3.classList.add("w-20");
+    // cell4.classList.add("w-30");
+    // cell1.classList.add("border-right");
+    // cell2.classList.add("border-right");
+    // cell3.classList.add("border-right");
+    // cell4.classList.add("border-right");
+
+    
+
+
+cell1.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_' + counter + '" id="other_' + counter +'" placeholder="Others">';
+cell2.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_year_' + counter + '" id="other_year_' + counter +'">';
+cell3.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_board_' + counter + '" id="other_board_' + counter +'">';
+
+cell4.innerHTML = '<input type="text" class="  width-100 font-14 font-bold text-extralightgray " name="other_percentage_' + counter + '" id="other_percentage_' + counter +'">';
+
+cell5.innerHTML = '<div class="button-wrapper "> <label for="other_document_' + counter + '" class="text-extralightgray  file-btn font-14">Choose Document</label> <input type="file" id="other_document_' + counter + '" name="other_document_' + counter + '" style="display:none"><label id="uploaded-doc-other_' + counter + '" class="text-extralightgray font-14 px-3">No documents chosen</label> </div>'
+}       
+    function AddDocumentRow(){
+  
+
+  var counter = document.getElementById('personaldocs_counter').value;
+  counter++;
+  document.getElementById("personaldocs_counter").value = counter;
+$('#personaldocs_counter').trigger('change');
+
+
+var table = document.getElementById("personaldocs");
+var rowCount = table.rows.length;
+
+// Calculate the index where you want to insert the new row
+var indexToInsert = rowCount; // For example, insert between the 2nd and 3rd row
+
+// Insert the new row
+var newRow = table.insertRow(indexToInsert);
+//newRow.classList.add('body-row');
+
+// Insert cells into the new row
+var cell1 = newRow.insertCell(0);
+var cell2 = newRow.insertCell(1);
+var cell3 = newRow.insertCell(2);
+var cell4 = newRow.insertCell(3);
+var cell5 = newRow.insertCell(4);
+
+cell1.innerHTML = '<select class="personaldocument  width-100 font-14 font-bold text-extralightgray " name="document' + counter +'" id="document' + counter +'" onChange="checkType(this,' + counter + ')" aria-label="Default select example"><option class="option-format"   selected>Select</option> <option      class="option-format"   value="Aadhar Card">Aadhar Card</option> <option class="option-format"   value="Pan Card">Pan Card</option><option  class="option-format"   value="Passport">Passport</option><option class="option-format"   value="Voter ID">Voter ID</option><option class="option-format"   value="Driving License">Driving License</option> <option  class="option-format"   value="Other">Other</option> </select><div id="popupInput' + counter + '" class="popup d-none"> <div class="detail-block py-2"><label for="" class="popup">Enter Document Type</label><input type="text" class="  width-100 font-14 font-bold text-extralightgray " id="other' + counter + '" name="other' + counter + '" placeholder=""> </div> </div>';
+cell2.innerHTML = '<input type="text" name="DocumentName' + counter +'" class="  width-100 font-14 font-bold text-extralightgray " id="DocumentName' + counter +'">';
+cell3.innerHTML = '<input type="text" name="DocumentID' + counter +'" class="  width-100 font-14 font-bold text-extralightgray " id="DocumentID' + counter +'">';
+cell4.innerHTML = '<div class="personal button-wrapper transparent-input"> <label for="DocumentFront' + counter + '" class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose Document</label> <input type="file" id="DocumentFront' + counter + '" name="DocumentFront' + counter + '" style="display:none" accept="application/pdf,image/jpeg"><label id="uploaded-doc-front-' + counter + '" class="text-extralightgray font-14 px-3">No documents</label> </div>'
+
+cell5.innerHTML = '<div class="personal button-wrapper transparent-input"> <label for="DocumentBack' + counter + '" class="bg-darkgray p-2 text-extralightgray  file-btn font-14">Choose Document</label> <input type="file" id="DocumentBack' + counter + '" name="DocumentBack' + counter + '" style="display:none" accept="application/pdf,image/jpeg"><label id="uploaded-doc-back-' + counter + '" class="text-extralightgray font-14 px-3">No documents</label> </div>'
+}    
+    function savestudent() {
+        flag = validateForm('edit');
+        if (flag) {
+            form = document.getElementById('edit_student_form');
+            form.submit();
+        }
+        // var data = new FormData();
+        // data.append("university", $('#university').val());
+        // data.append("student_image", $('#student_image')[0].files[0]);
+        // data.append("name", $('#name').val());
+        // data.append("dateofbirth", $('#dateofbirth').val());
+        // data.append("fathers_name", $('#fathers_name').val());
+        // data.append("mothers_name", $('#mothers_name').val());
+        // data.append("email", $('#email').val());
+        // data.append("alternateemail", $('#alternateemail').val());
+        // data.append("mobile", $('#mobile').val());
+        // data.append("alternatemobile1", $('#alternatemobile1').val());
+
+        // data.append("gender", $('#gender').val());
+        // data.append("category", $('#category').val());
+        // data.append("identity_type", $('#identity_type').val());
+        // data.append("identity_no", $('#identity_no').val());
+        // data.append("address", $('#address').val());
+        // data.append("alternateaddress", $('#alternateaddress').val());
+
+        // data.append("nationality", $('#nationality').val());
+        // data.append("country", $('#countryId').val());
+        // data.append("stateId", $('#stateId').val());
+        // data.append("cityId", $('#cityId').val());
+        // data.append("Pincode", $('#Pincode').val());
+        // data.append("student_remarks", $('#student_remarks').val());
+
+        // data.append("counselor_name", $('#counselor_name').val());
+        // data.append("reference_name", $('#reference_name').val());
+        // data.append("university_enrollment_number", $('#university_enrollment_number').val());
+
+
+
+
+
+
+
+
+
+        // data.append("secondary_year", $('#secondary_year').val());
+        // data.append("secondary_board", $('#secondary_board').val());
+        // data.append("secondary_percentage", $('#secondary_percentage').val());
+        // data.append("secondary_document", $('#secondary_document')[0].files[0]);
+
+        // data.append("sr_year", $('#sr_year').val());
+        // data.append("sr_board", $('#sr_board').val());
+        // data.append("sr_percentage", $('#sr_percentage').val());
+        // data.append("sr_document", $('#sr_document')[0].files[0]);
+
+        // data.append("under_year", $('#under_year').val());
+        // data.append("under_board", $('#under_board').val());
+        // data.append("under_percentage", $('#under_percentage').val());
+        // data.append("under_document", $('#under_document')[0].files[0]);
+
+        // data.append("post_year", $('#post_year').val());
+        // data.append("post_board", $('#post_board').val());
+        // data.append("post_percentage", $('#post_percentage').val());
+        // data.append("post_document", $('#post_document')[0].files[0]);
+
+        // data.append("mphil_year", $('#mphil_year').val());
+        // data.append("mphil_board", $('#mphil_board').val());
+        // data.append("mphil_percentage", $('#mphil_percentage').val());
+        // data.append("mphil_document", $('#mphil_document')[0].files[0]);
+
+        // //data.append("other_year", $('#other_year').val());
+        // //data.append("other_board", $('#other_board').val());
+        // //data.append("other_percentage", $('#other_percentage').val());
+        // //data.append("other_document", $('#other_document')[0].files[0]);
+
+ 
+        // //adding for payment details 
+        // data.append("fees_reciept", $('#fees_reciept').val());
+        // data.append("transaction_date", $('#date_of_transaction').val());
+        // data.append("total_fees", $('#total_fees').val());
+        // data.append("fees", $('#fees').val());
+        // data.append("payment_mode", $('#payment_mode').val());
+        // data.append("cheque_no", $('#cheque_no').val());
+        // data.append("bank_name", $('#bank_name').val());
+        // data.append("remarks", $('#remarks').val());
+        // data.append("dues", $('#dues').val());
+
+
+        // data.append("change_session",$('#change_session').val());
+
+        // console.log("Session :",$('#change_session').val());
+
+
+        // var student_enrollment_id = $('#student_enrollment_id').val();
+      
+
+        // //var url = "http://127.0.0.1:8000/edit/" + student_enrollment_id + "/"
+        // var url = "https://erp.ciisindia.in/edit/" + student_enrollment_id + "/"
+        // console.log(url)
+        // data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+        // $.ajax({
+        //     method: "POST",
+        //     url: url,
+        //     processData: false,
+        //     contentType: false,
+        //     mimeType: "multipart/form-data",
+        //     data: data,
+        //     success: function (res) {
+
+        //         const response = JSON.parse(res);
+        //         console.log(response);
+        //         if (response.match == "email") {
+        //             alert("Email already present in the system");
+        //             $("#email").focus();
+        //         }
+        //         else if (response.match == "alternateemail") {
+        //             alert("Alternate Email already present in the system");
+        //             $("#alternateemail").focus();
+        //         }
+        //         else if (response.match == "mobile") {
+        //             alert("Mobile already present in the system");
+        //             $("#mobile").focus();
+        //         }
+        //         else if (response.match == "alternatemobile") {
+        //             alert("Alternate Mobile already present in the system");
+        //             $("#alternatemobile1").focus();
+        //         }
+        //         if (response.saved == "yes") {
+        //             alert("Changes have been saved successfully");
+        //             window.location.reload();
+        //             $("#university").focus();
+        //         }
+        //     }
+        // });
+    //}
+    }
+    $('input#Pincode').on('input', function (e) {
+        console.log(this.value)
+        const mob_reg= /^[0-9]\d*$/;
+        var check = mob_reg.test(this.value);
+        if (check) {
+            if (this.value.length != 6 ){
+                $('#pin_error').html("Pincode must be 6 digits");
+                
+            }
+            else
+            $('#pin_error').html("");
+        }
+        else {
+            $('#pin_error').html("Invalid Pincode. Enter only digits")
+        }
+    });
+    $('input#mobile').on('input', function (e) {
+        var old_num = '{{mobile}}'
+        console.log(this.value)
+        const mob_reg= /^[0-9]\d*$/;
+        var check = mob_reg.test(this.value);
+        if (check) {
+            if (this.value.length != 10){
+                $('#is__mbile_available').html("Mobile Number must be 10 digits");
+                $('#is_mobile_available').css('color', 'black');
+            }
+            else {
+                if (old_num != this.value){
+                    $.ajax({ // create an AJAX call...
+                    type: "POST",
+                    url: "{% url 'check_mobile_unique' %}",
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    data: {
+                        'mobile_unique': this.value
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.unique == "true") {
+                            $('#is_mobile_available').html("Available")
+                            $('#is_mobile_available').css('color', 'green');
+                            $('#save_student_button').removeAttr("disabled")
+                        }
+                        else {
+                            $('#save_student_button').attr('disabled', 'disabled');
+                            $('#is_mobile_available').html("Not Available")
+                            $('#is_mobile_available').css('color', 'red');
+                            text = `Student ${response.studentname} has been registered with this mobile number by ${response.createdby}`;
+                            alert(text);
+                        }
+                    }
+                });
+            }
+        }
+    }
+    else {
+            $('#is_mobile_available').html("Invalid Mobile Number")
+            $('#is_mobile_available').css('color', 'red');
+        }
+    });
+
+    $('input#alternatemobile1').on('input', function (e) {
+        console.log(this.value)
+         var old_num = '{{alternate_mobile1}}'
+        const mob_reg= /^[0-9]\d*$/;
+        var check = mob_reg.test(this.value);
+        if (check) {
+            if (this.value.length != 10){
+                $('#is_alt_mobile_available').html("Mobile Number must be 10 digits");
+                $('#is_alt_mobile_available').css('color', 'black');
+            }
+            else {
+                if (old_num != this.value){
+                    $.ajax({ // create an AJAX call...
+                    type: "POST",
+                    url: "{% url 'check_mobile_unique' %}",
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    data: {
+                        'mobile_unique': this.value
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.unique == "true") {
+                            $('#is_alt_mobile_available').html("Available")
+                            $('#is_alt_mobile_available').css('color', 'green');
+                            $('#save_student_button').removeAttr("disabled")
+                        }
+                        else {
+                            $('#save_student_button').attr('disabled', 'disabled');
+                            $('#is_alt_mobile_available').html("Not Available")
+                            $('#is_alt_mobile_available').css('color', 'red');
+                            text = `Student ${response.studentname} has been registered with this mobile number by ${response.createdby}`;
+                            alert(text);
+                        }
+                    }
+                });
+
+                }
+                
+            }
+        }
+        else {
+            $('#is_alt_mobile_available').html("Invalid mobile number")
+            $('#is_alt_mobile_available').css('color', 'red');
+            }
+        
+    });
+    
+    $('input#email').on('input', function (e) {
+        console.log(this.value)
+        var old_email ='{{email}}';
+        var check = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.value)
+        if (check){
+            if (old_email != this.value){
+                $.ajax({ // create an AJAX call...
+                type: "POST",
+                url: "{% url 'check_email_unique' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'email_unique': this.value
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (response.unique == "true") {
+                        $('#is_email_available').html("Available")
+                        $('#is_email_available').css('color', 'green');
+                        $('#save_student_button').removeAttr("disabled")
+                    }
+                    else {
+                        $('#save_student_button').attr('disabled', 'disabled');
+                        $('#is_email_available').html("Not Available")
+                        $('#is_email_available').css('color', 'red');
+                        
+                        text = `Student ${response.studentname} has been registered with this email address by ${response.createdby}`;
+                        alert(text);
+
+                    }
+                }
+            });
+
+            }
+            
+        }
+        else {
+            $('#is_email_available').html("Invalid email address")
+            $('#is_email_available').css('color', 'red');
+        }
+    });
+    $('input#alternateemail').on('input', function (e) {
+        console.log(this.value)
+        var old_email = '{{alternateemail}}'
+        var check = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.value)
+        if (check){
+            if (old_email != this.value){
+                $.ajax({ // create an AJAX call...
+                type: "POST",
+                url: "{% url 'check_email_unique' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'email_unique': this.value
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (response.unique == "true") {
+                        $('#is_alt_email_available').html("Available")
+                        $('#is_alt_email_available').css('color', 'green');
+                        $('#save_student_button').removeAttr("disabled")
+                    }
+                    else {
+                        $('#save_student_button').attr('disabled', 'disabled');
+                        $('#is_alt_email_available').html("Not Available")
+                        $('#is_alt_email_available').css('color', 'red');
+                        text = `Student ${response.studentname} has been registered with this email address by ${response.createdby}`;
+                        alert(text);
+
+                    }
+                }
+            });
+
+            }
+
+            
+        }
+        else {
+            $('#is_alt_email_available').html("Invalid email address")
+            $('#is_alt_email_available').css('color', 'red');
+        }
+    });
+         
+</script>
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

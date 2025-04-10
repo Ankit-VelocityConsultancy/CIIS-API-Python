@@ -1,0 +1,1979 @@
+<<<<<<< HEAD
+{% extends 'admin.html' %}
+
+{% block head %}
+<style>
+    main {
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+
+    body {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+
+    html {
+        height: -webkit-fill-available;
+    }
+
+    main {
+        display: flex;
+        flex-wrap: nowrap;
+        height: -webkit-fill-available;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .b-example-divider {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+    }
+
+    .bi {
+        vertical-align: -.125em;
+        pointer-events: none;
+        fill: currentColor;
+    }
+
+    .dropdown-toggle {
+        outline: 0;
+    }
+
+    .nav-flush .nav-link {
+        border-radius: 0;
+    }
+
+    .btn-toggle {
+        display: inline-flex;
+        align-items: center;
+        padding: .25rem .5rem;
+        font-weight: 600;
+        color: rgba(0, 0, 0, .65);
+        background-color: transparent;
+        border: 0;
+    }
+
+    .btn-toggle:hover,
+    .btn-toggle:focus {
+        color: rgba(0, 0, 0, .85);
+        background-color: #d2f4ea;
+    }
+
+    .btn-toggle::before {
+        width: 1.25em;
+        line-height: 0;
+        content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+        transition: transform .35s ease;
+        transform-origin: .5em 50%;
+    }
+
+    .btn-toggle[aria-expanded="true"] {
+        color: rgba(0, 0, 0, .85);
+    }
+
+    .btn-toggle[aria-expanded="true"]::before {
+        transform: rotate(90deg);
+    }
+
+    .btn-toggle-nav a {
+        display: inline-flex;
+        padding: .1875rem .5rem;
+        margin-top: .125rem;
+        margin-left: 1.25rem;
+        text-decoration: none;
+    }
+
+    .btn-toggle-nav a:hover,
+    .btn-toggle-nav a:focus {
+        background-color: #d2f4ea;
+    }
+
+
+
+    .fw-semibold {
+        font-weight: 600;
+    }
+
+    .lh-tight {
+        line-height: 1.25;
+    }
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+
+    }
+
+    body {
+        min-height: 100vh
+    }
+
+    .wrapper {
+        max-width: 1200px;
+        margin: 0px auto;
+        padding: 30px 45px;
+        box-shadow: 5px 25px 35px #3535356b
+    }
+
+    body{
+    margin-top:20px;
+    color: #484b51;
+}
+.text-secondary-d1 {
+    color: #728299!important;
+}
+.page-header {
+    margin: 0 0 1rem;
+    padding-bottom: 1rem;
+    padding-top: .5rem;
+    border-bottom: 1px dotted #e2e2e2;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.page-title {
+    padding: 0;
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 300;
+}
+.brc-default-l1 {
+    border-color: #dce9f0!important;
+}
+
+.ml-n1, .mx-n1 {
+    margin-left: -.25rem!important;
+}
+.mr-n1, .mx-n1 {
+    margin-right: -.25rem!important;
+}
+.mb-4, .my-4 {
+    margin-bottom: 1.5rem!important;
+}
+
+hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0,0,0,.1);
+}
+
+.text-grey-m2 {
+    color: #888a8d!important;
+}
+
+.text-success-m2 {
+    color: #86bd68!important;
+}
+
+.font-bolder, .text-600 {
+    font-weight: 600!important;
+}
+
+.text-110 {
+    font-size: 110%!important;
+}
+.text-blue {
+    color: #478fcc!important;
+}
+.pb-25, .py-25 {
+    padding-bottom: .75rem!important;
+}
+
+.pt-25, .py-25 {
+    padding-top: .75rem!important;
+}
+.bgc-default-tp1 {
+    background-color: rgba(121,169,197,.92)!important;
+}
+.bgc-default-l4, .bgc-h-default-l4:hover {
+    background-color: #f3f8fa!important;
+}
+.page-header .page-tools {
+    -ms-flex-item-align: end;
+    align-self: flex-end;
+}
+
+.btn-light {
+    color: #757984;
+    background-color: #f5f6f9;
+    border-color: #dddfe4;
+}
+.w-2 {
+    width: 1rem;
+}
+
+.text-120 {
+    font-size: 120%!important;
+}
+.text-primary-m1 {
+    color: #4087d4!important;
+}
+
+.text-danger-m1 {
+    color: #dd4949!important;
+}
+.text-blue-m2 {
+    color: #68a3d5!important;
+}
+.text-150 {
+    font-size: 150%!important;
+}
+.text-60 {
+    font-size: 60%!important;
+}
+.text-grey-m1 {
+    color: #7b7d81!important;
+}
+.align-bottom {
+    vertical-align: bottom!important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+
+<style type="text/css" media="print">
+    
+    @page {
+    size: auto;   /* auto is the initial value */
+    margin: 0;  /* this affects the margin in the printer settings */
+}
+@media print {
+        body * {
+            visibility: hidden;
+        }
+        .print_form,
+        .print_form *:not(.print_button) {
+            
+            visibility: visible;
+            
+        }
+        
+    }
+</style>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+{% endblock head %}
+
+
+{% block nav %}
+<header>
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+        <div class="position-sticky">
+            <div class="list-group list-group-flush mx-3 mt-4">
+                <a href="{% url 'overview' %}" class="list-group-item list-group-item-action py-2 ripple"
+                    aria-current="true">
+                    <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+                </a>
+
+
+                <ul class="list-unstyled ps-0">
+                    <li class="">
+                        <button class="list-group-item list-group-item-action py-2 ripple active"
+                            data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+                            <i class="fas fa-users-cog fa-fw me-3"></i><span>Stud Management</span>
+                        </button>
+                        <div class="collapse show" id="dashboard-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Student Registration</a>
+                                </li>
+                                <li><a href="{% url 'enroll' %}" class="link-dark rounded">Enroll Student</a></li>
+                                <li><a href="{% url 'enroll_offline' %}" class="link-dark rounded">Enroll Student
+                                        Offline</a></li>
+                                <li><a href="{% url 'additionaldetail' %}" class="link-dark rounded">Additional
+                                        Details</a></li>
+                                <li><a href="{% url 'addfees' %}" class="link-dark rounded">Add Student Fee</a></li>
+                                <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Pending Student
+                                        Verification</a></li>
+                                <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Registered
+                                        Student</a></li>
+                                <li><a href="#" class="link-dark rounded">Passout Student</a></li>
+                                <li><a href="{% url 'registrationcash' %}" class="link-dark rounded">Re-Registration
+                                        Through Cash Challan</a></li>
+                                <li><a href="#" class="link-dark rounded">Re-Registration Through RTGS/NEFT</a></li>
+                                <li><a href="#" class="link-dark rounded">Enroll Student Cash/RTGS/NEFT</a></li>
+                                <li><a href="#" class="link-dark rounded">View CASH/RTGS/NEFT</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="list-unstyled ps-0">
+                    <li class="">
+                        <button class="list-group-item list-group-item-action py-2 ripple active"
+                            data-bs-toggle="collapse" data-bs-target="#course-collapse" aria-expanded="true">
+                            <i class="fas fa-users-cog fa-fw me-3"></i><span>My Course/Subject</span>
+                        </button>
+                        <div class="collapse " id="course-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li><a href="{% url 'addcourse' %}" class="link-dark rounded">My Course</a></li>
+                                <li><a href="{% url 'addstream' %}" class="link-dark rounded">My Subject</a></li>
+                                <li><a href="#" class="link-dark rounded">Add Center Subjects</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+
+
+
+
+
+                <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+                        class="fas fa-sign-out-alt fa-fw me-3"></i><span>Logout</span></a>
+
+            </div>
+        </div>
+    </nav>
+    <!-- Sidebar -->
+
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+                aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Brand -->
+            <a class="navbar-brand" href="#">
+                <img src="" height="25" alt="" loading="lazy" />
+            </a>
+            <!-- Search form -->
+            <form class="d-none d-md-flex input-group w-auto my-auto">
+                <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                    style="min-width: 225px" />
+                <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+            </form>
+
+            <!-- Right links -->
+            <ul class="navbar-nav ms-auto d-flex flex-row">
+
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+
+
+
+                <!-- Avatar -->
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                            height="22" alt="" loading="lazy" />
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">My profile</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+<hr>
+<div class="container">
+    <div class="form">
+        <div class="header-tag">
+            <h3>Enter Enrollment ID</h3>
+        </div>
+        <form action="" method="POST" id="enrollform">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="mb-3">
+                        <label for="enroll_id" class="form-label">Enroll ID</label>
+                        <input type="text" name="enrollid" class="form-control" id="enroll_id"
+                            style="margin-top: -10px;">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <button type="submit" class="btn btn-primary" style="margin-top:20px;">Search</button>
+                </div>
+                <div class="col-sm-5">
+
+                    <h3 id="notfound" style="color:green;margin-top:20px ;"></h3>
+
+                </div>
+            </div>
+        </form>
+
+        <div id="hiddendata" style="visibility:hidden;">
+            <hr>
+            <div class="main-form">
+                <div class="header-tag">
+                    <h1>Personal Details</h1>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" name="first_name" class="form-control" id="first_name"
+                                style="margin-top: -10px;" readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="middle_name" class="form-label">Middle Name</label>
+                            <input type="text" name="middle_name" class="form-control" id="middle_name"
+                                style="margin-top: -10px;" readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" id="last_name"
+                                style="margin-top: -10px;" readonly>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" id="email" style="margin-top: -10px;"
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="mobile" class="form-label">Mobile</label>
+                            <input type="text" name="mobile" class="form-control" id="mobile" style="margin-top: -10px;"
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="current_semyear" class="form-label">Current Semester</label>
+                            <input type="text" name="current_semyear" class="form-control" id="current_semyear" style="margin-top: -10px;"
+                                readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <label for="fees_reciept" class="form-label">Fees Reciept</label>
+                            <select class="form-select" name="fees_reciept" id="fees_reciept"
+                                aria-label="Default select example" style="margin-top: -10px;">
+                                <option selected>Select</option>
+                                <option value="New">New</option>
+                                <option value="Dues">Dues</option>
+                                <option value="RR">RR</option>
+                                <option value="RS">RS</option>
+                                <option value="EF">EF</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4" id="other_data" style="visibility:hidden;">
+                        <div class="mb-3">
+                            <label for="others" class="form-label">Others</label>
+                            <input type="others" name="others" class="form-control" id="others" style="margin-top: -10px;"
+                                >
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="mb-3">
+                            <label for="total_fees" class="form-label">Total Fees</label>
+                            <input type="total_fees" name="total_fees" class="form-control" id="total_fees" style="margin-top: -10px;"
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="amount" name="amount" class="form-control" id="amount" style="margin-top: -10px;"
+                                >
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="course" class="form-label">Course</label>
+                            <input type="course" name="course" class="form-control" id="course" style="margin-top: -10px;"
+                              readonly  >
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="stream" class="form-label">Stream</label>
+                            <input type="stream" name="stream" class="form-control" id="stream" style="margin-top: -10px;"
+                               readonly >
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <label for="date_of_transaction" class="form-label">Transaction Date</label>
+                            <input type="date" name="date_of_transaction" class="form-control" id="date_of_transaction" style="margin-top: -10px;"
+                                >
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <label for="payment_mode" class="form-label">Payment Mode</label>
+                            <select class="form-select" name="payment_mode" id="payment_mode"
+                                aria-label="Default select example" style="margin-top: -10px;">
+                                <option selected>Select</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="CASH">CASH</option>
+                                <option value="NEFT">NEFT</option>
+                                <option value="RTGS">RTGS</option>
+                                <option value="IMPS">IMPS</option>
+                                <option value="UPI">UPI</option>
+                                <option value="GPAY">GPAY</option>
+                                <option value="EaseBuzz">EaseBuzz</option>
+                                <option value="PL/PG">PL/PG</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="cheque_no" class="form-label">Cheque/DD/CC Number</label>
+                            <input type="text" name="cheque_no" class="form-control" id="cheque_no" style="margin-top: -10px;"
+                                >
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="bank_name" class="form-label">Bank Name</label>
+                            <select class="form-select" name="bank_name" id="bank_name"
+                                aria-label="Default select example" style="margin-top: -10px;">
+                                <option selected="selected" value=" ">--Select --</option>
+                                <option value="ALLAHABAD BANK">ALLAHABAD BANK</option>
+                                <option value="ANDHRA BANK">ANDHRA BANK</option>
+                                <option value="AXIS BANK">AXIS BANK</option>
+                                <option value="STATE BANK OF INDIA">STATE BANK OF INDIA</option>
+                                <option value="BANK OF BARODA">BANK OF BARODA</option>
+                                <option value="UCO BANK">UCO BANK</option>
+                                <option value="UNION BANK OF INDIA">UNION BANK OF INDIA</option>
+                                <option value="BANK OF INDIA">BANK OF INDIA</option>
+                                <option value="BANDHAN BANK LIMITED">BANDHAN BANK LIMITED</option>
+                                <option value="CANARA BANK">CANARA BANK</option>
+                                <option value="GRAMIN VIKASH BANK">GRAMIN VIKASH BANK</option>
+                                <option value="CORPORATION BANK">CORPORATION BANK</option>
+                                <option value="INDIAN BANK">INDIAN BANK</option>
+                                <option value="INDIAN OVERSEAS BANK">INDIAN OVERSEAS BANK</option>
+                                <option value="ORIENTAL BANK OF COMMERCE">ORIENTAL BANK OF COMMERCE</option>
+                                <option value="PUNJAB AND SIND BANK">PUNJAB AND SIND BANK</option>
+                                <option value="PUNJAB NATIONAL BANK">PUNJAB NATIONAL BANK</option>
+                                <option value="RESERVE BANK OF INDIA">RESERVE BANK OF INDIA</option>
+                                <option value="SOUTH INDIAN BANK">SOUTH INDIAN BANK</option>
+                                <option value="UNITED BANK OF INDIA">UNITED BANK OF INDIA</option>
+                                <option value="CENTRAL BANK OF INDIA">CENTRAL BANK OF INDIA</option>
+                                <option value="VIJAYA BANK">VIJAYA BANK</option>
+                                <option value="DENA BANK">DENA BANK</option>
+                                <option value="BHARATIYA MAHILA BANK LIMITED">BHARATIYA MAHILA BANK LIMITED</option>
+                                <option value="FEDERAL BANK LTD">FEDERAL BANK LTD</option>
+                                <option value="HDFC BANK LTD">HDFC BANK LTD</option>
+                                <option value="ICICI BANK LTD">ICICI BANK LTD</option>
+                                <option value="IDBI BANK LTD">IDBI BANK LTD</option>
+                                <option value="PAYTM BANK">PAYTM BANK</option>
+                                <option value="FINO PAYMENT BANK">FINO PAYMENT BANK</option>
+                                <option value="INDUSIND BANK LTD">INDUSIND BANK LTD</option>
+                                <option value="KARNATAKA BANK LTD">KARNATAKA BANK LTD</option>
+                                <option value="KOTAK MAHINDRA BANK">KOTAK MAHINDRA BANK</option>
+                                <option value="YES BANK LTD">YES BANK LTD</option>
+                                <option value="SYNDICATE BANK">SYNDICATE BANK</option>
+                                <option value="BANK OF INDIA">BANK OF INDIA</option>
+                                <option value="BANK OF MAHARASHTRA">BANK OF MAHARASHTRA</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="mb-3">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <input type="text" name="remarks" class="form-control" id="remarks" style="margin-top: -10px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-5">
+                        <button class="btn btn-success" onclick="saveform()">Save</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mb-3">
+
+            </div>
+            <hr>
+            <div class="main-form">
+                <table class="table" id="main_table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Sr. No</th>
+                        <th>Semester</th>
+                        <th>Paid Amount</th>
+                        <th>Transaction Date</th>
+                        <th>Transaction ID</th>
+                        <th>View</th>
+                        <th>Download</th>
+                      </tr>
+                    </thead>
+                    <tbody id="main_table_body">
+                      
+                      
+                    </tbody>
+                  </table>
+            </div>
+
+            <hr>
+            <div class="main-form">
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="reciept_modal" tabindex="-1" aria-labelledby="reciept_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reciept_modalLabel">Reciept</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container" id="reciept_modal_body">
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+<script language="JavaScript">
+    document.addEventListener("wheel", function (event) {
+        if (document.activeElement.type === "number") {
+            document.activeElement.blur();
+        }
+    });
+
+</script>
+
+<script language="JavaScript">
+    $(document).ready(function () {
+        $('#enrollform').submit(function () { // catch the form's submit event
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'enrollid': $('#enroll_id').val()
+                }, // get the form data
+                type: 'POST', // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'enroll_offline' %}",
+                success: function (response) { // on success..
+                    console.log(response)
+                    $('#notfound').text(' ')
+                    $('#hiddendata').css('visibility', 'hidden')
+                    if (response.found == "no") {
+                        $('#notfound').css('color', 'red');
+                        $('#notfound').text('Student Not Found')
+                    }
+                    if (response.found == "yes") {
+                        $('#hiddendata').css('visibility', 'visible')
+                        $('#first_name').val(response.data.first_name);
+                        $('#middle_name').val(response.data.middle_name);
+                        $('#last_name').val(response.data.last_name);
+                        $('#email').val(response.data.email);
+                        $('#mobile').val(response.data.mobile);
+                        $('#total_fees').val(response.data.next_semyear_fees);
+                        if(response.data.current_semyear == 0){
+                            $('#current_semyear').val("NA - Not Enrolled");
+                        }
+                        else{
+                            $('#current_semyear').val(response.data.current_semyear);
+                        }
+                        
+                        $('#course').val(response.data.course);
+                        $('#stream').val(response.data.stream);
+                        
+
+                    }
+                
+                    if(response.has_reciept.has_reciept == "yes"){
+                        var data = response.has_reciept.payment_reciept;
+                        data.forEach(myFunction);
+                        var count = 0;
+                        function myFunction(item,count) 
+                        
+                        {
+                            count=count+1
+                            console.log(count)
+                            $('#main_table_body').append(`
+                            <tr>
+                                <td>${count}</td>
+                                <td>${item.semyear}</td>
+                                <td>${item.paidamount}</td>
+                                <td>${item.transaction_date}</td>
+                                <td>${item.transactionID}</td>
+                                <th><button class="btn btn-success" onclick="view_reciept('`+item.transactionID+`')">View</button></th>
+                                <th><button class="btn btn-primary" onclick="download_reciept('`+item.transactionID+`')">Download</button></th>
+                                
+                            </tr>
+                            `);
+                        }
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+<script language="JavaScript">
+    
+    $(function() {
+    $("#fees_reciept").change(function() {
+        var selected_option = $('option:selected', this).text()
+        if(selected_option == "Others"){
+            $('#other_data').css('visibility','visible');
+        }
+        else{
+            $('#other_data').css('visibility','hidden');
+        }
+        });
+    });
+    function saveform(){
+        console.log($('#fees_reciept option:selected').text());
+        $.ajax
+        ({ 
+            data: {
+                'email':$('#email').val(),
+                'mobile':$('#mobile').val(),
+                'amount':$('#amount').val(),
+                'fee_reciept_type':$('#fees_reciept option:selected').text(),
+                'other_data': $('#others').val(),
+                'transaction_date':$('#date_of_transaction').val(),
+                'payment_mode':$('#payment_mode option:selected').text(),
+                'cheque_no':$('#cheque_no').val(),
+                'bank_name':$('#bank_name option:selected').text(),
+                'remarks':$('#remarks').val(),
+                'current_semyear':$('#current_semyear').val(),
+                'total_fees':$('#total_fees').val()
+
+
+            },
+            type: 'POST', 
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            url: "{% url 'enroll_offline' %}",
+            success: function (response) {
+                if(response.saved == "yes"){
+                    window.location="{% url 'enroll_offline' %}"
+                }
+            }
+        });
+    }
+
+    function view_reciept(transID){
+        console.log("view :",transID);
+        if (transID) {
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'transID': transID
+                }, // get the form data
+                type: 'POST', // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'enroll_offline' %}", // the file to call
+                success: function (response) {  
+                    console.log(response)
+                    $('#reciept_modal_body').html(`
+                    <div class="page-content container print_form">
+                        <div class="page-header text-blue-d2">
+                            <h1 class="page-title text-secondary-d1">
+                                Reciept
+                                <small class="page-info">
+                                    <i class="fa fa-angle-double-right text-80"></i>
+                                    ID: `+response.view_reciept.transactionID+`
+                                </small>
+                            </h1>
+
+                            <div class="page-tools">
+                                <div class="action-buttons">
+                                    <a class="btn bg-white btn-light mx-1px text-95 print_button" href="#" data-title="Print" id="print_button" onclick="print_screen()">
+                                        <i class="mr-1 fa fa-print text-primary-m1 text-120 w-2 print_button"></i>
+                                        Print
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container px-0">
+                            <div class="row mt-4">
+                                <div class="col-12 col-lg-12">
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div>
+                                                <span class="text-sm text-grey-m2 align-middle">To:</span>
+                                                <span class="text-600 text-110 text-blue align-middle">`+response.personal.first_name + ' ' + response.personal.middle_name+ ' ' + response.personal.last_name+ `</span>
+                                            </div>
+                                            <div class="text-grey-m2">
+                                                <div class="my-1">
+                                                    `+response.personal.address + ', ' + response.personal.city +`
+                                                </div>
+                                                <div class="my-1">
+                                                    `+response.personal.state + ', ' + response.personal.country +`
+                                                </div>
+                                                <div class="my-1"><i class="fa fa-phone fa-flip-horizontal text-secondary"></i> <b class="text-600">`+response.personal.mobile+`</b></div>
+                                                <div class="my-1"><i class="fas fa-envelope  text-secondary"></i> <b class="text-600">`+response.personal.email+`</b></div>
+                                            </div>
+                                        </div>
+                                        <!-- /.col -->
+
+                                        <div class="text-95 col-sm-6 align-self-start d-sm-flex justify-content-end">
+                                            <hr class="d-sm-none" />
+                                            <div class="text-grey-m2">
+                                                <div class="mt-1 mb-2 text-secondary-m1 text-600 text-125">
+                                                    Invoice
+                                                </div>
+
+                                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">ID:</span> #`+response.view_reciept.transactionID+`</div>
+
+                                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Issue Date:</span> `+response.view_reciept.transaction_date+`</div>
+
+                                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> Paid </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.col -->
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <div class="row text-600 text-white bgc-default-tp1 py-25">
+                                            <div class="d-none d-sm-block col-3">Semester</div>
+                                            <div class="col-9 col-sm-3">Amount</div>
+                                            <div class="d-none d-sm-block col-3 col-sm-3">Transaction Date</div>
+                                            <div class="d-none d-sm-block col-sm-3">Mode</div>
+                                        </div>
+
+                                        <div class="text-95 text-secondary-d3">
+                                            <div class="row mb-2 mb-sm-0 py-25">
+                                                <div class="d-none d-sm-block col-3">`+response.view_reciept.semyear+`</div>
+                                                <div class="col-9 col-sm-3">`+response.view_reciept.paidamount+`</div>
+                                                <div class="d-none d-sm-block col-3">`+response.view_reciept.transaction_date+`</div>
+                                                <div class="d-none d-sm-block col-3 text-95">`+response.view_reciept.paymentmode+`</div>
+                                            </div>
+
+                                            
+                                        </div>
+
+                                        <div class="row border-b-2 brc-default-l2"></div>
+
+                                  
+
+                                        <hr />
+
+                                        <div>
+                                            <span class="text-secondary-d1 text-105">Thank you for your Payment</span>  
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    `);
+                    $('#reciept_modal').modal('show');
+                }
+            });
+        }
+    }
+    function download_reciept(transID){
+        console.log("download :",transID)
+    }
+
+    function print_screen() {
+        window.print();
+    }   
+</script>
+
+
+{% endblock body %}
+
+
+
+
+=======
+{% extends 'admin.html' %}
+
+{% block head %}
+<style>
+    main {
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+
+    body {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+
+    html {
+        height: -webkit-fill-available;
+    }
+
+    main {
+        display: flex;
+        flex-wrap: nowrap;
+        height: -webkit-fill-available;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .b-example-divider {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+    }
+
+    .bi {
+        vertical-align: -.125em;
+        pointer-events: none;
+        fill: currentColor;
+    }
+
+    .dropdown-toggle {
+        outline: 0;
+    }
+
+    .nav-flush .nav-link {
+        border-radius: 0;
+    }
+
+    .btn-toggle {
+        display: inline-flex;
+        align-items: center;
+        padding: .25rem .5rem;
+        font-weight: 600;
+        color: rgba(0, 0, 0, .65);
+        background-color: transparent;
+        border: 0;
+    }
+
+    .btn-toggle:hover,
+    .btn-toggle:focus {
+        color: rgba(0, 0, 0, .85);
+        background-color: #d2f4ea;
+    }
+
+    .btn-toggle::before {
+        width: 1.25em;
+        line-height: 0;
+        content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+        transition: transform .35s ease;
+        transform-origin: .5em 50%;
+    }
+
+    .btn-toggle[aria-expanded="true"] {
+        color: rgba(0, 0, 0, .85);
+    }
+
+    .btn-toggle[aria-expanded="true"]::before {
+        transform: rotate(90deg);
+    }
+
+    .btn-toggle-nav a {
+        display: inline-flex;
+        padding: .1875rem .5rem;
+        margin-top: .125rem;
+        margin-left: 1.25rem;
+        text-decoration: none;
+    }
+
+    .btn-toggle-nav a:hover,
+    .btn-toggle-nav a:focus {
+        background-color: #d2f4ea;
+    }
+
+
+
+    .fw-semibold {
+        font-weight: 600;
+    }
+
+    .lh-tight {
+        line-height: 1.25;
+    }
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+
+    }
+
+    body {
+        min-height: 100vh
+    }
+
+    .wrapper {
+        max-width: 1200px;
+        margin: 0px auto;
+        padding: 30px 45px;
+        box-shadow: 5px 25px 35px #3535356b
+    }
+
+    body{
+    margin-top:20px;
+    color: #484b51;
+}
+.text-secondary-d1 {
+    color: #728299!important;
+}
+.page-header {
+    margin: 0 0 1rem;
+    padding-bottom: 1rem;
+    padding-top: .5rem;
+    border-bottom: 1px dotted #e2e2e2;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.page-title {
+    padding: 0;
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 300;
+}
+.brc-default-l1 {
+    border-color: #dce9f0!important;
+}
+
+.ml-n1, .mx-n1 {
+    margin-left: -.25rem!important;
+}
+.mr-n1, .mx-n1 {
+    margin-right: -.25rem!important;
+}
+.mb-4, .my-4 {
+    margin-bottom: 1.5rem!important;
+}
+
+hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0,0,0,.1);
+}
+
+.text-grey-m2 {
+    color: #888a8d!important;
+}
+
+.text-success-m2 {
+    color: #86bd68!important;
+}
+
+.font-bolder, .text-600 {
+    font-weight: 600!important;
+}
+
+.text-110 {
+    font-size: 110%!important;
+}
+.text-blue {
+    color: #478fcc!important;
+}
+.pb-25, .py-25 {
+    padding-bottom: .75rem!important;
+}
+
+.pt-25, .py-25 {
+    padding-top: .75rem!important;
+}
+.bgc-default-tp1 {
+    background-color: rgba(121,169,197,.92)!important;
+}
+.bgc-default-l4, .bgc-h-default-l4:hover {
+    background-color: #f3f8fa!important;
+}
+.page-header .page-tools {
+    -ms-flex-item-align: end;
+    align-self: flex-end;
+}
+
+.btn-light {
+    color: #757984;
+    background-color: #f5f6f9;
+    border-color: #dddfe4;
+}
+.w-2 {
+    width: 1rem;
+}
+
+.text-120 {
+    font-size: 120%!important;
+}
+.text-primary-m1 {
+    color: #4087d4!important;
+}
+
+.text-danger-m1 {
+    color: #dd4949!important;
+}
+.text-blue-m2 {
+    color: #68a3d5!important;
+}
+.text-150 {
+    font-size: 150%!important;
+}
+.text-60 {
+    font-size: 60%!important;
+}
+.text-grey-m1 {
+    color: #7b7d81!important;
+}
+.align-bottom {
+    vertical-align: bottom!important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+
+<style type="text/css" media="print">
+    
+    @page {
+    size: auto;   /* auto is the initial value */
+    margin: 0;  /* this affects the margin in the printer settings */
+}
+@media print {
+        body * {
+            visibility: hidden;
+        }
+        .print_form,
+        .print_form *:not(.print_button) {
+            
+            visibility: visible;
+            
+        }
+        
+    }
+</style>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+{% endblock head %}
+
+
+{% block nav %}
+<header>
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+        <div class="position-sticky">
+            <div class="list-group list-group-flush mx-3 mt-4">
+                <a href="{% url 'overview' %}" class="list-group-item list-group-item-action py-2 ripple"
+                    aria-current="true">
+                    <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+                </a>
+
+
+                <ul class="list-unstyled ps-0">
+                    <li class="">
+                        <button class="list-group-item list-group-item-action py-2 ripple active"
+                            data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+                            <i class="fas fa-users-cog fa-fw me-3"></i><span>Stud Management</span>
+                        </button>
+                        <div class="collapse show" id="dashboard-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Student Registration</a>
+                                </li>
+                                <li><a href="{% url 'enroll' %}" class="link-dark rounded">Enroll Student</a></li>
+                                <li><a href="{% url 'enroll_offline' %}" class="link-dark rounded">Enroll Student
+                                        Offline</a></li>
+                                <li><a href="{% url 'additionaldetail' %}" class="link-dark rounded">Additional
+                                        Details</a></li>
+                                <li><a href="{% url 'addfees' %}" class="link-dark rounded">Add Student Fee</a></li>
+                                <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Pending Student
+                                        Verification</a></li>
+                                <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Registered
+                                        Student</a></li>
+                                <li><a href="#" class="link-dark rounded">Passout Student</a></li>
+                                <li><a href="{% url 'registrationcash' %}" class="link-dark rounded">Re-Registration
+                                        Through Cash Challan</a></li>
+                                <li><a href="#" class="link-dark rounded">Re-Registration Through RTGS/NEFT</a></li>
+                                <li><a href="#" class="link-dark rounded">Enroll Student Cash/RTGS/NEFT</a></li>
+                                <li><a href="#" class="link-dark rounded">View CASH/RTGS/NEFT</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="list-unstyled ps-0">
+                    <li class="">
+                        <button class="list-group-item list-group-item-action py-2 ripple active"
+                            data-bs-toggle="collapse" data-bs-target="#course-collapse" aria-expanded="true">
+                            <i class="fas fa-users-cog fa-fw me-3"></i><span>My Course/Subject</span>
+                        </button>
+                        <div class="collapse " id="course-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li><a href="{% url 'addcourse' %}" class="link-dark rounded">My Course</a></li>
+                                <li><a href="{% url 'addstream' %}" class="link-dark rounded">My Subject</a></li>
+                                <li><a href="#" class="link-dark rounded">Add Center Subjects</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+
+
+
+
+
+                <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+                        class="fas fa-sign-out-alt fa-fw me-3"></i><span>Logout</span></a>
+
+            </div>
+        </div>
+    </nav>
+    <!-- Sidebar -->
+
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+                aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Brand -->
+            <a class="navbar-brand" href="#">
+                <img src="" height="25" alt="" loading="lazy" />
+            </a>
+            <!-- Search form -->
+            <form class="d-none d-md-flex input-group w-auto my-auto">
+                <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                    style="min-width: 225px" />
+                <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+            </form>
+
+            <!-- Right links -->
+            <ul class="navbar-nav ms-auto d-flex flex-row">
+
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+
+
+
+                <!-- Avatar -->
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                            height="22" alt="" loading="lazy" />
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">My profile</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+<hr>
+<div class="container">
+    <div class="form">
+        <div class="header-tag">
+            <h3>Enter Enrollment ID</h3>
+        </div>
+        <form action="" method="POST" id="enrollform">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="mb-3">
+                        <label for="enroll_id" class="form-label">Enroll ID</label>
+                        <input type="text" name="enrollid" class="form-control" id="enroll_id"
+                            style="margin-top: -10px;">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <button type="submit" class="btn btn-primary" style="margin-top:20px;">Search</button>
+                </div>
+                <div class="col-sm-5">
+
+                    <h3 id="notfound" style="color:green;margin-top:20px ;"></h3>
+
+                </div>
+            </div>
+        </form>
+
+        <div id="hiddendata" style="visibility:hidden;">
+            <hr>
+            <div class="main-form">
+                <div class="header-tag">
+                    <h1>Personal Details</h1>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" name="first_name" class="form-control" id="first_name"
+                                style="margin-top: -10px;" readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="middle_name" class="form-label">Middle Name</label>
+                            <input type="text" name="middle_name" class="form-control" id="middle_name"
+                                style="margin-top: -10px;" readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" id="last_name"
+                                style="margin-top: -10px;" readonly>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" id="email" style="margin-top: -10px;"
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="mobile" class="form-label">Mobile</label>
+                            <input type="text" name="mobile" class="form-control" id="mobile" style="margin-top: -10px;"
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="current_semyear" class="form-label">Current Semester</label>
+                            <input type="text" name="current_semyear" class="form-control" id="current_semyear" style="margin-top: -10px;"
+                                readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <label for="fees_reciept" class="form-label">Fees Reciept</label>
+                            <select class="form-select" name="fees_reciept" id="fees_reciept"
+                                aria-label="Default select example" style="margin-top: -10px;">
+                                <option selected>Select</option>
+                                <option value="New">New</option>
+                                <option value="Dues">Dues</option>
+                                <option value="RR">RR</option>
+                                <option value="RS">RS</option>
+                                <option value="EF">EF</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4" id="other_data" style="visibility:hidden;">
+                        <div class="mb-3">
+                            <label for="others" class="form-label">Others</label>
+                            <input type="others" name="others" class="form-control" id="others" style="margin-top: -10px;"
+                                >
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="mb-3">
+                            <label for="total_fees" class="form-label">Total Fees</label>
+                            <input type="total_fees" name="total_fees" class="form-control" id="total_fees" style="margin-top: -10px;"
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="amount" name="amount" class="form-control" id="amount" style="margin-top: -10px;"
+                                >
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="course" class="form-label">Course</label>
+                            <input type="course" name="course" class="form-control" id="course" style="margin-top: -10px;"
+                              readonly  >
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="stream" class="form-label">Stream</label>
+                            <input type="stream" name="stream" class="form-control" id="stream" style="margin-top: -10px;"
+                               readonly >
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <label for="date_of_transaction" class="form-label">Transaction Date</label>
+                            <input type="date" name="date_of_transaction" class="form-control" id="date_of_transaction" style="margin-top: -10px;"
+                                >
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <label for="payment_mode" class="form-label">Payment Mode</label>
+                            <select class="form-select" name="payment_mode" id="payment_mode"
+                                aria-label="Default select example" style="margin-top: -10px;">
+                                <option selected>Select</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="CASH">CASH</option>
+                                <option value="NEFT">NEFT</option>
+                                <option value="RTGS">RTGS</option>
+                                <option value="IMPS">IMPS</option>
+                                <option value="UPI">UPI</option>
+                                <option value="GPAY">GPAY</option>
+                                <option value="EaseBuzz">EaseBuzz</option>
+                                <option value="PL/PG">PL/PG</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="cheque_no" class="form-label">Cheque/DD/CC Number</label>
+                            <input type="text" name="cheque_no" class="form-control" id="cheque_no" style="margin-top: -10px;"
+                                >
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="bank_name" class="form-label">Bank Name</label>
+                            <select class="form-select" name="bank_name" id="bank_name"
+                                aria-label="Default select example" style="margin-top: -10px;">
+                                <option selected="selected" value=" ">--Select --</option>
+                                <option value="ALLAHABAD BANK">ALLAHABAD BANK</option>
+                                <option value="ANDHRA BANK">ANDHRA BANK</option>
+                                <option value="AXIS BANK">AXIS BANK</option>
+                                <option value="STATE BANK OF INDIA">STATE BANK OF INDIA</option>
+                                <option value="BANK OF BARODA">BANK OF BARODA</option>
+                                <option value="UCO BANK">UCO BANK</option>
+                                <option value="UNION BANK OF INDIA">UNION BANK OF INDIA</option>
+                                <option value="BANK OF INDIA">BANK OF INDIA</option>
+                                <option value="BANDHAN BANK LIMITED">BANDHAN BANK LIMITED</option>
+                                <option value="CANARA BANK">CANARA BANK</option>
+                                <option value="GRAMIN VIKASH BANK">GRAMIN VIKASH BANK</option>
+                                <option value="CORPORATION BANK">CORPORATION BANK</option>
+                                <option value="INDIAN BANK">INDIAN BANK</option>
+                                <option value="INDIAN OVERSEAS BANK">INDIAN OVERSEAS BANK</option>
+                                <option value="ORIENTAL BANK OF COMMERCE">ORIENTAL BANK OF COMMERCE</option>
+                                <option value="PUNJAB AND SIND BANK">PUNJAB AND SIND BANK</option>
+                                <option value="PUNJAB NATIONAL BANK">PUNJAB NATIONAL BANK</option>
+                                <option value="RESERVE BANK OF INDIA">RESERVE BANK OF INDIA</option>
+                                <option value="SOUTH INDIAN BANK">SOUTH INDIAN BANK</option>
+                                <option value="UNITED BANK OF INDIA">UNITED BANK OF INDIA</option>
+                                <option value="CENTRAL BANK OF INDIA">CENTRAL BANK OF INDIA</option>
+                                <option value="VIJAYA BANK">VIJAYA BANK</option>
+                                <option value="DENA BANK">DENA BANK</option>
+                                <option value="BHARATIYA MAHILA BANK LIMITED">BHARATIYA MAHILA BANK LIMITED</option>
+                                <option value="FEDERAL BANK LTD">FEDERAL BANK LTD</option>
+                                <option value="HDFC BANK LTD">HDFC BANK LTD</option>
+                                <option value="ICICI BANK LTD">ICICI BANK LTD</option>
+                                <option value="IDBI BANK LTD">IDBI BANK LTD</option>
+                                <option value="PAYTM BANK">PAYTM BANK</option>
+                                <option value="FINO PAYMENT BANK">FINO PAYMENT BANK</option>
+                                <option value="INDUSIND BANK LTD">INDUSIND BANK LTD</option>
+                                <option value="KARNATAKA BANK LTD">KARNATAKA BANK LTD</option>
+                                <option value="KOTAK MAHINDRA BANK">KOTAK MAHINDRA BANK</option>
+                                <option value="YES BANK LTD">YES BANK LTD</option>
+                                <option value="SYNDICATE BANK">SYNDICATE BANK</option>
+                                <option value="BANK OF INDIA">BANK OF INDIA</option>
+                                <option value="BANK OF MAHARASHTRA">BANK OF MAHARASHTRA</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="mb-3">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <input type="text" name="remarks" class="form-control" id="remarks" style="margin-top: -10px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-5">
+                        <button class="btn btn-success" onclick="saveform()">Save</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mb-3">
+
+            </div>
+            <hr>
+            <div class="main-form">
+                <table class="table" id="main_table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Sr. No</th>
+                        <th>Semester</th>
+                        <th>Paid Amount</th>
+                        <th>Transaction Date</th>
+                        <th>Transaction ID</th>
+                        <th>View</th>
+                        <th>Download</th>
+                      </tr>
+                    </thead>
+                    <tbody id="main_table_body">
+                      
+                      
+                    </tbody>
+                  </table>
+            </div>
+
+            <hr>
+            <div class="main-form">
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="reciept_modal" tabindex="-1" aria-labelledby="reciept_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reciept_modalLabel">Reciept</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container" id="reciept_modal_body">
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+<script language="JavaScript">
+    document.addEventListener("wheel", function (event) {
+        if (document.activeElement.type === "number") {
+            document.activeElement.blur();
+        }
+    });
+
+</script>
+
+<script language="JavaScript">
+    $(document).ready(function () {
+        $('#enrollform').submit(function () { // catch the form's submit event
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'enrollid': $('#enroll_id').val()
+                }, // get the form data
+                type: 'POST', // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'enroll_offline' %}",
+                success: function (response) { // on success..
+                    console.log(response)
+                    $('#notfound').text(' ')
+                    $('#hiddendata').css('visibility', 'hidden')
+                    if (response.found == "no") {
+                        $('#notfound').css('color', 'red');
+                        $('#notfound').text('Student Not Found')
+                    }
+                    if (response.found == "yes") {
+                        $('#hiddendata').css('visibility', 'visible')
+                        $('#first_name').val(response.data.first_name);
+                        $('#middle_name').val(response.data.middle_name);
+                        $('#last_name').val(response.data.last_name);
+                        $('#email').val(response.data.email);
+                        $('#mobile').val(response.data.mobile);
+                        $('#total_fees').val(response.data.next_semyear_fees);
+                        if(response.data.current_semyear == 0){
+                            $('#current_semyear').val("NA - Not Enrolled");
+                        }
+                        else{
+                            $('#current_semyear').val(response.data.current_semyear);
+                        }
+                        
+                        $('#course').val(response.data.course);
+                        $('#stream').val(response.data.stream);
+                        
+
+                    }
+                
+                    if(response.has_reciept.has_reciept == "yes"){
+                        var data = response.has_reciept.payment_reciept;
+                        data.forEach(myFunction);
+                        var count = 0;
+                        function myFunction(item,count) 
+                        
+                        {
+                            count=count+1
+                            console.log(count)
+                            $('#main_table_body').append(`
+                            <tr>
+                                <td>${count}</td>
+                                <td>${item.semyear}</td>
+                                <td>${item.paidamount}</td>
+                                <td>${item.transaction_date}</td>
+                                <td>${item.transactionID}</td>
+                                <th><button class="btn btn-success" onclick="view_reciept('`+item.transactionID+`')">View</button></th>
+                                <th><button class="btn btn-primary" onclick="download_reciept('`+item.transactionID+`')">Download</button></th>
+                                
+                            </tr>
+                            `);
+                        }
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+<script language="JavaScript">
+    
+    $(function() {
+    $("#fees_reciept").change(function() {
+        var selected_option = $('option:selected', this).text()
+        if(selected_option == "Others"){
+            $('#other_data').css('visibility','visible');
+        }
+        else{
+            $('#other_data').css('visibility','hidden');
+        }
+        });
+    });
+    function saveform(){
+        console.log($('#fees_reciept option:selected').text());
+        $.ajax
+        ({ 
+            data: {
+                'email':$('#email').val(),
+                'mobile':$('#mobile').val(),
+                'amount':$('#amount').val(),
+                'fee_reciept_type':$('#fees_reciept option:selected').text(),
+                'other_data': $('#others').val(),
+                'transaction_date':$('#date_of_transaction').val(),
+                'payment_mode':$('#payment_mode option:selected').text(),
+                'cheque_no':$('#cheque_no').val(),
+                'bank_name':$('#bank_name option:selected').text(),
+                'remarks':$('#remarks').val(),
+                'current_semyear':$('#current_semyear').val(),
+                'total_fees':$('#total_fees').val()
+
+
+            },
+            type: 'POST', 
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            url: "{% url 'enroll_offline' %}",
+            success: function (response) {
+                if(response.saved == "yes"){
+                    window.location="{% url 'enroll_offline' %}"
+                }
+            }
+        });
+    }
+
+    function view_reciept(transID){
+        console.log("view :",transID);
+        if (transID) {
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'transID': transID
+                }, // get the form data
+                type: 'POST', // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'enroll_offline' %}", // the file to call
+                success: function (response) {  
+                    console.log(response)
+                    $('#reciept_modal_body').html(`
+                    <div class="page-content container print_form">
+                        <div class="page-header text-blue-d2">
+                            <h1 class="page-title text-secondary-d1">
+                                Reciept
+                                <small class="page-info">
+                                    <i class="fa fa-angle-double-right text-80"></i>
+                                    ID: `+response.view_reciept.transactionID+`
+                                </small>
+                            </h1>
+
+                            <div class="page-tools">
+                                <div class="action-buttons">
+                                    <a class="btn bg-white btn-light mx-1px text-95 print_button" href="#" data-title="Print" id="print_button" onclick="print_screen()">
+                                        <i class="mr-1 fa fa-print text-primary-m1 text-120 w-2 print_button"></i>
+                                        Print
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container px-0">
+                            <div class="row mt-4">
+                                <div class="col-12 col-lg-12">
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div>
+                                                <span class="text-sm text-grey-m2 align-middle">To:</span>
+                                                <span class="text-600 text-110 text-blue align-middle">`+response.personal.first_name + ' ' + response.personal.middle_name+ ' ' + response.personal.last_name+ `</span>
+                                            </div>
+                                            <div class="text-grey-m2">
+                                                <div class="my-1">
+                                                    `+response.personal.address + ', ' + response.personal.city +`
+                                                </div>
+                                                <div class="my-1">
+                                                    `+response.personal.state + ', ' + response.personal.country +`
+                                                </div>
+                                                <div class="my-1"><i class="fa fa-phone fa-flip-horizontal text-secondary"></i> <b class="text-600">`+response.personal.mobile+`</b></div>
+                                                <div class="my-1"><i class="fas fa-envelope  text-secondary"></i> <b class="text-600">`+response.personal.email+`</b></div>
+                                            </div>
+                                        </div>
+                                        <!-- /.col -->
+
+                                        <div class="text-95 col-sm-6 align-self-start d-sm-flex justify-content-end">
+                                            <hr class="d-sm-none" />
+                                            <div class="text-grey-m2">
+                                                <div class="mt-1 mb-2 text-secondary-m1 text-600 text-125">
+                                                    Invoice
+                                                </div>
+
+                                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">ID:</span> #`+response.view_reciept.transactionID+`</div>
+
+                                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Issue Date:</span> `+response.view_reciept.transaction_date+`</div>
+
+                                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> Paid </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.col -->
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <div class="row text-600 text-white bgc-default-tp1 py-25">
+                                            <div class="d-none d-sm-block col-3">Semester</div>
+                                            <div class="col-9 col-sm-3">Amount</div>
+                                            <div class="d-none d-sm-block col-3 col-sm-3">Transaction Date</div>
+                                            <div class="d-none d-sm-block col-sm-3">Mode</div>
+                                        </div>
+
+                                        <div class="text-95 text-secondary-d3">
+                                            <div class="row mb-2 mb-sm-0 py-25">
+                                                <div class="d-none d-sm-block col-3">`+response.view_reciept.semyear+`</div>
+                                                <div class="col-9 col-sm-3">`+response.view_reciept.paidamount+`</div>
+                                                <div class="d-none d-sm-block col-3">`+response.view_reciept.transaction_date+`</div>
+                                                <div class="d-none d-sm-block col-3 text-95">`+response.view_reciept.paymentmode+`</div>
+                                            </div>
+
+                                            
+                                        </div>
+
+                                        <div class="row border-b-2 brc-default-l2"></div>
+
+                                  
+
+                                        <hr />
+
+                                        <div>
+                                            <span class="text-secondary-d1 text-105">Thank you for your Payment</span>  
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    `);
+                    $('#reciept_modal').modal('show');
+                }
+            });
+        }
+    }
+    function download_reciept(transID){
+        console.log("download :",transID)
+    }
+
+    function print_screen() {
+        window.print();
+    }   
+</script>
+
+
+{% endblock body %}
+
+
+
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049

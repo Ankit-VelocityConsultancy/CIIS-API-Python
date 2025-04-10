@@ -1,0 +1,242 @@
+<<<<<<< HEAD
+{% extends 'includes/base.html' %}
+
+{% load static %}
+{% block head %}
+<title>Examination Login - CIIS</title>
+<style>
+  html,
+
+   .login-section{
+    background-image: url('../static/dict/images/login-bg.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .form-signin .form-floating:focus-within {
+    z-index: 2;
+  }
+
+
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+</style>
+{% endblock head %}
+
+{% block body %}
+
+
+    <div class="login-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            
+            <div class="login p-5">
+              <div class="outer-rectangle-login">
+                
+                
+                <section class="login-title mx-3 pt-5">
+                  <div class="row">
+                    
+                    <div class="col-6 offset-3 login-col">
+                        <div class="section-header text-center">
+                          <!--img src="/media/ciis_logo/logo.jpg" class="logo" alt="logo_img" /-->
+                          <img src="{% static 'dict/images/ciis.png' %}" class="logo" alt="logo">
+                        </div>
+                    
+                    
+                      <div class="user-signin pb-4">
+                      
+                        <form method="POST" >
+                          {% csrf_token %}
+                         
+                          <div class="detail-block py-2 text-center">
+                            <h1 class="text-black font-30 font-bold font-roboto">Examination Login </h1>
+                            
+                          </div>
+                          <div class="detail-block py-2">
+                            <input type="text" name="email" class="width-100" id="floatingInput" placeholder="Userid">
+                            
+                          </div>
+                          
+                          <div class="detail-block py-2">
+                            <input type="password" name="password" class="width-100" id="floatingPassword" placeholder="Password">
+                          
+                          </div>
+                      
+                        
+                          <div class="detail-block py-2">
+                            <button class="save-btn save-red  width-100" type="submit">Sign in</button>
+                          </div>
+                          <div class="copyright-text py-2">
+                            <p class="font-12 text-lightgray text-center">&copy; 2017-2022</p>
+                           </div>
+                        </form>
+                    
+                      </div>
+                    </div>
+                      
+                        
+                  </div>
+                   
+                </section>
+                
+      
+              </div>
+      
+      
+            </div>
+            
+          </div>
+        </div>
+      </div> 
+    </div>
+      
+   
+    
+    
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="{% static 'dict/#js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    document.addEventListener("wheel", function(event){
+    if(document.activeElement.type === "number"){
+        document.activeElement.blur();
+    }
+});
+  </script>
+=======
+{% extends 'includes/base.html' %}
+
+{% load static %}
+{% block head %}
+<title>Examination Login - CIIS</title>
+<style>
+  html,
+
+   .login-section{
+    background-image: url('../static/dict/images/login-bg.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .form-signin .form-floating:focus-within {
+    z-index: 2;
+  }
+
+
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+</style>
+{% endblock head %}
+
+{% block body %}
+
+
+    <div class="login-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            
+            <div class="login p-5">
+              <div class="outer-rectangle-login">
+                
+                
+                <section class="login-title mx-3 pt-5">
+                  <div class="row">
+                    
+                    <div class="col-6 offset-3 login-col">
+                        <div class="section-header text-center">
+                          <!--img src="/media/ciis_logo/logo.jpg" class="logo" alt="logo_img" /-->
+                          <img src="{% static 'dict/images/ciis.png' %}" class="logo" alt="logo">
+                        </div>
+                    
+                    
+                      <div class="user-signin pb-4">
+                      
+                        <form method="POST" >
+                          {% csrf_token %}
+                         
+                          <div class="detail-block py-2 text-center">
+                            <h1 class="text-black font-30 font-bold font-roboto">Examination Login </h1>
+                            
+                          </div>
+                          <div class="detail-block py-2">
+                            <input type="text" name="email" class="width-100" id="floatingInput" placeholder="Userid">
+                            
+                          </div>
+                          
+                          <div class="detail-block py-2">
+                            <input type="password" name="password" class="width-100" id="floatingPassword" placeholder="Password">
+                          
+                          </div>
+                      
+                        
+                          <div class="detail-block py-2">
+                            <button class="save-btn save-red  width-100" type="submit">Sign in</button>
+                          </div>
+                          <div class="copyright-text py-2">
+                            <p class="font-12 text-lightgray text-center">&copy; 2017-2022</p>
+                           </div>
+                        </form>
+                    
+                      </div>
+                    </div>
+                      
+                        
+                  </div>
+                   
+                </section>
+                
+      
+              </div>
+      
+      
+            </div>
+            
+          </div>
+        </div>
+      </div> 
+    </div>
+      
+   
+    
+    
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="{% static 'dict/#js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    document.addEventListener("wheel", function(event){
+    if(document.activeElement.type === "number"){
+        document.activeElement.blur();
+    }
+});
+  </script>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

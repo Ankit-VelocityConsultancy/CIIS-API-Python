@@ -1,0 +1,860 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<!-- <style>
+  *{
+    font-size: 15px;
+  }
+</style> -->
+
+{% endblock head %}
+
+{% block nav %}
+
+{% include 'sidebar.html' %}
+
+{% endblock nav%}
+
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+<div class="pages-body-bg-color pb-5">
+    <section class="my-course  ">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-header">
+                    <h1 class="font-26 font-bold text-black text-uppercase">Check Results</h1>
+  
+                </div>
+                <div class="outer-rectangle">
+                    <div class="inner-block px-4 pb-4">
+                       
+                        
+                        <div class="select-options pt-4">
+                            <div class="row">
+                             
+                                <div class="col-12 col-sm-5 col-md-4">
+                                    <label for="university" class="labelnotrequired">University</label>
+                                    <select name="university" id="university" class="  width-100  font-14 text-extralightgray" required>
+                                        <option value="" >Select</option>
+                                        {% for i in university %}
+                                        <option value="{{i.id}}">{{i.university_name}}</option>
+                                        {% endfor %}
+                                       </select>
+                                </div>
+                                <div class="col-12 col-sm-5 col-md-4 mt-3 mt-sm-0">
+                                
+                                    <label for="course" class="labelnotrequired">Course</label>
+                                    <select name="course" id="course" class="  width-100  font-14 text-extralightgray"  required>
+                                        <option value="">Select</option>
+                                        </select>
+                                    
+                                 
+                                        
+                                       
+                                </div>
+                                <div class=" col-12 col-sm-5 col-md-4 mt-3 mt-sm-0">
+                                    <label for="stream" class="labelnotrequired">Stream</label>
+                                  <select id="Stream" name="stream" class="  width-100  font-14 text-extralightgray"  required>
+                                    <option value="">Select</option>
+                                </select>
+                              </div>
+                              
+                            
+                            </div>
+                          
+                        
+                        </div>
+                        
+                    </div>
+                  
+                 
+                </div>
+          </div>
+    </section>
+    <section class="exam-details  my-3" style="display: none;">
+        <div class="white-box">
+            <div class="inner-block p-4">
+                <div class="examinations_buttons m-auto" style="display: none;">
+   
+                    <div class="content">
+                        
+                    </div>
+                </div>
+                
+            </div>
+        
+        
+        
+
+        </div>
+    </section>
+    <section class="result_details my-3" style="display: none;">
+        <div class="white-box">
+            <div class="inner-block p-4">
+                <div class="student_results m-auto" style="display: none;">
+          
+                    <div class="content_result">
+                        
+                    </div>
+                </div>
+                
+            </div>
+        
+        
+        
+
+        </div>
+    </section>
+    
+</div>
+
+
+
+
+
+<div class="modal fade" id="Attempted_Questions" tabindex="-1" aria-labelledby="Attempted_QuestionsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="font-20 text-darkblue" id="Attempted_QuestionsLabel">Attempted Questions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container" id="Attempted_Questions_body">
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+<script>
+    $(document).ready( function () {
+        $('#examination-collapse').addClass("show");
+        $("#studen_result_link").removeClass("link-dark");
+        $('#studen_result_link').addClass("link-primary");
+    });
+    document.getElementById("university").onchange = function () {
+        var university = this.value;
+        if (university == "Select University") {
+
+        }
+        else {
+            console.log("university selected")
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'setexam' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_course': university
+                },
+                success: function (response) {
+                    console.log(response)
+                    if (response.course) {
+                        $('#course').empty();
+                        $('#course').append(`
+                    <option>Select Course</option>
+                  `);
+                        var data = response.course
+                        data.forEach(myFunction);
+
+                        function myFunction(item) {
+                            console.log(item)
+                            $('#course').append(`
+                    <option value="${item.id}">${item.name}</option>
+                  `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+    }
+    document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        console.log(coursename);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'setexam' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'course_id': coursename // from form
+
+            },
+            success: function (response) {
+                console.log(response);
+                console.log(response);
+                var data = response.stream
+                // console.log("data",data)
+                var duration = ''
+                $('#Stream').empty();
+                $('#Stream').append('<option Selected> Select Stream </option>');
+                data.forEach(myFunction);
+                function myFunction(item) {
+                    duration = item.sem
+                    $('#Stream').append('<option value=' + item.id + '>' + item.name + '</option>');
+                }
+                
+
+            }
+        });
+    }
+    document.getElementById("Stream").onchange = function () {
+        
+        $('.exam-details').css('display','block')
+        $('.examinations_buttons').css('display','block')
+        var coursename = $('#course').val();
+        var streamname = this.value;
+        console.log("coursename :", coursename, 'streamname', streamname);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'checkresult' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'course_id': coursename, // from form
+                'stream_id':streamname
+            },
+            success: function (response) {
+                console.log(response)
+                var data = response.data;
+                if(data){
+                   $('.content').append(`
+                   <table class="table format-table" id="examination_table">
+                    <thead class="bottom-border-grey">
+                    <tr>
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Sr. No</th>
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Exam Name</th>
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Exam Date</th>
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Total Questions</th>
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Total Marks</th>
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Exam Status</th>    
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Result</th>          
+                    </tr>
+                    </thead>
+                    <tbody id="examination_table_body">
+                    
+                    </tbody>
+                </table>
+                   `);
+                }
+                data.forEach(myFunction);
+                $(document).ready( function () {
+                    $('#examination_table').DataTable();
+                } );
+                var count = 0;
+                function myFunction(item,count){
+                    console.log(item);
+                    var examdate = item.examdate;
+                    var datePart = examdate.match(/\d+/g)
+                    year = datePart[0].substring(0), // get only two digits
+                    month = datePart[1], day = datePart[2];
+                    var changedate =  day+'/'+month+'/'+year;
+                    count = count + 1;
+                    if(item.active == true) {
+                        var active = "Active";
+                    }
+                    else{
+                        var active = "Inactive";
+                    }
+                    $('#examination_table_body').append(`
+                    <tr class="line-height-35 bottom-border-grey">
+                        <th scope="row" class="font-14 text-extragray text-uppercase px-2">${count}</th>
+                        <td class="font-14 text-extragray text-uppercase px-2">${item.examname}</td>
+                        <td class="font-14 text-extragray text-uppercase px-2">${changedate}</td>
+                        <td class="font-14 text-extragray text-uppercase px-2">${item.totalquestions}</td>
+                        <td class="font-14 text-extragray text-uppercase px-2">${item.totalmarks}</td>
+                        <td>${active}</td>
+                        <td><button class="blue-bg text-blue no-border" onclick="Show_Students(${item.id})">Show</button></td>
+                    </tr>
+                    `);
+                }
+            }
+        });
+    }
+
+    function Show_Students(exam_id){
+        console.log(exam_id);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'checkresult' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'exam_id': exam_id
+            },
+            success: function (response) {
+                console.log(response);
+                var data = response.data;
+                if(data){
+                    $('.result_details').css('display','block');
+                    $('.student_results').css('display','block');
+                    $('.content_result').empty();
+                    $('.content_result').append(`
+                    <table class="table" id="student_data_table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Sr. No</th>
+                            <th scope="col">Student Name</th>
+                            <th scope="col">Student Email</th>
+                            <th scope="col">Enrollment ID</th>
+                            <th scope="col">Exam ID</th>
+                            <th scope="col">Total Questions</th>  
+                            <th scope="col">Total Marks</th>
+                            <th scope="col">Marks Obtained</th>
+                            <th scope="col">Result & Percentage</th>       
+                        </tr>
+                        </thead>
+                        <tbody id="student_data_table_body">
+                        
+                        </tbody>
+                    </table>
+                   `);
+                    data.forEach(myFunction);
+                    $(document).ready( function () {
+                        var table = $('#student_data_table').DataTable();
+                        $('#student_data_table tbody').on('click', 'tr', function () {
+                            var data = table.row(this).data();
+                            console.log(data);
+                            var student_id = data[3];
+                            var exam_id = data[4];
+                            console.log(student_id , exam_id);
+                            if(student_id){
+                                $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'checkresult' %}",
+                                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                                    data: {
+                                        'check_result_student_id': student_id,
+                                        'check_result_exam_id':exam_id
+                                    },
+                                    success: function (response) {
+                                        $('#student_questions_body').empty();
+                                        console.log(response);
+                                        var data = response.data;
+                                        if(data){
+                                            $('#Attempted_Questions_body').empty();
+                                        }
+                                        $('#Attempted_Questions_body').append(`
+                                        <table class="table format-table" id="student_questions">
+                                            <thead >
+                                            <tr>
+                                                <th scope="col" class="font-14 font-bold text-darkgray  px-2">Sr. No</th>
+                                                <th scope="col" class="font-14 font-bold text-darkgray  px-2">Question</th>
+                                                <th scope="col" class="font-14 font-bold text-darkgray  px-2">Answer</th>
+                                                <th scope="col" class="font-14 font-bold text-darkgray  px-2">Attempted Answer</th>
+                                                <th scope="col" class="font-14 font-bold text-darkgray  px-2">Question Marks</th>
+                                                <th scope="col" class="font-14 font-bold text-darkgray  px-2">Marks Obtained</th>        
+                                            </tr>
+                                            </thead>
+                                            <tbody id="student_questions_body">
+                                            
+                                            </tbody>
+                                        </table>
+                                        `);
+                                        data.forEach(myFunction);
+                                        $(document).ready( function () {
+                                            $('#student_questions').DataTable();
+                                        } );
+                                        var count = 0;
+                                        
+                                        function myFunction(item,count){
+                                            count = count + 1;
+                                            console.log(item);
+                                            if(item.marks_obtained == 0){
+                                                var color = "red";
+                                            }
+                                            else{
+                                                var color = "green";
+                                            }
+                                            
+                                            $('#student_questions_body').append(`
+                                            <tr class="line-height-35 ">
+                                                <th scope="row" class="font-14 text-extragray text-uppercase px-2">${count}</th>
+                                                <td class="font-14 text-extragray text-uppercase px-2">${item.question}</td>
+                                                <td class="font-14 text-extragray text-uppercase px-2">${item.answer}</td>
+                                                <td class="font-14 text-extragray text-uppercase px-2" style="color:${color}">${item.submitted_answer}</td>
+                                                <td class="font-14 text-extragray text-uppercase px-2">${item.marks}</td>
+                                                <td class="font-14 text-extragray text-uppercase px-2">${item.marks_obtained}</td>
+                                            </tr>
+                                            `);
+                                        }
+                                        $('#Attempted_Questions').modal('show');
+                                        
+                                    }
+                                });
+                            }
+                        });
+
+                    } );
+                    var count = 0;
+                    function myFunction(item,count){
+                        count = count + 1;
+                        console.log(item);
+                        var result = item.result;
+                        if(result == "Pass"){
+                            var color = "green";
+                        }
+                        else{
+                            var color = "red";
+                        }
+                        $('#student_data_table_body').append(`
+                            <tr>
+                                <th scope="row" class="font-14 text-extragray text-uppercase px-2">${count}</th>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.name}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.email}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.enrollment_id}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.exam_id}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.total_question}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.total_marks}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.score}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2"><span style="color:${color};font-weight: bold;">${item.result}</span> ${item.percentage}%</td>
+                            </tr>
+                        `);
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<!-- <style>
+  *{
+    font-size: 15px;
+  }
+</style> -->
+
+{% endblock head %}
+
+{% block nav %}
+
+{% include 'sidebar.html' %}
+
+{% endblock nav%}
+
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+<div class="pages-body-bg-color pb-5">
+    <section class="my-course  ">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-header">
+                    <h1 class="font-26 font-bold text-black text-uppercase">Check Results</h1>
+  
+                </div>
+                <div class="outer-rectangle">
+                    <div class="inner-block px-4 pb-4">
+                       
+                        
+                        <div class="select-options pt-4">
+                            <div class="row">
+                             
+                                <div class="col-12 col-sm-5 col-md-4">
+                                    <label for="university" class="labelnotrequired">University</label>
+                                    <select name="university" id="university" class="  width-100  font-14 text-extralightgray" required>
+                                        <option value="" >Select</option>
+                                        {% for i in university %}
+                                        <option value="{{i.id}}">{{i.university_name}}</option>
+                                        {% endfor %}
+                                       </select>
+                                </div>
+                                <div class="col-12 col-sm-5 col-md-4 mt-3 mt-sm-0">
+                                
+                                    <label for="course" class="labelnotrequired">Course</label>
+                                    <select name="course" id="course" class="  width-100  font-14 text-extralightgray"  required>
+                                        <option value="">Select</option>
+                                        </select>
+                                    
+                                 
+                                        
+                                       
+                                </div>
+                                <div class=" col-12 col-sm-5 col-md-4 mt-3 mt-sm-0">
+                                    <label for="stream" class="labelnotrequired">Stream</label>
+                                  <select id="Stream" name="stream" class="  width-100  font-14 text-extralightgray"  required>
+                                    <option value="">Select</option>
+                                </select>
+                              </div>
+                              
+                            
+                            </div>
+                          
+                        
+                        </div>
+                        
+                    </div>
+                  
+                 
+                </div>
+          </div>
+    </section>
+    <section class="exam-details  my-3" style="display: none;">
+        <div class="white-box">
+            <div class="inner-block p-4">
+                <div class="examinations_buttons m-auto" style="display: none;">
+   
+                    <div class="content">
+                        
+                    </div>
+                </div>
+                
+            </div>
+        
+        
+        
+
+        </div>
+    </section>
+    <section class="result_details my-3" style="display: none;">
+        <div class="white-box">
+            <div class="inner-block p-4">
+                <div class="student_results m-auto" style="display: none;">
+          
+                    <div class="content_result">
+                        
+                    </div>
+                </div>
+                
+            </div>
+        
+        
+        
+
+        </div>
+    </section>
+    
+</div>
+
+
+
+
+
+<div class="modal fade" id="Attempted_Questions" tabindex="-1" aria-labelledby="Attempted_QuestionsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="font-20 text-darkblue" id="Attempted_QuestionsLabel">Attempted Questions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="container" id="Attempted_Questions_body">
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="blue-bg text-blue font-bold font-12 no-border" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+<script>
+    $(document).ready( function () {
+        $('#examination-collapse').addClass("show");
+        $("#studen_result_link").removeClass("link-dark");
+        $('#studen_result_link').addClass("link-primary");
+    });
+    document.getElementById("university").onchange = function () {
+        var university = this.value;
+        if (university == "Select University") {
+
+        }
+        else {
+            console.log("university selected")
+            $.ajax({ // create an AJAX call...
+                type: "GET",
+                url: "{% url 'setexam' %}",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: {
+                    'get_course': university
+                },
+                success: function (response) {
+                    console.log(response)
+                    if (response.course) {
+                        $('#course').empty();
+                        $('#course').append(`
+                    <option>Select Course</option>
+                  `);
+                        var data = response.course
+                        data.forEach(myFunction);
+
+                        function myFunction(item) {
+                            console.log(item)
+                            $('#course').append(`
+                    <option value="${item.id}">${item.name}</option>
+                  `);
+                        }
+
+                    }
+                }
+            });
+
+        }
+    }
+    document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        console.log(coursename);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'setexam' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'course_id': coursename // from form
+
+            },
+            success: function (response) {
+                console.log(response);
+                console.log(response);
+                var data = response.stream
+                // console.log("data",data)
+                var duration = ''
+                $('#Stream').empty();
+                $('#Stream').append('<option Selected> Select Stream </option>');
+                data.forEach(myFunction);
+                function myFunction(item) {
+                    duration = item.sem
+                    $('#Stream').append('<option value=' + item.id + '>' + item.name + '</option>');
+                }
+                
+
+            }
+        });
+    }
+    document.getElementById("Stream").onchange = function () {
+        
+        $('.exam-details').css('display','block')
+        $('.examinations_buttons').css('display','block')
+        var coursename = $('#course').val();
+        var streamname = this.value;
+        console.log("coursename :", coursename, 'streamname', streamname);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'checkresult' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'course_id': coursename, // from form
+                'stream_id':streamname
+            },
+            success: function (response) {
+                console.log(response)
+                var data = response.data;
+                if(data){
+                   $('.content').append(`
+                   <table class="table format-table" id="examination_table">
+                    <thead class="bottom-border-grey">
+                    <tr>
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Sr. No</th>
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Exam Name</th>
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Exam Date</th>
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Total Questions</th>
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Total Marks</th>
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Exam Status</th>    
+                        <th scope="col" class="font-14 font-bold text-darkgray  px-2">Result</th>          
+                    </tr>
+                    </thead>
+                    <tbody id="examination_table_body">
+                    
+                    </tbody>
+                </table>
+                   `);
+                }
+                data.forEach(myFunction);
+                $(document).ready( function () {
+                    $('#examination_table').DataTable();
+                } );
+                var count = 0;
+                function myFunction(item,count){
+                    console.log(item);
+                    var examdate = item.examdate;
+                    var datePart = examdate.match(/\d+/g)
+                    year = datePart[0].substring(0), // get only two digits
+                    month = datePart[1], day = datePart[2];
+                    var changedate =  day+'/'+month+'/'+year;
+                    count = count + 1;
+                    if(item.active == true) {
+                        var active = "Active";
+                    }
+                    else{
+                        var active = "Inactive";
+                    }
+                    $('#examination_table_body').append(`
+                    <tr class="line-height-35 bottom-border-grey">
+                        <th scope="row" class="font-14 text-extragray text-uppercase px-2">${count}</th>
+                        <td class="font-14 text-extragray text-uppercase px-2">${item.examname}</td>
+                        <td class="font-14 text-extragray text-uppercase px-2">${changedate}</td>
+                        <td class="font-14 text-extragray text-uppercase px-2">${item.totalquestions}</td>
+                        <td class="font-14 text-extragray text-uppercase px-2">${item.totalmarks}</td>
+                        <td>${active}</td>
+                        <td><button class="blue-bg text-blue no-border" onclick="Show_Students(${item.id})">Show</button></td>
+                    </tr>
+                    `);
+                }
+            }
+        });
+    }
+
+    function Show_Students(exam_id){
+        console.log(exam_id);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'checkresult' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'exam_id': exam_id
+            },
+            success: function (response) {
+                console.log(response);
+                var data = response.data;
+                if(data){
+                    $('.result_details').css('display','block');
+                    $('.student_results').css('display','block');
+                    $('.content_result').empty();
+                    $('.content_result').append(`
+                    <table class="table" id="student_data_table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Sr. No</th>
+                            <th scope="col">Student Name</th>
+                            <th scope="col">Student Email</th>
+                            <th scope="col">Enrollment ID</th>
+                            <th scope="col">Exam ID</th>
+                            <th scope="col">Total Questions</th>  
+                            <th scope="col">Total Marks</th>
+                            <th scope="col">Marks Obtained</th>
+                            <th scope="col">Result & Percentage</th>       
+                        </tr>
+                        </thead>
+                        <tbody id="student_data_table_body">
+                        
+                        </tbody>
+                    </table>
+                   `);
+                    data.forEach(myFunction);
+                    $(document).ready( function () {
+                        var table = $('#student_data_table').DataTable();
+                        $('#student_data_table tbody').on('click', 'tr', function () {
+                            var data = table.row(this).data();
+                            console.log(data);
+                            var student_id = data[3];
+                            var exam_id = data[4];
+                            console.log(student_id , exam_id);
+                            if(student_id){
+                                $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'checkresult' %}",
+                                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                                    data: {
+                                        'check_result_student_id': student_id,
+                                        'check_result_exam_id':exam_id
+                                    },
+                                    success: function (response) {
+                                        $('#student_questions_body').empty();
+                                        console.log(response);
+                                        var data = response.data;
+                                        if(data){
+                                            $('#Attempted_Questions_body').empty();
+                                        }
+                                        $('#Attempted_Questions_body').append(`
+                                        <table class="table format-table" id="student_questions">
+                                            <thead >
+                                            <tr>
+                                                <th scope="col" class="font-14 font-bold text-darkgray  px-2">Sr. No</th>
+                                                <th scope="col" class="font-14 font-bold text-darkgray  px-2">Question</th>
+                                                <th scope="col" class="font-14 font-bold text-darkgray  px-2">Answer</th>
+                                                <th scope="col" class="font-14 font-bold text-darkgray  px-2">Attempted Answer</th>
+                                                <th scope="col" class="font-14 font-bold text-darkgray  px-2">Question Marks</th>
+                                                <th scope="col" class="font-14 font-bold text-darkgray  px-2">Marks Obtained</th>        
+                                            </tr>
+                                            </thead>
+                                            <tbody id="student_questions_body">
+                                            
+                                            </tbody>
+                                        </table>
+                                        `);
+                                        data.forEach(myFunction);
+                                        $(document).ready( function () {
+                                            $('#student_questions').DataTable();
+                                        } );
+                                        var count = 0;
+                                        
+                                        function myFunction(item,count){
+                                            count = count + 1;
+                                            console.log(item);
+                                            if(item.marks_obtained == 0){
+                                                var color = "red";
+                                            }
+                                            else{
+                                                var color = "green";
+                                            }
+                                            
+                                            $('#student_questions_body').append(`
+                                            <tr class="line-height-35 ">
+                                                <th scope="row" class="font-14 text-extragray text-uppercase px-2">${count}</th>
+                                                <td class="font-14 text-extragray text-uppercase px-2">${item.question}</td>
+                                                <td class="font-14 text-extragray text-uppercase px-2">${item.answer}</td>
+                                                <td class="font-14 text-extragray text-uppercase px-2" style="color:${color}">${item.submitted_answer}</td>
+                                                <td class="font-14 text-extragray text-uppercase px-2">${item.marks}</td>
+                                                <td class="font-14 text-extragray text-uppercase px-2">${item.marks_obtained}</td>
+                                            </tr>
+                                            `);
+                                        }
+                                        $('#Attempted_Questions').modal('show');
+                                        
+                                    }
+                                });
+                            }
+                        });
+
+                    } );
+                    var count = 0;
+                    function myFunction(item,count){
+                        count = count + 1;
+                        console.log(item);
+                        var result = item.result;
+                        if(result == "Pass"){
+                            var color = "green";
+                        }
+                        else{
+                            var color = "red";
+                        }
+                        $('#student_data_table_body').append(`
+                            <tr>
+                                <th scope="row" class="font-14 text-extragray text-uppercase px-2">${count}</th>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.name}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.email}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.enrollment_id}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.exam_id}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.total_question}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.total_marks}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2">${item.score}</td>
+                                <td class="font-14 text-extragray text-uppercase px-2"><span style="color:${color};font-weight: bold;">${item.result}</span> ${item.percentage}%</td>
+                            </tr>
+                        `);
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

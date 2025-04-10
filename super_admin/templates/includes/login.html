@@ -1,0 +1,360 @@
+{% extends 'includes/base.html' %}
+{% load static %}
+{% block head %}
+<title>LOGIN - CIIS</title>
+<style>
+  html,
+
+   .login-section{
+    background-image: url('../static/dict/images/login-bg.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .form-signin .form-floating:focus-within {
+    z-index: 2;
+  }
+
+
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+</style>
+{% endblock head %}
+
+{% block body %}
+{% if not request.user.is_authenticated %}
+
+<div class="login-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="login p-5">
+          <div class="outer-rectangle-login">
+            <section class="login-title mx-3 pt-5">
+              <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                  <div class="login-col">
+                    <div class="section-header text-center">
+                      <img src="{% static 'dict/images/ciis.png' %}" class="logo" alt="logo">
+                    </div>
+                    <div class="check-user py-4">
+    
+                      {% if usernamepresent == "yes" %}
+                      <h5 class="text-center text-white font-20 font-bold">Username Already Exist</h5>
+                      {% endif %}
+                      {% if usercreated == "yes" %}
+                      <h5 class="text-center text-white font-20 font-bold">Registration Successfull !</h5>
+                      {% endif %}
+                    </div>
+                    <div class="user-signin">
+                      {% if signup == "yes" %}
+                      <form method="POST">
+                        {% csrf_token %}
+    
+    
+                        <div class="detail-block py-2">
+                          <input type="email" name="Remail" class="width-100" id="floatingEmail" placeholder="Email address">
+    
+                        </div>
+    
+                        <div class="detail-block py-2">
+                          <input type="password" name="Rpassword" class="width-100" id="floatingPassword"
+                            placeholder="Password">
+    
+                        </div>
+    
+    
+                        <div class="detail-block py-2">
+                          <button class="save-btn save-red width-100" type="submit">Sign in</button>
+                        </div>
+                        <div class="copyright-text py-2">
+                          <p class="font-12 text-lightgray text-center">&copy; 2017-2021</p>
+                        </div>
+                      </form>
+                      <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="section-text pt-5">
+                          <div class="detail-block py-2 text-center">
+    
+                            <h6 class="font-18 text-black font-medium">Already have an account ?</h6>
+                          </div>
+                          <div class="detail-block py-2">
+                            <!-- <button type="submit" name="signup" value="signup" class="save-btn save-red  width-100">Sign Up</button> -->
+                            <button type="submit" name="" value="" class="btn btn-success save-btn save-green width-100">Login</button>
+                          </div>
+                        </div>
+                        <!-- <div>Already Had an account ? <button type="submit" name="" value=""
+                            class="btn btn-success">Login</button></div> -->
+                      </form>
+                      {% else %}
+                      <form method="POST">
+                        {% csrf_token %}
+    
+    
+                        <div class="detail-block py-2">
+                          <input type="email" name="email" class="width-100  font-14 font-bold text-darkblue"
+                            id="floatingInput" placeholder="Email address">
+    
+                        </div>
+                        <div class="detail-block py-2">
+                          <input type="password" name="password" class="width-100  font-14 font-bold text-darkblue"
+                            id="floatingPassword" placeholder="Password">
+    
+                        </div>
+                        <div class="detail-block py-2">
+                          <a href="javascript: void(0)" style="color:rgb(22, 131, 240);" onclick="ForgotPassword()">Forgot Password ?</a>
+                        </div>
+                        <div class="detail-block py-2">
+                          <button class="save-btn save-red  width-100" type="submit">Sign in</button>
+                        </div>
+                        <div class="copyright-text py-2">
+                          <p class="font-12 text-lightgray text-center font-regular">&copy; 2017-2023</p>
+                        </div>
+    
+                      </form>
+                      <!-- <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="section-text pt-5">
+                          <div class="detail-block py-2 text-center">
+    
+                            <h6 class="font-18 text-black font-medium">Don't Have an account ? </h6>
+                          </div>
+                          <div class="detail-block py-2">
+                            <button type="submit" name="signup" value="signup" class="save-btn save-red  width-100">Sign Up</button>
+                          </div>
+                        </div>
+    
+    
+    
+    
+                      </form> -->
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-3"></div>
+              </div>
+            </section>
+            <!-- <section class="login-section">
+              <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                  <div class="check-user py-2">
+  
+                    {% if usernamepresent == "yes" %}
+                    <h5 class="text-center text-white font-20 font-bold">Username Already Exist</h5>
+                    {% endif %}
+                    {% if usercreated == "yes" %}
+                    <h5 class="text-center text-white font-20 font-bold">Registration Successfull !</h5>
+                    {% endif %}
+                  </div>
+                  <div class="user-signin pb-4">
+                    {% if signup == "yes" %}
+                    <form method="POST">
+                      {% csrf_token %}
+  
+  
+                      <div class="detail-block py-2">
+                        <input type="email" name="Remail" class="width-100" id="floatingEmail" placeholder="Email">
+  
+                      </div>
+  
+                      <div class="detail-block py-2">
+                        <input type="password" name="Rpassword" class="width-100" id="floatingPassword"
+                          placeholder="Password">
+  
+                      </div>
+  
+  
+                      <div class="detail-block py-2">
+                        <button class="save-btn" type="submit">Sign in</button>
+                      </div>
+                      <div class="copyright-text py-2">
+                        <p class="font-12 text-lightgray text-center">&copy; 2017-2021</p>
+                      </div>
+                    </form>
+                    <form action="" method="POST">
+                      {% csrf_token %}
+                      <div>Already Had an account ? <button type="submit" name="" value=""
+                          class="btn btn-success">Login</button></div>
+                    </form>
+                    {% else %}
+                    <form method="POST">
+                      {% csrf_token %}
+  
+  
+                      <div class="detail-block py-2">
+                        <input type="email" name="email" class="width-100  font-14 font-bold text-darkblue"
+                          id="floatingInput" placeholder="Email">
+  
+                      </div>
+                      <div class="detail-block py-2">
+                        <input type="password" name="password" class="width-100  font-14 font-bold text-darkblue"
+                          id="floatingPassword" placeholder="Password">
+  
+                      </div>
+  
+                      <div class="detail-block py-2">
+                        <button class="save-btn" type="submit">Sign in</button>
+                      </div>
+                      <div class="copyright-text py-2">
+                        <p class="font-12 text-lightgray text-center">&copy; 2017-2021</p>
+                      </div>
+  
+                    </form>
+                    <form action="" method="POST">
+                      {% csrf_token %}
+                      <div class="section-text py-4">
+                        <div class="detail-block py-2">
+  
+                          <h6 class="font-18 text-purewhite font-bold">Don't Have an account ? </h6>
+                        </div>
+                        <div class="detail-block py-2">
+                          <button type="submit" name="signup" value="signup" class="save-btn">Sign Up</button>
+                        </div>
+                      </div>
+  
+  
+  
+  
+                    </form>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="col-3"></div>
+              </div>
+            </section> -->
+  
+          </div>
+  
+  
+        </div>
+  
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="ForgotPasswordModal" tabindex="-1" aria-labelledby="ForgotPasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog ">
+    <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title font-20 font-bold font-blackish" id="ForgotPasswordModalLabel">Forgot Password</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true">
+      
+      </button>
+    </div>
+    <div class="modal-body">
+      <div id="error_msg"  style="display:none;">
+
+      </div>
+      
+      <div class="row">
+        <div class="col-md-9">
+          <div class="form-group">
+            
+            <input type="email" class="font-14 font-regular text-navyblue w-100" id="forgot_pass_email" placeholder="Registered Email Address">
+          </div>					
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            
+            <button class="green-button" onclick="SendForgotPassword($('#forgot_pass_email').val())">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    </div>
+  </div>
+  </div>
+
+{% else %}
+
+<div class="container">
+  <h3 class="text-center">User already LoggedIn .. Please Signout <a href="{% url 'logout' %}">here</a></h3>
+</div>
+
+
+{% endif %}
+
+{% block script %}
+<script>
+  function ForgotPassword(){
+    console.log("Forgot Password")
+    $('#ForgotPasswordModal').modal('show');
+  }
+  function SendForgotPassword(email){
+			if(validateEmail(email) == true){
+				$.ajax({ 
+						data: { 
+							'forgot_password':email
+						}, 
+						type: 'POST', 
+						headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+						url: "{% url 'forgot_password' %}", 
+						success: function (response) { 
+							console.log(response)
+							$('#error_msg').empty();
+							if(response.user == "no"){
+								$('#error_msg').css('display', 'block');
+								$('#error_msg').append(`
+								<div class="alert  error-msg fade show " role="alert">
+									<span class="font-14 font-bold text-navyblue">User Not Found with that Email</span>
+								
+									</button>
+								</div>
+								`)
+							}
+							else if(response.user == "yes"){
+								$('#error_msg').append(`
+								<div class="alert  alert-success fade show mt-3" role="alert">
+									<span class="font-14 font-bold text-navyblue">Email has been sent with Password Reset Instructions</span>
+									<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								`)
+								$('#error_msg').css('display', 'block');
+							}
+							// if (response.status === 200) {
+							//     location.reload(); // Reload the page
+							// }
+						}
+					})
+			}
+			
+		}
+		// function ValidateEmail(input) {
+		// 	var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+		// 	if (input.value.match(validRegex)) {
+		// 		alert("Valid email address!");
+		// 		$('#forgot_pass_email').focus();
+		// 		return true;
+		// 	} else {
+		// 		alert("Invalid email address!");
+		// 		$('#forgot_pass_email').focus();
+		// 		return false;
+		// 	}
+
+		// }
+
+		function validateEmail(email) {
+			var re = /\S+@\S+\.\S+/;
+			return re.test(email);
+		}
+</script>
+{% endblock script %}
+{% endblock body %}

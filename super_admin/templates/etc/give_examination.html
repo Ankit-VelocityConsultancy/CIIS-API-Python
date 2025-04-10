@@ -1,0 +1,2376 @@
+<<<<<<< HEAD
+{% extends 'admin.html' %}
+{% load static %}
+{% block head %}
+<!-- <style>
+  *{
+    font-size: 15px;
+  }
+</style> -->
+<script type="text/javascript" src="{% static 'dict/js1/examination.js' %}"></script>
+{% endblock head %}
+
+{% block nav %}
+<header>
+    <!-- Sidebar -->
+    <header>
+        <!-- Sidebar -->
+        <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+            <div class="position-sticky">
+                <div class="list-group list-group-flush mx-3 mt-4">
+                    <a href="{% url 'overview' %}" class="list-group-item list-group-item-action py-2 ripple"
+                        aria-current="true">
+                        <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+                    </a>
+
+
+                    <ul class="list-unstyled ps-0">
+                        <li class="">
+                            <button class="list-group-item list-group-item-action py-2 ripple active"
+                                data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+                                <i class="fas fa-users-cog fa-fw me-3"></i><span>Stud Management</span>
+                            </button>
+                            <div class="collapse" id="dashboard-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Student
+                                            Registration</a></li>
+                                    <li><a href="{% url 'quickaddstudent' %}" class="link-dark rounded">Quick
+                                            Registration</a></li>
+                                    <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Pending
+                                            Student Verification</a></li>
+                                    <li><a href="{% url 'registered' %}" class="link-dark rounded">Registered
+                                            Student</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+
+
+                    <ul class="list-unstyled ps-0">
+                        <li class="">
+                            <button class="list-group-item list-group-item-action py-2 ripple active"
+                                data-bs-toggle="collapse" data-bs-target="#course-collapse" aria-expanded="true">
+                                <i class="fas fa-users-cog fa-fw me-3"></i><span>My Course/Subject</span>
+                            </button>
+                            <div class="collapse" id="course-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li><a href="{% url 'addcourse' %}" class="link-dark rounded">My Course</a></li>
+                                    <li><a href="{% url 'addstream' %}" class="link-dark rounded">My Subject</a></li>
+                                    <li><a href="{% url 'adduniversity' %}" class="link-dark rounded">My University</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <ul class="list-unstyled ps-0">
+                        <li class="">
+                            <button class="list-group-item list-group-item-action py-2 ripple active"
+                                data-bs-toggle="collapse" data-bs-target="#miscelanous-collapse" aria-expanded="true">
+                                <i class="fas fa-users-cog fa-fw me-3"></i><span>Miscelanous</span>
+                            </button>
+                            <div class="collapse" id="miscelanous-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+
+                                    <li><a href="{% url 'printaddress' %}" class="link-dark rounded">Print Address</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="list-unstyled ps-0">
+                        <li class="">
+                            <button class="list-group-item list-group-item-action py-2 ripple active"
+                                data-bs-toggle="collapse" data-bs-target="#fees-collapse" aria-expanded="true">
+                                <i class="fas fa-users-cog fa-fw me-3"></i><span>Fees</span>
+                            </button>
+                            <div class="collapse" id="fees-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li><a href="{% url 'addfees' %}" class="link-dark rounded">Course Fees</a></li>
+                                    <li><a href="{% url 'editoldfees' %}" class="link-dark rounded">Student Fees</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+
+
+
+                    <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+                            class="fas fa-sign-out-alt fa-fw me-3"></i><span>Logout</span></a>
+
+                </div>
+            </div>
+        </nav>
+        <!-- Sidebar -->
+
+        <!-- Navbar -->
+        <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+            <!-- Container wrapper -->
+            <div class="container-fluid">
+                <!-- Toggle button -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+                    aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Brand -->
+                <a class="navbar-brand" href="#">
+                    <img src="" height="25" alt="" loading="lazy" />
+                </a>
+                <!-- Search form -->
+                <form class="d-none d-md-flex input-group w-auto my-auto">
+                    <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                        style="min-width: 225px" />
+                    <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+                </form>
+
+                <!-- Right links -->
+                <ul class="navbar-nav ms-auto d-flex flex-row">
+
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+
+
+
+                    <!-- Avatar -->
+                    <li class="nav-item dropdown">
+
+                        <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                                height="22" alt="" loading="lazy" />
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">My profile</a></li>
+                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- Container wrapper -->
+        </nav>
+        <!-- Navbar -->
+    </header>
+    <!-- Sidebar -->
+
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+                aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Brand -->
+            <a class="navbar-brand" href="#">
+                <img src="" height="25" alt="" loading="lazy" />
+            </a>
+            <!-- Search form -->
+            <form class="d-none d-md-flex input-group w-auto my-auto">
+                <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                    style="min-width: 225px" />
+                <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+            </form>
+
+            <!-- Right links -->
+            <ul class="navbar-nav ms-auto d-flex flex-row">
+
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+
+
+
+                <!-- Avatar -->
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                            height="22" alt="" loading="lazy" />
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">My profile</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+    <style>
+        #clockdiv {
+            font-family: sans-serif;
+            color: #fff;
+            display: inline-block;
+            font-weight: 100;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        #clockdiv>div {
+            padding: 10px;
+            border-radius: 3px;
+            background: #00BF96;
+            display: inline-block;
+        }
+
+        #canvas {
+            border: 1px solid red;
+            height: 500px;
+            width: 500px;
+        }
+
+
+
+
+
+
+
+        #hours {
+            font-size: 100px;
+            color: #000;
+        }
+
+        #minutes {
+            font-size: 100px;
+            color: #000;
+        }
+
+        #seconds {
+            font-size: 50px;
+            color: #000;
+        }
+
+        .pagination button{
+            text-align: center;
+            width:40px;
+            margin-right: 5px;
+        }
+    </style>
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+
+
+<!-- <div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card" id="start_test_card">
+                <div class="card-header">
+                  Examination
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Rules of Exam.</h5>
+                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                  <button class="btn btn-success" onclick="startTest()">Start Test</button>
+                </div>
+              </div>
+        </div>
+    </div>
+    
+</div> -->
+<div class="error-container">
+    
+</div>
+
+
+
+<div class="container" id="start_test_card">
+    <div class="row">
+        {% for i in exams %}
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    {{i.examname}} <input type="text" name="" id="exam_id_to_save">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Rules of Exam.</h5>
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <button class="btn btn-success" onclick="CheckTiming('{{i.id}}')">Start Test</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+<div class="show_timer w-100">
+    <!-- <div class="time" id="time" class="text-center"></div> -->
+    <div id="clockdiv" class="text-center" style="display:none;">
+        <div>
+            <span class="hours"></span>
+            <div class="smalltext">Hours</div>
+        </div>
+        <div>
+            <span class="minutes"></span>
+            <div class="smalltext">Minutes</div>
+        </div>
+        <div>
+            <span class="seconds"></span>
+            <div class="smalltext">Seconds</div>
+        </div>
+    </div>
+    <input type="text" id="exam-id" style="visibility: hidden;">
+</div>
+
+<input type="text" id="counter" style="visibility:hidden;">
+
+<div class="container pagination">
+
+</div>
+
+
+<div class="container">
+    <input type="text" id="current_row" style="display:none;">
+    <div class="form" id="form" style="visibility:hidden;">
+        <form action="" method="POST" id="dataform">
+            {% csrf_token %}
+
+        </form>
+
+    </div>
+    <div class="row">
+        <div class="col-lg-2" id="first_btn_container">
+            <button class="btn btn-primary" id="first_btn" style="display:none;" onclick="first_question()">First</button>
+        </div>
+        <div class="col-lg-1" id="previous_btn_container">
+            <button class="btn btn-secondary" id="previous_btn" style="display:none;" onclick="previous_question()">Previous</button>
+        </div>
+        <div class="col-lg-2" id="next_btn_container">
+            <button class="btn btn-secondary" id="next_btn" style="display:none;" onclick="next_question()">Next</button>
+        </div>
+        <div class="col-lg-1" id="last_btn_container">
+            <button class="btn btn-primary" id="last_btn" style="display:none;" onclick="last_question()">Last</button>
+        </div>
+        
+
+
+    </div>
+    <!-- <button class="btn btn-primary" id="saveexambtn" style="visibility:hidden;" onclick="saveExam($('#counter').val(),$('#exam_id_to_save').val())">Submit</button> -->
+</div>
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+<script>
+
+    function CheckTiming(id){
+        console.log("clicked on check_timing")
+        $.ajax({
+            type: "POST",
+            url: "{% url 'giveexamination' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'check_timing': id
+            },
+            success: function (response) {
+                console.log(response)
+                if(response.error){
+                    $('.error-container').empty();
+                    $('.error-container').append(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong id="error">${response.error}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    `);
+                    setTimeout(() => {
+                        $('.alert').alert('close');
+                    }, 3000);
+                }
+                else if(response.exam_id){
+                    console.log(response.exam_id);
+                    startTest(response.exam_id);
+                }
+            }
+        });
+    }
+
+
+
+
+    function startTest(id) {
+
+        $('#current_row').val(1)
+        var exam_id = $('#exam-id').val(id);
+        $('#clockdiv').css('display', 'block');
+        $('#previous_btn').css('display', 'block');
+        $('#next_btn').css('display', 'block');
+        $('#last_btn').css('display', 'block');
+
+        function printEnd() {
+            // console.log("end is here")
+        }
+        function getTimeRemaining(endtime) {
+            const total = Date.parse(endtime) - Date.parse(new Date());
+            const seconds = Math.floor((total / 1000) % 60);
+            const minutes = Math.floor((total / 1000 / 60) % 60);
+            const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+            const days = Math.floor(total / (1000 * 60 * 60 * 24));
+            if (hours == 0 & minutes == 0 & seconds == 0) {
+                printEnd();
+            }
+            return {
+                total,
+                days,
+                hours,
+                minutes,
+                seconds
+            };
+        }
+
+        function initializeClock(id, endtime) {
+            const clock = document.getElementById(id);
+            const daysSpan = clock.querySelector('.days');
+            const hoursSpan = clock.querySelector('.hours');
+            const minutesSpan = clock.querySelector('.minutes');
+            const secondsSpan = clock.querySelector('.seconds');
+
+            function updateClock() {
+                const t = getTimeRemaining(endtime);
+
+                hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+                // document.getElementById("time").innerHTML = ('0' + t.hours).slice(-2) + "h "
+                // + ('0' + t.minutes).slice(-2) + "m " + ('0' + t.seconds).slice(-2) + "s ";
+
+                if (t.total <= 0) {
+                    clearInterval(timeinterval);
+                }
+            }
+
+            updateClock();
+            const timeinterval = setInterval(updateClock, 1000);
+
+            function update_data() {
+                // console.log("data added to database");
+                const t = getTimeRemaining(endtime);
+
+                var hours = ('0' + t.hours).slice(-2);
+                var minutes = ('0' + t.minutes).slice(-2);
+                // console.log(hours + " : " + minutes )
+                var time_in_minutes = parseInt(hours) * 60 + (parseInt(minutes))
+                var exam_id = $('#exam-id').val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'giveexamination' %}",
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    data: {
+                        'exam_id_timer': exam_id,
+                        'exam_in_minutes': time_in_minutes
+                    },
+                    success: function (response) {
+                        // console.log("sent data to server")
+                    }
+                });
+            }
+            const set_data = setInterval(update_data, 5000);
+        }
+
+        // const deadline = new Date(Date.parse(new Date()) + 1 * 1 * 1 * 10 * 1000);
+        // initializeClock('clockdiv', deadline);
+
+
+
+
+
+        // var exam_id = $('#exam-id').val(id);
+        // console.log("exam_id = " , id);
+        // const date = new Date();
+        // const newDate = addHours(date, 3);
+        // var countDownDate = new Date(newDate).getTime();
+        // console.log(countDownDate)
+        // var x = setInterval(function() {
+
+        // // Get today's date and time
+        // var now = new Date().getTime();
+
+        // // Find the distance between now and the count down date
+        // var distance = countDownDate - now;
+
+        // // Time calculations for days, hours, minutes and seconds
+        // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        // var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        // var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // // Output the result in an element with id="demo"
+        // document.getElementById("time").innerHTML = hours + "h "
+        // + minutes + "m " + seconds + "s ";
+
+        // // If the count down is over, write some text 
+        // if (distance < 0) {
+        //     clearInterval(x);
+        //     document.getElementById("time").innerHTML = "EXPIRED";
+        // }
+        // }, 1000);
+
+        // var y = setInterval(function() {
+
+        // // Get today's date and time
+        // var now = new Date().getTime();
+
+        // // Find the distance between now and the count down date
+        // var distance = countDownDate - now;
+
+        // // Time calculations for days, hours, minutes and seconds
+        // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        // var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        // var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // // Output the result in an element with id="demo"
+        // document.getElementById("time").innerHTML = hours + "h "
+        // + minutes + "m " + seconds + "s ";
+
+        // // If the count down is over, write some teyt 
+        // if (distance < 0) {
+        //     clearInterval(y);
+        //     document.getElementById("time").innerHTML = "EXPIRED";
+        // }
+        // $.ajax({ // create an AJAX call...
+        //     type: "POST",
+        //     url: "{% url 'giveexamination' %}",
+        //     headers: {'X-CSRFToken': '{{ csrf_token }}'},
+        //     data: {
+        //         'exam_id_timer':id,
+        //         'hours':hours,
+        //         'minutes':minutes,
+        //         'seconds':seconds
+        //     },
+        //     success: function(response) {
+        //     }
+        // });
+        // }, 60000);
+
+        $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'giveexamination' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'exam_id': id
+            },
+            success: function (response) {
+                
+                
+
+
+
+
+                var hours = parseInt(response.hours);
+                var minutes = parseInt(response.minutes);
+                if (hours == 0 & minutes == 0) {
+                    let dt = new Date();
+                    dt.setHours(dt.getHours() + 3);
+                    initializeClock('clockdiv', dt);
+                }
+                else {
+                    let dt = new Date();
+                    dt.setHours(dt.getHours() + hours);
+                    dt.setMinutes(dt.getMinutes() + minutes)
+                    initializeClock('clockdiv', dt);
+                }
+
+                var data = response.data;
+                $('#exam_id_to_save').val(response.exam_id)
+                data.forEach(myFunction);
+                var count = 0
+                function myFunction(item, count) {
+                    count = count + 1;
+                    // console.log(item.type)
+                    if (item.type == "radio") {
+
+                        $('#dataform').append(`
+                    <div class="card mb-5 totalexam" id="question_row_${count}">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="visibility:hidden;" class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="visibility:hidden;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count}">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options">
+                                        <div class="form-check mb-3 ms-3">
+                                            
+                                            <input class="form-check-input" type="radio" name="question_option_${count}"  id="question_${count}_option_1" value="option1" >
+                                            <label class="form-check-label" for="question_${count}_option_1">
+                                            ${item.option1}
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_${count}" id="question_${count}_option_2" value="option2">
+                                            <label class="form-check-label" for="question_${count}_option_2">
+                                            ${item.option2}
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_${count}" id="question_${count}_option_3" value="option3" >
+                                            <label class="form-check-label" for="question_${count}_option_3">
+                                            ${item.option3}
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_${count}" id="question_${count}_option_4" value="option4" >
+                                            <label class="form-check-label" for="question_${count}_option_4">
+                                            ${item.option4}
+                                            </label>
+                                        </div>
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                `);
+
+                    }
+                    else if (item.type == "mcq(single)") {
+                       
+                        
+                        $('#dataform').append(`
+                        <div class="card mb-5 totalexam" id="question_row_${count}">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="question">
+                                        <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="visibility:visible;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="visibility:hidden;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                    </div>
+                                </div>       
+                            </div>
+                            <div class="card-body_${count}">
+                                <div class="uploaded-image_${count}">
+                                    
+                                </div>
+                                <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                    <div class="row">
+                                        <div class="options">
+                                            
+                                            <div class="form-check mb-3 ms-3">
+                                                <input class="form-check-input" type="checkbox" id="question_${count}_option_1" name="question_option_${count}" onclick="onlyOne(this)"  value="option1">
+                                                <label class="form-check-label">${item.option1}</label>
+                                            </div> 
+                                            <div class="form-check mb-3 ms-3">
+                                                <input class="form-check-input" type="checkbox" id="question_${count}_option_2" name="question_option_${count}" onclick="onlyOne(this)" value="option2">
+                                                <label class="form-check-label">${item.option2}</label>
+                                            </div> 
+                                            <div class="form-check mb-3 ms-3">
+                                                <input class="form-check-input" type="checkbox" id="question_${count}_option_3" name="question_option_${count}" onclick="onlyOne(this)" value="option3">
+                                                <label class="form-check-label">${item.option3}</label>
+                                            </div> 
+                                            <div class="form-check mb-3 ms-3">
+                                                <input class="form-check-input" type="checkbox" id="question_${count}_option_4" name="question_option_${count}" onclick="onlyOne(this)" value="option4">
+                                                <label class="form-check-label">${item.option4}</label>
+                                            </div> 
+                                            
+                                            
+                                        </div>          
+                                    </div>           
+                            </div>
+                            </div>
+                        </div>
+                        `);
+                        console.log(item.submitted_answer , count);
+                        if(item.submitted_answer == "option1"){
+                            $(`#question_${count}_option_1`).prop('checked', true);
+                        }
+                        else if(item.submitted_answer == "option2"){
+                            $(`#question_${count}_option_2`).prop('checked', true);
+                        }
+                        else if(item.submitted_answer == "option3"){
+                            $(`#question_${count}_option_3`).prop('checked', true);
+                        }
+                        else if(item.submitted_answer == "option4"){                            
+                            $(`#question_${count}_option_4`).prop('checked', true);
+                        }
+                    }
+                    else if (item.type == "mcq(multiple)") {
+                        $('#dataform').append(`
+                    <div class="card mb-5 totalexam" id="question_row_${count}">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="visibility:hidden;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="visibility:hidden;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count}">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options">
+                                        
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_1" name="question_option_${count}"   value="option1">
+                                            <label class="form-check-label">${item.option1}</label>
+                                        </div> 
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_2" name="question_option_${count}"  value="option2">
+                                            <label class="form-check-label">${item.option2}</label>
+                                        </div> 
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_3" name="question_option_${count}"  value="option3">
+                                            <label class="form-check-label">${item.option3}</label>
+                                        </div> 
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_4" name="question_option_${count}"  value="option4">
+                                            <label class="form-check-label">${item.option4}</label>
+                                        </div> 
+                                        
+                                        
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                `);
+                    }
+                    else if (item.type == "shortanswer") {
+                        $('#dataform').append(`
+                    <div class="card mb-5 totalexam" id="question_row_${count}">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="visibility:hidden;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="visibility:hidden;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count}">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options">
+                                        
+                                        
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="question_shortanswer_${count}" name="question_shortanswer_${count}" style="height: 100px"></textarea>
+                                            <label for="floatingTextarea2">Answer</label>
+                                        </div>
+                                        
+                                        
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                `);
+                    }
+                    else if (item.type == "long_desc") {
+                        $('#dataform').append(`
+                    <div class="card mb-5 totalexam" id="question_row_${count}">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="visibility:hidden;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="visibility:hidden;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count} container">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count} mb-3 mt-3" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options">
+                                        
+                                        
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="question_shortanswer_${count}" name="question_shortanswer_${count}" style="height: 100px"></textarea>
+                                            <label for="floatingTextarea2">Answer</label>
+                                        </div>
+                                        
+                                        
+                                    </div>          
+                                </div>           
+                            </div>
+                            <div class="upload images_multiple mb-3" style="width:30%;">
+                                <input type="file" class="form-control" id="student_uploads_${count}" multiple>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                    }
+
+
+                    if (item.image != "nan") {
+                        if(item.image == null){
+                            console.log("yes null")
+                        }
+                        else{
+                            console.log(item.image);
+                            $(`.uploaded-image_${count}`).append(`
+                                <img id="frame_${count}" src="https://erp.ciisindia.in/media/${item.image}" style="height:400px;width:290px;" class="img-fluid" />
+                            `);
+                        }
+                    }
+                    $('#form').css('visibility', 'visible');
+                    $('#saveexambtn').css('visibility', 'visible');
+                    $('#counter').val(count)
+                }
+                // var question_count = $('#counter').val();
+                // console.log(question_count/2);
+                
+                // if(question_count/2 > 10){
+                //     var second_last = question_count - 1;
+                //     var third_last = question_count - 2;
+                //     for(var i = 1; i <= 10; i++) {
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary" id="pagination_${i}">${i}</button>
+                //     `);
+                //     }
+                //     $('.pagination').append(`
+                //         <p style="margin-right:5px;">...</p>
+                //     `);
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary">${third_last}</button>
+                //     `);
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary">${second_last}</button>
+                //     `);
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary">${question_count}</button>
+                //     `);
+                // }
+                
+                
+                console.log("count :",$('#counter').val())
+                var total_questions = $('#counter').val();
+                var numItems = $('.totalexam').length;
+                console.log("number of questions :",numItems)
+                for (var i = 2; i <= total_questions; i++) {
+                    $(`#question_row_${i}`).css('display', 'none');
+                }
+
+
+            }
+        });
+
+
+
+
+
+
+        $('#start_test_card').css('display', 'none');
+
+    }
+
+    function next_question() {
+        var abc  = document.querySelector(`#student_uploads_${parseInt($('#current_row').val())}`);
+        var current_row_data = parseInt($('#current_row').val());
+        // uploaded_data = $(`#student_uploads_${parseInt($('#current_row').val())}`).get(0).files
+        // console.log("student upload :",uploaded_data)
+        $('#current_row').val(parseInt($('#current_row').val()) + 1)
+        if( parseInt($('#current_row').val()) > 1 ){
+            $('#first_btn').css('display', 'block');
+        }
+        exam_id = $('#exam-id').val();
+        // console.log("exam_id = ", exam_id);
+        // var numItems = $('.totalexam').length;
+        // console.log("Total Questions   : ", numItems);
+        var non_hidden = 0;
+        var numItems = $('#counter').val();
+        console.log("count of questions :",numItems)
+        for (var i = 1; i <= numItems; i++) {
+            const element = document.querySelector(`#question_row_${i}`);
+            if(element){
+                console.log(element.style.display)
+                if (element.style.display != "none") {
+                    // console.log(i)
+                    var non_hidden = i
+                    $(`#question_row_${i}`).css('display', 'none');
+                    var x = $("form").serializeArray();
+                    // console.log(x)
+                    temp = []
+                    var data_type = $(`#question_type_${i}`).val();
+                    // console.log("data_type: ", data_type)
+                    var data = x.filter(a => a.name == `question_option_${i}`)
+                    // console.log("data: ", data)
+
+                    // console.log(data);
+                    // data.forEach((a)=>console.log(a.value));
+                    // // console.log(data?.value)
+                    var question = $(`#question_${i}`).text();
+                    if(abc != null){
+                        console.log(current_row_data,": present");
+                        var uploaded_data = $(`#student_uploads_${current_row_data}`).get(0).files
+                        console.log("student upload :",uploaded_data)
+                    }
+                    else{
+                        console.log(current_row_data,": absent")
+                        var uploaded_data = "none"
+                    }
+                    console.log("uploaded data :",uploaded_data)
+                    var quesArr = {
+                        "question_no": i,
+                        "question_id": $(`#question_id_${i}`).val(),
+                        "question_type": $(`#question_type_${i}`).val(),
+                        "question": question,
+                        "value": ""
+                    }
+                    if(data.length >0){
+                        data.forEach(a => {
+                        if (quesArr["value"] !== "") {
+                            quesArr["value"] = quesArr["value"] + ","  + a.value
+                        }else{
+                            quesArr["value"] = a.value
+                        }
+                    })
+                    }else{
+                        quesArr["value"] =x.filter(a=> a.name == `question_shortanswer_${i}`).length > 0 ? x.filter(a=> a.name == `question_shortanswer_${i}`)[0].value : ""
+                    }
+                    console.log("data sent to server :",quesArr);
+                    // console.log(quesArr);
+                    // $.ajax({
+                    //     type: "POST",
+                    //     url: "{% url 'giveexamination' %}",
+                    //     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    //     data: {
+                            // 'save_question_no':quesArr.question_no,
+                            // 'save_question_id':quesArr.question_id,
+                            // 'save_question_type':quesArr.question_type,
+                            // 'save_question':quesArr.question,
+                            // 'save_value':quesArr.value
+                            
+                    //     },
+                    //     success: function (response) {
+                    //         // console.log("data sent to server")
+                    //     }
+                    // });
+                    var data = new FormData();
+                    data.append("save_question_no", quesArr.question_no);
+                    data.append("save_question_id", quesArr.question_id);
+                    data.append("save_question_type", quesArr.question_type);
+                    data.append("save_question", quesArr.question);
+                    data.append("save_value", quesArr.value);
+                    if(uploaded_data == "none"){
+                        console.log("no file hence not uploaded")
+                    }
+                    else{
+                        console.log("uploaded file to views")
+                        $.each($(`#student_uploads_${current_row_data}`)[0].files, function(i, file) {
+                            data.append("uploaded_files", file);
+                        });
+                    }
+                    
+                    
+                    data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+                    $.ajax({
+                        method: "POST",
+                        url: "{% url 'giveexamination' %}",
+                        processData: false,
+                        contentType: false,
+                        mimeType: "multipart/form-data",
+                        data: data,
+                        success: function (res) {
+                            console.log("data")
+                        }
+                    });
+                }
+            }
+        }
+        var next_element = parseInt(non_hidden) + 1;
+        if ($(`#question_row_${next_element}`).length > 0) {
+
+            $(`#question_row_${next_element}`).css('display', 'block');
+        }
+        else {
+            // $(`#question_row_1`).css('display','block');
+            $('#next_btn_container').empty();
+            $('#next_btn_container').append(`
+        <button class="btn btn-primary" id="saveexambtn" style="visibility:visible;" onclick="saveExam($('#counter').val(),$('#exam_id_to_save').val())">Submit</button>
+        `);
+        }
+    }
+
+    function previous_question() {
+        var current_row = parseInt($('#current_row').val());
+        if(current_row == 1) {
+            console.log("count :",$('#counter').val())
+            $('#current_row').val(parseInt($('#counter').val()))
+        }
+        else{
+            $('#current_row').val(parseInt($('#current_row').val()) - 1)
+        }
+        var numItems = $('.totalexam').length;
+        // console.log("numItems   : " , numItems);
+        var non_hidden = 0;
+        for (var i = numItems; i >= 1; i--) {
+            // console.log(i)
+            const element = document.querySelector(`#question_row_${i}`);
+            // console.log(element.style.display)
+            if (element.style.display != "none") {
+                // console.log(i)
+                var non_hidden = i
+                $(`#question_row_${i}`).css('display', 'none');
+            }
+        }
+        var next_element = parseInt(non_hidden) - 1;
+        if ($(`#question_row_${next_element}`).length > 0) {
+            // console.log(`$(#question_row_${next_element})`)
+            $(`#question_row_${next_element}`).css('display', 'block');
+        }
+        else {
+            console.log("yes :", numItems)
+            $(`#question_row_${numItems}`).css('display', 'block');
+            $('#next_btn_container').empty();
+            $('#next_btn_container').append(`
+        <button class="btn btn-secondary" id="next_btn" onclick="next_question()">Next</button>
+        `);
+        }
+    }
+
+    function first_question() {
+        var counter = parseInt($('#counter').val());
+        console.log("counter :",counter)
+        for(var i = 1; i <= counter; i++){
+            $(`#question_row_${i}`).css('display', 'none');
+        }
+        $(`#question_row_${1}`).css('display', 'block');
+        $('#current_row').val(1);
+        $('#first_btn').css('display', 'none');
+        $('#last_btn').css('display', 'block');
+    }
+
+    function last_question(){
+        var counter = parseInt($('#counter').val());
+        console.log("counter :",counter)
+        for(var i = 1; i < counter; i++){
+            $(`#question_row_${i}`).css('display', 'none');
+        }
+        $(`#question_row_${counter}`).css('display', 'block');
+        $('#current_row').val(counter)
+        $('#last_btn').css('display', 'none');
+        $('#first_btn').css('display', 'block');
+    }
+
+    $("#current_row").val();
+
+    function onlyOne(checkbox) {
+        var checkbox_name = checkbox.name
+        var checkboxes = document.getElementsByName(checkbox_name)
+        checkboxes.forEach((item) => {
+            if (item !== checkbox) item.checked = false
+        })
+    }
+
+
+
+    function saveExam(count, exam_id) {
+        console.log(count, exam_id)
+        console.log("total question count = ", count);
+        var questions_list = []
+        var x = $("form").serializeArray();
+        // console.log("form =",x)
+        $.each(x, function (i, field) {
+            if (field.name.includes("question_option_")) {
+                var question_no = field.name.replace("question_option_", "")
+            }
+            else {
+                var question_no = field.name.replace("question_shortanswer_", "")
+            }
+            var question = $(`#question_${question_no}`).text();
+            
+            var quesArr = {
+                "question_no": question_no,
+                "question_id": $(`#question_id_${question_no}`).val(),
+                "question_type": $(`#question_type_${question_no}`).val(),
+                "question": question,
+                "value": field.value,
+                
+
+            
+            }
+            if (question_no == "csrfmiddlewaretoken") {
+                // console.log("csrfmiddlewaretoken")
+            }
+            else {
+                // console.log(quesArr)
+                questions_list.push(quesArr);
+            }
+
+        });
+        var testArr = [];
+        function AddData(data) {
+            // console.log(data);
+            var found = false;
+            for (index in testArr) {
+                if (testArr[index].question_no == data.question_no) {
+                    found = true;
+                    console.log("data found :", data);
+                    testArr[index].value = testArr[index].value + ',' + data.value;
+                    break;
+                }
+            }
+            if (!found) {
+                testArr.push(data);
+                console.log("data not found");
+            }
+        }
+        questions_list.forEach(myFunction);
+        function myFunction(item) {
+            AddData(item)
+        }
+        console.log(testArr)
+        console.log("array length : =", testArr.length)
+        $.ajax({
+            type: "POST",
+            url: "{% url 'giveexamination' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'examdata': testArr,
+                'count': testArr.length,
+                'result_exam_id': exam_id
+            },
+            success: function (response) {
+                console.log("data sent to server", response)
+                if(response.added == "yes"){
+                    window.location = "{% url 'examsubmitted' %}"
+                }
+            }
+        });
+
+
+
+    }
+
+
+
+
+</script>
+=======
+{% extends 'admin.html' %}
+{% load static %}
+{% block head %}
+<!-- <style>
+  *{
+    font-size: 15px;
+  }
+</style> -->
+<script type="text/javascript" src="{% static 'dict/js1/examination.js' %}"></script>
+{% endblock head %}
+
+{% block nav %}
+<header>
+    <!-- Sidebar -->
+    <header>
+        <!-- Sidebar -->
+        <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+            <div class="position-sticky">
+                <div class="list-group list-group-flush mx-3 mt-4">
+                    <a href="{% url 'overview' %}" class="list-group-item list-group-item-action py-2 ripple"
+                        aria-current="true">
+                        <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+                    </a>
+
+
+                    <ul class="list-unstyled ps-0">
+                        <li class="">
+                            <button class="list-group-item list-group-item-action py-2 ripple active"
+                                data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+                                <i class="fas fa-users-cog fa-fw me-3"></i><span>Stud Management</span>
+                            </button>
+                            <div class="collapse" id="dashboard-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Student
+                                            Registration</a></li>
+                                    <li><a href="{% url 'quickaddstudent' %}" class="link-dark rounded">Quick
+                                            Registration</a></li>
+                                    <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Pending
+                                            Student Verification</a></li>
+                                    <li><a href="{% url 'registered' %}" class="link-dark rounded">Registered
+                                            Student</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+
+
+                    <ul class="list-unstyled ps-0">
+                        <li class="">
+                            <button class="list-group-item list-group-item-action py-2 ripple active"
+                                data-bs-toggle="collapse" data-bs-target="#course-collapse" aria-expanded="true">
+                                <i class="fas fa-users-cog fa-fw me-3"></i><span>My Course/Subject</span>
+                            </button>
+                            <div class="collapse" id="course-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li><a href="{% url 'addcourse' %}" class="link-dark rounded">My Course</a></li>
+                                    <li><a href="{% url 'addstream' %}" class="link-dark rounded">My Subject</a></li>
+                                    <li><a href="{% url 'adduniversity' %}" class="link-dark rounded">My University</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <ul class="list-unstyled ps-0">
+                        <li class="">
+                            <button class="list-group-item list-group-item-action py-2 ripple active"
+                                data-bs-toggle="collapse" data-bs-target="#miscelanous-collapse" aria-expanded="true">
+                                <i class="fas fa-users-cog fa-fw me-3"></i><span>Miscelanous</span>
+                            </button>
+                            <div class="collapse" id="miscelanous-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+
+                                    <li><a href="{% url 'printaddress' %}" class="link-dark rounded">Print Address</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="list-unstyled ps-0">
+                        <li class="">
+                            <button class="list-group-item list-group-item-action py-2 ripple active"
+                                data-bs-toggle="collapse" data-bs-target="#fees-collapse" aria-expanded="true">
+                                <i class="fas fa-users-cog fa-fw me-3"></i><span>Fees</span>
+                            </button>
+                            <div class="collapse" id="fees-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li><a href="{% url 'addfees' %}" class="link-dark rounded">Course Fees</a></li>
+                                    <li><a href="{% url 'editoldfees' %}" class="link-dark rounded">Student Fees</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+
+
+
+                    <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+                            class="fas fa-sign-out-alt fa-fw me-3"></i><span>Logout</span></a>
+
+                </div>
+            </div>
+        </nav>
+        <!-- Sidebar -->
+
+        <!-- Navbar -->
+        <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+            <!-- Container wrapper -->
+            <div class="container-fluid">
+                <!-- Toggle button -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+                    aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Brand -->
+                <a class="navbar-brand" href="#">
+                    <img src="" height="25" alt="" loading="lazy" />
+                </a>
+                <!-- Search form -->
+                <form class="d-none d-md-flex input-group w-auto my-auto">
+                    <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                        style="min-width: 225px" />
+                    <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+                </form>
+
+                <!-- Right links -->
+                <ul class="navbar-nav ms-auto d-flex flex-row">
+
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+
+
+
+                    <!-- Avatar -->
+                    <li class="nav-item dropdown">
+
+                        <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                                height="22" alt="" loading="lazy" />
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">My profile</a></li>
+                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- Container wrapper -->
+        </nav>
+        <!-- Navbar -->
+    </header>
+    <!-- Sidebar -->
+
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+                aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Brand -->
+            <a class="navbar-brand" href="#">
+                <img src="" height="25" alt="" loading="lazy" />
+            </a>
+            <!-- Search form -->
+            <form class="d-none d-md-flex input-group w-auto my-auto">
+                <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                    style="min-width: 225px" />
+                <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+            </form>
+
+            <!-- Right links -->
+            <ul class="navbar-nav ms-auto d-flex flex-row">
+
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+
+
+
+                <!-- Avatar -->
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                            height="22" alt="" loading="lazy" />
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">My profile</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+    <style>
+        #clockdiv {
+            font-family: sans-serif;
+            color: #fff;
+            display: inline-block;
+            font-weight: 100;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        #clockdiv>div {
+            padding: 10px;
+            border-radius: 3px;
+            background: #00BF96;
+            display: inline-block;
+        }
+
+        #canvas {
+            border: 1px solid red;
+            height: 500px;
+            width: 500px;
+        }
+
+
+
+
+
+
+
+        #hours {
+            font-size: 100px;
+            color: #000;
+        }
+
+        #minutes {
+            font-size: 100px;
+            color: #000;
+        }
+
+        #seconds {
+            font-size: 50px;
+            color: #000;
+        }
+
+        .pagination button{
+            text-align: center;
+            width:40px;
+            margin-right: 5px;
+        }
+    </style>
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+
+
+<!-- <div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card" id="start_test_card">
+                <div class="card-header">
+                  Examination
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Rules of Exam.</h5>
+                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                  <button class="btn btn-success" onclick="startTest()">Start Test</button>
+                </div>
+              </div>
+        </div>
+    </div>
+    
+</div> -->
+<div class="error-container">
+    
+</div>
+
+
+
+<div class="container" id="start_test_card">
+    <div class="row">
+        {% for i in exams %}
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    {{i.examname}} <input type="text" name="" id="exam_id_to_save">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Rules of Exam.</h5>
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <button class="btn btn-success" onclick="CheckTiming('{{i.id}}')">Start Test</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+<div class="show_timer w-100">
+    <!-- <div class="time" id="time" class="text-center"></div> -->
+    <div id="clockdiv" class="text-center" style="display:none;">
+        <div>
+            <span class="hours"></span>
+            <div class="smalltext">Hours</div>
+        </div>
+        <div>
+            <span class="minutes"></span>
+            <div class="smalltext">Minutes</div>
+        </div>
+        <div>
+            <span class="seconds"></span>
+            <div class="smalltext">Seconds</div>
+        </div>
+    </div>
+    <input type="text" id="exam-id" style="visibility: hidden;">
+</div>
+
+<input type="text" id="counter" style="visibility:hidden;">
+
+<div class="container pagination">
+
+</div>
+
+
+<div class="container">
+    <input type="text" id="current_row" style="display:none;">
+    <div class="form" id="form" style="visibility:hidden;">
+        <form action="" method="POST" id="dataform">
+            {% csrf_token %}
+
+        </form>
+
+    </div>
+    <div class="row">
+        <div class="col-lg-2" id="first_btn_container">
+            <button class="btn btn-primary" id="first_btn" style="display:none;" onclick="first_question()">First</button>
+        </div>
+        <div class="col-lg-1" id="previous_btn_container">
+            <button class="btn btn-secondary" id="previous_btn" style="display:none;" onclick="previous_question()">Previous</button>
+        </div>
+        <div class="col-lg-2" id="next_btn_container">
+            <button class="btn btn-secondary" id="next_btn" style="display:none;" onclick="next_question()">Next</button>
+        </div>
+        <div class="col-lg-1" id="last_btn_container">
+            <button class="btn btn-primary" id="last_btn" style="display:none;" onclick="last_question()">Last</button>
+        </div>
+        
+
+
+    </div>
+    <!-- <button class="btn btn-primary" id="saveexambtn" style="visibility:hidden;" onclick="saveExam($('#counter').val(),$('#exam_id_to_save').val())">Submit</button> -->
+</div>
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+<script>
+
+    function CheckTiming(id){
+        console.log("clicked on check_timing")
+        $.ajax({
+            type: "POST",
+            url: "{% url 'giveexamination' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'check_timing': id
+            },
+            success: function (response) {
+                console.log(response)
+                if(response.error){
+                    $('.error-container').empty();
+                    $('.error-container').append(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong id="error">${response.error}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    `);
+                    setTimeout(() => {
+                        $('.alert').alert('close');
+                    }, 3000);
+                }
+                else if(response.exam_id){
+                    console.log(response.exam_id);
+                    startTest(response.exam_id);
+                }
+            }
+        });
+    }
+
+
+
+
+    function startTest(id) {
+
+        $('#current_row').val(1)
+        var exam_id = $('#exam-id').val(id);
+        $('#clockdiv').css('display', 'block');
+        $('#previous_btn').css('display', 'block');
+        $('#next_btn').css('display', 'block');
+        $('#last_btn').css('display', 'block');
+
+        function printEnd() {
+            // console.log("end is here")
+        }
+        function getTimeRemaining(endtime) {
+            const total = Date.parse(endtime) - Date.parse(new Date());
+            const seconds = Math.floor((total / 1000) % 60);
+            const minutes = Math.floor((total / 1000 / 60) % 60);
+            const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+            const days = Math.floor(total / (1000 * 60 * 60 * 24));
+            if (hours == 0 & minutes == 0 & seconds == 0) {
+                printEnd();
+            }
+            return {
+                total,
+                days,
+                hours,
+                minutes,
+                seconds
+            };
+        }
+
+        function initializeClock(id, endtime) {
+            const clock = document.getElementById(id);
+            const daysSpan = clock.querySelector('.days');
+            const hoursSpan = clock.querySelector('.hours');
+            const minutesSpan = clock.querySelector('.minutes');
+            const secondsSpan = clock.querySelector('.seconds');
+
+            function updateClock() {
+                const t = getTimeRemaining(endtime);
+
+                hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+                // document.getElementById("time").innerHTML = ('0' + t.hours).slice(-2) + "h "
+                // + ('0' + t.minutes).slice(-2) + "m " + ('0' + t.seconds).slice(-2) + "s ";
+
+                if (t.total <= 0) {
+                    clearInterval(timeinterval);
+                }
+            }
+
+            updateClock();
+            const timeinterval = setInterval(updateClock, 1000);
+
+            function update_data() {
+                // console.log("data added to database");
+                const t = getTimeRemaining(endtime);
+
+                var hours = ('0' + t.hours).slice(-2);
+                var minutes = ('0' + t.minutes).slice(-2);
+                // console.log(hours + " : " + minutes )
+                var time_in_minutes = parseInt(hours) * 60 + (parseInt(minutes))
+                var exam_id = $('#exam-id').val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'giveexamination' %}",
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    data: {
+                        'exam_id_timer': exam_id,
+                        'exam_in_minutes': time_in_minutes
+                    },
+                    success: function (response) {
+                        // console.log("sent data to server")
+                    }
+                });
+            }
+            const set_data = setInterval(update_data, 5000);
+        }
+
+        // const deadline = new Date(Date.parse(new Date()) + 1 * 1 * 1 * 10 * 1000);
+        // initializeClock('clockdiv', deadline);
+
+
+
+
+
+        // var exam_id = $('#exam-id').val(id);
+        // console.log("exam_id = " , id);
+        // const date = new Date();
+        // const newDate = addHours(date, 3);
+        // var countDownDate = new Date(newDate).getTime();
+        // console.log(countDownDate)
+        // var x = setInterval(function() {
+
+        // // Get today's date and time
+        // var now = new Date().getTime();
+
+        // // Find the distance between now and the count down date
+        // var distance = countDownDate - now;
+
+        // // Time calculations for days, hours, minutes and seconds
+        // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        // var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        // var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // // Output the result in an element with id="demo"
+        // document.getElementById("time").innerHTML = hours + "h "
+        // + minutes + "m " + seconds + "s ";
+
+        // // If the count down is over, write some text 
+        // if (distance < 0) {
+        //     clearInterval(x);
+        //     document.getElementById("time").innerHTML = "EXPIRED";
+        // }
+        // }, 1000);
+
+        // var y = setInterval(function() {
+
+        // // Get today's date and time
+        // var now = new Date().getTime();
+
+        // // Find the distance between now and the count down date
+        // var distance = countDownDate - now;
+
+        // // Time calculations for days, hours, minutes and seconds
+        // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        // var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        // var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        // var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // // Output the result in an element with id="demo"
+        // document.getElementById("time").innerHTML = hours + "h "
+        // + minutes + "m " + seconds + "s ";
+
+        // // If the count down is over, write some teyt 
+        // if (distance < 0) {
+        //     clearInterval(y);
+        //     document.getElementById("time").innerHTML = "EXPIRED";
+        // }
+        // $.ajax({ // create an AJAX call...
+        //     type: "POST",
+        //     url: "{% url 'giveexamination' %}",
+        //     headers: {'X-CSRFToken': '{{ csrf_token }}'},
+        //     data: {
+        //         'exam_id_timer':id,
+        //         'hours':hours,
+        //         'minutes':minutes,
+        //         'seconds':seconds
+        //     },
+        //     success: function(response) {
+        //     }
+        // });
+        // }, 60000);
+
+        $.ajax({ // create an AJAX call...
+            type: "POST",
+            url: "{% url 'giveexamination' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'exam_id': id
+            },
+            success: function (response) {
+                
+                
+
+
+
+
+                var hours = parseInt(response.hours);
+                var minutes = parseInt(response.minutes);
+                if (hours == 0 & minutes == 0) {
+                    let dt = new Date();
+                    dt.setHours(dt.getHours() + 3);
+                    initializeClock('clockdiv', dt);
+                }
+                else {
+                    let dt = new Date();
+                    dt.setHours(dt.getHours() + hours);
+                    dt.setMinutes(dt.getMinutes() + minutes)
+                    initializeClock('clockdiv', dt);
+                }
+
+                var data = response.data;
+                $('#exam_id_to_save').val(response.exam_id)
+                data.forEach(myFunction);
+                var count = 0
+                function myFunction(item, count) {
+                    count = count + 1;
+                    // console.log(item.type)
+                    if (item.type == "radio") {
+
+                        $('#dataform').append(`
+                    <div class="card mb-5 totalexam" id="question_row_${count}">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="visibility:hidden;" class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="visibility:hidden;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count}">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options">
+                                        <div class="form-check mb-3 ms-3">
+                                            
+                                            <input class="form-check-input" type="radio" name="question_option_${count}"  id="question_${count}_option_1" value="option1" >
+                                            <label class="form-check-label" for="question_${count}_option_1">
+                                            ${item.option1}
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_${count}" id="question_${count}_option_2" value="option2">
+                                            <label class="form-check-label" for="question_${count}_option_2">
+                                            ${item.option2}
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_${count}" id="question_${count}_option_3" value="option3" >
+                                            <label class="form-check-label" for="question_${count}_option_3">
+                                            ${item.option3}
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_${count}" id="question_${count}_option_4" value="option4" >
+                                            <label class="form-check-label" for="question_${count}_option_4">
+                                            ${item.option4}
+                                            </label>
+                                        </div>
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                `);
+
+                    }
+                    else if (item.type == "mcq(single)") {
+                       
+                        
+                        $('#dataform').append(`
+                        <div class="card mb-5 totalexam" id="question_row_${count}">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="question">
+                                        <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="visibility:visible;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="visibility:hidden;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                    </div>
+                                </div>       
+                            </div>
+                            <div class="card-body_${count}">
+                                <div class="uploaded-image_${count}">
+                                    
+                                </div>
+                                <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                    <div class="row">
+                                        <div class="options">
+                                            
+                                            <div class="form-check mb-3 ms-3">
+                                                <input class="form-check-input" type="checkbox" id="question_${count}_option_1" name="question_option_${count}" onclick="onlyOne(this)"  value="option1">
+                                                <label class="form-check-label">${item.option1}</label>
+                                            </div> 
+                                            <div class="form-check mb-3 ms-3">
+                                                <input class="form-check-input" type="checkbox" id="question_${count}_option_2" name="question_option_${count}" onclick="onlyOne(this)" value="option2">
+                                                <label class="form-check-label">${item.option2}</label>
+                                            </div> 
+                                            <div class="form-check mb-3 ms-3">
+                                                <input class="form-check-input" type="checkbox" id="question_${count}_option_3" name="question_option_${count}" onclick="onlyOne(this)" value="option3">
+                                                <label class="form-check-label">${item.option3}</label>
+                                            </div> 
+                                            <div class="form-check mb-3 ms-3">
+                                                <input class="form-check-input" type="checkbox" id="question_${count}_option_4" name="question_option_${count}" onclick="onlyOne(this)" value="option4">
+                                                <label class="form-check-label">${item.option4}</label>
+                                            </div> 
+                                            
+                                            
+                                        </div>          
+                                    </div>           
+                            </div>
+                            </div>
+                        </div>
+                        `);
+                        console.log(item.submitted_answer , count);
+                        if(item.submitted_answer == "option1"){
+                            $(`#question_${count}_option_1`).prop('checked', true);
+                        }
+                        else if(item.submitted_answer == "option2"){
+                            $(`#question_${count}_option_2`).prop('checked', true);
+                        }
+                        else if(item.submitted_answer == "option3"){
+                            $(`#question_${count}_option_3`).prop('checked', true);
+                        }
+                        else if(item.submitted_answer == "option4"){                            
+                            $(`#question_${count}_option_4`).prop('checked', true);
+                        }
+                    }
+                    else if (item.type == "mcq(multiple)") {
+                        $('#dataform').append(`
+                    <div class="card mb-5 totalexam" id="question_row_${count}">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="visibility:hidden;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="visibility:hidden;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count}">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options">
+                                        
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_1" name="question_option_${count}"   value="option1">
+                                            <label class="form-check-label">${item.option1}</label>
+                                        </div> 
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_2" name="question_option_${count}"  value="option2">
+                                            <label class="form-check-label">${item.option2}</label>
+                                        </div> 
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_3" name="question_option_${count}"  value="option3">
+                                            <label class="form-check-label">${item.option3}</label>
+                                        </div> 
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="checkbox" id="question_${count}_option_4" name="question_option_${count}"  value="option4">
+                                            <label class="form-check-label">${item.option4}</label>
+                                        </div> 
+                                        
+                                        
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                `);
+                    }
+                    else if (item.type == "shortanswer") {
+                        $('#dataform').append(`
+                    <div class="card mb-5 totalexam" id="question_row_${count}">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="visibility:hidden;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="visibility:hidden;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count}">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count}" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options">
+                                        
+                                        
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="question_shortanswer_${count}" name="question_shortanswer_${count}" style="height: 100px"></textarea>
+                                            <label for="floatingTextarea2">Answer</label>
+                                        </div>
+                                        
+                                        
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                `);
+                    }
+                    else if (item.type == "long_desc") {
+                        $('#dataform').append(`
+                    <div class="card mb-5 totalexam" id="question_row_${count}">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_${count}">${count} ) ${item.question}</h4><input type="text" style="visibility:hidden;"  class="form-control" id="question_id_${count}" value="${item.id}"><input type="text" style="visibility:hidden;" class="form-control" id="question_type_${count}" value="${item.type}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_${count} container">
+                            <div class="uploaded-image_${count}">
+                                
+                            </div>
+                            <div class="optionrows_question_${count} mb-3 mt-3" id="optionrows_question_${count}">
+                                <div class="row">
+                                    <div class="options">
+                                        
+                                        
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="question_shortanswer_${count}" name="question_shortanswer_${count}" style="height: 100px"></textarea>
+                                            <label for="floatingTextarea2">Answer</label>
+                                        </div>
+                                        
+                                        
+                                    </div>          
+                                </div>           
+                            </div>
+                            <div class="upload images_multiple mb-3" style="width:30%;">
+                                <input type="file" class="form-control" id="student_uploads_${count}" multiple>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                    }
+
+
+                    if (item.image != "nan") {
+                        if(item.image == null){
+                            console.log("yes null")
+                        }
+                        else{
+                            console.log(item.image);
+                            $(`.uploaded-image_${count}`).append(`
+                                <img id="frame_${count}" src="https://erp.ciisindia.in/media/${item.image}" style="height:400px;width:290px;" class="img-fluid" />
+                            `);
+                        }
+                    }
+                    $('#form').css('visibility', 'visible');
+                    $('#saveexambtn').css('visibility', 'visible');
+                    $('#counter').val(count)
+                }
+                // var question_count = $('#counter').val();
+                // console.log(question_count/2);
+                
+                // if(question_count/2 > 10){
+                //     var second_last = question_count - 1;
+                //     var third_last = question_count - 2;
+                //     for(var i = 1; i <= 10; i++) {
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary" id="pagination_${i}">${i}</button>
+                //     `);
+                //     }
+                //     $('.pagination').append(`
+                //         <p style="margin-right:5px;">...</p>
+                //     `);
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary">${third_last}</button>
+                //     `);
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary">${second_last}</button>
+                //     `);
+                //     $('.pagination').append(`
+                //         <button class="btn btn-secondary">${question_count}</button>
+                //     `);
+                // }
+                
+                
+                console.log("count :",$('#counter').val())
+                var total_questions = $('#counter').val();
+                var numItems = $('.totalexam').length;
+                console.log("number of questions :",numItems)
+                for (var i = 2; i <= total_questions; i++) {
+                    $(`#question_row_${i}`).css('display', 'none');
+                }
+
+
+            }
+        });
+
+
+
+
+
+
+        $('#start_test_card').css('display', 'none');
+
+    }
+
+    function next_question() {
+        var abc  = document.querySelector(`#student_uploads_${parseInt($('#current_row').val())}`);
+        var current_row_data = parseInt($('#current_row').val());
+        // uploaded_data = $(`#student_uploads_${parseInt($('#current_row').val())}`).get(0).files
+        // console.log("student upload :",uploaded_data)
+        $('#current_row').val(parseInt($('#current_row').val()) + 1)
+        if( parseInt($('#current_row').val()) > 1 ){
+            $('#first_btn').css('display', 'block');
+        }
+        exam_id = $('#exam-id').val();
+        // console.log("exam_id = ", exam_id);
+        // var numItems = $('.totalexam').length;
+        // console.log("Total Questions   : ", numItems);
+        var non_hidden = 0;
+        var numItems = $('#counter').val();
+        console.log("count of questions :",numItems)
+        for (var i = 1; i <= numItems; i++) {
+            const element = document.querySelector(`#question_row_${i}`);
+            if(element){
+                console.log(element.style.display)
+                if (element.style.display != "none") {
+                    // console.log(i)
+                    var non_hidden = i
+                    $(`#question_row_${i}`).css('display', 'none');
+                    var x = $("form").serializeArray();
+                    // console.log(x)
+                    temp = []
+                    var data_type = $(`#question_type_${i}`).val();
+                    // console.log("data_type: ", data_type)
+                    var data = x.filter(a => a.name == `question_option_${i}`)
+                    // console.log("data: ", data)
+
+                    // console.log(data);
+                    // data.forEach((a)=>console.log(a.value));
+                    // // console.log(data?.value)
+                    var question = $(`#question_${i}`).text();
+                    if(abc != null){
+                        console.log(current_row_data,": present");
+                        var uploaded_data = $(`#student_uploads_${current_row_data}`).get(0).files
+                        console.log("student upload :",uploaded_data)
+                    }
+                    else{
+                        console.log(current_row_data,": absent")
+                        var uploaded_data = "none"
+                    }
+                    console.log("uploaded data :",uploaded_data)
+                    var quesArr = {
+                        "question_no": i,
+                        "question_id": $(`#question_id_${i}`).val(),
+                        "question_type": $(`#question_type_${i}`).val(),
+                        "question": question,
+                        "value": ""
+                    }
+                    if(data.length >0){
+                        data.forEach(a => {
+                        if (quesArr["value"] !== "") {
+                            quesArr["value"] = quesArr["value"] + ","  + a.value
+                        }else{
+                            quesArr["value"] = a.value
+                        }
+                    })
+                    }else{
+                        quesArr["value"] =x.filter(a=> a.name == `question_shortanswer_${i}`).length > 0 ? x.filter(a=> a.name == `question_shortanswer_${i}`)[0].value : ""
+                    }
+                    console.log("data sent to server :",quesArr);
+                    // console.log(quesArr);
+                    // $.ajax({
+                    //     type: "POST",
+                    //     url: "{% url 'giveexamination' %}",
+                    //     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    //     data: {
+                            // 'save_question_no':quesArr.question_no,
+                            // 'save_question_id':quesArr.question_id,
+                            // 'save_question_type':quesArr.question_type,
+                            // 'save_question':quesArr.question,
+                            // 'save_value':quesArr.value
+                            
+                    //     },
+                    //     success: function (response) {
+                    //         // console.log("data sent to server")
+                    //     }
+                    // });
+                    var data = new FormData();
+                    data.append("save_question_no", quesArr.question_no);
+                    data.append("save_question_id", quesArr.question_id);
+                    data.append("save_question_type", quesArr.question_type);
+                    data.append("save_question", quesArr.question);
+                    data.append("save_value", quesArr.value);
+                    if(uploaded_data == "none"){
+                        console.log("no file hence not uploaded")
+                    }
+                    else{
+                        console.log("uploaded file to views")
+                        $.each($(`#student_uploads_${current_row_data}`)[0].files, function(i, file) {
+                            data.append("uploaded_files", file);
+                        });
+                    }
+                    
+                    
+                    data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+                    $.ajax({
+                        method: "POST",
+                        url: "{% url 'giveexamination' %}",
+                        processData: false,
+                        contentType: false,
+                        mimeType: "multipart/form-data",
+                        data: data,
+                        success: function (res) {
+                            console.log("data")
+                        }
+                    });
+                }
+            }
+        }
+        var next_element = parseInt(non_hidden) + 1;
+        if ($(`#question_row_${next_element}`).length > 0) {
+
+            $(`#question_row_${next_element}`).css('display', 'block');
+        }
+        else {
+            // $(`#question_row_1`).css('display','block');
+            $('#next_btn_container').empty();
+            $('#next_btn_container').append(`
+        <button class="btn btn-primary" id="saveexambtn" style="visibility:visible;" onclick="saveExam($('#counter').val(),$('#exam_id_to_save').val())">Submit</button>
+        `);
+        }
+    }
+
+    function previous_question() {
+        var current_row = parseInt($('#current_row').val());
+        if(current_row == 1) {
+            console.log("count :",$('#counter').val())
+            $('#current_row').val(parseInt($('#counter').val()))
+        }
+        else{
+            $('#current_row').val(parseInt($('#current_row').val()) - 1)
+        }
+        var numItems = $('.totalexam').length;
+        // console.log("numItems   : " , numItems);
+        var non_hidden = 0;
+        for (var i = numItems; i >= 1; i--) {
+            // console.log(i)
+            const element = document.querySelector(`#question_row_${i}`);
+            // console.log(element.style.display)
+            if (element.style.display != "none") {
+                // console.log(i)
+                var non_hidden = i
+                $(`#question_row_${i}`).css('display', 'none');
+            }
+        }
+        var next_element = parseInt(non_hidden) - 1;
+        if ($(`#question_row_${next_element}`).length > 0) {
+            // console.log(`$(#question_row_${next_element})`)
+            $(`#question_row_${next_element}`).css('display', 'block');
+        }
+        else {
+            console.log("yes :", numItems)
+            $(`#question_row_${numItems}`).css('display', 'block');
+            $('#next_btn_container').empty();
+            $('#next_btn_container').append(`
+        <button class="btn btn-secondary" id="next_btn" onclick="next_question()">Next</button>
+        `);
+        }
+    }
+
+    function first_question() {
+        var counter = parseInt($('#counter').val());
+        console.log("counter :",counter)
+        for(var i = 1; i <= counter; i++){
+            $(`#question_row_${i}`).css('display', 'none');
+        }
+        $(`#question_row_${1}`).css('display', 'block');
+        $('#current_row').val(1);
+        $('#first_btn').css('display', 'none');
+        $('#last_btn').css('display', 'block');
+    }
+
+    function last_question(){
+        var counter = parseInt($('#counter').val());
+        console.log("counter :",counter)
+        for(var i = 1; i < counter; i++){
+            $(`#question_row_${i}`).css('display', 'none');
+        }
+        $(`#question_row_${counter}`).css('display', 'block');
+        $('#current_row').val(counter)
+        $('#last_btn').css('display', 'none');
+        $('#first_btn').css('display', 'block');
+    }
+
+    $("#current_row").val();
+
+    function onlyOne(checkbox) {
+        var checkbox_name = checkbox.name
+        var checkboxes = document.getElementsByName(checkbox_name)
+        checkboxes.forEach((item) => {
+            if (item !== checkbox) item.checked = false
+        })
+    }
+
+
+
+    function saveExam(count, exam_id) {
+        console.log(count, exam_id)
+        console.log("total question count = ", count);
+        var questions_list = []
+        var x = $("form").serializeArray();
+        // console.log("form =",x)
+        $.each(x, function (i, field) {
+            if (field.name.includes("question_option_")) {
+                var question_no = field.name.replace("question_option_", "")
+            }
+            else {
+                var question_no = field.name.replace("question_shortanswer_", "")
+            }
+            var question = $(`#question_${question_no}`).text();
+            
+            var quesArr = {
+                "question_no": question_no,
+                "question_id": $(`#question_id_${question_no}`).val(),
+                "question_type": $(`#question_type_${question_no}`).val(),
+                "question": question,
+                "value": field.value,
+                
+
+            
+            }
+            if (question_no == "csrfmiddlewaretoken") {
+                // console.log("csrfmiddlewaretoken")
+            }
+            else {
+                // console.log(quesArr)
+                questions_list.push(quesArr);
+            }
+
+        });
+        var testArr = [];
+        function AddData(data) {
+            // console.log(data);
+            var found = false;
+            for (index in testArr) {
+                if (testArr[index].question_no == data.question_no) {
+                    found = true;
+                    console.log("data found :", data);
+                    testArr[index].value = testArr[index].value + ',' + data.value;
+                    break;
+                }
+            }
+            if (!found) {
+                testArr.push(data);
+                console.log("data not found");
+            }
+        }
+        questions_list.forEach(myFunction);
+        function myFunction(item) {
+            AddData(item)
+        }
+        console.log(testArr)
+        console.log("array length : =", testArr.length)
+        $.ajax({
+            type: "POST",
+            url: "{% url 'giveexamination' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'examdata': testArr,
+                'count': testArr.length,
+                'result_exam_id': exam_id
+            },
+            success: function (response) {
+                console.log("data sent to server", response)
+                if(response.added == "yes"){
+                    window.location = "{% url 'examsubmitted' %}"
+                }
+            }
+        });
+
+
+
+    }
+
+
+
+
+</script>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

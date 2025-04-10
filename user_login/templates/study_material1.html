@@ -1,0 +1,611 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>OVERVIEW - CIIS</title>
+
+<style>
+    
+    .large_buttons{
+      height:100px;
+    }
+    
+  </style>
+
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_student %}
+<div class="pages-body-bg-color py-5">
+    <section class="my-course mx-3">
+        <div class="modal_output">
+  
+        </div>
+        <div class="row">
+          
+          <div class="col-sm-6 col-md-4 col-xl-3  offset-xl-1">
+          
+              <button class="w-100 blue-button user-button" data-bs-toggle="modal" data-bs-target="#BED_1">BED Study Material 1</button>
+           
+          </div>
+          <div class="col-sm-6 pt-3 pt-sm-0 col-md-4 col-xl-3">
+           
+              <button class="w-100 yellow-button user-button" data-bs-toggle="modal" data-bs-target="#BED_2">BED Study Material 2</button>
+          
+          </div>
+          <div class="col-sm-6 pt-3 pt-md-0 offset-sm-3 offset-md-0 col-md-4 col-xl-3">
+           
+              <button class="w-100 green-button user-button" data-bs-toggle="modal" data-bs-target="#MA_Psychology">MA Psychology</button>
+           
+          </div>
+          <!-- <div class="col-xl-3 col-lg-6">
+            <div class="card mb-3">
+              <button class="btn btn-success large_buttons" onclick="getsyllabus()">Syllabus</button>
+            </div>
+          </div> -->
+          <!-- <div class="col-xl-3 col-lg-6">
+            <div class="card mb-3">
+              <button class="btn btn-primary large_buttons" onclick="getexamination()">Examination</button>
+            </div>
+          </div> -->
+          
+        </div>
+        <div class="row">
+          
+          
+        </div>
+    </section>
+</div>
+<div class="study-material">
+  <div class="modal fade" id="BED_1" tabindex="-1" aria-labelledby="BED_1Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="BED_1Label">BED Study Material 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+            <table class="format-table">
+               <thead class="bottom-border-grey">
+                <tr class="line-height-35 bottom-border-grey">
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 ps-5 pe-2 text-left">#</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2" >Name</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="line-height-35 bottom-border-grey">
+                  <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">1</th>
+                  <td class="font-14 text-extragray text-uppercase px-2  ">ASSESSMENT FOR LEARNING</td>
+                  <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/ASSESSMENT FOR LEARNING.pdf" target="_blank">View</a></td>
+                </tr>
+                <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">2</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">BED SYLLABUS</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/BED SYLLABUS.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">3</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">CHILDHOOD AND GROWING UP</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/CHILDHOOD AND GROWING UP.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">4</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">CONTEMPORARY INDIA AND EDUCATION</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/CONTEMPORARY INDIA AND EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">5</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">DRAMA AND ARTS IN EDUCATION</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/DRAMA AND ARTS IN EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">6</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">KNOWLEDGE AND CURRICULUM</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/KNOWLEDGE AND CURRICULUM.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">7</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">LEARNING AND TEACHING</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/LEARNING AND TEACHING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">8</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">READING AND REFLECTING</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/READING AND REFLECTING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">9</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">UNDERSTANDING DISCIPLINE AND SCHOOL SUBJECTS</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/UNDERSTANDING DISCIPLINE AND SCHOOL SUBJECTS.pdf" target="_blank">View</a></td>
+                  </tr>
+                                
+                
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn blue-btn" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="BED_2" tabindex="-1" aria-labelledby="BED_1Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="BED_1Label">BED Study Material 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+            <table class="format-table">
+               <thead class="bottom-border-grey">
+                <tr class="line-height-35 bottom-border-grey">
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 ps-5 pe-2 text-left">#</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Name</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="line-height-35 bottom-border-grey">
+                  <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">1</th>
+                  <td class="font-14 text-extragray text-uppercase px-2  ">CREATIVE AND INCLUSIVE SCHOOL</td>
+                  <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/CREATIVE AND INCLUSIVE SCHOOL.pdf" target="_blank">View</a></td>
+                </tr>
+                <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">2</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">CRITICAL UNDERSTANDING OF ICT</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/CRITICAL UNDERSTANDING OF ICT.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">3</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">EDUCATIONAL MANAGEMENT</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/EDUCATIONAL MANAGEMENT.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">4</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">ENVIRONMENTAL EDUCATION</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/ENVIRONMENTAL EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">5</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">GENDER, SCHOOL, SOCIETY</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/GENDER, SCHOOL, SOCIETY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">6</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">GUIDANCE AND COUNSELLING</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/GUIDANCE AND COUNSELLING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">7</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">LANGUAGE ACROSS THE CURRICULUM</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/LANGUAGE ACROSS THE CURRICULUM.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">8</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">PEACE EDUCATION</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/PEACE EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">9</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">PHYSICAL EDUCATION & YOGA</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/PHYSICAL EDUCATION & YOGA.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">10</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">UNDERSTANDING THE SELF</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/UNDERSTANDING THE SELF.pdf" target="_blank">View</a></td>
+                  </tr>
+                                  
+                
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn blue-btn" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="MA_Psychology" tabindex="-1" aria-labelledby="BED_1Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="BED_1Label">BED Study Material 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="" id="syllabus_modal_body_container">
+            <table class="format-table">
+              <thead class="bottom-border-grey">
+                <tr class="line-height-35 bottom-border-grey">
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 ps-5 pe-2 text-left">#</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Name</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="line-height-35 bottom-border-grey">
+                  <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">1</th>
+                  <td class="font-14 text-extragray text-uppercase px-2  ">ADVANCED SOCIAL PSYCHOLOGY</td>
+                  <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/ADVANCED SOCIAL PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                </tr>
+                <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">2</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">COGNITIVE PSYCHOLOGY, LEARNING MEMORY</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/COGNITIVE PSYCHOLOGY, LEARNING MEMORY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">3</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">LIFESPAN PSYCHOLOGY</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/LIFESPAN PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">4</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">MA Psychology syllabus</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/MA Psychology syllabus.xlsx" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">5</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">PERSONALITY THEORIES AND ASSESSMENT</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/PERSONALITY THEORIES AND ASSESSMENT.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">6</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">PRACTICAL EXPERIMENTAL PSYCHOLOGY AND PSYCHOLOGICAL TESTING</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/PRACTICAL EXPERIMENTAL PSYCHOLOGY AND PSYCHOLOGICAL TESTING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">7</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">RESEARCH METHODS IN PSYCHOLOGY</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/RESEARCH METHODS IN PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">8</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">STATISTICS IN PSYCHOLOGY</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/STATISTICS IN PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                  </tr>
+
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn blue-btn" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+{% endblock body %}
+
+{% block script %}
+
+{% endblock script %}
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+<title>OVERVIEW - CIIS</title>
+
+<style>
+    
+    .large_buttons{
+      height:100px;
+    }
+    
+  </style>
+
+{% endblock head %}
+
+{% block body %}
+{% if request.user.is_student %}
+<div class="pages-body-bg-color py-5">
+    <section class="my-course mx-3">
+        <div class="modal_output">
+  
+        </div>
+        <div class="row">
+          
+          <div class="col-sm-6 col-md-4 col-xl-3  offset-xl-1">
+          
+              <button class="w-100 blue-button user-button" data-bs-toggle="modal" data-bs-target="#BED_1">BED Study Material 1</button>
+           
+          </div>
+          <div class="col-sm-6 pt-3 pt-sm-0 col-md-4 col-xl-3">
+           
+              <button class="w-100 yellow-button user-button" data-bs-toggle="modal" data-bs-target="#BED_2">BED Study Material 2</button>
+          
+          </div>
+          <div class="col-sm-6 pt-3 pt-md-0 offset-sm-3 offset-md-0 col-md-4 col-xl-3">
+           
+              <button class="w-100 green-button user-button" data-bs-toggle="modal" data-bs-target="#MA_Psychology">MA Psychology</button>
+           
+          </div>
+          <!-- <div class="col-xl-3 col-lg-6">
+            <div class="card mb-3">
+              <button class="btn btn-success large_buttons" onclick="getsyllabus()">Syllabus</button>
+            </div>
+          </div> -->
+          <!-- <div class="col-xl-3 col-lg-6">
+            <div class="card mb-3">
+              <button class="btn btn-primary large_buttons" onclick="getexamination()">Examination</button>
+            </div>
+          </div> -->
+          
+        </div>
+        <div class="row">
+          
+          
+        </div>
+    </section>
+</div>
+<div class="study-material">
+  <div class="modal fade" id="BED_1" tabindex="-1" aria-labelledby="BED_1Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="BED_1Label">BED Study Material 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+            <table class="format-table">
+               <thead class="bottom-border-grey">
+                <tr class="line-height-35 bottom-border-grey">
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 ps-5 pe-2 text-left">#</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2" >Name</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="line-height-35 bottom-border-grey">
+                  <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">1</th>
+                  <td class="font-14 text-extragray text-uppercase px-2  ">ASSESSMENT FOR LEARNING</td>
+                  <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/ASSESSMENT FOR LEARNING.pdf" target="_blank">View</a></td>
+                </tr>
+                <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">2</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">BED SYLLABUS</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/BED SYLLABUS.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">3</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">CHILDHOOD AND GROWING UP</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/CHILDHOOD AND GROWING UP.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">4</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">CONTEMPORARY INDIA AND EDUCATION</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/CONTEMPORARY INDIA AND EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">5</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">DRAMA AND ARTS IN EDUCATION</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/DRAMA AND ARTS IN EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">6</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">KNOWLEDGE AND CURRICULUM</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/KNOWLEDGE AND CURRICULUM.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">7</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">LEARNING AND TEACHING</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/LEARNING AND TEACHING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">8</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">READING AND REFLECTING</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/READING AND REFLECTING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">9</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">UNDERSTANDING DISCIPLINE AND SCHOOL SUBJECTS</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material/UNDERSTANDING DISCIPLINE AND SCHOOL SUBJECTS.pdf" target="_blank">View</a></td>
+                  </tr>
+                                
+                
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn blue-btn" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="BED_2" tabindex="-1" aria-labelledby="BED_1Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="BED_1Label">BED Study Material 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container" id="syllabus_modal_body_container">
+            <table class="format-table">
+               <thead class="bottom-border-grey">
+                <tr class="line-height-35 bottom-border-grey">
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 ps-5 pe-2 text-left">#</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Name</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="line-height-35 bottom-border-grey">
+                  <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">1</th>
+                  <td class="font-14 text-extragray text-uppercase px-2  ">CREATIVE AND INCLUSIVE SCHOOL</td>
+                  <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/CREATIVE AND INCLUSIVE SCHOOL.pdf" target="_blank">View</a></td>
+                </tr>
+                <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">2</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">CRITICAL UNDERSTANDING OF ICT</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/CRITICAL UNDERSTANDING OF ICT.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">3</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">EDUCATIONAL MANAGEMENT</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/EDUCATIONAL MANAGEMENT.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">4</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">ENVIRONMENTAL EDUCATION</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/ENVIRONMENTAL EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">5</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">GENDER, SCHOOL, SOCIETY</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/GENDER, SCHOOL, SOCIETY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">6</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">GUIDANCE AND COUNSELLING</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/GUIDANCE AND COUNSELLING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">7</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">LANGUAGE ACROSS THE CURRICULUM</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/LANGUAGE ACROSS THE CURRICULUM.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">8</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">PEACE EDUCATION</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/PEACE EDUCATION.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">9</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">PHYSICAL EDUCATION & YOGA</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/PHYSICAL EDUCATION & YOGA.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">10</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">UNDERSTANDING THE SELF</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/b-ed-study-material2/UNDERSTANDING THE SELF.pdf" target="_blank">View</a></td>
+                  </tr>
+                                  
+                
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn blue-btn" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="MA_Psychology" tabindex="-1" aria-labelledby="BED_1Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="BED_1Label">BED Study Material 1</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="" id="syllabus_modal_body_container">
+            <table class="format-table">
+              <thead class="bottom-border-grey">
+                <tr class="line-height-35 bottom-border-grey">
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 ps-5 pe-2 text-left">#</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">Name</th>
+                  <th scope="col" class="font-14 font-bold text-darkgray width-10 px-2">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="line-height-35 bottom-border-grey">
+                  <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">1</th>
+                  <td class="font-14 text-extragray text-uppercase px-2  ">ADVANCED SOCIAL PSYCHOLOGY</td>
+                  <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/ADVANCED SOCIAL PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                </tr>
+                <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">2</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">COGNITIVE PSYCHOLOGY, LEARNING MEMORY</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/COGNITIVE PSYCHOLOGY, LEARNING MEMORY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">3</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">LIFESPAN PSYCHOLOGY</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/LIFESPAN PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">4</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">MA Psychology syllabus</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/MA Psychology syllabus.xlsx" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">5</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">PERSONALITY THEORIES AND ASSESSMENT</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/PERSONALITY THEORIES AND ASSESSMENT.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">6</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">PRACTICAL EXPERIMENTAL PSYCHOLOGY AND PSYCHOLOGICAL TESTING</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/PRACTICAL EXPERIMENTAL PSYCHOLOGY AND PSYCHOLOGICAL TESTING.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">7</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">RESEARCH METHODS IN PSYCHOLOGY</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/RESEARCH METHODS IN PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                  </tr>
+                  <tr class="line-height-35 bottom-border-grey">
+                    <th scope="row" class="font-14 font-bold text-light-yellow light-yellow-circle user-set-posn px-2">8</th>
+                    <td class="font-14 text-extragray text-uppercase px-2  ">STATISTICS IN PSYCHOLOGY</td>
+                    <td class="font-14 text-extragray text-uppercase px-2  "><a href="/media/studentsyllabus/ma-psychology-study-material/STATISTICS IN PSYCHOLOGY.pdf" target="_blank">View</a></td>
+                  </tr>
+
+              </tbody>
+            </table>
+  
+            
+  
+  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn blue-btn" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+{% endblock body %}
+
+{% block script %}
+
+{% endblock script %}
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049

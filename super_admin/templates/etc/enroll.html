@@ -1,0 +1,1982 @@
+<<<<<<< HEAD
+{% extends 'admin.html' %}
+
+{% block head %}
+<style>
+  main {
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+
+  html {
+    height: -webkit-fill-available;
+  }
+
+  main {
+    display: flex;
+    flex-wrap: nowrap;
+    height: -webkit-fill-available;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .b-example-divider {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  }
+
+  .bi {
+    vertical-align: -.125em;
+    pointer-events: none;
+    fill: currentColor;
+  }
+
+  .dropdown-toggle {
+    outline: 0;
+  }
+
+  .nav-flush .nav-link {
+    border-radius: 0;
+  }
+
+  .btn-toggle {
+    display: inline-flex;
+    align-items: center;
+    padding: .25rem .5rem;
+    font-weight: 600;
+    color: rgba(0, 0, 0, .65);
+    background-color: transparent;
+    border: 0;
+  }
+
+  .btn-toggle:hover,
+  .btn-toggle:focus {
+    color: rgba(0, 0, 0, .85);
+    background-color: #d2f4ea;
+  }
+
+  .btn-toggle::before {
+    width: 1.25em;
+    line-height: 0;
+    content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+    transition: transform .35s ease;
+    transform-origin: .5em 50%;
+  }
+
+  .btn-toggle[aria-expanded="true"] {
+    color: rgba(0, 0, 0, .85);
+  }
+
+  .btn-toggle[aria-expanded="true"]::before {
+    transform: rotate(90deg);
+  }
+
+  .btn-toggle-nav a {
+    display: inline-flex;
+    padding: .1875rem .5rem;
+    margin-top: .125rem;
+    margin-left: 1.25rem;
+    text-decoration: none;
+  }
+
+  .btn-toggle-nav a:hover,
+  .btn-toggle-nav a:focus {
+    background-color: #d2f4ea;
+  }
+
+
+
+  .fw-semibold {
+    font-weight: 600;
+  }
+
+  .lh-tight {
+    line-height: 1.25;
+  }
+
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+  }
+
+  body {
+    min-height: 100vh
+  }
+
+  .wrapper {
+    max-width: 1200px;
+    margin: 0px auto;
+    padding: 30px 45px;
+    box-shadow: 5px 25px 35px #3535356b
+  }
+  
+</style>
+{% endblock head %}
+
+
+{% block nav %}
+<header>
+  <!-- Sidebar -->
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+    <div class="position-sticky">
+      <div class="list-group list-group-flush mx-3 mt-4">
+        <a href="{% url 'overview' %}" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+        </a>
+
+
+        <ul class="list-unstyled ps-0">
+          <li class="">
+            <button class="list-group-item list-group-item-action py-2 ripple active" data-bs-toggle="collapse"
+              data-bs-target="#dashboard-collapse" aria-expanded="true">
+              <i class="fas fa-users-cog fa-fw me-3"></i><span>Stud Management</span>
+            </button>
+            <div class="collapse show" id="dashboard-collapse">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Student Registration</a>
+                </li>
+                <li><a href="{% url 'enroll' %}" class="link-dark rounded">Enroll Student</a></li>
+                <li><a href="{% url 'enroll_offline' %}" class="link-dark rounded">Enroll Student Offline</a></li>
+                <li><a href="{% url 'additionaldetail' %}" class="link-dark rounded">Additional Details</a></li>
+                <li><a href="{% url 'advancesearch' %}" class="link-dark rounded">Advanced Search</a></li>
+                <li><a href="{% url 'addfees' %}" class="link-dark rounded">Add Student Fee</a></li>
+                <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Pending Student Verification</a></li>
+                <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Registered Student</a></li>
+                <li><a href="#" class="link-dark rounded">Passout Student</a></li>
+                <li><a href="{% url 'registrationcash' %}" class="link-dark rounded">Re-Registration Through Cash Challan</a></li>
+                <li><a href="#" class="link-dark rounded">Re-Registration Through RTGS/NEFT</a></li>
+                <li><a href="#" class="link-dark rounded">Enroll Student Cash/RTGS/NEFT</a></li>
+                <li><a href="#" class="link-dark rounded">View CASH/RTGS/NEFT</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <ul class="list-unstyled ps-0">
+          <li class="">
+            <button class="list-group-item list-group-item-action py-2 ripple active" data-bs-toggle="collapse"
+              data-bs-target="#course-collapse" aria-expanded="true">
+              <i class="fas fa-users-cog fa-fw me-3"></i><span>My Course/Subject</span>
+            </button>
+            <div class="collapse " id="course-collapse">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <li><a href="{% url 'addcourse' %}" class="link-dark rounded">My Course</a></li>
+                <li><a href="{% url 'addstream' %}" class="link-dark rounded">My Subject</a></li>
+                <li><a href="#" class="link-dark rounded">Add Center Subjects</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+
+
+
+
+
+
+        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+          class="fas fa-sign-out-alt fa-fw me-3"></i><span>Logout</span></a>
+
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+
+  <!-- Navbar -->
+  <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+            aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Brand -->
+        <a class="navbar-brand" href="#">
+            <img src="" height="25" alt="" loading="lazy" />
+        </a>
+        <!-- Search form -->
+        <form class="d-none d-md-flex input-group w-auto my-auto">
+            <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                style="min-width: 225px" />
+            <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+        </form>
+
+        <!-- Right links -->
+        <ul class="navbar-nav ms-auto d-flex flex-row">
+            
+
+            <li class="nav-item dropdown">
+                <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </li>
+
+           
+
+            <!-- Avatar -->
+            <li class="nav-item dropdown">
+               
+                <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                        height="22" alt="" loading="lazy" />
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#">My profile</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- Container wrapper -->
+</nav>
+  <!-- Navbar -->
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<div class="container">
+  <div class="form">
+    <div class="header-tag">
+      <h3>Enter Enrollment ID</h3>
+    </div>
+    <form action="" method="POST" id="enrollform">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="mb-3">
+            <label for="enroll_id" class="form-label">Enroll ID</label>
+            <input type="text" name="enrollid" class="form-control" id="enroll_id" style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <button type="submit" class="btn btn-primary" style="margin-top:20px;">Search</button>
+        </div>
+        <div class="col-sm-5">
+
+          <h3 id="notfound" style="color:green;margin-top:20px ;"></h3>
+
+        </div>
+      </div>
+    </form>
+
+    <div id="hiddendata" style="visibility:hidden;">
+      <hr>
+
+      <div class="main-form">
+
+
+        <div class="header-tag">
+          <h1>Personal Details</h1>
+        </div>
+        <!--- firstname middlename lastname dob-->
+        <div class="row">
+          <div class="col-sm-5 mb-3">
+            <label for="university" class="form-label">University</label>
+              <select class="form-select" id="university" name="university" aria-label="Default select example"
+                style="margin-top: -10px;">
+                
+                
+
+              </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="first_name" class="form-label">First Name</label>
+              <input type="text" name="firstname" class="form-control" id="first_name" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="middle_name" class="form-label">Middle Name</label>
+              <input type="text" name="middlename" class="form-control" id="middle_name" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="last_name" class="form-label">Last Name</label>
+              <input type="text" name="lastname" class="form-control" id="last_name" style="margin-top: -10px;">
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="dateofbirth" class="form-label">Date of Birth</label>
+              <input type="date" name="dob" class="form-control" id="dateofbirth" style="margin-top: -10px;">
+            </div>
+          </div>
+        </div>
+        <!--- fathername mothername email mobile-->
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="fathers_name" class="form-label">Father's Name</label>
+              <input type="text" name="fathername" class="form-control" id="fathers_name" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="mothers_name" class="form-label">Mother's Name</label>
+              <input type="text" name="mothername" class="form-control" id="mothers_name" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-control" id="email" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="mobile" class="form-label">Mobile Number</label>
+              <input type="text" name="mobile" class="form-control" id="mobile" style="margin-top: -10px;">
+            </div>
+          </div>
+
+        </div>
+        <!--- gender category ID-type ID-number-->
+        <div class="row">
+          <div class="col-sm-3">
+            <label for="gender" class="form-label">Gender</label>
+            <select class="form-select" name="gender" id="gender" aria-label="Default select example"
+              style="margin-top: -10px;">
+              <option selected>Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="NA">NA</option>
+            </select>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="category" class="form-label">Category</label>
+              <select class="form-select" id="category" name="category" aria-label="Default select example"
+                style="margin-top: -10px;">
+                <option selected>Select</option>
+                <option value="General(Open)">General(Open)</option>
+                <option value="Other Backward Class(OBC)">Other Backward Class(OBC)</option>
+                <option value="Scheduled Cast(SC)">Scheduled Cast(SC)</option>
+                <option value="Scheduled Tribe(ST)">Scheduled Tribe(ST)</option>
+
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="identity_type" class="form-label">Identity Proof</label>
+              <select class="form-select" name="idtype" id="identity_type" aria-label="Default select example"
+                style="margin-top: -10px;">
+                <option selected>Select ID Type</option>
+                <option value="Aadhar Card">Aadhar Card</option>
+                <option value="Pan Card">Pan Card</option>
+                <option value="Voter ID">Voter ID</option>
+                <option value="Driving License">Driving License</option>
+                <option value="Passport">Passport</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="identity_no" class="form-label">ID Number</label>
+              <input type="number" name="idnumber" maxlength="9999999999999999" max="9999999999999999"
+                class="form-control" id="identity_no" style="margin-top: -10px;">
+            </div>
+          </div>
+
+        </div>
+        <!--- address nationality-->
+        <div class="row">
+          <div class="col-sm-9">
+            <div class="mb-3">
+              <label for="address" class="form-label">Current Address</label>
+              <input type="text" name="address" class="form-control" id="address" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="nationality" class="form-label">Nationality</label>
+              <input type="text" name="nationality" class="form-control" id="nationality" style="margin-top: -10px;">
+            </div>
+          </div>
+        </div>
+        <!--- country state city pincode -->
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="country" class="form-label">Country</label>
+              <input type="text" name="country" class="form-control" id="country" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="state" class="form-label">State</label>
+              <input type="text" name="state" class="form-control" id="state" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="city" class="form-label">City</label>
+              <input type="text" name="city" class="form-control" id="city" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="Pincode" class="form-label">Pincode</label>
+              <input type="number" name="pincode" class="form-control" id="Pincode" style="margin-top: -10px;">
+            </div>
+          </div>
+
+        </div>
+        <div class="header-tag">
+          <h1>Qualification</h1>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Exam</th>
+              <th scope="col">Year of Passing</th>
+              <th scope="col">Board/University</th>
+              <th scope="col">Percentage(%)</th>
+              <th scope="col">Upload Document <span style="color:red;font-size: 10px;">only PDF/JPG</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Secondary/High School</th>
+              <td>
+                <select class="form-select" name="secondary_year" id="secondary_year"
+                  aria-label="Default select example" style="width:150px;">
+                  <option value='' selected>Select Year</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+
+                </select>
+              </td>
+              <td><input type="text" name="secondary_board"  id="secondary_board"></td>
+              <td><input type="text" name="secondary_percentage" id="secondary_percentage"></td>
+              <td><label for="secondary_document" style="font-size: 10px;" id="secondary_document_label">Enter Document</label><input type="file" name="secondary_document" id="secondary_document"></td>
+            </tr>
+            <tr>
+              <th>Sr. Secondary</th>
+              <td>
+                <select class="form-select" name="sr_year" id="sr_year" aria-label="Default select example">
+                  <option  value='' selected>Select Year</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+
+                </select>
+              </td>
+              <td><input type="text" name="sr_board" id="sr_board"></td>
+              <td><input type="text" name="sr_percentage" id="sr_percentage"></td>
+              <td><label for="sr_document" style="font-size: 10px;" id="sr_document_label">Enter Document</label><input type="file" name="sr_document" id="sr_document"></td>
+            </tr>
+            <tr>
+              <th>Under Graduation</th>
+              <td>
+                <select class="form-select" name="under_year" id="under_year" aria-label="Default select example">
+                  <option   value='' selected>Select Year</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+
+                </select>
+              </td>
+              <td><input type="text" name="under_board" id="under_board"></td>
+              <td><input type="text" name="under_percentage" id="under_percentage"></td>
+              <td><label for="under_document" style="font-size: 10px;" id="under_document_label">Enter Document</label><input type="file" name="under_document" id="under_document"></td>
+            </tr>
+            <tr>
+              <th>Post Graduation</th>
+              <td>
+                <select class="form-select" name="post_year" id="post_year" aria-label="Default select example">
+                  <option value=''  selected>Select Year</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+
+                </select>
+              </td>
+              <td><input type="text" name="post_board" id="post_board"></td>
+              <td><input type="text" name="post_percentage" id="post_percentage"></td>
+              <td><label for="post_document" style="font-size: 10px;" id="post_document_label">Enter Document</label><input type="file" name="post_document" id="post_document"></td>
+            </tr>
+            <tr>
+              <th>M.Phil</th>
+              <td>
+                <select class="form-select" name="mphil_year" id="mphil_year" aria-label="Default select example">
+                  <option value=''  selected>Select Year</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+
+                </select>
+              </td>
+              <td><input type="text" name="mphil_board" id="mphil_board"></td>
+              <td><input type="text" name="mphil_percentage" id="mphil_percentage"></td>
+              <td><label for="mphil_document" style="font-size: 10px;" id="mphil_document_label">Enter Document</label><input type="file" name="mphil_document" id="mphil_document"></td>
+            </tr>
+            <tr>
+              <th>Others</th>
+              <td>
+                <select class="form-select" name="other_year" id="other_year" aria-label="Default select example">
+                  <option value=''  selected>Select Year</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+
+                </select>
+              </td>
+              <td><input type="text" name="other_board" id="other_board"></td>
+              <td><input type="text" name="other_percentage" id="other_percentage"></td>
+              <td><label for="other_document" style="font-size: 10px;" id="other_document_label">Enter Document</label><input type="file" name="other_document" id="other_document"></td>
+            </tr>
+
+          </tbody>
+        </table>
+        <div class="header-tag">
+          <h1>Additional Details</h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="counselor_name" class="form-label">Counselor Name</label>
+              <input type="text" name="counselor_name" class="form-control" id="counselor_name" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="reference_name" class="form-label">Reference Name </label>
+              <input type="text" name="reference_name" class="form-control" id="reference_name" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="session" class="form-label">Session</label>
+              <select class="form-select" id="session" name="session" aria-label="Default select example"
+                style="margin-top: -10px;">
+                <option value="" selected>Select</option>
+                <option value="Winter 2021">Winter 2021</option>
+                <option value="Summer 2022">Summer 2022</option>
+                <option value="Winter 2022">Winter 2022</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="entry_mode" class="form-label">Entry Mode</label>
+              <select class="form-select" id="entry_mode" name="entry_mode" aria-label="Default select example"
+                style="margin-top: -10px;">
+                <option value="" selected>Select</option>
+                <option value="Regular">Regular</option>
+                <option value="Lateral Entry">Lateral Entry</option>
+                <option value="Credit Transfer">Credit Transfer</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <label for="old_university_enrollment_id" class="form-label">Old University Enrollment ID</label>
+            <input type="text" name="old_university_enrollment_id" class="form-control" id="old_university_enrollment_id" style="margin-top: -10px;">
+          </div>
+          <div class="col-sm-3">
+            <label for="university_enrollment_id" class="form-label">University Enrollment ID</label>
+            <input type="text" name="university_enrollment_id" class="form-control" id="university_enrollment_id" style="margin-top: -10px;">
+          </div>
+        </div>
+
+
+        <hr>
+
+        <div class="header-tag">
+          <h1>Course / Programm Details</h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <label for="course_data" class="form-label">Course</label>
+            <select class="form-select" name="course" id="course_data" aria-label="Default select example"
+              style="margin-top: -10px;">
+              <option selected>Select Course</option>
+              
+            </select>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="Stream" class="form-label">Stream</label>
+              <select class="form-select" name="Stream" id="Stream" aria-label="Default select example"
+                style="margin-top: -10px;">
+                <option selected>Select Stream</option>
+
+
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <div class="mb-3">
+                <label for="studypattern" class="form-label">Study Pattern</label>
+                <select class="form-select" name="studypattern" id="studypattern" aria-label="Default select example"
+                  style="margin-top: -10px;">
+                  <option selected>Select Study Pattern</option>
+                  
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="semyear" class="form-label">Semester/Year</label>
+              <select class="form-select" name="semyear" id="semyear" aria-label="Default select example"
+                style="margin-top: -10px;">
+                <option selected>Select Study Pattern</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+        <div class="header-tag">
+          <h1>Payment Details</h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="mb-3">
+              <label for="fees" class="form-label">Registration Fees</label>
+              <input type="text" name="fees" disabled class="form-control" id="fees" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="mb-3">
+              <label for="discount" class="form-label">Discount</label>
+              <input type="text" name="discount" class="form-control" id="discount" style="margin-top: -10px;">
+            </div>
+          </div>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="checked" id="flexCheckDefault" required>
+          <label class="form-check-label" for="flexCheckDefault">
+            Agree . Terms & Conditions
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="checked" id="enrollnextsemester" >
+          <label class="form-check-label" for="enrollnextsemester">
+            Enroll Student To Next Semester ! 
+          </label>
+        </div>
+        
+        <div class="row">
+          <div class="col-sm-4">
+
+          </div>
+          <div class="col-sm-8">
+            <button type="submit" id="submit" onclick="uploadFile();" class="btn btn-primary">Add Student</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+<script language="JavaScript">
+  document.addEventListener("wheel", function (event) {
+        if (document.activeElement.type === "number") {
+            document.activeElement.blur();
+        }
+    });
+  $(document).ready(function () {
+    $('#enrollform').submit(function () { // catch the form's submit event
+      $.ajax({ // create an AJAX call...
+        data: {
+          'enrollid': $('#enroll_id').val()
+        }, // get the form data
+        type: 'POST', // GET or POST
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'enroll' %}", // the file to call
+        success: function (response) { // on success..
+          console.log(response)
+          $('#notfound').html('')
+          $('#university').empty()
+          
+
+          if (response.gotdata != "yes") {
+            $('#notfound').html('Student Not Found ..!!')
+          }
+          if (response.gotdata == "yes") {
+            $('#hiddendata').css('visibility', 'visible')
+            $('#first_name').val(response.data.first_name)
+            $('#last_name').val(response.data.last_name)
+            $('#middle_name').val(response.data.middle_name)
+            $('#dateofbirth').val(response.data.dateofbirth)
+            $('#fathers_name').val(response.data.father_name)
+            $('#mothers_name').val(response.data.mother_name)
+            $('#email').val(response.data.email)
+            $('#mobile').val(response.data.mobile)
+            $('#gender').val(response.data.gender)
+            $('#category').val(response.data.category)
+            $('#identity_type').val(response.data.ID_type)
+            $('#identity_no').val(response.data.ID_number)
+            $('#address').val(response.data.address)
+            $('#nationality').val(response.data.nationality)
+            $('#country').val(response.data.country)
+            $('#state').val(response.data.state)
+            $('#city').val(response.data.city)
+            $('#Pincode').val(response.data.pincode)
+
+            $('#course_data').append('<option selected disabled >' + response.enroll.coursename + '</option>')
+            $('#Stream').append('<option selected disabled >' + response.enroll.stream + '</option>')
+            $('#studypattern').append('<option selected disabled >' + response.enroll.pattern + '</option>')
+            $('#semyear').append('<option selected disabled >' + response.enroll.semester + ' semester' + '</option>')
+            // $('#discount').change(function() {
+            //   console.log( "discount changed" );
+            // });
+            
+            $('#discount').on('input', function() {
+              $('#fees').val(response.enroll.total_fees)
+              var fees = $('#fees').val();
+              var discount = $('#discount').val()
+              var total = fees - discount
+              $('#fees').val(total)
+            });
+            
+
+
+          }
+
+          if (response.qualification != ''){
+            response.qualification.forEach(myFunction);
+            function myFunction(item) {
+              $('#secondary_year').val(item.secondary_year);
+                $('#secondary_board').val(item.secondary_board);
+                $('#secondary_percentage').val(item.secondary_percentage);
+                $('#secondary_document_label').html(item.secondary_document);
+                
+              
+              
+                $('#sr_year').val(item.sr_year);
+                $('#sr_board').val(item.sr_board);
+                $('#sr_percentage').val(item.sr_percentage);
+                $('#sr_document_label').html(item.sr_document);
+                
+              
+              
+                $('#under_year').val(item.under_year);
+                $('#under_board').val(item.under_board);
+                $('#under_percentage').val(item.under_percentage);
+                $('#under_document_label').html(item.under_document);
+                
+              
+              
+                $('#post_year').val(item.post_year);
+                $('#post_board').val(item.post_board);
+                $('#post_percentage').val(item.post_percentage);
+                $('#post_document_label').html(item.post_document);
+                
+              
+            
+                $('#mphil_year').val(item.mphil_year);
+                $('#mphil_board').val(item.mphil_board);
+                $('#mphil_percentage').val(item.mphil_percentage);
+                $('#mphil_document_label').html(item.mphil_document);
+                
+              
+                $('#other_year').val(item.others_year);
+                $('#other_board').val(item.others_board);
+                $('#other_percentage').val(item.others_percentage);
+                $('#other_document_label').html(item.others_document);
+              
+              
+            }
+          }
+
+          if(response.university){
+            $('#university').append('<option selected disabled> '+response.university.name+'</option>')
+          
+          
+          }
+        }
+      });
+      return false;
+    });
+  });
+</script>
+<!--  -->
+<script>
+  function uploadFile() {
+    const cb = document.querySelector('#enrollnextsemester');
+    if (cb.checked == true){
+      var checked = "yes"
+    }
+    else{
+      var checked = "no"
+    }
+    var data = new FormData();
+    var enroll_id = $('#enroll_id').val();
+    console.log(enroll_id)
+    var send = "haha"
+    data.append("enroll_id", $('#enroll_id').val());
+    if ($('#secondary_year').val() != '') {
+      data.append("secondary_year", $('#secondary_year').val());
+    }
+    if ($('#secondary_year').val() != '') {
+      data.append("secondary_board", $('#secondary_board').val());
+    }
+
+    if ($('#secondary_year').val() != '') {
+      data.append("secondary_percentage", $('#secondary_percentage').val());
+    }
+
+    if ($('#secondary_year').val() != '') {
+      data.append("secondary_document", $('#secondary_document')[0].files[0]);
+    }
+
+    data.append("checked",checked);
+    data.append("sr_year", $('#sr_year').val());
+    data.append("sr_board", $('#sr_board').val());
+    data.append("sr_percentage", $('#sr_percentage').val());
+    data.append("sr_document", $('#sr_document')[0].files[0]);
+
+    data.append("under_year", $('#under_year').val());
+    data.append("under_board", $('#under_board').val());
+    data.append("under_percentage", $('#under_percentage').val());
+    data.append("under_document", $('#under_document')[0].files[0]);
+
+    data.append("post_year", $('#post_year').val());
+    data.append("post_board", $('#post_board').val());
+    data.append("post_percentage", $('#post_percentage').val());
+    data.append("post_document", $('#post_document')[0].files[0]);
+
+    data.append("mphil_year", $('#mphil_year').val());
+    data.append("mphil_board", $('#mphil_board').val());
+    data.append("mphil_percentage", $('#mphil_percentage').val());
+    data.append("mphil_document", $('#mphil_document')[0].files[0]);
+
+    data.append("other_year", $('#other_year').val());
+    data.append("other_board", $('#other_board').val());
+    data.append("other_percentage", $('#other_percentage').val());
+    data.append("other_document", $('#other_document')[0].files[0]);
+
+    data.append("counselor_name",$('#counselor_name').val());
+    data.append("reference_name",$('#reference_name').val());
+    data.append("session",$('#session').val());
+    data.append("entry_mode",$('#entry_mode').val());
+    data.append("old_university_enrollment_id",$('#old_university_enrollment_id').val());
+    data.append("university_enrollment_id",$('#university_enrollment_id').val());
+    data.append("fees",$('#fees').val());
+    data.append("discount",$('#discount').val());
+    
+
+    data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+    const cb1 = document.querySelector('#flexCheckDefault');
+    if (cb1.checked == true){
+      var checked1 = "yes"
+    }
+    else{
+      var checked1 = "no"
+    }
+    if (checked1 == "yes"){
+      $.ajax({
+      method: "POST",
+      url: "{% url 'enroll' %}",
+      processData: false,
+      contentType: false,
+      mimeType: "multipart/form-data",
+      data: data,
+      success: function (res) {
+        window.location="{% url 'enroll' %}"
+      }
+    });
+    }
+    
+
+    
+    
+  }
+</script>
+=======
+{% extends 'admin.html' %}
+
+{% block head %}
+<style>
+  main {
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+
+  html {
+    height: -webkit-fill-available;
+  }
+
+  main {
+    display: flex;
+    flex-wrap: nowrap;
+    height: -webkit-fill-available;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .b-example-divider {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  }
+
+  .bi {
+    vertical-align: -.125em;
+    pointer-events: none;
+    fill: currentColor;
+  }
+
+  .dropdown-toggle {
+    outline: 0;
+  }
+
+  .nav-flush .nav-link {
+    border-radius: 0;
+  }
+
+  .btn-toggle {
+    display: inline-flex;
+    align-items: center;
+    padding: .25rem .5rem;
+    font-weight: 600;
+    color: rgba(0, 0, 0, .65);
+    background-color: transparent;
+    border: 0;
+  }
+
+  .btn-toggle:hover,
+  .btn-toggle:focus {
+    color: rgba(0, 0, 0, .85);
+    background-color: #d2f4ea;
+  }
+
+  .btn-toggle::before {
+    width: 1.25em;
+    line-height: 0;
+    content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+    transition: transform .35s ease;
+    transform-origin: .5em 50%;
+  }
+
+  .btn-toggle[aria-expanded="true"] {
+    color: rgba(0, 0, 0, .85);
+  }
+
+  .btn-toggle[aria-expanded="true"]::before {
+    transform: rotate(90deg);
+  }
+
+  .btn-toggle-nav a {
+    display: inline-flex;
+    padding: .1875rem .5rem;
+    margin-top: .125rem;
+    margin-left: 1.25rem;
+    text-decoration: none;
+  }
+
+  .btn-toggle-nav a:hover,
+  .btn-toggle-nav a:focus {
+    background-color: #d2f4ea;
+  }
+
+
+
+  .fw-semibold {
+    font-weight: 600;
+  }
+
+  .lh-tight {
+    line-height: 1.25;
+  }
+
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+  }
+
+  body {
+    min-height: 100vh
+  }
+
+  .wrapper {
+    max-width: 1200px;
+    margin: 0px auto;
+    padding: 30px 45px;
+    box-shadow: 5px 25px 35px #3535356b
+  }
+  
+</style>
+{% endblock head %}
+
+
+{% block nav %}
+<header>
+  <!-- Sidebar -->
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar  bg-white">
+    <div class="position-sticky">
+      <div class="list-group list-group-flush mx-3 mt-4">
+        <a href="{% url 'overview' %}" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+        </a>
+
+
+        <ul class="list-unstyled ps-0">
+          <li class="">
+            <button class="list-group-item list-group-item-action py-2 ripple active" data-bs-toggle="collapse"
+              data-bs-target="#dashboard-collapse" aria-expanded="true">
+              <i class="fas fa-users-cog fa-fw me-3"></i><span>Stud Management</span>
+            </button>
+            <div class="collapse show" id="dashboard-collapse">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <li><a href="{% url 'addstudent' %}" class="link-dark rounded">Student Registration</a>
+                </li>
+                <li><a href="{% url 'enroll' %}" class="link-dark rounded">Enroll Student</a></li>
+                <li><a href="{% url 'enroll_offline' %}" class="link-dark rounded">Enroll Student Offline</a></li>
+                <li><a href="{% url 'additionaldetail' %}" class="link-dark rounded">Additional Details</a></li>
+                <li><a href="{% url 'advancesearch' %}" class="link-dark rounded">Advanced Search</a></li>
+                <li><a href="{% url 'addfees' %}" class="link-dark rounded">Add Student Fee</a></li>
+                <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Pending Student Verification</a></li>
+                <li><a href="{% url 'pendingverification' %}" class="link-dark rounded">Registered Student</a></li>
+                <li><a href="#" class="link-dark rounded">Passout Student</a></li>
+                <li><a href="{% url 'registrationcash' %}" class="link-dark rounded">Re-Registration Through Cash Challan</a></li>
+                <li><a href="#" class="link-dark rounded">Re-Registration Through RTGS/NEFT</a></li>
+                <li><a href="#" class="link-dark rounded">Enroll Student Cash/RTGS/NEFT</a></li>
+                <li><a href="#" class="link-dark rounded">View CASH/RTGS/NEFT</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <ul class="list-unstyled ps-0">
+          <li class="">
+            <button class="list-group-item list-group-item-action py-2 ripple active" data-bs-toggle="collapse"
+              data-bs-target="#course-collapse" aria-expanded="true">
+              <i class="fas fa-users-cog fa-fw me-3"></i><span>My Course/Subject</span>
+            </button>
+            <div class="collapse " id="course-collapse">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <li><a href="{% url 'addcourse' %}" class="link-dark rounded">My Course</a></li>
+                <li><a href="{% url 'addstream' %}" class="link-dark rounded">My Subject</a></li>
+                <li><a href="#" class="link-dark rounded">Add Center Subjects</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+
+
+
+
+
+
+        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-2 ripple"><i
+          class="fas fa-sign-out-alt fa-fw me-3"></i><span>Logout</span></a>
+
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+
+  <!-- Navbar -->
+  <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+            aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Brand -->
+        <a class="navbar-brand" href="#">
+            <img src="" height="25" alt="" loading="lazy" />
+        </a>
+        <!-- Search form -->
+        <form class="d-none d-md-flex input-group w-auto my-auto">
+            <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                style="min-width: 225px" />
+            <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+        </form>
+
+        <!-- Right links -->
+        <ul class="navbar-nav ms-auto d-flex flex-row">
+            
+
+            <li class="nav-item dropdown">
+                <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </li>
+
+           
+
+            <!-- Avatar -->
+            <li class="nav-item dropdown">
+               
+                <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                        height="22" alt="" loading="lazy" />
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#">My profile</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- Container wrapper -->
+</nav>
+  <!-- Navbar -->
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+
+<div class="container">
+  <div class="form">
+    <div class="header-tag">
+      <h3>Enter Enrollment ID</h3>
+    </div>
+    <form action="" method="POST" id="enrollform">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="mb-3">
+            <label for="enroll_id" class="form-label">Enroll ID</label>
+            <input type="text" name="enrollid" class="form-control" id="enroll_id" style="margin-top: -10px;">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <button type="submit" class="btn btn-primary" style="margin-top:20px;">Search</button>
+        </div>
+        <div class="col-sm-5">
+
+          <h3 id="notfound" style="color:green;margin-top:20px ;"></h3>
+
+        </div>
+      </div>
+    </form>
+
+    <div id="hiddendata" style="visibility:hidden;">
+      <hr>
+
+      <div class="main-form">
+
+
+        <div class="header-tag">
+          <h1>Personal Details</h1>
+        </div>
+        <!--- firstname middlename lastname dob-->
+        <div class="row">
+          <div class="col-sm-5 mb-3">
+            <label for="university" class="form-label">University</label>
+              <select class="form-select" id="university" name="university" aria-label="Default select example"
+                style="margin-top: -10px;">
+                
+                
+
+              </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="first_name" class="form-label">First Name</label>
+              <input type="text" name="firstname" class="form-control" id="first_name" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="middle_name" class="form-label">Middle Name</label>
+              <input type="text" name="middlename" class="form-control" id="middle_name" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="last_name" class="form-label">Last Name</label>
+              <input type="text" name="lastname" class="form-control" id="last_name" style="margin-top: -10px;">
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="dateofbirth" class="form-label">Date of Birth</label>
+              <input type="date" name="dob" class="form-control" id="dateofbirth" style="margin-top: -10px;">
+            </div>
+          </div>
+        </div>
+        <!--- fathername mothername email mobile-->
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="fathers_name" class="form-label">Father's Name</label>
+              <input type="text" name="fathername" class="form-control" id="fathers_name" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="mothers_name" class="form-label">Mother's Name</label>
+              <input type="text" name="mothername" class="form-control" id="mothers_name" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-control" id="email" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="mobile" class="form-label">Mobile Number</label>
+              <input type="text" name="mobile" class="form-control" id="mobile" style="margin-top: -10px;">
+            </div>
+          </div>
+
+        </div>
+        <!--- gender category ID-type ID-number-->
+        <div class="row">
+          <div class="col-sm-3">
+            <label for="gender" class="form-label">Gender</label>
+            <select class="form-select" name="gender" id="gender" aria-label="Default select example"
+              style="margin-top: -10px;">
+              <option selected>Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="NA">NA</option>
+            </select>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="category" class="form-label">Category</label>
+              <select class="form-select" id="category" name="category" aria-label="Default select example"
+                style="margin-top: -10px;">
+                <option selected>Select</option>
+                <option value="General(Open)">General(Open)</option>
+                <option value="Other Backward Class(OBC)">Other Backward Class(OBC)</option>
+                <option value="Scheduled Cast(SC)">Scheduled Cast(SC)</option>
+                <option value="Scheduled Tribe(ST)">Scheduled Tribe(ST)</option>
+
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="identity_type" class="form-label">Identity Proof</label>
+              <select class="form-select" name="idtype" id="identity_type" aria-label="Default select example"
+                style="margin-top: -10px;">
+                <option selected>Select ID Type</option>
+                <option value="Aadhar Card">Aadhar Card</option>
+                <option value="Pan Card">Pan Card</option>
+                <option value="Voter ID">Voter ID</option>
+                <option value="Driving License">Driving License</option>
+                <option value="Passport">Passport</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="identity_no" class="form-label">ID Number</label>
+              <input type="number" name="idnumber" maxlength="9999999999999999" max="9999999999999999"
+                class="form-control" id="identity_no" style="margin-top: -10px;">
+            </div>
+          </div>
+
+        </div>
+        <!--- address nationality-->
+        <div class="row">
+          <div class="col-sm-9">
+            <div class="mb-3">
+              <label for="address" class="form-label">Current Address</label>
+              <input type="text" name="address" class="form-control" id="address" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="nationality" class="form-label">Nationality</label>
+              <input type="text" name="nationality" class="form-control" id="nationality" style="margin-top: -10px;">
+            </div>
+          </div>
+        </div>
+        <!--- country state city pincode -->
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="country" class="form-label">Country</label>
+              <input type="text" name="country" class="form-control" id="country" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="state" class="form-label">State</label>
+              <input type="text" name="state" class="form-control" id="state" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="city" class="form-label">City</label>
+              <input type="text" name="city" class="form-control" id="city" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="Pincode" class="form-label">Pincode</label>
+              <input type="number" name="pincode" class="form-control" id="Pincode" style="margin-top: -10px;">
+            </div>
+          </div>
+
+        </div>
+        <div class="header-tag">
+          <h1>Qualification</h1>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Exam</th>
+              <th scope="col">Year of Passing</th>
+              <th scope="col">Board/University</th>
+              <th scope="col">Percentage(%)</th>
+              <th scope="col">Upload Document <span style="color:red;font-size: 10px;">only PDF/JPG</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Secondary/High School</th>
+              <td>
+                <select class="form-select" name="secondary_year" id="secondary_year"
+                  aria-label="Default select example" style="width:150px;">
+                  <option value='' selected>Select Year</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+
+                </select>
+              </td>
+              <td><input type="text" name="secondary_board"  id="secondary_board"></td>
+              <td><input type="text" name="secondary_percentage" id="secondary_percentage"></td>
+              <td><label for="secondary_document" style="font-size: 10px;" id="secondary_document_label">Enter Document</label><input type="file" name="secondary_document" id="secondary_document"></td>
+            </tr>
+            <tr>
+              <th>Sr. Secondary</th>
+              <td>
+                <select class="form-select" name="sr_year" id="sr_year" aria-label="Default select example">
+                  <option  value='' selected>Select Year</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+
+                </select>
+              </td>
+              <td><input type="text" name="sr_board" id="sr_board"></td>
+              <td><input type="text" name="sr_percentage" id="sr_percentage"></td>
+              <td><label for="sr_document" style="font-size: 10px;" id="sr_document_label">Enter Document</label><input type="file" name="sr_document" id="sr_document"></td>
+            </tr>
+            <tr>
+              <th>Under Graduation</th>
+              <td>
+                <select class="form-select" name="under_year" id="under_year" aria-label="Default select example">
+                  <option   value='' selected>Select Year</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+
+                </select>
+              </td>
+              <td><input type="text" name="under_board" id="under_board"></td>
+              <td><input type="text" name="under_percentage" id="under_percentage"></td>
+              <td><label for="under_document" style="font-size: 10px;" id="under_document_label">Enter Document</label><input type="file" name="under_document" id="under_document"></td>
+            </tr>
+            <tr>
+              <th>Post Graduation</th>
+              <td>
+                <select class="form-select" name="post_year" id="post_year" aria-label="Default select example">
+                  <option value=''  selected>Select Year</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+
+                </select>
+              </td>
+              <td><input type="text" name="post_board" id="post_board"></td>
+              <td><input type="text" name="post_percentage" id="post_percentage"></td>
+              <td><label for="post_document" style="font-size: 10px;" id="post_document_label">Enter Document</label><input type="file" name="post_document" id="post_document"></td>
+            </tr>
+            <tr>
+              <th>M.Phil</th>
+              <td>
+                <select class="form-select" name="mphil_year" id="mphil_year" aria-label="Default select example">
+                  <option value=''  selected>Select Year</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+
+                </select>
+              </td>
+              <td><input type="text" name="mphil_board" id="mphil_board"></td>
+              <td><input type="text" name="mphil_percentage" id="mphil_percentage"></td>
+              <td><label for="mphil_document" style="font-size: 10px;" id="mphil_document_label">Enter Document</label><input type="file" name="mphil_document" id="mphil_document"></td>
+            </tr>
+            <tr>
+              <th>Others</th>
+              <td>
+                <select class="form-select" name="other_year" id="other_year" aria-label="Default select example">
+                  <option value=''  selected>Select Year</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                  <option value="2015">2015</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+
+                </select>
+              </td>
+              <td><input type="text" name="other_board" id="other_board"></td>
+              <td><input type="text" name="other_percentage" id="other_percentage"></td>
+              <td><label for="other_document" style="font-size: 10px;" id="other_document_label">Enter Document</label><input type="file" name="other_document" id="other_document"></td>
+            </tr>
+
+          </tbody>
+        </table>
+        <div class="header-tag">
+          <h1>Additional Details</h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="counselor_name" class="form-label">Counselor Name</label>
+              <input type="text" name="counselor_name" class="form-control" id="counselor_name" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="reference_name" class="form-label">Reference Name </label>
+              <input type="text" name="reference_name" class="form-control" id="reference_name" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="session" class="form-label">Session</label>
+              <select class="form-select" id="session" name="session" aria-label="Default select example"
+                style="margin-top: -10px;">
+                <option value="" selected>Select</option>
+                <option value="Winter 2021">Winter 2021</option>
+                <option value="Summer 2022">Summer 2022</option>
+                <option value="Winter 2022">Winter 2022</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="entry_mode" class="form-label">Entry Mode</label>
+              <select class="form-select" id="entry_mode" name="entry_mode" aria-label="Default select example"
+                style="margin-top: -10px;">
+                <option value="" selected>Select</option>
+                <option value="Regular">Regular</option>
+                <option value="Lateral Entry">Lateral Entry</option>
+                <option value="Credit Transfer">Credit Transfer</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <label for="old_university_enrollment_id" class="form-label">Old University Enrollment ID</label>
+            <input type="text" name="old_university_enrollment_id" class="form-control" id="old_university_enrollment_id" style="margin-top: -10px;">
+          </div>
+          <div class="col-sm-3">
+            <label for="university_enrollment_id" class="form-label">University Enrollment ID</label>
+            <input type="text" name="university_enrollment_id" class="form-control" id="university_enrollment_id" style="margin-top: -10px;">
+          </div>
+        </div>
+
+
+        <hr>
+
+        <div class="header-tag">
+          <h1>Course / Programm Details</h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <label for="course_data" class="form-label">Course</label>
+            <select class="form-select" name="course" id="course_data" aria-label="Default select example"
+              style="margin-top: -10px;">
+              <option selected>Select Course</option>
+              
+            </select>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="Stream" class="form-label">Stream</label>
+              <select class="form-select" name="Stream" id="Stream" aria-label="Default select example"
+                style="margin-top: -10px;">
+                <option selected>Select Stream</option>
+
+
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <div class="mb-3">
+                <label for="studypattern" class="form-label">Study Pattern</label>
+                <select class="form-select" name="studypattern" id="studypattern" aria-label="Default select example"
+                  style="margin-top: -10px;">
+                  <option selected>Select Study Pattern</option>
+                  
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="mb-3">
+              <label for="semyear" class="form-label">Semester/Year</label>
+              <select class="form-select" name="semyear" id="semyear" aria-label="Default select example"
+                style="margin-top: -10px;">
+                <option selected>Select Study Pattern</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+        <div class="header-tag">
+          <h1>Payment Details</h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="mb-3">
+              <label for="fees" class="form-label">Registration Fees</label>
+              <input type="text" name="fees" disabled class="form-control" id="fees" style="margin-top: -10px;">
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="mb-3">
+              <label for="discount" class="form-label">Discount</label>
+              <input type="text" name="discount" class="form-control" id="discount" style="margin-top: -10px;">
+            </div>
+          </div>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="checked" id="flexCheckDefault" required>
+          <label class="form-check-label" for="flexCheckDefault">
+            Agree . Terms & Conditions
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="checked" id="enrollnextsemester" >
+          <label class="form-check-label" for="enrollnextsemester">
+            Enroll Student To Next Semester ! 
+          </label>
+        </div>
+        
+        <div class="row">
+          <div class="col-sm-4">
+
+          </div>
+          <div class="col-sm-8">
+            <button type="submit" id="submit" onclick="uploadFile();" class="btn btn-primary">Add Student</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+<script language="JavaScript">
+  document.addEventListener("wheel", function (event) {
+        if (document.activeElement.type === "number") {
+            document.activeElement.blur();
+        }
+    });
+  $(document).ready(function () {
+    $('#enrollform').submit(function () { // catch the form's submit event
+      $.ajax({ // create an AJAX call...
+        data: {
+          'enrollid': $('#enroll_id').val()
+        }, // get the form data
+        type: 'POST', // GET or POST
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        url: "{% url 'enroll' %}", // the file to call
+        success: function (response) { // on success..
+          console.log(response)
+          $('#notfound').html('')
+          $('#university').empty()
+          
+
+          if (response.gotdata != "yes") {
+            $('#notfound').html('Student Not Found ..!!')
+          }
+          if (response.gotdata == "yes") {
+            $('#hiddendata').css('visibility', 'visible')
+            $('#first_name').val(response.data.first_name)
+            $('#last_name').val(response.data.last_name)
+            $('#middle_name').val(response.data.middle_name)
+            $('#dateofbirth').val(response.data.dateofbirth)
+            $('#fathers_name').val(response.data.father_name)
+            $('#mothers_name').val(response.data.mother_name)
+            $('#email').val(response.data.email)
+            $('#mobile').val(response.data.mobile)
+            $('#gender').val(response.data.gender)
+            $('#category').val(response.data.category)
+            $('#identity_type').val(response.data.ID_type)
+            $('#identity_no').val(response.data.ID_number)
+            $('#address').val(response.data.address)
+            $('#nationality').val(response.data.nationality)
+            $('#country').val(response.data.country)
+            $('#state').val(response.data.state)
+            $('#city').val(response.data.city)
+            $('#Pincode').val(response.data.pincode)
+
+            $('#course_data').append('<option selected disabled >' + response.enroll.coursename + '</option>')
+            $('#Stream').append('<option selected disabled >' + response.enroll.stream + '</option>')
+            $('#studypattern').append('<option selected disabled >' + response.enroll.pattern + '</option>')
+            $('#semyear').append('<option selected disabled >' + response.enroll.semester + ' semester' + '</option>')
+            // $('#discount').change(function() {
+            //   console.log( "discount changed" );
+            // });
+            
+            $('#discount').on('input', function() {
+              $('#fees').val(response.enroll.total_fees)
+              var fees = $('#fees').val();
+              var discount = $('#discount').val()
+              var total = fees - discount
+              $('#fees').val(total)
+            });
+            
+
+
+          }
+
+          if (response.qualification != ''){
+            response.qualification.forEach(myFunction);
+            function myFunction(item) {
+              $('#secondary_year').val(item.secondary_year);
+                $('#secondary_board').val(item.secondary_board);
+                $('#secondary_percentage').val(item.secondary_percentage);
+                $('#secondary_document_label').html(item.secondary_document);
+                
+              
+              
+                $('#sr_year').val(item.sr_year);
+                $('#sr_board').val(item.sr_board);
+                $('#sr_percentage').val(item.sr_percentage);
+                $('#sr_document_label').html(item.sr_document);
+                
+              
+              
+                $('#under_year').val(item.under_year);
+                $('#under_board').val(item.under_board);
+                $('#under_percentage').val(item.under_percentage);
+                $('#under_document_label').html(item.under_document);
+                
+              
+              
+                $('#post_year').val(item.post_year);
+                $('#post_board').val(item.post_board);
+                $('#post_percentage').val(item.post_percentage);
+                $('#post_document_label').html(item.post_document);
+                
+              
+            
+                $('#mphil_year').val(item.mphil_year);
+                $('#mphil_board').val(item.mphil_board);
+                $('#mphil_percentage').val(item.mphil_percentage);
+                $('#mphil_document_label').html(item.mphil_document);
+                
+              
+                $('#other_year').val(item.others_year);
+                $('#other_board').val(item.others_board);
+                $('#other_percentage').val(item.others_percentage);
+                $('#other_document_label').html(item.others_document);
+              
+              
+            }
+          }
+
+          if(response.university){
+            $('#university').append('<option selected disabled> '+response.university.name+'</option>')
+          
+          
+          }
+        }
+      });
+      return false;
+    });
+  });
+</script>
+<!--  -->
+<script>
+  function uploadFile() {
+    const cb = document.querySelector('#enrollnextsemester');
+    if (cb.checked == true){
+      var checked = "yes"
+    }
+    else{
+      var checked = "no"
+    }
+    var data = new FormData();
+    var enroll_id = $('#enroll_id').val();
+    console.log(enroll_id)
+    var send = "haha"
+    data.append("enroll_id", $('#enroll_id').val());
+    if ($('#secondary_year').val() != '') {
+      data.append("secondary_year", $('#secondary_year').val());
+    }
+    if ($('#secondary_year').val() != '') {
+      data.append("secondary_board", $('#secondary_board').val());
+    }
+
+    if ($('#secondary_year').val() != '') {
+      data.append("secondary_percentage", $('#secondary_percentage').val());
+    }
+
+    if ($('#secondary_year').val() != '') {
+      data.append("secondary_document", $('#secondary_document')[0].files[0]);
+    }
+
+    data.append("checked",checked);
+    data.append("sr_year", $('#sr_year').val());
+    data.append("sr_board", $('#sr_board').val());
+    data.append("sr_percentage", $('#sr_percentage').val());
+    data.append("sr_document", $('#sr_document')[0].files[0]);
+
+    data.append("under_year", $('#under_year').val());
+    data.append("under_board", $('#under_board').val());
+    data.append("under_percentage", $('#under_percentage').val());
+    data.append("under_document", $('#under_document')[0].files[0]);
+
+    data.append("post_year", $('#post_year').val());
+    data.append("post_board", $('#post_board').val());
+    data.append("post_percentage", $('#post_percentage').val());
+    data.append("post_document", $('#post_document')[0].files[0]);
+
+    data.append("mphil_year", $('#mphil_year').val());
+    data.append("mphil_board", $('#mphil_board').val());
+    data.append("mphil_percentage", $('#mphil_percentage').val());
+    data.append("mphil_document", $('#mphil_document')[0].files[0]);
+
+    data.append("other_year", $('#other_year').val());
+    data.append("other_board", $('#other_board').val());
+    data.append("other_percentage", $('#other_percentage').val());
+    data.append("other_document", $('#other_document')[0].files[0]);
+
+    data.append("counselor_name",$('#counselor_name').val());
+    data.append("reference_name",$('#reference_name').val());
+    data.append("session",$('#session').val());
+    data.append("entry_mode",$('#entry_mode').val());
+    data.append("old_university_enrollment_id",$('#old_university_enrollment_id').val());
+    data.append("university_enrollment_id",$('#university_enrollment_id').val());
+    data.append("fees",$('#fees').val());
+    data.append("discount",$('#discount').val());
+    
+
+    data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+    const cb1 = document.querySelector('#flexCheckDefault');
+    if (cb1.checked == true){
+      var checked1 = "yes"
+    }
+    else{
+      var checked1 = "no"
+    }
+    if (checked1 == "yes"){
+      $.ajax({
+      method: "POST",
+      url: "{% url 'enroll' %}",
+      processData: false,
+      contentType: false,
+      mimeType: "multipart/form-data",
+      data: data,
+      success: function (res) {
+        window.location="{% url 'enroll' %}"
+      }
+    });
+    }
+    
+
+    
+    
+  }
+</script>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

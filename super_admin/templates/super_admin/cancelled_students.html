@@ -1,0 +1,224 @@
+<<<<<<< HEAD
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+
+
+{% endblock head %}
+
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+
+
+<div class="pages-body-bg-color py-3">
+    <section class="pending-verification   mb-3">
+        <div class="row">
+            <div class="col-12">
+           
+                <div class="white-box">
+                    <div class="inner-block px-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-18 text-uppercase font-bold text-black">Cancelled Students</h5>
+                                </div>
+                                <div class="box-text  ">
+                                    <p class="font-16 text-xlightgray">List of cancelled students</p>
+                                </div>
+                            </div>
+                        </div>
+                       
+                        <div class="entries-table pt-4">
+                    
+                          <table id="example" class="format-table text-center zebra-table">
+                            <thead>
+                                <tr class="bottom-border-grey">
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Sr.No</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Student Name</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Email</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Mobile</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Current Semester/ Year</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Enrollment ID</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">University Name</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Study Pattern/ Mode</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Entry Mode</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in students %}
+                                <tr>
+                                  <th scope="row">{{forloop.counter}}</th>
+                                  <td>{{i.name}}</td>
+                                  <td>{{i.email}}</td>
+                                  <td>{{i.mobile}}</td>
+                                  <td>{{i.current_semester}}</td>
+                                  <td>{{i.enrollment_id}}</td>
+                                  <td>{{i.university}}</td>
+                                  <td>{{i.course_pattern}}</td>
+                                  <td>{{i.entry_mode}}</td>
+                                  <td> <button class="blue-bg text-blue font-bold font-12 no-border" onclick="reactivate('{{i.id}}')">Activate</button> </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                  
+                 
+                </div>
+            </div>
+        </div>
+       
+  
+    </section>
+  
+  
+    
+  
+  </div>
+  
+
+{% endif %}
+
+<script>
+    $(document).ready(function () {
+        $('#dashboard-collapse').addClass("show");
+        $("#cancelled_student_link").removeClass("link-dark");
+        $('#cancelled_student_link').addClass("link-primary");
+        var table = $('#example').DataTable({
+            scrollX:true,
+        });
+    });
+    function reactivate(id){
+        console.log(id)
+        $.ajax({ // create an AJAX call...
+            data: {
+                'student_id': id
+            }, // get the form data
+            type: 'POST', // GET or POST
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            url: "{% url 'cancelledstudents' %}", // the file to call
+            success: function (response) {  
+                if(response.success == "yes"){
+                    window.location = "{% url 'cancelledstudents' %}"
+                }
+            }
+            });
+
+    }
+</script>
+=======
+{% extends 'includes/master.html' %}
+{% load static %}
+{% block head %}
+
+
+{% endblock head %}
+
+
+{% block body %}
+{% if request.user.is_superuser or request.user.is_data_entry %}
+
+
+<div class="pages-body-bg-color py-3">
+    <section class="pending-verification   mb-3">
+        <div class="row">
+            <div class="col-12">
+           
+                <div class="white-box">
+                    <div class="inner-block px-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="box-title pt-4 ">
+                                    <h5 class="font-18 text-uppercase font-bold text-black">Cancelled Students</h5>
+                                </div>
+                                <div class="box-text  ">
+                                    <p class="font-16 text-xlightgray">List of cancelled students</p>
+                                </div>
+                            </div>
+                        </div>
+                       
+                        <div class="entries-table pt-4">
+                    
+                          <table id="example" class="format-table text-center zebra-table">
+                            <thead>
+                                <tr class="bottom-border-grey">
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Sr.No</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Student Name</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Email</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Mobile</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Current Semester/ Year</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Enrollment ID</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">University Name</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Study Pattern/ Mode</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Entry Mode</th>
+                                    <th class="font-14 font-bold text-darkgray width-10 px-2" scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in students %}
+                                <tr>
+                                  <th scope="row">{{forloop.counter}}</th>
+                                  <td>{{i.name}}</td>
+                                  <td>{{i.email}}</td>
+                                  <td>{{i.mobile}}</td>
+                                  <td>{{i.current_semester}}</td>
+                                  <td>{{i.enrollment_id}}</td>
+                                  <td>{{i.university}}</td>
+                                  <td>{{i.course_pattern}}</td>
+                                  <td>{{i.entry_mode}}</td>
+                                  <td> <button class="blue-bg text-blue font-bold font-12 no-border" onclick="reactivate('{{i.id}}')">Activate</button> </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                  
+                 
+                </div>
+            </div>
+        </div>
+       
+  
+    </section>
+  
+  
+    
+  
+  </div>
+  
+
+{% endif %}
+
+<script>
+    $(document).ready(function () {
+        $('#dashboard-collapse').addClass("show");
+        $("#cancelled_student_link").removeClass("link-dark");
+        $('#cancelled_student_link').addClass("link-primary");
+        var table = $('#example').DataTable({
+            scrollX:true,
+        });
+    });
+    function reactivate(id){
+        console.log(id)
+        $.ajax({ // create an AJAX call...
+            data: {
+                'student_id': id
+            }, // get the form data
+            type: 'POST', // GET or POST
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            url: "{% url 'cancelledstudents' %}", // the file to call
+            success: function (response) {  
+                if(response.success == "yes"){
+                    window.location = "{% url 'cancelledstudents' %}"
+                }
+            }
+            });
+
+    }
+</script>
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

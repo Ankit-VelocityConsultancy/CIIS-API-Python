@@ -1,0 +1,61 @@
+<<<<<<< HEAD
+/* .questions{
+   position:relative;
+   width:100%;
+}
+
+.question{
+    position:absolute;
+    width:50%;
+    left:0%;
+}
+
+.upload-image{
+    position:absolute;
+    left:55%;
+}
+
+
+
+.question-type{
+    position:absolute;
+    left:63%;
+} */
+
+
+
+.upload-image img{
+    width:50%;
+}
+
+=======
+/* .questions{
+   position:relative;
+   width:100%;
+}
+
+.question{
+    position:absolute;
+    width:50%;
+    left:0%;
+}
+
+.upload-image{
+    position:absolute;
+    left:55%;
+}
+
+
+
+.question-type{
+    position:absolute;
+    left:63%;
+} */
+
+
+
+.upload-image img{
+    width:50%;
+}
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049

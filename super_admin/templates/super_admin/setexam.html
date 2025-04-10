@@ -1,0 +1,730 @@
+<<<<<<< HEAD
+{% extends 'includes/admin.html' %}
+
+{% block head %}
+<!-- <style>
+  *{
+    font-size: 15px;
+  }
+</style> -->
+{% endblock head %}
+
+{% block nav %}
+<header>
+    <!-- Sidebar -->
+  
+    <!-- Sidebar -->
+
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+                aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Brand -->
+            <a class="navbar-brand" href="#">
+                <img src="" height="25" alt="" loading="lazy" />
+            </a>
+            <!-- Search form -->
+            <form class="d-none d-md-flex input-group w-auto my-auto">
+                <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                    style="min-width: 225px" />
+                <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+            </form>
+
+            <!-- Right links -->
+            <ul class="navbar-nav ms-auto d-flex flex-row">
+                
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                  </li>
+
+               
+
+                <!-- Avatar -->
+                <li class="nav-item dropdown">
+                   
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                            height="22" alt="" loading="lazy" />
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">My profile</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+    <style>
+        #canvas{
+            border:1px solid red;
+            height:500px;
+            width:500px;
+        }
+     
+
+    </style>
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+<!-- <button class="btn btn-warning" type="reset">
+    <i class="fa fa-upload"><input type="file" name="" id=""></i>
+</button><br>
+
+<input type="file" id="actual-btn" hidden/>
+
+our custom file upload button
+<label for="actual-btn">Choose File</label> -->
+
+
+<div class="container col-md-6">
+    <div class="mb-5">
+        <label for="Image" class="form-label">Bootstrap 5 image Upload with Preview</label>
+        <input class="form-control" type="file" id="formFile" onchange="preview()">
+        <button onclick="clearImage()" class="btn btn-primary mt-3">Click me</button>
+    </div>
+    <img id="frame" src="" class="img-fluid" />
+</div>
+<div class="container col-md-6">
+    <div class="mb-5">
+        <label for="upload_image_1" class="form-label"><i class="fa fa-upload">Upload</i></label>
+        <input class="form-control" type="file" id="upload_image_1" onchange="preview()" hidden>
+        <button onclick="clearImage()" class="btn btn-primary mt-3">Click me</button>
+    </div>
+    <img id="frame" src="" class="img-fluid" />
+</div>
+
+<script>
+    function preview() {
+        frame.src = URL.createObjectURL(event.target.files[0]);
+    }
+    function clearImage() {
+        document.getElementById('formFile').value = null;
+        frame.src = "";
+    }
+</script>
+<div class="form" id="form" style="visibility: hidden;margin-left: 20px;">
+    <hr>
+    <div class="container">
+        
+        <form action="" method="POST" id="mainform">
+            {% csrf_token %}
+            <div class="form_values" id="form_values">
+
+            </div>
+            <div class="form_button" id="form_button">
+                <button type="subit" class="btn btn-success">Save</button>
+            </div>
+
+        </form>
+    </div>
+    <!-- <div class="container mt-sm-5 my-1">
+        <div class="question ml-sm-5 pl-sm-5 pt-2">
+            <div class="py-2 h5"><b>Q. which option best describes your job role?</b></div>
+            <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options"> 
+                <label class="options">Small Business Owner or Employee 
+                    <input type="radio" name="radio"> 
+                    <span class="checkmark"></span> 
+                </label> 
+                <label class="options">Nonprofit Owner or Employee 
+                    <input type="radio" name="radio"> 
+                    <span class="checkmark"></span> 
+                </label> 
+                <label class="options">Journalist or Activist 
+                    <input type="radio" name="radio"> 
+                    <span class="checkmark"></span> 
+                </label> 
+                <label class="options">Other 
+                    <input type="radio" name="radio"> 
+                    <span class="checkmark"></span> 
+                </label> 
+            </div>
+        </div>
+        
+    </div> -->
+</div>
+
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+<script type="text/javascript">
+    document.getElementById("university").onchange = function () {
+    var university = this.value;
+    if(university == "Select University"){
+
+    }
+    else{
+        console.log("university selected")
+      $.ajax({ // create an AJAX call...
+            type: "GET",
+            url: "{% url 'setexam' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'get_course':university
+            },
+            success: function(response) {
+              console.log(response)
+              if(response.course){
+                $('#course').empty();
+                $('#course').append(`
+                    <option>Select Course</option>
+                  `);
+                var data = response.course
+                data.forEach(myFunction);
+
+                function myFunction(item){
+                    console.log(item)
+                  $('#course').append(`
+                    <option value="${item.id}">${item.name}</option>
+                  `);
+                }
+
+              }
+            }
+          });
+          
+    }
+}
+    document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        console.log(coursename);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'setexam' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'course_id': coursename // from form
+
+            },
+            success: function (response) {
+                console.log(response);
+                console.log(response);
+                var data = response.stream
+                // console.log("data",data)
+                var duration = ''
+                $('#Stream').empty();
+                data.forEach(myFunction);
+                $('#Stream').append('<option Selected> Select Stream </option>');
+                function myFunction(item) {
+                    duration = item.sem
+                    $('#Stream').append('<option value=' + item.id + '>' + item.name + '</option>');
+                }
+                document.getElementById("Stream").onchange = function () {
+                    var coursename = $('#course').val();
+                    var streamname = this.value;
+                    console.log("coursename :", coursename, 'streamname', streamname);
+                    document.getElementById("question").onclick = function () {
+
+                        var totalquestion = $('#total_questions').val();
+                        for (var i = 1; i <= totalquestion; i++) {
+                            $('#form_values').append(`
+                            
+                            <div class="mb-3">
+                                <label for="ques`+i+`" class="form-label">Enter Question `+i+`</label>
+                                <input type="text" name="ques`+i+`" required class="form-control" id="ques`+i+`" style="margin-top: -10px;">
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="mb-3">
+                                        <label for="option`+i+`1" class="form-label">Option A</label>
+                                        <input type="text" name="option`+i+`1" required class="form-control" id="option`+i+`1" style="margin-top: -10px;">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="mb-3">
+                                        <label for="option`+i+`2" class="form-label">Option B</label>
+                                        <input type="text" name="option`+i+`2" required class="form-control" id="option`+i+`2" style="margin-top: -10px;">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="mb-3">
+                                        <label for="option`+i+`3" class="form-label">Option C</label>
+                                        <input type="text" name="option`+i+`3" required class="form-control" id="option`+i+`3" style="margin-top: -10px;">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="mb-3">
+                                        <label for="option`+i+`4" class="form-label">Option D</label>
+                                        <input type="text" name="option`+i+`4" required class="form-control" id="option`+i+`4" style="margin-top: -10px;">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="mb-3">
+                                        <label for="correct_answer`+i+`" class="form-label">Correct Answer Options</label>
+                                        <input type="text" name="correct_answer`+i+`" required class="form-control" id="correct_answer`+i+`" style="margin-top: -10px;">
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+
+                            `);
+                        }
+                        $('#form').css('visibility', 'visible')
+
+                    }
+
+                }
+
+            }
+        });
+    }
+
+</script>
+
+
+<script language="JavaScript">
+    $(document).ready(function() {
+        $('#mainform').submit(function() {
+             
+            console.log($('#mainform').serialize())
+            
+            $.ajax({ // create an AJAX call...
+                data: $('#mainform').serialize(), // get the form data
+                type: "POST", // GET or POST
+                url: "{% url 'setexam' %}", // the file to call
+                success: function(response) { // on success..
+                   console.log("success sent form");// update the DIV 
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+<script language="JavaScript">
+    $(document).ready(function() {
+        $('#mainform').submit(function() {
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'university':$('#university').val(),
+                    'course':$('#course').val(),
+                    'stream':$('#Stream').val(),
+                    'exam_name':$('#exam_name').val(),
+                    'exam_date':$('#exam_date').val(),
+                    'total_marks':$('#total_marks').val(),
+                    'total_questions':$('#total_questions').val(),
+                    
+                }, // get the form data
+                type: "POST", // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'setexam' %}", // the file to call
+                success: function(response) { // on success..
+                   console.log("success sent form");// update the DIV 
+                   
+                }
+            });
+            return false;
+        });
+    });
+
+    document.getElementById('inp').onchange = function(e) {
+  var img = new Image();
+  img.onload = draw;
+  img.onerror = failed;
+  img.src = URL.createObjectURL(this.files[0]);
+};
+function draw() {
+  var canvas = document.getElementById('canvas');
+  canvas.width = this.width;
+  canvas.height = this.height;
+  var ctx = canvas.getContext('2d');
+  ctx.drawImage(this, 0,0);
+}
+function failed() {
+  console.error("The provided file couldn't be loaded as an Image media");
+}
+</script>
+
+=======
+{% extends 'includes/admin.html' %}
+
+{% block head %}
+<!-- <style>
+  *{
+    font-size: 15px;
+  }
+</style> -->
+{% endblock head %}
+
+{% block nav %}
+<header>
+    <!-- Sidebar -->
+  
+    <!-- Sidebar -->
+
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+                aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Brand -->
+            <a class="navbar-brand" href="#">
+                <img src="" height="25" alt="" loading="lazy" />
+            </a>
+            <!-- Search form -->
+            <form class="d-none d-md-flex input-group w-auto my-auto">
+                <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search'
+                    style="min-width: 225px" />
+                <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
+            </form>
+
+            <!-- Right links -->
+            <ul class="navbar-nav ms-auto d-flex flex-row">
+                
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                  </li>
+
+               
+
+                <!-- Avatar -->
+                <li class="nav-item dropdown">
+                   
+                    <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle"
+                            height="22" alt="" loading="lazy" />
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">My profile</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+    <style>
+        #canvas{
+            border:1px solid red;
+            height:500px;
+            width:500px;
+        }
+     
+
+    </style>
+</header>
+{% endblock nav%}
+
+
+{% block body %}
+{% if display == "yes" %}
+<!-- <button class="btn btn-warning" type="reset">
+    <i class="fa fa-upload"><input type="file" name="" id=""></i>
+</button><br>
+
+<input type="file" id="actual-btn" hidden/>
+
+our custom file upload button
+<label for="actual-btn">Choose File</label> -->
+
+
+<div class="container col-md-6">
+    <div class="mb-5">
+        <label for="Image" class="form-label">Bootstrap 5 image Upload with Preview</label>
+        <input class="form-control" type="file" id="formFile" onchange="preview()">
+        <button onclick="clearImage()" class="btn btn-primary mt-3">Click me</button>
+    </div>
+    <img id="frame" src="" class="img-fluid" />
+</div>
+<div class="container col-md-6">
+    <div class="mb-5">
+        <label for="upload_image_1" class="form-label"><i class="fa fa-upload">Upload</i></label>
+        <input class="form-control" type="file" id="upload_image_1" onchange="preview()" hidden>
+        <button onclick="clearImage()" class="btn btn-primary mt-3">Click me</button>
+    </div>
+    <img id="frame" src="" class="img-fluid" />
+</div>
+
+<script>
+    function preview() {
+        frame.src = URL.createObjectURL(event.target.files[0]);
+    }
+    function clearImage() {
+        document.getElementById('formFile').value = null;
+        frame.src = "";
+    }
+</script>
+<div class="form" id="form" style="visibility: hidden;margin-left: 20px;">
+    <hr>
+    <div class="container">
+        
+        <form action="" method="POST" id="mainform">
+            {% csrf_token %}
+            <div class="form_values" id="form_values">
+
+            </div>
+            <div class="form_button" id="form_button">
+                <button type="subit" class="btn btn-success">Save</button>
+            </div>
+
+        </form>
+    </div>
+    <!-- <div class="container mt-sm-5 my-1">
+        <div class="question ml-sm-5 pl-sm-5 pt-2">
+            <div class="py-2 h5"><b>Q. which option best describes your job role?</b></div>
+            <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options"> 
+                <label class="options">Small Business Owner or Employee 
+                    <input type="radio" name="radio"> 
+                    <span class="checkmark"></span> 
+                </label> 
+                <label class="options">Nonprofit Owner or Employee 
+                    <input type="radio" name="radio"> 
+                    <span class="checkmark"></span> 
+                </label> 
+                <label class="options">Journalist or Activist 
+                    <input type="radio" name="radio"> 
+                    <span class="checkmark"></span> 
+                </label> 
+                <label class="options">Other 
+                    <input type="radio" name="radio"> 
+                    <span class="checkmark"></span> 
+                </label> 
+            </div>
+        </div>
+        
+    </div> -->
+</div>
+
+
+{% else %}
+<h1 class="text-center">Restricted</h1>
+{% endif %}
+
+
+<script type="text/javascript">
+    document.getElementById("university").onchange = function () {
+    var university = this.value;
+    if(university == "Select University"){
+
+    }
+    else{
+        console.log("university selected")
+      $.ajax({ // create an AJAX call...
+            type: "GET",
+            url: "{% url 'setexam' %}",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            data: {
+              'get_course':university
+            },
+            success: function(response) {
+              console.log(response)
+              if(response.course){
+                $('#course').empty();
+                $('#course').append(`
+                    <option>Select Course</option>
+                  `);
+                var data = response.course
+                data.forEach(myFunction);
+
+                function myFunction(item){
+                    console.log(item)
+                  $('#course').append(`
+                    <option value="${item.id}">${item.name}</option>
+                  `);
+                }
+
+              }
+            }
+          });
+          
+    }
+}
+    document.getElementById("course").onchange = function () {
+        var coursename = this.value;
+        console.log(coursename);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'setexam' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'course_id': coursename // from form
+
+            },
+            success: function (response) {
+                console.log(response);
+                console.log(response);
+                var data = response.stream
+                // console.log("data",data)
+                var duration = ''
+                $('#Stream').empty();
+                data.forEach(myFunction);
+                $('#Stream').append('<option Selected> Select Stream </option>');
+                function myFunction(item) {
+                    duration = item.sem
+                    $('#Stream').append('<option value=' + item.id + '>' + item.name + '</option>');
+                }
+                document.getElementById("Stream").onchange = function () {
+                    var coursename = $('#course').val();
+                    var streamname = this.value;
+                    console.log("coursename :", coursename, 'streamname', streamname);
+                    document.getElementById("question").onclick = function () {
+
+                        var totalquestion = $('#total_questions').val();
+                        for (var i = 1; i <= totalquestion; i++) {
+                            $('#form_values').append(`
+                            
+                            <div class="mb-3">
+                                <label for="ques`+i+`" class="form-label">Enter Question `+i+`</label>
+                                <input type="text" name="ques`+i+`" required class="form-control" id="ques`+i+`" style="margin-top: -10px;">
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="mb-3">
+                                        <label for="option`+i+`1" class="form-label">Option A</label>
+                                        <input type="text" name="option`+i+`1" required class="form-control" id="option`+i+`1" style="margin-top: -10px;">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="mb-3">
+                                        <label for="option`+i+`2" class="form-label">Option B</label>
+                                        <input type="text" name="option`+i+`2" required class="form-control" id="option`+i+`2" style="margin-top: -10px;">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="mb-3">
+                                        <label for="option`+i+`3" class="form-label">Option C</label>
+                                        <input type="text" name="option`+i+`3" required class="form-control" id="option`+i+`3" style="margin-top: -10px;">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="mb-3">
+                                        <label for="option`+i+`4" class="form-label">Option D</label>
+                                        <input type="text" name="option`+i+`4" required class="form-control" id="option`+i+`4" style="margin-top: -10px;">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="mb-3">
+                                        <label for="correct_answer`+i+`" class="form-label">Correct Answer Options</label>
+                                        <input type="text" name="correct_answer`+i+`" required class="form-control" id="correct_answer`+i+`" style="margin-top: -10px;">
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+
+                            `);
+                        }
+                        $('#form').css('visibility', 'visible')
+
+                    }
+
+                }
+
+            }
+        });
+    }
+
+</script>
+
+
+<script language="JavaScript">
+    $(document).ready(function() {
+        $('#mainform').submit(function() {
+             
+            console.log($('#mainform').serialize())
+            
+            $.ajax({ // create an AJAX call...
+                data: $('#mainform').serialize(), // get the form data
+                type: "POST", // GET or POST
+                url: "{% url 'setexam' %}", // the file to call
+                success: function(response) { // on success..
+                   console.log("success sent form");// update the DIV 
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+<script language="JavaScript">
+    $(document).ready(function() {
+        $('#mainform').submit(function() {
+            $.ajax({ // create an AJAX call...
+                data: {
+                    'university':$('#university').val(),
+                    'course':$('#course').val(),
+                    'stream':$('#Stream').val(),
+                    'exam_name':$('#exam_name').val(),
+                    'exam_date':$('#exam_date').val(),
+                    'total_marks':$('#total_marks').val(),
+                    'total_questions':$('#total_questions').val(),
+                    
+                }, // get the form data
+                type: "POST", // GET or POST
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                url: "{% url 'setexam' %}", // the file to call
+                success: function(response) { // on success..
+                   console.log("success sent form");// update the DIV 
+                   
+                }
+            });
+            return false;
+        });
+    });
+
+    document.getElementById('inp').onchange = function(e) {
+  var img = new Image();
+  img.onload = draw;
+  img.onerror = failed;
+  img.src = URL.createObjectURL(this.files[0]);
+};
+function draw() {
+  var canvas = document.getElementById('canvas');
+  canvas.width = this.width;
+  canvas.height = this.height;
+  var ctx = canvas.getContext('2d');
+  ctx.drawImage(this, 0,0);
+}
+function failed() {
+  console.error("The provided file couldn't be loaded as an Image media");
+}
+</script>
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+{% endblock body %}

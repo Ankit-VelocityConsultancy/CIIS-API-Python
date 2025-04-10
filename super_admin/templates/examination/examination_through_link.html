@@ -1,0 +1,552 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+  <link rel="stylesheet" href="{% static 'dict/#css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.1.0/css/buttons.dataTables.min.css">
+
+  
+  
+  <style>
+
+
+
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .container{
+    margin-top:50%;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    }
+
+@media (min-width: 768px) {
+.bd-placeholder-img-lg {
+    font-size: 3.5rem;
+}
+}
+</style>
+</head>
+
+<body>
+  <main>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <input type="text" id="attempted_answer_list" class="width-100  font-14 text-extralightgray">
+            {% if request.session.is_logged_in == "yes" %}
+              {% if request.session.started_exam == "yes" %}
+                <h1 class="font-roboto font-3o font-bold">Show Exam</h1>
+                
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="card mb-5 totalexam" id="question_row_{{page_obj.number}}">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_{{page_obj.number}}">{{page_obj.number}} ) {{data.question}}</h4><input type="text" style="display:block;" class="form-control" id="question_id_{{page_obj.number}}" value="{{data.id}}"><input type="text" style="display:block;" class="form-control" id="question_type_{{page_obj.number}}" value="{{data.type}}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_{{page_obj.number}}">
+                            <div class="uploaded-image_{{page_obj.number}}">
+                                
+                            </div>
+                            <div class="optionrows_question_{{page_obj.number}}" id="optionrows_question_{{page_obj.number}}">
+                                <div class="row">
+                                    <div class="options">
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_{{page_obj.number}}"  id="question_{{page_obj.number}}_option_1" value="option1" >
+                                            <label class="form-check-label" for="question_{{page_obj.number}}_option_1">
+                                            {{data.option1}}
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_{{page_obj.number}}" id="question_{{page_obj.number}}_option_2" value="option2">
+                                            <label class="form-check-label" for="question_{{page_obj.number}}_option_2">
+                                            {{data.option2}}
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_{{page_obj.number}}" id="question_{{page_obj.number}}_option_3" value="option3" >
+                                            <label class="form-check-label" for="question_{{page_obj.number}}_option_3">
+                                            {{data.option3}}
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_{{page_obj.number}}" id="question_{{page_obj.number}}_option_4" value="option4" >
+                                            <label class="form-check-label" for="question_{{page_obj.number}}_option_4">
+                                            {{data.option4}}
+                                            </label>
+                                        </div>
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1" onclick="QuestionOnChange('{{page_obj.number}}')">&laquo; first</a>
+                            <a href="?page={{ page_obj.previous_page_number }}" onclick="QuestionOnChange('{{ page_obj.number }}')">previous</a>
+                        {% endif %}
+                
+                        <span class="current">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                        </span>
+                
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}" onclick="QuestionOnChange('{{ page_obj.number }}')">next</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}" onclick="QuestionOnChange('{{ page_obj.number }}')" >last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+                {% else %}
+                <div class="container mt-5" id="start_test_card">
+                  <div class="row">
+                      {% for i in exam_list %}
+                      <div class="col-lg-6">
+                          <div class="card">
+                              <div class="card-header">
+                                  <h2 class="font-26 text-darkblue font-roboto">{{i.examname}} </h2><input type="text" name="" id="exam_id_to_save">
+                              </div>
+                              <div class="card-body">
+                                  <h5 class="card-title">Rules of Exam.</h5>
+                                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                  <button class="btn btn-success" onclick="CheckTiming('{{i.id}}')">Start Test</button>
+                              </div>
+                          </div>
+                      </div>
+                      {% endfor %}
+                  </div>
+              
+              </div>
+                {% endif %}
+            {% else %}
+            <div class="form-signin">
+                <div class="container">
+                    <div class="logo text-center">
+                        <img src="/media/ciis_logo/logo.jpg" class="logo" alt="logo_img" />
+                    </div>
+                  
+                  
+                  
+                  <form method="POST">
+                    {% csrf_token %}
+                    <h1 class="h3 mb-3 fw-normal text-center">Please Log In</h1>
+                
+                    <div class="form-floating mb-3">
+                      <input type="email" name="email" class="form-control" id="floatingInput" >
+                      <label for="floatingInput">Email</label>
+                    </div>
+                    <div class="form-floating">
+                      <input type="password" name="password" class="form-control" id="floatingPassword">
+                      <label for="floatingPassword">Password</label>
+                    </div>
+                
+                  
+                    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                    <p class="mt-5 mb-3 text-muted text-center">&copy; 2017–2022</p>
+                  </form>
+                  
+                  
+                </div>
+                  
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+  
+    
+   
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="{% static 'dict/#js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    document.addEventListener("wheel", function(event){
+    if(document.activeElement.type === "number"){
+        document.activeElement.blur();
+    }
+});
+
+function CheckTiming(id){
+        // console.log("clicked on check_timing")
+        $.ajax({
+            type: "POST",
+            url: "{% url 'examination_through_link' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'check_timing': id
+            },
+            success: function (response) {
+                // console.log(response)
+                if(response.error){
+                    $('.error-container').empty();
+                    $('.error-container').append(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong id="error">${response.error}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    `);
+                    setTimeout(() => {
+                        $('.alert').alert('close');
+                    }, 3000);
+                }
+                else if(response.exam_id){
+                  console.log(response)
+                  if(response.exam_started == "yes"){
+                    location.reload();
+                  }
+                    // console.log(response.exam_id);
+                    // startTest(response.exam_id);
+                }
+            }
+        });
+    }
+    
+    
+
+    function QuestionOnChange(page_no){
+      // console.log("Page No : ",page_no)
+      // const element = document.querySelector(`#question_option_${page_no}`);
+      var selectedValue = $(`input[name="question_option_${page_no}"]:checked`).val();
+      if (selectedValue){
+        $.ajax({
+            type: "POST",
+            url: "{% url 'examination_through_link' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'attempted_question': selectedValue
+            },
+            success: function (response) {
+
+            }
+          });
+        
+      }
+      
+      // var params = new URLSearchParams(window.location.search);
+      // var param1 = params.get('page');
+      // console.log("Param 1: " + param1);
+    }
+  </script>
+</body>
+
+=======
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+  <link rel="stylesheet" href="{% static 'dict/#css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.1.0/css/buttons.dataTables.min.css">
+
+  
+  
+  <style>
+
+
+
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .container{
+    margin-top:50%;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    }
+
+@media (min-width: 768px) {
+.bd-placeholder-img-lg {
+    font-size: 3.5rem;
+}
+}
+</style>
+</head>
+
+<body>
+  <main>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <input type="text" id="attempted_answer_list" class="width-100  font-14 text-extralightgray">
+            {% if request.session.is_logged_in == "yes" %}
+              {% if request.session.started_exam == "yes" %}
+                <h1 class="font-roboto font-3o font-bold">Show Exam</h1>
+                
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="card mb-5 totalexam" id="question_row_{{page_obj.number}}">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="question">
+                                    <h4 id="question_{{page_obj.number}}">{{page_obj.number}} ) {{data.question}}</h4><input type="text" style="display:block;" class="form-control" id="question_id_{{page_obj.number}}" value="{{data.id}}"><input type="text" style="display:block;" class="form-control" id="question_type_{{page_obj.number}}" value="{{data.type}}">
+                                </div>
+                            </div>       
+                        </div>
+                        <div class="card-body_{{page_obj.number}}">
+                            <div class="uploaded-image_{{page_obj.number}}">
+                                
+                            </div>
+                            <div class="optionrows_question_{{page_obj.number}}" id="optionrows_question_{{page_obj.number}}">
+                                <div class="row">
+                                    <div class="options">
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_{{page_obj.number}}"  id="question_{{page_obj.number}}_option_1" value="option1" >
+                                            <label class="form-check-label" for="question_{{page_obj.number}}_option_1">
+                                            {{data.option1}}
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_{{page_obj.number}}" id="question_{{page_obj.number}}_option_2" value="option2">
+                                            <label class="form-check-label" for="question_{{page_obj.number}}_option_2">
+                                            {{data.option2}}
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_{{page_obj.number}}" id="question_{{page_obj.number}}_option_3" value="option3" >
+                                            <label class="form-check-label" for="question_{{page_obj.number}}_option_3">
+                                            {{data.option3}}
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3 ms-3">
+                                            <input class="form-check-input" type="radio" name="question_option_{{page_obj.number}}" id="question_{{page_obj.number}}_option_4" value="option4" >
+                                            <label class="form-check-label" for="question_{{page_obj.number}}_option_4">
+                                            {{data.option4}}
+                                            </label>
+                                        </div>
+                                    </div>          
+                                </div>           
+                        </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1" onclick="QuestionOnChange('{{page_obj.number}}')">&laquo; first</a>
+                            <a href="?page={{ page_obj.previous_page_number }}" onclick="QuestionOnChange('{{ page_obj.number }}')">previous</a>
+                        {% endif %}
+                
+                        <span class="current">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                        </span>
+                
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}" onclick="QuestionOnChange('{{ page_obj.number }}')">next</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}" onclick="QuestionOnChange('{{ page_obj.number }}')" >last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+                {% else %}
+                <div class="container mt-5" id="start_test_card">
+                  <div class="row">
+                      {% for i in exam_list %}
+                      <div class="col-lg-6">
+                          <div class="card">
+                              <div class="card-header">
+                                  <h2 class="font-26 text-darkblue font-roboto">{{i.examname}} </h2><input type="text" name="" id="exam_id_to_save">
+                              </div>
+                              <div class="card-body">
+                                  <h5 class="card-title">Rules of Exam.</h5>
+                                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                  <button class="btn btn-success" onclick="CheckTiming('{{i.id}}')">Start Test</button>
+                              </div>
+                          </div>
+                      </div>
+                      {% endfor %}
+                  </div>
+              
+              </div>
+                {% endif %}
+            {% else %}
+            <div class="form-signin">
+                <div class="container">
+                    <div class="logo text-center">
+                        <img src="/media/ciis_logo/logo.jpg" class="logo" alt="logo_img" />
+                    </div>
+                  
+                  
+                  
+                  <form method="POST">
+                    {% csrf_token %}
+                    <h1 class="h3 mb-3 fw-normal text-center">Please Log In</h1>
+                
+                    <div class="form-floating mb-3">
+                      <input type="email" name="email" class="form-control" id="floatingInput" >
+                      <label for="floatingInput">Email</label>
+                    </div>
+                    <div class="form-floating">
+                      <input type="password" name="password" class="form-control" id="floatingPassword">
+                      <label for="floatingPassword">Password</label>
+                    </div>
+                
+                  
+                    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                    <p class="mt-5 mb-3 text-muted text-center">&copy; 2017–2022</p>
+                  </form>
+                  
+                  
+                </div>
+                  
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+  
+    
+   
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="{% static 'dict/#js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    document.addEventListener("wheel", function(event){
+    if(document.activeElement.type === "number"){
+        document.activeElement.blur();
+    }
+});
+
+function CheckTiming(id){
+        // console.log("clicked on check_timing")
+        $.ajax({
+            type: "POST",
+            url: "{% url 'examination_through_link' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'check_timing': id
+            },
+            success: function (response) {
+                // console.log(response)
+                if(response.error){
+                    $('.error-container').empty();
+                    $('.error-container').append(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong id="error">${response.error}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    `);
+                    setTimeout(() => {
+                        $('.alert').alert('close');
+                    }, 3000);
+                }
+                else if(response.exam_id){
+                  console.log(response)
+                  if(response.exam_started == "yes"){
+                    location.reload();
+                  }
+                    // console.log(response.exam_id);
+                    // startTest(response.exam_id);
+                }
+            }
+        });
+    }
+    
+    
+
+    function QuestionOnChange(page_no){
+      // console.log("Page No : ",page_no)
+      // const element = document.querySelector(`#question_option_${page_no}`);
+      var selectedValue = $(`input[name="question_option_${page_no}"]:checked`).val();
+      if (selectedValue){
+        $.ajax({
+            type: "POST",
+            url: "{% url 'examination_through_link' %}",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            data: {
+                'attempted_question': selectedValue
+            },
+            success: function (response) {
+
+            }
+          });
+        
+      }
+      
+      // var params = new URLSearchParams(window.location.search);
+      // var param1 = params.get('page');
+      // console.log("Param 1: " + param1);
+    }
+  </script>
+</body>
+
+>>>>>>> 0afb1a7cdc5b133066f85bb3be6fd7c58409a049
+</html>
