@@ -16,6 +16,8 @@ from django.core.files.base import ContentFile
 import os
 import json
 from django.views.decorators.csrf import csrf_exempt
+from datetime import date
+from django.db.models import Q
 
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('student_registration')
@@ -24,8 +26,6 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
-
-#changes_done from local
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -70,490 +70,365 @@ def login_view(request):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-from datetime import date
-
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def add_university(request):
+    user = request.user
+
     if request.method == 'GET':
         universities = University.objects.all()
         serializer = UniversitySerializer(universities, many=True)
-        #logger.info("Fetched all universities successfully.")
+        logger.info(f"[{user.email}] fetched universities list.")
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    if not request.user.is_authenticated:
-        logger.warning("Unauthorized access attempt to add a university.")
-        return Response(
-            {"message": "You must be logged in to add a university."},
-            status=status.HTTP_401_UNAUTHORIZED
-        )
+    if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
+        logger.warning(f"[{user.email}] Unauthorized university creation attempt.")
+        return Response({"message": "You do not have permission to add a university."}, status=status.HTTP_403_FORBIDDEN)
 
-    if request.user.is_superuser or getattr(request.user, 'is_data_entry', False):
-        if request.method == 'POST':
-            # Validate required fields
-            university_name = request.data.get('university_name', '').strip()
-            university_address = request.data.get('university_address', '').strip()
+    university_name = request.data.get("university_name", "").strip()
+    university_address = request.data.get("university_address", "").strip()
 
-            if not university_name or not university_address:
-                logger.warning("Missing required fields in university creation request.")
-                return Response(
-                    {"message": "Both 'university_name' and 'university_address' are required."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+    if not university_name or not university_address:
+        logger.warning(f"[{user.email}] Missing university fields.")
+        return Response({"message": "University name and address are required."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check for duplicate university name
-            if University.objects.filter(university_name__iexact=university_name).exists():
-                logger.warning(f"Attempt to add duplicate university: {university_name}")
-                return Response(
-                    {"message": "University Name already exists."},
-                    status=status.HTTP_406_NOT_ACCEPTABLE
-                )
+    if University.objects.filter(university_name__iexact=university_name).exists():
+        logger.warning(f"[{user.email}] Tried adding duplicate university: {university_name}")
+        return Response({"message": "University name already exists."}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-            # Generate registration ID
-            lowercase = university_name.lower().replace(' ', '')  # Remove spaces and convert to lowercase
-            today = str(date.today()).replace('-', '')  # Format today's date
-            registrationID = f"{lowercase}{today}UNI"  # Combine to form registration ID
-            #logger.info(f"Generated registration ID: {registrationID} for university: {university_name}")
+    lowercase = university_name.lower().replace(' ', '')
+    today = str(date.today()).replace('-', '')
+    registration_id = f"{lowercase}{today}UNI"
 
-            # Collect data
-            data = {
-                'university_name': university_name,
-                'university_address': university_address,
-                'university_city': request.data.get('university_city', ''),
-                'university_state': request.data.get('university_state', ''),
-                'university_pincode': request.data.get('university_pincode', ''),
-                'registrationID': registrationID,
-            }
+    data = {
+        'university_name': university_name,
+        'university_address': university_address,
+        'university_city': request.data.get('university_city', ''),
+        'university_state': request.data.get('university_state', ''),
+        'university_pincode': request.data.get('university_pincode', ''),
+        'registrationID': registration_id,
+        'university_logo': request.FILES.get('university_logo', None)
+    }
 
-            # Include file upload
-            university_logo = request.FILES.get('university_logo', None)
-            if university_logo:
-                data['university_logo'] = university_logo
+    serializer = UniversitySerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        logger.info(f"[{user.email}] Successfully added university: {university_name}")
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-            serializer = UniversitySerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
-                #logger.info(f"University '{university_name}' added successfully.")
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            logger.error(f"Validation error while creating university: {serializer.errors}")
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    logger.warning("User lacks permission to add a university.")
-    return Response(
-        {"message": "You do not have permission to add a university."},
-        status=status.HTTP_403_FORBIDDEN
-    )
+    logger.error(f"[{user.email}] Error validating university data: {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def university_detail(request, university_id):
+    user = request.user
     try:
-        university = University.objects.get(id=university_id)
+        university = University.objects.get(pk=university_id)
     except University.DoesNotExist:
+        logger.warning(f"[{user.email}] Tried accessing nonexistent university ID: {university_id}")
         return Response({"message": "University not found."}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = UniversitySerializer(university)
+        logger.info(f"[{user.email}] viewed university ID: {university_id}")
         return Response(serializer.data)
 
-    if not request.user.is_authenticated:
-        return Response({"message": "You must be logged in to perform this action."}, status=status.HTTP_401_UNAUTHORIZED)
+    if request.method == 'PUT':
+        if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
+            logger.warning(f"[{user.email}] Unauthorized university update attempt.")
+            return Response({"message": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
 
-    if request.user.is_superuser or getattr(request.user, 'is_data_entry', False):
-        if request.method == 'PUT':
-            # Create a copy of the original data to compare later
-            original_data = UniversitySerializer(university).data
-            
-            # Check if there's any data to update
-            incoming_data = request.data
-            changes_detected = False
-            
-            # Check if any field is different from the original
-            for key, value in incoming_data.items():
-                if getattr(university, key) != value:
-                    changes_detected = True
-                    break
-            
-            if not changes_detected:
-                return Response({"message": "No changes detected."}, status=status.HTTP_204_NO_CONTENT)
+        serializer = UniversitySerializer(university, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            logger.info(f"[{user.email}] updated university ID: {university_id}")
+            return Response(serializer.data)
+        logger.error(f"[{user.email}] error updating university ID: {university_id} | {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check if the university name already exists in the database
-            new_university_name = incoming_data.get('university_name', None)
-            if new_university_name:
-                existing_university = University.objects.filter(university_name__iexact=new_university_name).exclude(id=university.id).first()
-                if existing_university:
-                    return Response({"message": "University name is already registered."}, status=status.HTTP_406_NOT_ACCEPTABLE)
-
-            serializer = UniversitySerializer(university, data=incoming_data, partial=True)  # partial=True allows partial updates
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        elif request.method == 'DELETE':
-            university.delete()
-            return Response({"message": "University deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+    if request.method == 'DELETE':
+        if not user.is_superuser:
+            logger.warning(f"[{user.email}] Unauthorized university deletion attempt.")
+            return Response({"message": "Only superusers can delete universities."}, status=status.HTTP_403_FORBIDDEN)
+        university.delete()
+        logger.info(f"[{user.email}] deleted university ID: {university_id}")
+        return Response({"message": "University deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
   
-from django.db.models import Q
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def create_user(request):
+    user = request.user
     if request.method == "GET":
-        if request.user.is_superuser:
-            get_all_users = User.objects.filter(Q(is_fee_clerk=True) | Q(is_data_entry=True))
-            serializers = UserSerializers(get_all_users, many=True)
-            return Response(serializers.data, status=status.HTTP_200_OK)
-        else:
-            return Response({"message": "You do not have permission to view users."}, status=status.HTTP_403_FORBIDDEN)
+        if user.is_superuser:
+            users = User.objects.filter(Q(is_fee_clerk=True) | Q(is_data_entry=True))
+            serializer = UserSerializers(users, many=True)
+            logger.info(f"[{user.email}] fetched all fee clerk and data entry users.")
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        logger.warning(f"[{user.email}] attempted to fetch users without permission.")
+        return Response({"message": "You do not have permission to view users."}, status=status.HTTP_403_FORBIDDEN)
 
-    elif request.method == "POST":
-      if request.user.is_superuser:
-          serializer = UserSerializers(data=request.data)
-          if serializer.is_valid():
-              serializer.save()
-              return Response(serializer.data, status=status.HTTP_201_CREATED)
-          return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-      else:
-          return Response({"message": "You do not have permission to create users."}, status=status.HTTP_403_FORBIDDEN)
+    if request.method == "POST":
+        if user.is_superuser:
+            serializer = UserSerializers(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                logger.info(f"[{user.email}] created new user with email: {serializer.validated_data['email']}")
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            logger.error(f"[{user.email}] user creation failed: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        logger.warning(f"[{user.email}] attempted to create user without permission.")
+        return Response({"message": "You do not have permission to create users."}, status=status.HTTP_403_FORBIDDEN)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_semester_fees(request):
-    """
-    Create SemesterFees entries with unique constraints based on
-    University → Course → Stream → SubStream → Semester.
-    """
-    if request.user.is_superuser:
-        try:
-            data = request.data
-
-            # Ensure data is always a list for uniform processing
-            if isinstance(data, dict):  # Single entry
-                data = [data]
-
-            responses = []  # To store responses for each entry
-
-            for entry in data:
-                try:
-                    # Extract and validate required fields
-                    university_id = entry.get('university_id')
-                    course_id = entry.get('course_id')
-                    stream_id = entry.get('stream_id')
-                    substream_id = entry.get('substream_id')  # Optional
-                    sem = entry.get('sem')
-
-                    if not (university_id and course_id and substream_id and sem):
-                        responses.append({
-                            "error": "Missing required fields: 'university_id', 'course_id', 'substream_id', or 'sem'"
-                        })
-                        continue  # Skip to the next entry
-
-                    # Resolve IDs from names
-                    university = University.objects.filter(id=university_id).first()
-                    if not university:
-                        responses.append({"error": f"University '{university_id}' not found"})
-                        continue
-
-                    course = Course.objects.filter(id=course_id, university=university).first()
-                    if not course:
-                        responses.append({"error": f"Course '{course_id}' not found in University '{university_id}'"})
-                        continue
-
-                    stream = Stream.objects.filter(id=stream_id, course=course).first()
-                    if not stream:
-                        responses.append({"error": f"Stream '{stream_id}' not found in Course '{course_id}'"})
-                        continue
-
-                    substream = None
-                    if substream_id:
-                        substream = SubStream.objects.filter(id=substream_id, stream=stream).first()
-                        if not substream:
-                            responses.append({"error": f"SubStream '{substream_id}' not found in Stream '{stream_id}'"})
-                            continue
-
-                    # Check for unique combination
-                    if SemesterFees.objects.filter(
-                        Q(stream=stream) & Q(substream=substream) & Q(sem=sem)
-                    ).exists():
-                        responses.append({
-                            "error": f"A record already exists for Semester '{sem}'"
-                        })
-                        continue
-
-                    if int(sem) > 8:
-                        responses.append({"error": f"Semester '{sem}' cannot be more than 8"})
-                        continue
-
-                    # Extract fees
-                    tutionfees = float(entry.get('tutionfees', 0))
-                    examinationfees = float(entry.get('examinationfees', 0))
-                    bookfees = float(entry.get('bookfees', 0))
-                    resittingfees = float(entry.get('resittingfees', 0))
-                    entrancefees = float(entry.get('entrancefees', 0))
-                    extrafees = float(entry.get('extrafees', 0))
-                    discount = float(entry.get('discount', 0))
-
-                    # Calculate total fees
-                    totalfees = (
-                        tutionfees + examinationfees + bookfees +
-                        resittingfees + entrancefees + extrafees - discount
-                    )
-
-                    # Create the SemesterFees entry
-                    semester_fee = SemesterFees.objects.create(
-                        stream=stream,
-                        substream=substream,
-                        sem=sem,
-                        tutionfees=tutionfees,
-                        examinationfees=examinationfees,
-                        bookfees=bookfees,
-                        resittingfees=resittingfees,
-                        entrancefees=entrancefees,
-                        extrafees=extrafees,
-                        discount=discount,
-                        totalfees=totalfees,
-                        created_by=request.user.id,
-                        modified_by=request.user.id
-                    )
-
-                    responses.append({
-                        "message": f"Semester fees created successfully for Semester {sem}",
-                        "data": {
-                            "stream": stream_id,
-                            "substream": substream_id,
-                            "sem": semester_fee.sem,
-                            "totalfees": semester_fee.totalfees,
-                        },
-                    })
-
-                except Exception as entry_exception:
-                    responses.append({"error": str(entry_exception)})
-
-            return Response(responses, status=status.HTTP_201_CREATED)
-
-        except Exception as e:
-            logger.error(f"Internal server error: {e}")
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    else:
-        logger.warning(f"Unauthorized access attempt by user {request.user.id}")
+    if not request.user.is_superuser:
+        logger.warning(f"Unauthorized access attempt by user {request.user.email}")
         return Response({"message": "You don't have permission to add"}, status=status.HTTP_403_FORBIDDEN)
 
+    try:
+        data = request.data if isinstance(request.data, list) else [request.data]
+        responses = []
+
+        for entry in data:
+            try:
+                required_fields = ['university_id', 'course_id', 'substream_id', 'sem']
+                if not all(entry.get(field) for field in required_fields):
+                    responses.append({"error": "Missing required fields."})
+                    continue
+
+                university = University.objects.filter(id=entry['university_id']).first()
+                course = Course.objects.filter(id=entry['course_id'], university=university).first() if university else None
+                stream = Stream.objects.filter(id=entry['stream_id'], course=course).first() if course else None
+                substream = SubStream.objects.filter(id=entry['substream_id'], stream=stream).first() if stream else None
+
+                if not all([university, course, stream, substream]):
+                    responses.append({"error": "Invalid university, course, stream or substream reference."})
+                    continue
+
+                sem = entry['sem']
+                if int(sem) > 8:
+                    responses.append({"error": f"Semester '{sem}' cannot be more than 8"})
+                    continue
+
+                if SemesterFees.objects.filter(stream=stream, substream=substream, sem=sem).exists():
+                    responses.append({"error": f"Semester fee for sem {sem} already exists"})
+                    continue
+
+                # Fee calculation
+                tutionfees = float(entry.get('tutionfees', 0))
+                examinationfees = float(entry.get('examinationfees', 0))
+                bookfees = float(entry.get('bookfees', 0))
+                resittingfees = float(entry.get('resittingfees', 0))
+                entrancefees = float(entry.get('entrancefees', 0))
+                extrafees = float(entry.get('extrafees', 0))
+                discount = float(entry.get('discount', 0))
+
+                totalfees = (
+                    tutionfees + examinationfees + bookfees +
+                    resittingfees + entrancefees + extrafees - discount
+                )
+
+                semester_fee = SemesterFees.objects.create(
+                    stream=stream,
+                    substream=substream,
+                    sem=sem,
+                    tutionfees=tutionfees,
+                    examinationfees=examinationfees,
+                    bookfees=bookfees,
+                    resittingfees=resittingfees,
+                    entrancefees=entrancefees,
+                    extrafees=extrafees,
+                    discount=discount,
+                    totalfees=totalfees,
+                    created_by=request.user.id,
+                    modified_by=request.user.id
+                )
+
+                responses.append({
+                    "message": f"Semester fee created for Semester {sem}",
+                    "data": {
+                        "stream": stream.id,
+                        "substream": substream.id,
+                        "sem": sem,
+                        "totalfees": semester_fee.totalfees,
+                    },
+                })
+            except Exception as entry_err:
+                logger.error(f"Entry error: {entry_err}")
+                responses.append({"error": str(entry_err)})
+
+        return Response(responses, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        logger.error(f"Internal server error: {e}")
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+      
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_year_fees(request):
-    """
-    Create YearFees entries with unique constraints based on
-    University → Course → Stream → SubStream → Year.
-    """
-    if request.user.is_superuser:
-        try:
-            data = request.data
-
-            # Ensure data is always a list for uniform processing
-            if isinstance(data, dict):  # Single entry
-                data = [data]
-
-            responses = []  # To store responses for each entry
-
-            for entry in data:
-                try:
-                    # Extract and validate required fields
-                    university_id = entry.get('university_id')
-                    course_id = entry.get('course_id')
-                    stream_id = entry.get('stream_id')
-                    substream_id = entry.get('substream_id')  # Optional
-                    year = entry.get('year')
-
-                    if not (university_id and course_id and substream_id and year):
-                        responses.append({
-                            "error": "Missing required fields: 'university_id', 'course_id', 'substream_id', or 'year'"
-                        })
-                        continue  # Skip to the next entry
-
-                    # Resolve IDs from names
-                    university = University.objects.filter(id=university_id).first()
-                    if not university:
-                        responses.append({"error": f"University '{university_id}' not found"})
-                        continue
-
-                    course = Course.objects.filter(id=course_id, university=university).first()
-                    if not course:
-                        responses.append({"error": f"Course '{course_id}' not found in University '{university_id}'"})
-                        continue
-
-                    stream = Stream.objects.filter(id=stream_id, course=course).first()
-                    if not stream:
-                        responses.append({"error": f"Stream '{stream_id}' not found in Course '{course_id}'"})
-                        continue
-
-                    substream = None
-                    if substream_id:
-                        substream = SubStream.objects.filter(id=substream_id, stream=stream).first()
-                        if not substream:
-                            responses.append({"error": f"SubStream '{substream_id}' not found in Stream '{stream_id}'"})
-                            continue
-
-                    # Check for unique combination of stream, substream, and year
-                    if YearFees.objects.filter(
-                        Q(stream=stream) & Q(substream=substream) & Q(year=year)
-                    ).exists():
-                        responses.append({
-                            "error": f"A record already exists for Year '{year}'"
-                        })
-                        continue
-
-                    if int(year) > 4:
-                        responses.append({"error": f"Year '{year}' cannot be greater than 4"})
-                        continue
-
-                    # Extract fees
-                    tutionfees = float(entry.get('tutionfees', 0))
-                    examinationfees = float(entry.get('examinationfees', 0))
-                    bookfees = float(entry.get('bookfees', 0))
-                    resittingfees = float(entry.get('resittingfees', 0))
-                    entrancefees = float(entry.get('entrancefees', 0))
-                    extrafees = float(entry.get('extrafees', 0))
-                    discount = float(entry.get('discount', 0))
-
-                    # Calculate total fees
-                    totalfees = (
-                        tutionfees + examinationfees + bookfees +
-                        resittingfees + entrancefees + extrafees - discount
-                    )
-
-                    # Create the YearFees entry
-                    year_fee = YearFees.objects.create(
-                        stream=stream,
-                        substream=substream,
-                        year=year,
-                        tutionfees=tutionfees,
-                        examinationfees=examinationfees,
-                        bookfees=bookfees,
-                        resittingfees=resittingfees,
-                        entrancefees=entrancefees,
-                        extrafees=extrafees,
-                        discount=discount,
-                        totalfees=totalfees,
-                        created_by=request.user.id,
-                        modified_by=request.user.id
-                    )
-                    responses.append({
-                        "message": f"Year fees created successfully for Year {year}",
-                        "data": {
-                            "stream": stream_id,
-                            "substream": substream_id,
-                            "year": year_fee.year,
-                            "totalfees": year_fee.totalfees,
-                        },
-                    })
-
-                except Exception as entry_exception:
-                    responses.append({"error": str(entry_exception)})
-
-            return Response(responses, status=status.HTTP_201_CREATED)
-
-        except Exception as e:
-            logger.error(f"Internal server error: {e}")
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    else:
-        logger.warning(f"Unauthorized access attempt by user {request.user.id}")
+    if not request.user.is_superuser:
+        logger.warning(f"Unauthorized access attempt by user {request.user.email}")
         return Response({"message": "You don't have permission to add"}, status=status.HTTP_403_FORBIDDEN)
+
+    try:
+        data = request.data if isinstance(request.data, list) else [request.data]
+        responses = []
+
+        for entry in data:
+            try:
+                required_fields = ['university_id', 'course_id', 'substream_id', 'year']
+                if not all(entry.get(field) for field in required_fields):
+                    responses.append({"error": "Missing required fields."})
+                    continue
+
+                university = University.objects.filter(id=entry['university_id']).first()
+                course = Course.objects.filter(id=entry['course_id'], university=university).first() if university else None
+                stream = Stream.objects.filter(id=entry['stream_id'], course=course).first() if course else None
+                substream = SubStream.objects.filter(id=entry['substream_id'], stream=stream).first() if stream else None
+
+                if not all([university, course, stream, substream]):
+                    responses.append({"error": "Invalid university, course, stream or substream reference."})
+                    continue
+
+                year = entry['year']
+                if int(year) > 4:
+                    responses.append({"error": f"Year '{year}' cannot be greater than 4"})
+                    continue
+
+                if YearFees.objects.filter(stream=stream, substream=substream, year=year).exists():
+                    responses.append({"error": f"Year fee for year {year} already exists"})
+                    continue
+
+                # Fee calculation
+                totalfees = sum([
+                    float(entry.get('tutionfees', 0)),
+                    float(entry.get('examinationfees', 0)),
+                    float(entry.get('bookfees', 0)),
+                    float(entry.get('resittingfees', 0)),
+                    float(entry.get('entrancefees', 0)),
+                    float(entry.get('extrafees', 0)),
+                ]) - float(entry.get('discount', 0))
+
+                year_fee = YearFees.objects.create(
+                    stream=stream,
+                    substream=substream,
+                    year=year,
+                    tutionfees=entry.get('tutionfees', 0),
+                    examinationfees=entry.get('examinationfees', 0),
+                    bookfees=entry.get('bookfees', 0),
+                    resittingfees=entry.get('resittingfees', 0),
+                    entrancefees=entry.get('entrancefees', 0),
+                    extrafees=entry.get('extrafees', 0),
+                    discount=entry.get('discount', 0),
+                    totalfees=totalfees,
+                    created_by=request.user.id,
+                    modified_by=request.user.id
+                )
+
+                responses.append({
+                    "message": f"Year fee created for Year {year}",
+                    "data": {
+                        "stream": stream.id,
+                        "substream": substream.id,
+                        "year": year_fee.year,
+                        "totalfees": year_fee.totalfees,
+                    },
+                })
+            except Exception as entry_err:
+                logger.error(f"Entry error: {entry_err}")
+                responses.append({"error": str(entry_err)})
+
+        return Response(responses, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        logger.error(f"Internal server error: {e}")
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def payment_modes(request):
-    """
-    Handles GET and POST for PaymentModes.
-    Only superusers can perform these operations.
-    """
     if not request.user.is_superuser:
+        logger.warning(f"[{request.user.email}] Unauthorized access to payment_modes.")
         return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'GET':
-        # Fetch all payment modes
-        payment_modes = PaymentModes.objects.all()
-        serializer = PaymentModesSerializer(payment_modes, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        modes = PaymentModes.objects.all()
+        serializer = PaymentModesSerializer(modes, many=True)
+        logger.info("Payment modes list fetched.")
+        return Response(serializer.data)
 
-    elif request.method == 'POST':
-        # Create a new payment mode
+    if request.method == 'POST':
         serializer = PaymentModesSerializer(data=request.data)
         if serializer.is_valid():
-            # Check for duplicates
             name = serializer.validated_data.get('name')
             if PaymentModes.objects.filter(name__iexact=name).exists():
+                logger.warning(f"Duplicate payment mode attempted: {name}")
                 return Response({"error": "Mode already exists"}, status=status.HTTP_400_BAD_REQUEST)
-            
-            payment_mode = serializer.save()
+            serializer.save()
+            logger.info(f"Payment mode created: {name}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
+        logger.error(f"Payment mode creation failed: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def payment_mode_detail(request, id):
-    """
-    Handles GET, PUT, and DELETE for a specific PaymentMode by ID.
-    """
     try:
-        payment_mode = PaymentModes.objects.get(id=id)
+        mode = PaymentModes.objects.get(id=id)
     except PaymentModes.DoesNotExist:
+        logger.warning(f"Payment mode with ID {id} not found.")
         return Response({"error": "PaymentMode not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        # Retrieve a specific payment mode
-        serializer = PaymentModesSerializer(payment_mode)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = PaymentModesSerializer(mode)
+        return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        # Update the payment mode using the serializer
-        serializer = PaymentModesSerializer(payment_mode, data=request.data, partial=True)
-
+    if request.method == 'PUT':
+        serializer = PaymentModesSerializer(mode, data=request.data, partial=True)
         if serializer.is_valid():
-            # Always save the payment_mode, even if no actual changes are made
-            payment_mode = serializer.save()
-
-            # Return the updated data (or re-saved data)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        
+            serializer.save()
+            logger.info(f"Updated payment mode ID {id}.")
+            return Response(serializer.data)
+        logger.error(f"Failed to update payment mode ID {id}: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
-        payment_mode.delete()
+    if request.method == 'DELETE':
+        mode.delete()
+        logger.info(f"Deleted payment mode ID {id}.")
         return Response({"message": "Payment mode deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def fee_receipt_options(request):
-    """
-    Handles GET and POST for FeeReceiptOptions.
-    Only superusers can perform these operations.
-    """
     if not request.user.is_superuser:
+        logger.warning(f"[{request.user.email}] Unauthorized access to fee_receipt_options.")
         return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'GET':
         options = FeeReceiptOptions.objects.all()
         serializer = FeeReceiptOptionsSerializer(options, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        logger.info("Fetched all fee receipt options.")
+        return Response(serializer.data)
 
-    elif request.method == 'POST':
+    if request.method == 'POST':
         serializer = FeeReceiptOptionsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            logger.info("Created new fee receipt option.")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        logger.error(f"Failed to create fee receipt option: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def fee_receipt_option_detail(request, id):
-    """
-    Handles GET, PUT, and DELETE for a specific FeeReceiptOption by ID.
-    Only superusers can perform these operations.
-    """
     if not request.user.is_superuser:
+        logger.warning(f"[{request.user.email}] Unauthorized access to fee_receipt_option_detail.")
         return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
     try:
@@ -563,85 +438,75 @@ def fee_receipt_option_detail(request, id):
 
     if request.method == 'GET':
         serializer = FeeReceiptOptionsSerializer(option)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        # Use the partial=True argument to allow updating only the provided fields
+    if request.method == 'PUT':
         serializer = FeeReceiptOptionsSerializer(option, data=request.data, partial=True)
-
         if serializer.is_valid():
-            # Always save the option even if no changes are detected
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
+            logger.info(f"Updated fee receipt option ID {id}.")
+            return Response(serializer.data)
+        logger.error(f"Failed to update fee receipt option ID {id}: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    if request.method == 'DELETE':
         option.delete()
+        logger.info(f"Deleted fee receipt option ID {id}.")
         return Response({"message": "Fee receipt option deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def bank_names(request):
-    """
-    Handles GET and POST for BankNames.
-    Only superusers can perform these operations.
-    """
     if not request.user.is_superuser:
+        logger.warning(f"[{request.user.email}] Unauthorized access to bank_names.")
         return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
-    
-    if request.method == 'GET':
-        # Fetch all bank names
-        bank_names = BankNames.objects.all()
-        serializer = BankNamesSerializer(bank_names, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    elif request.method == 'POST':
-        # Create a new bank name
+    if request.method == 'GET':
+        banks = BankNames.objects.all()
+        serializer = BankNamesSerializer(banks, many=True)
+        logger.info("Fetched all bank names.")
+        return Response(serializer.data)
+
+    if request.method == 'POST':
         serializer = BankNamesSerializer(data=request.data)
         if serializer.is_valid():
-            # Check for duplicates
             name = serializer.validated_data.get('name')
             if BankNames.objects.filter(name__iexact=name).exists():
+                logger.warning(f"Attempted to create duplicate bank name: {name}")
                 return Response({"error": "Bank name already exists"}, status=status.HTTP_400_BAD_REQUEST)
-            
-            bank_name = serializer.save()
+            serializer.save()
+            logger.info(f"Created new bank name: {name}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
+        logger.error(f"Failed to create bank name: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+  
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def bank_name_detail(request, id):
-    """
-    Handles GET, PUT, and DELETE for a specific BankName by ID.
-    """
     try:
-        bank_name = BankNames.objects.get(id=id)
+        bank = BankNames.objects.get(id=id)
     except BankNames.DoesNotExist:
+        logger.warning(f"Bank name with ID {id} not found.")
         return Response({"error": "BankName not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        # Retrieve a specific bank name
-        serializer = BankNamesSerializer(bank_name)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = BankNamesSerializer(bank)
+        return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        # Update the bank name using the serializer (partial updates allowed)
-        serializer = BankNamesSerializer(bank_name, data=request.data, partial=True)
-
+    if request.method == 'PUT':
+        serializer = BankNamesSerializer(bank, data=request.data, partial=True)
         if serializer.is_valid():
-            # Always save the bank_name, even if no changes are detected
-            bank_name = serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
+            serializer.save()
+            logger.info(f"Updated bank name ID {id}.")
+            return Response(serializer.data)
+        logger.error(f"Failed to update bank name ID {id}: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
-        bank_name.delete()
+    if request.method == 'DELETE':
+        bank.delete()
+        logger.info(f"Deleted bank name ID {id}.")
         return Response({"message": "Bank name deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
@@ -650,21 +515,26 @@ def session_names(request):
     Handles GET and POST for SessionNames.
     Only superusers can perform these operations.
     """
-    # if not request.user.is_superuser:
-    #     return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+    if not request.user.is_superuser:
+        logger.warning(f"[{request.user.email}] Unauthorized access to session_names.")
+        return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'GET':
         sessions = SessionNames.objects.all()
         serializer = SessionNamesSerializer(sessions, many=True)
+        logger.info("Fetched all session names.")
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    elif request.method == 'POST':
+    if request.method == 'POST':
         serializer = SessionNamesSerializer(data=request.data)
         if serializer.is_valid():
-            if SessionNames.objects.filter(name__iexact=serializer.validated_data.get('name')).exists():
+            if SessionNames.objects.filter(name__iexact=serializer.validated_data['name']).exists():
+                logger.warning("Attempt to create duplicate session name.")
                 return Response({"error": "Session name already exists"}, status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
+            logger.info(f"Session name created: {serializer.validated_data['name']}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        logger.error(f"Failed to create session name: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -676,38 +546,37 @@ def session_name_detail(request, id):
     Only superusers can perform these operations.
     """
     if not request.user.is_superuser:
+        logger.warning(f"[{request.user.email}] Unauthorized access to session_name_detail.")
         return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
     try:
         session = SessionNames.objects.get(id=id)
     except SessionNames.DoesNotExist:
+        logger.warning(f"Session name ID {id} not found.")
         return Response({"error": "Session name not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        # Retrieve a specific session name
         serializer = SessionNamesSerializer(session)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    elif request.method == 'PUT':
-        # Update the session name using the serializer (partial updates allowed)
+    if request.method == 'PUT':
         serializer = SessionNamesSerializer(session, data=request.data, partial=True)
-
         if serializer.is_valid():
-            # Always save the session_name, even if no changes are detected
-            # Check if the new name already exists (case-insensitive)
             if 'name' in serializer.validated_data and SessionNames.objects.filter(
                 name__iexact=serializer.validated_data['name']
             ).exclude(id=session.id).exists():
+                logger.warning(f"Duplicate session name attempted in update: {serializer.validated_data['name']}")
                 return Response({"error": "Session name already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Save the changes, regardless of whether any fields changed or not
             serializer.save()
+            logger.info(f"Updated session name ID {id}")
             return Response(serializer.data, status=status.HTTP_200_OK)
-
+        logger.error(f"Failed to update session name ID {id}: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    if request.method == 'DELETE':
         session.delete()
+        logger.info(f"Deleted session name ID {id}")
         return Response({"message": "Session name deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
 
@@ -715,21 +584,24 @@ def session_name_detail(request, id):
 @permission_classes([IsAuthenticated])
 def change_password(request):
     user = request.user
-    if not request.user.is_authenticated:
+
+    if not user.is_authenticated:
+        logger.warning("Unauthorized password change attempt.")
         return Response(
             {"error": "Authentication required. User not found or anonymous."},
             status=status.HTTP_401_UNAUTHORIZED
         )
+
     serializer = ChangePasswordSerializer(data=request.data)
-    
+
     if serializer.is_valid():
-        # Set the new password
         user.set_password(serializer.validated_data['password'])
         user.save()
-        return Response({"Message": "Password changed successfully"}, status=status.HTTP_200_OK)
-    else:
-        # Return errors if validation fails
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        logger.info(f"[{user.email}] changed their password.")
+        return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
+
+    logger.error(f"[{user.email}] failed password change: {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -737,16 +609,19 @@ def get_courses_by_university(request):
     university_name = request.query_params.get('university')
 
     if not university_name:
+        logger.warning("Missing university parameter in get_courses_by_university.")
         return Response({"error": "University name is required."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         university = University.objects.get(university_name=university_name)
     except University.DoesNotExist:
+        logger.warning(f"University not found: {university_name}")
         return Response({"error": "University not found."}, status=status.HTTP_404_NOT_FOUND)
 
     courses = university.course_set.all()
-    course_names = [course.name for course in courses]  # Extracting names into a list
-    # Return both university name and course names in the response
+    course_names = [course.name for course in courses]
+
+    logger.info(f"Courses fetched for university: {university_name}")
     return Response({
         "university": university_name,
         "courses": course_names
@@ -756,57 +631,48 @@ def get_courses_by_university(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_stream_by_course_one(request):
-    # Get course_name and university_name from query parameters
     course_name = request.query_params.get('course')
     university_name = request.query_params.get('university')
 
-    #logger.info("Request to fetch streams for course '%s' at university '%s' received.", course_name, university_name)
-    
-    # Check if both course_name and university_name are provided
     if not course_name or not university_name:
+        logger.warning("Missing course or university in request.")
         return Response({"error": "Both 'course_name' and 'university_name' are required."}, status=status.HTTP_400_BAD_REQUEST)
-    
+
     try:
-        # Fetch the university object
         university = University.objects.get(university_name=university_name)
+    except University.DoesNotExist:
+        logger.error("University not found: '%s'", university_name)
+        return Response({"error": f"University '{university_name}' not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Fetch the course object related to the given university
+    try:
         course = Course.objects.get(name=course_name, university=university)
-        
-        # Fetch streams related to this course
-        streams = Stream.objects.filter(course=course)
-        
-        # Prepare the response data
-        stream_list = []
-        for stream in streams:
-            stream_data = {
+    except Course.DoesNotExist:
+        logger.error("Course '%s' not found for university '%s'", course_name, university_name)
+        return Response({"error": f"Course '{course_name}' not found for university '{university_name}'."}, status=status.HTTP_404_NOT_FOUND)
 
-                "stream_id":stream.id,
+    try:
+        streams = Stream.objects.filter(course=course)
+        stream_list = [
+            {
+                "stream_id": stream.id,
                 "stream_name": stream.name,
                 "semester": stream.sem,
                 "year": stream.year
             }
-            stream_list.append(stream_data)
+            for stream in streams
+        ]
 
-        #logger.info("Successfully fetched %d streams for course '%s' (ID: %d) at university '%s'.", len(stream_list), course.name, course.id, university.university_name)
-        
+        logger.info("Streams fetched for course '%s' at university '%s'", course.name, university.university_name)
+
         return Response({
             "university_name": university.university_name,
             "course_name": course.name,
-            "course_id" : course.id,
+            "course_id": course.id,
             "streams": stream_list
         }, status=status.HTTP_200_OK)
 
-    except University.DoesNotExist:
-        logger.error("Stream fetch failed: University with name '%s' not found.", university_name)
-        return Response({"error": f"University '{university_name}' not found."}, status=status.HTTP_404_NOT_FOUND)
-
-    except Course.DoesNotExist:
-        logger.error("Stream fetch failed: Course '%s' not found for university '%s'.", course_name, university_name)
-        return Response({"error": f"Course '{course_name}' not found for university '{university_name}'."}, status=status.HTTP_404_NOT_FOUND)
-
     except Exception as e:
-        logger.error("Error fetching streams for course '%s' at university '%s'. Exception: %s", course_name, university_name, str(e))
+        logger.error("Exception occurred while fetching streams: %s", str(e))
         return Response({"error": "Unable to fetch streams."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
   
   
@@ -820,22 +686,33 @@ def get_substreams_by_university_course_stream(request):
     university_name = request.query_params.get('university')
     course_name = request.query_params.get('course')
     stream_name = request.query_params.get('stream')
+
     if not university_name or not course_name or not stream_name:
+        logger.warning("Missing one or more required parameters: university, course, stream.")
         return Response({"error": "University name, course name, and stream name are required."}, status=status.HTTP_400_BAD_REQUEST)
+
     try:
         university = University.objects.get(university_name=university_name)
     except University.DoesNotExist:
+        logger.error("University not found: '%s'", university_name)
         return Response({"error": "University not found."}, status=status.HTTP_404_NOT_FOUND)
+
     try:
         course = Course.objects.get(university=university, name=course_name)
     except Course.DoesNotExist:
+        logger.error("Course not found: '%s' under university '%s'", course_name, university_name)
         return Response({"error": "Course not found."}, status=status.HTTP_404_NOT_FOUND)
+
     try:
         stream = Stream.objects.get(course=course, name=stream_name)
     except Stream.DoesNotExist:
+        logger.error("Stream not found: '%s' in course '%s'", stream_name, course_name)
         return Response({"error": "Stream not found."}, status=status.HTTP_404_NOT_FOUND)
+
     substreams = SubStream.objects.filter(stream=stream)
-    substream_names = [substream.name for substream in substreams]  # Extracting names into a list
+    substream_names = [substream.name for substream in substreams]
+
+    logger.info("Fetched %d substreams for stream '%s'", len(substream_names), stream.name)
     return Response(substream_names, status=status.HTTP_200_OK)
         
 from django.contrib.auth.hashers import make_password
@@ -843,37 +720,42 @@ from django.contrib.auth.hashers import make_password
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def search_by_enrollment_id(request):
-    enrollment_id = request.query_params.get('enrollment_id')  # Get enrollment_id from query parameters
-    if enrollment_id:
-        try:
-            # Attempt to retrieve the student by enrollment_id
-            data = Student.objects.get(enrollment_id=enrollment_id)
-            serializer = StudentSearchSerializer(data)
-            return Response({"data": serializer.data}, status=status.HTTP_200_OK)  # Use 200 OK for successful retrieval
-        except Student.DoesNotExist:
-            # If the student does not exist, return an error response
-            return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
-    else:
-        # If enrollment_id is not provided, return an error response
+    enrollment_id = request.query_params.get('enrollment_id')
+
+    if not enrollment_id:
+        logger.warning("Enrollment ID not provided in query parameters.")
         return Response({"error": "Enrollment ID is required."}, status=status.HTTP_400_BAD_REQUEST)
-      
+
+    try:
+        student = Student.objects.get(enrollment_id=enrollment_id)
+        serializer = StudentSearchSerializer(student)
+        logger.info(f"Student found with enrollment_id: {enrollment_id}")
+        return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+    except Student.DoesNotExist:
+        logger.warning(f"No student found for enrollment_id: {enrollment_id}")
+        return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
+        
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def search_by_student_name(request):
     """
-    Search for students by their name or alphabet.
+    Search for students by their name using a case-insensitive substring match.
     """
-    name_query = request.data.get('name', '')
+    name_query = request.query_params.get('name', '').strip()
 
-    # Query the Student model for names that contain the search term
+    if not name_query:
+        logger.warning("No name provided in student name search.")
+        return Response({"error": "Name query parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
     students = Student.objects.filter(name__icontains=name_query)
 
     if students.exists():
-        # Use the serializer to serialize the list of students
         serializer = StudentSearchSerializer(students, many=True)
+        logger.info(f"Found {students.count()} student(s) matching: '{name_query}'")
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        return Response({"message": "No students found"}, status=status.HTTP_404_NOT_FOUND)
+        logger.info(f"No students found for name search: '{name_query}'")
+        return Response({"message": "No students found."}, status=status.HTTP_404_NOT_FOUND)
   
 @api_view(['POST', 'GET'])
 @permission_classes([IsAuthenticated])
