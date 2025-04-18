@@ -18,6 +18,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from datetime import date
 from django.db.models import Q
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('student_registration')
@@ -34,7 +35,6 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token)
         }
 
-@csrf_exempt
 @api_view(["POST"])
 def login_view(request):
     print('inside login view')
@@ -757,169 +757,170 @@ def search_by_student_name(request):
         logger.info(f"No students found for name search: '{name_query}'")
         return Response({"message": "No students found."}, status=status.HTTP_404_NOT_FOUND)
   
+
+
 @api_view(['POST', 'GET'])
 @permission_classes([IsAuthenticated])
 def create_course(request):
     """
-    Create a new course or retrieve existing courses.
+    POST: Create a new course for a given university.
+    GET: Retrieve all courses or filter by university name.
     """
-    if request.method == 'POST':
-        university_name = request.data.get('university_name')
-        name = request.data.get('name')
+    university_name = (
+        request.data.get('university_name') if request.method == 'POST'
+        else request.query_params.get('university_name')
+    )
 
-        # Check if the university exists
+    if request.method == 'POST':
+        course_name = request.data.get('name')
+
+        if not university_name or not course_name:
+            return Response(
+                {'error': 'Both university_name and name are required.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         try:
             university = University.objects.get(university_name=university_name)
         except University.DoesNotExist:
             return Response({'error': 'University not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Check if the course name already exists for the university
-        if Course.objects.filter(university=university, name=name).exists():
-            return Response({'error': 'Course with this name already exists for the specified university.'}, status=status.HTTP_400_BAD_REQUEST)
+        if Course.objects.filter(university=university, name=course_name).exists():
+            return Response(
+                {'error': 'Course with this name already exists for the specified university.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # Proceed to create the course
         serializer = CourseSerializerTwo(data=request.data)
-        
         if serializer.is_valid():
-            # Save the new course with the existing university
             serializer.save(university=university, created_by=request.user, modified_by=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'GET':
-        # Retrieve all courses or filter by university
-        university_name = request.query_params.get('university_name', None)
-        if university_name:
-            try:
-                university = University.objects.get(university_name=university_name)
-                courses = Course.objects.filter(university=university)
-            except University.DoesNotExist:
-                return Response({'error': 'University not found.'}, status=status.HTTP_404_NOT_FOUND)
-        else:
-            courses = Course.objects.all()
+    # GET Request
+    if university_name:
+        try:
+            university = University.objects.get(university_name=university_name)
+            courses = Course.objects.filter(university=university)
+        except University.DoesNotExist:
+            return Response({'error': 'University not found.'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        courses = Course.objects.all()
 
-        # Serialize the course data
-        serializer = CourseSerializerTwo(courses, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    serializer = CourseSerializerTwo(courses, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
   
   
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_stream(request):
     """
-    Create a new stream based on a specific course.
+    Create a new stream for a given course and university.
     """
-    #logger.info("Create Stream API called with data: %s", request.data)
-
-    course_name = request.data.get('course_name')
     university_name = request.data.get('university_name')
-    stream_name = request.data.get('stream_name')  # Stream name
-    year = request.data.get('year')
+    course_name = request.data.get('course_name')
+    stream_name = request.data.get('stream_name')
+    year = request.data.get('year') or datetime.now().year
     sem = request.data.get('sem')
 
     # Validate required fields
-    if not year or year==None:
-        year = datetime.now().year  # Get the current year
-        #logger.info("Year not provided. Defaulting to current year: %s", year)
-    print(year,'Yearssssssssssssssssss')
+    if not university_name or not course_name or not stream_name:
+        return Response(
+            {'error': 'university_name, course_name, and stream_name are required.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     if not sem:
-        logger.error("Semester field is missing in the request.")
         return Response({'error': 'Semester is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Validate university
+    # Validate University
     try:
         university = University.objects.get(university_name=university_name)
     except University.DoesNotExist:
-        logger.error("University '%s' not found.", university_name)
         return Response({'error': 'University not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-    # Validate course
+    # Validate Course
     try:
         course = Course.objects.get(name=course_name, university=university)
     except Course.DoesNotExist:
-        logger.error("Course '%s' not found in university '%s'.", course_name, university_name)
-        return Response({'error': 'Course not found for the specified university.'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {'error': 'Course not found for the specified university.'},
+            status=status.HTTP_404_NOT_FOUND
+        )
 
-    # Check if the stream name already exists for the course
+    # Check for existing Stream
     if Stream.objects.filter(course=course, name=stream_name).exists():
-        logger.error("Stream '%s' already exists for course '%s'.", stream_name, course_name)
-        return Response({'error': 'Stream with this name already exists for the specified course.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'error': 'Stream with this name already exists for the specified course.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-    # Preprocess data for the serializer
+    # Prepare data for serializer
     data = request.data.copy()
-    data['name'] = stream_name  # Map `stream_name` to `name`
-    data['year'] = year  # Ensure the `year` field is correctly set
+    data['name'] = stream_name
+    data['year'] = year
 
-    # Proceed to create the stream
     serializer = StreamSerializer(data=data)
-
     if serializer.is_valid():
         serializer.save(course=course, created_by=request.user, modified_by=request.user)
-        #logger.info("Stream '%s' successfully created for course '%s'.", stream_name, course_name)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    logger.error("Validation errors: %s", serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-  
+    
   
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_sub_stream(request):
     """
-    Create a new substream based on a specific stream.
+    Create a new substream for a specific stream, course, and university.
     """
-    #logger.info("Create SubStream API called with data: %s", request.data)
-
-    stream_name = request.data.get('stream_name')
-    course_name = request.data.get('course_name')
     university_name = request.data.get('university_name')
-    substream_name = request.data.get('substream_name')  # SubStream name
+    course_name = request.data.get('course_name')
+    stream_name = request.data.get('stream_name')
+    substream_name = request.data.get('substream_name')
 
     # Validate required fields
-    if not substream_name:
-        logger.error("SubStream name field is missing in the request.")
-        return Response({'error': 'SubStream name is required.'}, status=status.HTTP_400_BAD_REQUEST)
+    missing_fields = []
+    if not university_name: missing_fields.append('university_name')
+    if not course_name: missing_fields.append('course_name')
+    if not stream_name: missing_fields.append('stream_name')
+    if not substream_name: missing_fields.append('substream_name')
 
-    # Validate university
+    if missing_fields:
+        return Response(
+            {'error': f"The following fields are required: {', '.join(missing_fields)}"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     try:
         university = University.objects.get(university_name=university_name)
     except University.DoesNotExist:
-        logger.error("University '%s' not found.", university_name)
         return Response({'error': 'University not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-    # Validate course
     try:
         course = Course.objects.get(name=course_name, university=university)
     except Course.DoesNotExist:
-        logger.error("Course '%s' not found in university '%s'.", course_name, university_name)
         return Response({'error': 'Course not found for the specified university.'}, status=status.HTTP_404_NOT_FOUND)
 
-    # Validate stream
     try:
         stream = Stream.objects.get(name=stream_name, course=course)
     except Stream.DoesNotExist:
-        logger.error("Stream '%s' not found for course '%s'.", stream_name, course_name)
         return Response({'error': 'Stream not found for the specified course.'}, status=status.HTTP_404_NOT_FOUND)
 
-    # Check if the substream name already exists for the stream
     if SubStream.objects.filter(stream=stream, name=substream_name).exists():
-        logger.error("SubStream '%s' already exists for stream '%s'.", substream_name, stream_name)
-        return Response({'error': 'SubStream with this name already exists for the specified stream.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'error': 'SubStream with this name already exists for the specified stream.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-    # Preprocess data for the serializer
     data = request.data.copy()
-    data['name'] = substream_name  # Map `substream_name` to `name`
+    data['name'] = substream_name
 
-    # Proceed to create the substream
     serializer = SubStreamSerializer(data=data)
-
     if serializer.is_valid():
         serializer.save(stream=stream)
-        #logger.info("SubStream '%s' successfully created for stream '%s'.", substream_name, stream_name)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    logger.error("Validation errors: %s", serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
   
 
@@ -927,43 +928,37 @@ def create_sub_stream(request):
 @permission_classes([IsAuthenticated])
 def get_student_course_details(request, student_id):
     """
-    Retrieve the course details of a student including university, course, stream, substream, and enrollment details.
+    Retrieve a student's course details including university, course, stream, substream, and enrollment details.
     """
     try:
-        # Attempt to fetch the student record by student_id
         student = Student.objects.get(id=student_id)
-        #logger.info(f"Student found: {student.name}, ID: {student.id}")
-
-        # Fetch the corresponding Enrolled record using the student's ID
-        enrollment = Enrolled.objects.get(student=student)
-        #logger.info(f"Enrollment found for student ID: {student.id}, Course: {enrollment.course.name}")
-
-        # Construct the response data
-        data = {
-            "university_name": enrollment.course.university.university_name,
-            "course_name": enrollment.course.name,
-            "stream_name": enrollment.stream.name,
-            "substream_name": enrollment.substream.name if enrollment.substream else None,
-            "study_pattern": enrollment.course_pattern,
-            "session": enrollment.session,
-            "semester": enrollment.current_semyear,
-            "course_duration": enrollment.stream.sem,
-        }
-
-        # Return the response
-        return Response(data, status=status.HTTP_200_OK)
-
     except Student.DoesNotExist:
         logger.error(f"Student with ID {student_id} not found.")
         return Response({"error": f"Student with ID {student_id} not found."}, status=status.HTTP_404_NOT_FOUND)
 
+    try:
+        enrollment = Enrolled.objects.get(student=student)
     except Enrolled.DoesNotExist:
-        logger.error(f"Enrollment details not found for student with ID {student_id}.")
+        logger.error(f"Enrollment not found for student ID {student_id}.")
         return Response({"error": "Enrollment details not found for the specified student."}, status=status.HTTP_404_NOT_FOUND)
 
+    try:
+        data = {
+            "university_name": enrollment.course.university.university_name if enrollment.course and enrollment.course.university else None,
+            "course_name": enrollment.course.name if enrollment.course else None,
+            "stream_name": enrollment.stream.name if enrollment.stream else None,
+            "substream_name": enrollment.substream.name if enrollment.substream else None,
+            "study_pattern": enrollment.course_pattern or "",
+            "session": enrollment.session or "",
+            "semester": enrollment.current_semyear or "",
+            "course_duration": enrollment.stream.sem if enrollment.stream else "",
+        }
+
+        return Response(data, status=status.HTTP_200_OK)
+
     except Exception as e:
-        logger.error(f"An unexpected error occurred while processing the request for student ID {student_id}: {str(e)}")
-        return Response({"error": "An error occurred while processing the request."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.error(f"Unexpected error while processing student ID {student_id}: {str(e)}")
+        return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
       
 
 @api_view(['PUT'])
@@ -1728,365 +1723,32 @@ def delete_student(request, student_id):
         # If the student doesn't exist, return an error
         return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
 
-# @api_view(['POST'])
-# def student_registration(request):
-#     """
-#     API to handle student registration including validation, fee assignment,
-#     document handling, and qualifications.
-#     """
-#     data = request.data
-#     #logger.info("Student registration API called.")
-
-#     # Authorization check
-#     if not request.user.is_superuser:
-#         logger.warning("Unauthorized access attempt by user: %s", request.user)
-#         return Response(
-#             {"error": "You are not authorized to perform this action."},
-#             status=status.HTTP_403_FORBIDDEN
-#         )
-
-#     try:
-#         # Extract input data
-#         email = data.get('email')
-#         mobile = data.get('mobile_number')
-#         name = data.get('name')
-#         course_name = data.get('course')
-#         stream_name = data.get('stream')
-#         studypattern = data.get('studypattern', '').capitalize()
-#         semyear = data.get('semyear')
-#         session = data.get('session')
-#         entry_mode = data.get('entry_mode')
-#         university=data.get('university')
-#         # Check email and mobile uniqueness
-#         if Student.objects.filter(Q(mobile=mobile) | Q(alternate_mobile1=mobile)).exists():
-#             logger.warning("Duplicate mobile number: %s", mobile)
-#             return Response(
-#                 {"error": "Mobile number already registered."},
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-#         if Student.objects.filter(email=email).exists():
-#             logger.warning("Duplicate email: %s", email)
-#             return Response(
-#                 {"error": "Email already registered."},
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-
-#         # Generate unique IDs
-#         latest_student = Student.objects.latest('id') if Student.objects.exists() else None
-#         enrollment_id = int(latest_student.enrollment_id) + 1 if latest_student else 50000
-#         registration_id = int(latest_student.registration_id) + 1 if latest_student else 250000
-
-#         # Save student information
-#         student_data = {
-#             "name": name,
-#             "email": email,
-#             "mobile": mobile,
-#             "enrollment_id": enrollment_id,
-#             "registration_id": registration_id,
-#             "dob": data.get('dob'),
-#             'university':university
-#         }
-#         student_serializer = StudentSerializer(data=student_data)
-#         if not student_serializer.is_valid():
-#             logger.error("Student validation failed: %s", student_serializer.errors)
-#             return Response(
-#                 {"error": "Validation failed.", "details": student_serializer.errors},
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-#         student = student_serializer.save()
-#         #logger.info("Student record created: %s", student.id)
-
-#         # Create user account
-#         try:
-#             User.objects.create(
-#                 email=student.email,
-#                 is_student=True,
-#                 password=make_password(student.email)
-#             )
-#             #logger.info("User account created for student: %s", student.email)
-#         except Exception as e:
-#             logger.error("Failed to create user account for student: %s", e)
-
-#         # Course, stream, and substream
-#         course = Course.objects.get(name=course_name)
-#         stream = Stream.objects.get(name=stream_name, course=course)
-#         substream = SubStream.objects.filter(name=data.get('substream'), stream=stream).first()
-
-#         # Save enrollment details
-#         total_semyear = int(stream.sem) * (2 if studypattern == "Semester" else 1)
-#         enrollment_data = {
-#             "student": student.id,
-#             "course": course.id,
-#             "stream": stream.id,
-#             "substream": substream.id if substream else None,
-#             "course_pattern": studypattern,
-#             "session": session,
-#             "entry_mode": entry_mode,
-#             "total_semyear": total_semyear,
-#             "current_semyear": semyear,
-#         }
-#         enrollment_serializer = EnrolledSerializer(data=enrollment_data)
-#         if not enrollment_serializer.is_valid():
-#             logger.error("Enrollment validation failed: %s", enrollment_serializer.errors)
-#             return Response(
-#                 {"error": "Failed to enroll student.", "details": enrollment_serializer.errors},
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-#         enrollment_serializer.save()
-#         #logger.info("Enrollment details saved for student: %s", student.id)
-
-#         # Additional enrollment details
-#         additional_enrollment_data = {
-#             "student": student.id,
-#             "counselor_name": data.get('counselor_name'),
-#             "university_enrollment_id": data.get('university_enrollment_number'),
-#             "reference_name": data.get('reference_name'),
-#         }
-#         additional_enrollment_serializer = AdditionalEnrollmentDetailsSerializer(data=additional_enrollment_data)
-#         if not additional_enrollment_serializer.is_valid():
-#             logger.error("Additional enrollment validation failed: %s", additional_enrollment_serializer.errors)
-#             return Response(
-#                 {"error": "Failed to save additional enrollment details.", "details": additional_enrollment_serializer.errors},
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-#         additional_enrollment_serializer.save()
-
-#         # Qualifications
-#         qualifications_data = {
-#             "secondary_year": data.get('qualifications', {}).get('secondary_year'),
-#             "secondary_board": data.get('qualifications', {}).get('secondary_board'),
-#             "secondary_percentage": data.get('qualifications', {}).get('secondary_percentage'),
-            
-#             "sr_year": data.get('qualifications', {}).get('sr_year'),
-#             "sr_board": data.get('qualifications', {}).get('sr_board'),
-#             "sr_percentage": data.get('qualifications', {}).get('sr_percentage'),
-            
-#             "under_year": data.get('qualifications', {}).get('under_year'),
-#             "under_board": data.get('qualifications', {}).get('under_board'),
-#             "under_percentage": data.get('qualifications', {}).get('under_percentage'),
-            
-#             "post_year": data.get('qualifications', {}).get('under_year'),
-#             "post_board": data.get('qualifications', {}).get('under_year'),
-#             "post_percentage": data.get('qualifications', {}).get('under_year'),
-            
-#             "others": data.get('qualifications', {}).get('others'),  # Include 'others' field
-#             "student": student.id
-#         }
-#         qualification_serializer = QualificationSerializer(data=qualifications_data)
-#         if not qualification_serializer.is_valid():
-#             logger.error("Qualifications validation failed: %s", qualification_serializer.errors)
-#             return Response(
-#                 {"error": "Invalid qualifications data.", "details": qualification_serializer.errors},
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-#         qualification_serializer.save()
-
-#         # Documents
-#         documents = data.get('documents', [])
-#         document_objects = []
-#         for document_data in documents:
-#             document_serializer = StudentDocumentsSerializer(data=document_data)
-#             if document_serializer.is_valid():
-#                 document_objects.append(
-#                     StudentDocuments(
-#                         **document_serializer.validated_data,
-#                         student=student
-#                     )
-#                 )
-#             else:
-#                 logger.error("Invalid document data: %s", document_serializer.errors)
-#                 return Response(
-#                     {"error": "Invalid document data.", "details": document_serializer.errors},
-#                     status=status.HTTP_400_BAD_REQUEST
-#                 )
-#         StudentDocuments.objects.bulk_create(document_objects)
-#         #logger.info("Documents saved for student: %s", student.id)
-
-#         # Assign fees
-#         fees = (
-#             SemesterFees.objects.filter(stream=stream, substream=substream)
-#             if studypattern == "Semester"
-#             else YearFees.objects.filter(stream=stream, substream=substream)
-#         )
-#         for fee in fees:
-#             StudentFees.objects.create(
-#                 student=student,
-#                 stream=stream,
-#                 substream=substream,
-#                 studypattern=studypattern,
-#                 tutionfees=fee.tutionfees,
-#                 examinationfees=fee.examinationfees,
-#                 totalfees=fee.totalfees,
-#                 sem=fee.sem if studypattern == "Semester" else fee.year
-#             )
-
-#         #logger.info("Fees assigned for student: %s", student.id)
-#         # Fetch or initialize the latest transaction ID
-#         try:
-#             latest_receipt = PaymentReciept.objects.latest('id')
-#             tid = latest_receipt.transactionID
-#             tranx = tid.replace("TXT445FE", "")
-            
-#             # Check if tranx is not empty and can be converted to an integer
-#             if tranx:
-#                 transactionID = f"TXT445FE{int(tranx) + 1}"
-#             else:
-#                 transactionID = "TXT445FE101"  # Handle case where the transaction ID is missing or invalid
-#         except PaymentReciept.DoesNotExist:
-#             transactionID = "TXT445FE101"  # Default value if no previous receipts are found
-#                 # Determine receipt type
-        
-#         payment_mode=data.get('payment_mode')
-#         fee_reciept_type=data.get('fee_reciept_type')
-#         other_data=data.get('other_data')
-#         reciept_type = other_data if fee_reciept_type == "Others" else fee_reciept_type
-#         transaction_date=data.get('transaction_date')
-#         other_bank=data.get('other_bank')
-#         bank_name=data.get('bank_name')
-#         remarks=data.get('remarks')
-#         cheque_no=data.get('cheque_no')
-#         if payment_mode=="Cheque":
-#           payment_status="Not Realised"
-#         else: 
-#           payment_status="Realised"
-          
-
-#         # Fetch the total fees for the given stream and substream
-#         totalfees = SemesterFees.objects.filter(stream=stream, substream=substream).last()
-#         if totalfees is not None:
-#             try:
-#                 # Convert total fees to float
-#                 total_fees_value = float(totalfees.totalfees)
-#             except ValueError:
-#                 total_fees_value = 0  # Handle invalid data gracefully
-#         else:
-#             total_fees_value = 0
-
-#         # Ensure 'fees' is a specific value, not a QuerySet
-#         if isinstance(fees, QuerySet):
-#             # Extract the first element's value, or handle empty QuerySet
-#             fees_object = fees.last()
-#             fees_value = float(fees_object.totalfees) if fees_object else 0  # Replace 'fee_amount' with the actual field name
-#         else:
-#             try:
-#                 # Convert fees to float for accurate calculations
-#                 fees_value = float(fees)
-#             except (ValueError, TypeError):
-#                 fees_value = 0  # Handle invalid fees input
-
-#         # Proceed with the calculation
-#         if fees_value and fee_reciept_type and transaction_date and payment_mode:
-#             pending_fees = total_fees_value - fees_value
-#             if pending_fees > 0:
-#                 pending_amount = pending_fees
-#                 advance_amount = 0
-#             elif pending_fees == 0:
-#                 pending_amount = 0
-#                 advance_amount = 0
-#             else:
-#                 pending_amount = 0
-#                 advance_amount = abs(pending_fees)
-
-#             # Determine payment type
-#             paymenttype = "Full Payment" if pending_fees <= 0 else "Part Payment"
-
-#             # Use the appropriate bank name
-#             bank_name_to_use = other_bank if bank_name == "Others" else bank_name
-
-#             # Set semester/year based on study pattern
-#             paidamount = fees_value if payment_mode != "Cheque" else 0
-#             semyear_value = "1" if studypattern == "Full Course" else semyear
-#             uncleared_amount = fees_value if payment_mode == "Cheque" else None
-    
-#             add_payment_reciept = PaymentReciept(
-#             student=student,
-#             payment_for="Course Fees",
-#             payment_categories="New",
-#             payment_type=paymenttype,
-#             fee_reciept_type=reciept_type,
-#             transaction_date=transaction_date,
-#             cheque_no=cheque_no,
-#             bank_name=bank_name_to_use,
-#             semyearfees=total_fees_value,
-#             paidamount=paidamount,
-#             pendingamount=pending_amount,
-#             advanceamount=advance_amount,
-#             transactionID=transactionID,
-#             paymentmode=payment_mode,
-#             remarks=remarks,
-#             session=session,
-#             semyear=semyear_value,
-#             uncleared_amount=uncleared_amount,
-#             status=payment_status,
-#         )    
-#             try:
-#                 print("Payment Receipt Data:")
-#                 print(f"Student: {latest_student}")
-#                 print(f"Payment For: Course Fees")
-#                 print(f"Payment Categories: New")
-#                 print(f"Fee Receipt Type: {reciept_type}")
-#                 print(f"Transaction Date: {transaction_date}")
-#                 print(f"Cheque No: {cheque_no}")
-#                 print(f"Bank Name: {bank_name_to_use}")
-#                 print(f"Semester Year Fees: {total_fees_value}")
-#                 print(f"Paid Amount: {fees if payment_mode != 'Cheque' else 0}")
-#                 print(f"Pending Amount: {pending_amount}")
-#                 print(f"Advance Amount: {advance_amount}")
-#                 print(f"Transaction ID: {transactionID}")
-#                 print(f"Payment Mode: {payment_mode}")
-#                 print(f"Remarks: {remarks}")
-#                 print(f"Session: {session}")
-#                 print(f"Semester Year: {semyear_value}")
-#                 print(f"Uncleared Amount: {fees if payment_mode == 'Cheque' else None}")
-#                 print(f"Status: {payment_status}")
-#                 add_payment_reciept.save()
-#             except Exception as e:
-#                 # Log the full exception traceback
-#                 logger.error("Error saving payment receipt: %s", e)
-#                 logger.error("Traceback: %s", traceback.format_exc())  # This will log the full stack trace
-#                 # Optionally print the error if running in a console
-#                 print(f"Error saving payment receipt: {e}")
-#                 print(f"Traceback: {traceback.format_exc()}")
-#                 raise  # Re-raise the exception if you want to propagate it further
-
-#         return Response(
-#             {"message": "Student registered successfully."},
-#             status=status.HTTP_201_CREATED
-#         )
-#     except Exception as e:
-#         logger.exception("An unexpected error occurred: %s", e)
-#         return Response(
-#             {"error": "An unexpected error occurred."},
-#             status=status.HTTP_500_INTERNAL_SERVER_ERROR
-#         )
-        
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def student_registration(request):
-    """
-    API to handle student registration including validation, fee assignment,
-    document handling, and qualifications.
-    """
-    data = request.data
-    #logger.info("Student registration API called.")
-
-    # Authorization check
     if not request.user.is_superuser:
-        logger.warning("Unauthorized access attempt by user: %s", request.user)
-        return Response(
-            {"error": "You are not authorized to perform this action."},
-            status=status.HTTP_403_FORBIDDEN
-        )
+        return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
+    data = request.data
     try:
-        add_payment_reciept = None
-
+        # Extract fields
+        name = data.get('name')
         email = data.get('email')
         mobile = data.get('mobile_number')
-        alternate_mobile=data.get('alternate_number')
-        alternate_email=data.get('alternate_email')
-        name = data.get('name')
+        alternate_mobile = data.get('alternate_number')
+        alternate_email = data.get('alternate_email')
+        father_name = data.get('father_name')
+        mother_name = data.get('mother_name')
+        dob = data.get('dob')
+        gender = data.get('gender')
+        category = data.get('category')
+        address = data.get('address')
+        alternateaddress = data.get('alternateaddress')
+        nationality = data.get('nationality')
+        pincode = data.get('pincode')
+        registration_number = data.get('registration_number')
+        student_image = request.FILES.get('image')
+
         university_id = data.get('university')
         course_id = data.get('course')
         stream_id = data.get('stream')
@@ -2095,492 +1757,215 @@ def student_registration(request):
         semyear = data.get('semyear')
         session = data.get('session')
         entry_mode = data.get('entry_mode')
+
         country_id = data.get('country')
         state_id = data.get('state')
         city_id = data.get('city')
-        father_name=data.get('father_name')
-        mother_name=data.get('mother_name')
-        address=data.get('address')
-        alternateaddress=data.get('alternateaddress')
-        nationality=data.get('nationality')
-        pincode=data.get('pincode')
-        registration_number=data.get('registration_number')
-        student_image = request.FILES.get('image')  # Get the image file from the request
-        dob=request.data.get('dob')
-        gender=data.get('gender')
-        category=data.get('category')
-        
-        # Check email and mobile uniqueness
-        if Student.objects.filter(Q(mobile=mobile)).exists():
-            logger.warning("Duplicate mobile number: %s", mobile)
-            return Response(
-                {"error": "Mobile number already registered."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+
+        # Validate uniqueness
+        if Student.objects.filter(mobile=mobile).exists():
+            return Response({"error": "Mobile number already registered."}, status=status.HTTP_400_BAD_REQUEST)
         if Student.objects.filter(email=email).exists():
-            logger.warning("Duplicate email: %s", email)
-            return Response(
-                {"error": "Email already registered."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        try:
-          print(university_id,'university_iduniversity_id',email,course_id)
-          
-          university = University.objects.get(id=university_id)
-          print(university,'univvvvvvvvvvvvvv')
-        except University.DoesNotExist:
-          logger.error("Invalid university ID: %s", university_id)
-          return Response(
-              {"error": "Invalid university ID."},
-              status=status.HTTP_400_BAD_REQUEST)
-        try:
-          course = Course.objects.get(id=course_id, university=university)
-        except Course.DoesNotExist:
-          logger.error("Invalid course ID: %s or mismatch with university ID: %s", course_id, university_id)
-          return Response(
-              {"error": "Invalid course ID or mismatch with university."},
-              status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Email already registered."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Validate and fetch Stream
+        # Foreign key validation
         try:
-          stream = Stream.objects.get(id=stream_id, course=course)
-        except Stream.DoesNotExist:
-          logger.error("Invalid stream ID: %s or mismatch with course ID: %s", stream_id, course_id)
-          return Response(
-              {"error": "Invalid stream ID or mismatch with course."},
-              status=status.HTTP_400_BAD_REQUEST
-          )
-          
-        substream = None
-        if substream_id:
-          try:
-            substream = SubStream.objects.get(id=substream_id, stream=stream)
-          except SubStream.DoesNotExist:
-            logger.warning("Substream ID provided but not found or doesn't match stream. Ignoring substream.")
-            substream = None  
-        country = Countries.objects.get(id=country_id)
-        if not country:
-            logger.error("Invalid country ID: %s", country_id)
-            return Response(
-                {"error": "Invalid country ID."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        state = States.objects.get(id=state_id, country_id=country_id)  # Single object
-        if not state:
-            logger.error("Invalid state ID: %s or mismatch with country ID: %s", state_id, country_id)
-            return Response(
-                {"error": "Invalid state ID or mismatch with country."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            university = University.objects.get(id=university_id)
+            course = Course.objects.get(id=course_id, university=university)
+            stream = Stream.objects.get(id=stream_id, course=course)
+            substream = SubStream.objects.get(id=substream_id, stream=stream) if substream_id else None
+            country = Countries.objects.get(id=country_id)
+            state = States.objects.get(id=state_id, country_id=country_id)
+            city = Cities.objects.get(id=city_id, state_id=state_id)
+        except (University.DoesNotExist, Course.DoesNotExist, Stream.DoesNotExist,
+                SubStream.DoesNotExist, Countries.DoesNotExist,
+                States.DoesNotExist, Cities.DoesNotExist) as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        city = Cities.objects.get(id=city_id, state_id=state_id)
-        if not city:
-            logger.error("Invalid city ID: %s or mismatch with state ID: %s", city_id, state_id)
-            return Response(
-                {"error": "Invalid city ID or mismatch with state."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        # Generate unique IDs
-        latest_student = Student.objects.latest('id') if Student.objects.exists() else None
-        enrollment_id = int(latest_student.enrollment_id) + 1 if latest_student else 50000
-        registration_id = int(latest_student.registration_id) + 1 if latest_student else 250000
-        # print(request.user,'idddddddddddddd')
-        print(request.user.id,'idddddddddddddd')
-        # Save student information
+        # Generate enrollment/registration IDs
+        latest = Student.objects.order_by("-id").first()
+        enrollment_id = int(latest.enrollment_id) + 1 if latest else 50000
+        registration_id = int(latest.registration_id) + 1 if latest else 250000
+
+        # Save Student
         student_data = {
-            "name": name,
-            "email": email,
-            "mobile": mobile,
-            "father_name":father_name,
-            "mother_name":mother_name,
-            "alternate_mobile1":alternate_mobile,#added 24-01-2025
-            "alternateemail":alternate_email,#added 24-01-2025
-            "enrollment_id": enrollment_id,
-            "registration_id": registration_id,
-            "dateofbirth":dob,
-            'university':university.id,
-            "country": country.id,
-            "state": state.id,
-            "city": city.id,
-            "address":address,
-            "alternateaddress":alternateaddress,
-            "nationality":nationality,
-            "pincode":pincode,
-            # "registration_number":registration_number,
-            "image":student_image,
-            "verified":True,
-            "is_enrolled":True,
-            "gender":gender,
-            "category":category,
-            "created_by":request.user.id
+            "name": name, "email": email, "mobile": mobile, "father_name": father_name,
+            "mother_name": mother_name, "alternate_mobile1": alternate_mobile,
+            "alternateemail": alternate_email, "enrollment_id": enrollment_id,
+            "registration_id": registration_id, "dateofbirth": dob, "gender": gender,
+            "category": category, "address": address, "alternateaddress": alternateaddress,
+            "nationality": nationality, "pincode": pincode, "image": student_image,
+            "university": university.id, "country": country.id, "state": state.id,
+            "city": city.id, "verified": True, "is_enrolled": True,
+            "created_by": request.user.id
         }
         student_serializer = StudentSerializer(data=student_data)
         if not student_serializer.is_valid():
-            logger.error("Student validation failed: %s", student_serializer.errors)
-            return Response(
-                {"error": "Validation failed.", "details": student_serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-             )
+            return Response({"error": "Validation failed", "details": student_serializer.errors}, status=400)
         student = student_serializer.save()
-        #logger.info("Student record created: %s", student.id)
 
-        # Create user account
+        # Create user
         try:
-            User.objects.create(
-                email=student.email,
-                is_student=True,
-                password=make_password(student.email)
-            )
-            #logger.info("User account created for student: %s", student.email)
+            User.objects.create(email=email, is_student=True, password=make_password(email))
         except Exception as e:
-            logger.error("Failed to create user account for student: %s", e)
-        
-        student=Student.objects.get(id=student.id)
- 
-        total_semyear = int(stream.sem) * (2 if studypattern == "Semester" else 1)
-        enrollment_data = {
-            "student": student.id,
-            "course": course.id,
-            "stream": stream.id,
-            "substream": substream.id if substream else None,
-            "course_pattern": studypattern.capitalize(),
-            "session": session,
-            "entry_mode": entry_mode,
-            "total_semyear": total_semyear,
-            "current_semyear": semyear,
-        }
-        enrollment_serializer = EnrolledSerializer(data=enrollment_data)
-        if not enrollment_serializer.is_valid():
-            logger.error("Enrollment validation failed: %s", enrollment_serializer.errors)
-            return Response(
-                {"error": "Failed to enroll student.", "details": enrollment_serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        enrollment_serializer.save()
-        #logger.info("Enrollment details saved for student: %s", student.id)
+            logger.warning("User creation failed: %s", e)
 
-        # Additional enrollment details
-        additional_enrollment_data = {
-            "student": student.id,
-            "counselor_name": data.get('counselor_name'),
-            "university_enrollment_id": data.get('university_enrollment_number'),
-            "reference_name": data.get('reference_name'),
+        # Save Enrollment
+        total_semyear = int(stream.sem) * (2 if studypattern == "Semester" else 1)
+        enrolled_data = {
+            "student": student.id, "course": course.id, "stream": stream.id,
+            "substream": substream.id if substream else None,
+            "course_pattern": studypattern, "session": session,
+            "entry_mode": entry_mode, "total_semyear": total_semyear,
+            "current_semyear": semyear
         }
-        additional_enrollment_serializer = AdditionalEnrollmentDetailsSerializer(data=additional_enrollment_data)
-        if not additional_enrollment_serializer.is_valid():
-            logger.error("Additional enrollment validation failed: %s", additional_enrollment_serializer.errors)
-            return Response(
-                {"error": "Failed to save additional enrollment details.", "details": additional_enrollment_serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        additional_enrollment_serializer.save()
+        enrolled_serializer = EnrolledSerializer(data=enrolled_data)
+        if not enrolled_serializer.is_valid():
+            return Response({"error": "Enrollment failed", "details": enrolled_serializer.errors}, status=400)
+        enrolled_serializer.save()
+
+        # Save Additional Enrollment Info
+        additional_data = {
+            "student": student.id,
+            "counselor_name": data.get("counselor_name"),
+            "university_enrollment_id": data.get("university_enrollment_number"),
+            "reference_name": data.get("reference_name")
+        }
+        add_serializer = AdditionalEnrollmentDetailsSerializer(data=additional_data)
+        if not add_serializer.is_valid():
+            return Response({"error": "Additional Enrollment Failed", "details": add_serializer.errors}, status=400)
+        add_serializer.save()
 
         # Qualifications
-        others_list = []
-
+        others = []
         for key in data.keys():
             if key.startswith("qualifications[others]") and key.endswith("[year]"):
                 try:
                     idx = key.split("[")[2].split("]")[0]
-
-                    year = data.get(f"qualifications[others][{idx}][year]")
-                    board = data.get(f"qualifications[others][{idx}][board]")
-                    doctype = data.get(f"qualifications[others][{idx}][doctype]")
-
                     file_key = f"qualifications[others][{idx}][file]"
-                    file_obj = request.FILES.get(file_key)
-
-                    file_path = None
-                    if file_obj:
-                        file_path = default_storage.save(f"University_Documents/{file_obj.name}", file_obj)
-
-                    others_list.append({
-                        "year": year,
-                        "board": board,
-                        "doctype": doctype,
-                        "file_path": file_path,
+                    file_path = default_storage.save(f"University_Documents/{request.FILES[file_key].name}", request.FILES[file_key]) if file_key in request.FILES else None
+                    others.append({
+                        "year": data.get(f"qualifications[others][{idx}][year]"),
+                        "board": data.get(f"qualifications[others][{idx}][board]"),
+                        "doctype": data.get(f"qualifications[others][{idx}][doctype]"),
+                        "file_path": file_path
                     })
                 except Exception as e:
-                    logger.error(f"Error processing 'others[{idx}]': {e}")
+                    logger.error("Error in other qualifications: %s", e)
 
-        #logger.info(f"Processed 'others' list: {others_list}")  
-       
-        qualifications_data = {
-            "secondary_year": data.get('qualifications[secondary_year]'),
-            "secondary_board": data.get('qualifications[secondary_board]'),
-            "secondary_percentage": data.get('qualifications[secondary_percentage]'),
-            
-            "sr_year": data.get('qualifications[sr_year]'),
-            "sr_board": data.get('qualifications[sr_board]'),
-            "sr_percentage": data.get('qualifications[sr_percentage]'),
-            
-            "under_year": data.get('qualifications[under_year]'),
-            "under_board": data.get('qualifications[under_board]'),
-            "under_percentage": data.get('qualifications[under_percentage]'),
-            
-            "post_year": data.get('qualifications[post_year]'),
-            "post_board": data.get('qualifications[post_board]'),
-            "post_percentage": data.get('qualifications[post_percentage]'),
-            
-            "mphil_year": data.get('qualifications[mphil_year]'),
-            "mphil_board": data.get('qualifications[mphil_board]'),
-            "mphil_percentage": data.get('qualifications[mphil_percentage]'),
-            
-            "secondary_document": request.FILES.get('qualifications[secondary_document]'),
-            "sr_document": request.FILES.get('qualifications[sr_document]'),
-            "under_document": request.FILES.get('qualifications[under_document]'),
-            "post_document": request.FILES.get('qualifications[post_document]'),
-            "mphil_document": request.FILES.get('qualifications[mphil_document]'),
-            
-            "others": others_list,
+        qualification_data = {
             "student": student.id,
+            "secondary_year": data.get("qualifications[secondary_year]"),
+            "secondary_board": data.get("qualifications[secondary_board]"),
+            "secondary_percentage": data.get("qualifications[secondary_percentage]"),
+            "sr_year": data.get("qualifications[sr_year]"),
+            "sr_board": data.get("qualifications[sr_board]"),
+            "sr_percentage": data.get("qualifications[sr_percentage]"),
+            "under_year": data.get("qualifications[under_year]"),
+            "under_board": data.get("qualifications[under_board]"),
+            "under_percentage": data.get("qualifications[under_percentage]"),
+            "post_year": data.get("qualifications[post_year]"),
+            "post_board": data.get("qualifications[post_board]"),
+            "post_percentage": data.get("qualifications[post_percentage]"),
+            "mphil_year": data.get("qualifications[mphil_year]"),
+            "mphil_board": data.get("qualifications[mphil_board]"),
+            "mphil_percentage": data.get("qualifications[mphil_percentage]"),
+            "secondary_document": request.FILES.get("qualifications[secondary_document]"),
+            "sr_document": request.FILES.get("qualifications[sr_document]"),
+            "under_document": request.FILES.get("qualifications[under_document]"),
+            "post_document": request.FILES.get("qualifications[post_document]"),
+            "mphil_document": request.FILES.get("qualifications[mphil_document]"),
+            "others": others
         }
-
-        qualification_serializer = QualificationSerializer(data=qualifications_data)
+        qualification_serializer = QualificationSerializer(data=qualification_data)
         if not qualification_serializer.is_valid():
-            logger.error("Qualifications validation failed: %s", qualification_serializer.errors)
-            return Response(
-                {"error": "Invalid qualifications data.", "details": qualification_serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+            return Response({"error": "Qualification failed", "details": qualification_serializer.errors}, status=400)
         qualification_serializer.save()
-        #logger.info("Qualification data saved successfully")
-        # Documents
-        document_objects = []
+
+        # Personal Documents
         index = 0
-        while f'documents[{index}][document]' in request.data:
-            document_data = {
-                "document": request.data.get(f'documents[{index}][document]'),
-                "document_name": request.data.get(f'documents[{index}][document_name]'),
-                "document_ID_no": request.data.get(f'documents[{index}][document_ID_no]'),
+        documents = []
+        while f'documents[{index}][document]' in data:
+            doc_data = {
+                "document": data.get(f'documents[{index}][document]'),
+                "document_name": data.get(f'documents[{index}][document_name]'),
+                "document_ID_no": data.get(f'documents[{index}][document_ID_no]'),
                 "document_image_front": request.FILES.get(f'documents[{index}][document_image_front]'),
-                "document_image_back": request.FILES.get(f'documents[{index}][document_image_back]'),
+                "document_image_back": request.FILES.get(f'documents[{index}][document_image_back]')
             }
-            document_serializer = StudentDocumentsSerializer(data=document_data)
-            if document_serializer.is_valid():
-                validated_data = document_serializer.validated_data
-                document_objects.append(StudentDocuments(
-                    document=validated_data['document'],
-                    document_name=validated_data['document_name'],
-                    document_ID_no=validated_data['document_ID_no'],
-                    document_image_front=document_data['document_image_front'],
-                    document_image_back=document_data['document_image_back'],
-                    student=student
-                ))
+            doc_serializer = StudentDocumentsSerializer(data=doc_data)
+            if doc_serializer.is_valid():
+                validated = {
+                    **doc_serializer.validated_data,
+                    "student": student
+                }
+                documents.append(StudentDocuments(**validated))
             else:
-                return Response({"error": "Invalid document data.", "details": document_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "Invalid Document", "details": doc_serializer.errors}, status=400)
             index += 1
 
-        if document_objects:
-            StudentDocuments.objects.bulk_create(document_objects)
+        if documents:
+            StudentDocuments.objects.bulk_create(documents)
 
-        #logger.info("Student registration completed successfully for: %s", student.id)
-
-        # Assign fees
-        fees = (
-            SemesterFees.objects.filter(stream=stream, substream=substream)
-            if studypattern == "Semester"
-            else YearFees.objects.filter(stream=stream, substream=substream)
-        )
+        # Assign Fees
+        fees_model = SemesterFees if studypattern == "Semester" else YearFees
+        fees = fees_model.objects.filter(stream=stream, substream=substream)
         for fee in fees:
             StudentFees.objects.create(
-                student=student,
-                stream=stream,
-                substream=substream,
+                student=student, stream=stream, substream=substream,
                 studypattern=studypattern,
-                tutionfees=fee.tutionfees,
-                examinationfees=fee.examinationfees,
-                totalfees=fee.totalfees,
-                sem=fee.sem if studypattern == "Semester" else fee.year
+                tutionfees=fee.tutionfees, examinationfees=fee.examinationfees,
+                totalfees=fee.totalfees, sem=fee.sem if studypattern == "Semester" else fee.year
             )
 
-        #logger.info("Fees assigned for student: %s", student.id)
-        # Fetch or initialize the latest transaction ID
+        # Save Payment
         try:
-            
-            latest_receipt = PaymentReciept.objects.latest('id')
-            tid = latest_receipt.transactionID
-            tranx = tid.replace("TXT445FE", "")
-            
-            # Check if tranx is not empty and can be converted to an integer
-            if tranx:
-                transactionID = f"TXT445FE{int(tranx) + 1}"
-            else:
-                transactionID = "TXT445FE101"  # Handle case where the transaction ID is missing or invalid
+            latest_receipt = PaymentReciept.objects.latest("id")
+            last_id = int(latest_receipt.transactionID.replace("TXT445FE", "")) if latest_receipt else 100
         except PaymentReciept.DoesNotExist:
-            transactionID = "TXT445FE101"  # Default value if no previous receipts are found
-                # Determine receipt type
-        
-        payment_mode=data.get('payment_mode')
-        fee_reciept_type=data.get('fee_reciept_type')
-        fee_recipt=data.get('fee_reciept')
-        other_data=data.get('other_data')
-        reciept_type = other_data if fee_reciept_type == "Others" else fee_reciept_type
-        transaction_date=data.get('transaction_date')
-        other_bank=data.get('other_bank')
-        bank_name=data.get('bank_name')
-        remarks=data.get('remarks')
-        cheque_no=data.get('cheque_no')
-        if payment_mode=="Cheque":
-          payment_status="Not Realised"
-        else: 
-          payment_status="Realised"
-          
+            last_id = 100
 
-        # Fetch the total fees for the given stream and substream
-        totalfees = SemesterFees.objects.filter(stream=stream, substream=substream).last()
-        print('totel fees',totalfees)
-        print('payment_status ',payment_status)
-        if totalfees is not None:
-            try:
-                # Convert total fees to float
-                total_fees_value = float(totalfees.totalfees)
-            except ValueError:
-                total_fees_value = 0  # Handle invalid data gracefully
-        else:
-            total_fees_value = 0
+        transaction_id = f"TXT445FE{last_id + 1}"
+        payment_mode = data.get("payment_mode")
+        fee_type = data.get("fee_reciept_type")
+        other_type = data.get("other_data")
+        receipt_type = other_type if fee_type == "Others" else fee_type
+        total_fees = fees.last().totalfees if fees.exists() else 0
+        paid = float(data.get("paidamount") or 0)
+        cheque_no = data.get("cheque_no")
+        bank_name = data.get("bank_name")
+        other_bank = data.get("other_bank")
+        remarks = data.get("remarks")
+        transaction_date = data.get("transaction_date")
+        session = data.get("session")
 
-        # Ensure 'fees' is a specific value, not a QuerySet
-        if isinstance(fees, QuerySet):
-            # Extract the first element's value, or handle empty QuerySet
-            fees_object = fees.last()
-            fees_value = float(fees_object.totalfees) if fees_object else 0  # Replace 'fee_amount' with the actual field name
-        else:
-            try:
-                # Convert fees to float for accurate calculations
-                fees_value = float(fees)
-            except (ValueError, TypeError):
-                fees_value = 0  # Handle invalid fees input
+        pending = float(total_fees) - paid
+        advance = abs(pending) if pending < 0 else 0
+        pending = pending if pending > 0 else 0
+        payment_type = "Full Payment" if pending == 0 else "Part Payment"
+        bank_used = other_bank if bank_name == "Others" else bank_name
+        payment_status = "Not Realised" if payment_mode == "Cheque" else "Realised"
+        semyear_value = "1" if studypattern == "Full Course" else semyear
+        uncleared_amount = paid if payment_mode == "Cheque" else None
 
-        # Proceed with the calculation
-        print('dataaaaaaaa',fees_value,fee_reciept_type ,transaction_date ,payment_mode )
-        if fees_value and fee_reciept_type and transaction_date and payment_mode:
-          print('inside dataaaaaaaa')
-          pending_fees = total_fees_value - fees_value
-            
-          if pending_fees > 0:
-              pending_amount = pending_fees
-              advance_amount = 0
-          elif pending_fees == 0:
-              pending_amount = 0
-              advance_amount = 0
-          else:
-              pending_amount = 0
-              advance_amount = abs(pending_fees)
-
-            # Determine payment type
-          paymenttype = "Full Payment" if pending_fees <= 0 else "Part Payment"
-
-          # Use the appropriate bank name
-          bank_name_to_use = other_bank if bank_name == "Others" else bank_name
-
-            # Set semester/year based on study pattern
-          paidamount=data.get("paidamount")
-          paidamount = paidamount if payment_mode != "Cheque" else 0
-          semyear_value = "1" if studypattern == "Full Course" else semyear
-          uncleared_amount = fees_value if payment_mode == "Cheque" else None
-          fee_recipt=data.get('fee_recipt')
-          add_payment_reciept = PaymentReciept(
-              student=student,
-              payment_for=fee_recipt,
-              payment_categories="New",
-              payment_type=paymenttype,
-              fee_reciept_type=reciept_type,
-              transaction_date=transaction_date,
-              cheque_no=cheque_no,
-              bank_name=bank_name_to_use,
-              semyearfees=total_fees_value,
-              paidamount=paidamount,
-              pendingamount=pending_amount,
-              advanceamount=advance_amount,
-              transactionID=transactionID,
-              paymentmode=payment_mode,
-              remarks=remarks,
-              session=session,
-              semyear=semyear_value,
-              uncleared_amount=uncleared_amount,
-              status=payment_status,
-          )
-
-          try:
-              add_payment_reciept.save()
-          except Exception as e:
-              # Log the full exception traceback
-              logger.error("Error saving payment receipt: %s", e)
-              logger.error("Traceback: %s", traceback.format_exc())
-              print(f"Error saving payment receipt: {e}")
-              print(f"Traceback: {traceback.format_exc()}")
-              raise
-        else:
-            print('inside else dataaaaaaaa')
-            pending_fees = total_fees_value - fees_value
-
-            if pending_fees > 0:
-                pending_amount = pending_fees
-                advance_amount = 0
-            elif pending_fees == 0:
-                pending_amount = 0
-                advance_amount = 0
-            else:
-                pending_amount = 0
-                advance_amount = abs(pending_fees)
-
-            # Determine payment type
-            paymenttype = "Full Payment" if pending_fees <= 0 else "Part Payment"
-
-            # Use the appropriate bank name
-            bank_name_to_use = other_bank if bank_name == "Others" else bank_name
-
-            # Set semester/year based on study pattern
-            paidamount = paidamount if payment_mode != "Cheque" else 0
-            semyear_value = "1" if studypattern == "Full Course" else semyear
-            uncleared_amount = fees_value if payment_mode == "Cheque" else None
-
-            add_payment_reciept = PaymentReciept(
-                student=student,
-                payment_for=fee_recipt,
-                payment_categories="New",
-                payment_type=paymenttype,
-                fee_reciept_type=reciept_type,
-                transaction_date=transaction_date,
-                cheque_no=cheque_no,
-                bank_name=bank_name_to_use,
-                semyearfees=total_fees_value,
-                paidamount=paidamount,
-                pendingamount=pending_amount,
-                advanceamount=advance_amount,
-                transactionID=transactionID,
-                paymentmode=payment_mode,
-                remarks=remarks,
-                session=session,
-                semyear=semyear_value,
-                uncleared_amount=uncleared_amount,
-                status=payment_status,
-            )
-
-            try:
-                add_payment_reciept.save()
-            except Exception as e:
-                # Log the full exception traceback
-                logger.error("Error saving payment receipt: %s", e)
-                logger.error("Traceback: %s", traceback.format_exc())
-                print(f"Error saving payment receipt: {e}")
-                print(f"Traceback: {traceback.format_exc()}")
-                raise
-
-        return Response(
-            {"message": "Student registered successfully."},
-            status=status.HTTP_201_CREATED
+        PaymentReciept.objects.create(
+            student=student, payment_for=data.get("fee_recipt"),
+            payment_categories="New", payment_type=payment_type,
+            fee_reciept_type=receipt_type, transaction_date=transaction_date,
+            cheque_no=cheque_no, bank_name=bank_used, semyearfees=total_fees,
+            paidamount=0 if payment_mode == "Cheque" else paid,
+            pendingamount=pending, advanceamount=advance,
+            transactionID=transaction_id, paymentmode=payment_mode,
+            remarks=remarks, session=session, semyear=semyear_value,
+            uncleared_amount=uncleared_amount, status=payment_status
         )
+
+        return Response({"message": "Student registered successfully."}, status=201)
+
     except Exception as e:
-        logger.exception("An unexpected error occurred: %s", e)
-        return Response(
-            {"error": "An unexpected error occurred."},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+        logger.error("Unexpected error: %s", traceback.format_exc())
+        return Response({"error": "An unexpected error occurred."}, status=500)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -3235,21 +2620,16 @@ def get_student_registration_list(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def quick_registration(request):
+    if not request.user.is_superuser:
+        return Response({"error": "You are not authorized to perform this action."}, status=403)
+
     data = request.data
     image = request.FILES.get('image')
 
-    # Authorization check
-    if not request.user.is_superuser:
-        logger.warning("Unauthorized access attempt by user: %s", request.user)
-        return Response(
-            {"error": "You are not authorized to perform this action."},
-            status=status.HTTP_403_FORBIDDEN
-        )
     try:
-        add_payment_reciept = None
+        name = data.get('name')
         email = data.get('email')
         mobile = data.get('mobile_number')
-        name = data.get('name')
         university_id = data.get('university')
         course_id = data.get('course')
         stream_id = data.get('stream')
@@ -3258,469 +2638,121 @@ def quick_registration(request):
         semyear = data.get('semyear')
         session = data.get('session')
         entry_mode = data.get('entry_mode')
-        # Check email and mobile uniqueness
-        if Student.objects.filter(Q(mobile=mobile)).exists():
-            logger.warning("Duplicate mobile number: %s", mobile)
-            return Response(
-                {"error": "Mobile number already registered."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+
+        if Student.objects.filter(mobile=mobile).exists():
+            return Response({"error": "Mobile number already registered."}, status=400)
         if Student.objects.filter(email=email).exists():
-            logger.warning("Duplicate email: %s", email)
-            return Response(
-                {"error": "Email already registered."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        try:
-          university = University.objects.get(id=university_id)
-        except University.DoesNotExist:
-          logger.error("Invalid university ID: %s", university_id)
-          return Response(
-              {"error": "Invalid university ID."},
-              status=status.HTTP_400_BAD_REQUEST)
-        try:
-          course = Course.objects.get(id=course_id, university=university)
-        except Course.DoesNotExist:
-          logger.error("Invalid course ID: %s or mismatch with university ID: %s", course_id, university_id)
-          return Response(
-              {"error": "Invalid course ID or mismatch with university."},
-              status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Email already registered."}, status=400)
 
-        # Validate and fetch Stream
         try:
-          stream = Stream.objects.get(id=stream_id, course=course)
-        except Stream.DoesNotExist:
-          logger.error("Invalid stream ID: %s or mismatch with course ID: %s", stream_id, course_id)
-          return Response(
-              {"error": "Invalid stream ID or mismatch with course."},
-              status=status.HTTP_400_BAD_REQUEST
-          )
-          
-        substream = None
-        if substream_id:
-          try:
-            substream = SubStream.objects.get(id=substream_id, stream=stream)
-          except SubStream.DoesNotExist:
-            logger.error("Invalid substream ID: %s or mismatch with stream ID: %s", substream_id, stream_id)
-            return Response(
-                {"error": "Invalid substream ID or mismatch with stream."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        # Generate unique IDs
-        latest_student = Student.objects.latest('id') if Student.objects.exists() else None
-        enrollment_id = int(latest_student.enrollment_id) + 1 if latest_student else 50000
-        registration_id = int(latest_student.registration_id) + 1 if latest_student else 250000
-
-        # Save student information
-        student_data = {
-            "name": name,
-            "email": email,
-            "mobile": mobile,
-            "enrollment_id": enrollment_id,
-            "registration_id": registration_id,
-            "dob": data.get('dob'),
-            'university':university.id,
-            "is_quick_register":True,
-            "image":image
-        }
-        student_serializer = StudentSerializer(data=student_data)
-        if not student_serializer.is_valid():
-            logger.error("Student validation failed: %s", student_serializer.errors)
-            return Response(
-                {"error": "Validation failed.", "details": student_serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        student = student_serializer.save()
-        # Create user account
-        try:
-            User.objects.create(
-                email=student.email,
-                is_student=True,
-                password=make_password(student.email)
-            ) 
+            university = University.objects.get(id=university_id)
+            course = Course.objects.get(id=course_id, university=university)
+            stream = Stream.objects.get(id=stream_id, course=course)
+            substream = SubStream.objects.get(id=substream_id, stream=stream) if substream_id else None
         except Exception as e:
-            logger.error("Failed to create user account for student: %s", e)
-       
-        total_semyear = int(stream.sem) * (2 if studypattern == "Semester" else 1)
-        enrollment_data = {
-            "student": student.id,
-            "course": course.id,
-            "stream": stream.id,
-            "substream": substream.id if substream else None,
-            "course_pattern": studypattern.capitalize(),
-            "session": session,
-            "entry_mode": entry_mode,
-            "total_semyear": total_semyear,
-            "current_semyear": semyear,
-        }
-        enrollment_serializer = EnrolledSerializer(data=enrollment_data)
-        if not enrollment_serializer.is_valid():
-            logger.error("Enrollment validation failed: %s", enrollment_serializer.errors)
-            return Response(
-                {"error": "Failed to enroll student.", "details": enrollment_serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        enrollment_serializer.save()
-        #logger.info("Enrollment details saved for student: %s", student.id)
+            return Response({"error": f"Invalid foreign key: {e}"}, status=400)
 
-        # Additional enrollment details
-        additional_enrollment_data = {
-            "student": student.id,
-            "counselor_name": data.get('counselor_name'),
-            "university_enrollment_id": data.get('university_enrollment_number'),
-            "reference_name": data.get('reference_name'),
-        }
-        additional_enrollment_serializer = AdditionalEnrollmentDetailsSerializer(data=additional_enrollment_data)
-        if not additional_enrollment_serializer.is_valid():
-            logger.error("Additional enrollment validation failed: %s", additional_enrollment_serializer.errors)
-            return Response(
-                {"error": "Failed to save additional enrollment details.", "details": additional_enrollment_serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        additional_enrollment_serializer.save()
+        latest = Student.objects.order_by("-id").first()
+        enrollment_id = int(latest.enrollment_id) + 1 if latest else 50000
+        registration_id = int(latest.registration_id) + 1 if latest else 250000
 
-        # Assign fees
-        fees = (
-            SemesterFees.objects.filter(stream=stream, substream=substream)
-            if studypattern == "Semester"
-            else YearFees.objects.filter(stream=stream, substream=substream)
-        )
-        for fee in fees:
-            StudentFees.objects.create(
-                student=student,
-                stream=stream,
-                substream=substream,
-                studypattern=studypattern,
-                tutionfees=fee.tutionfees,
-                examinationfees=fee.examinationfees,
-                totalfees=fee.totalfees,
-                sem=fee.sem if studypattern == "Semester" else fee.year
-            )
-
-        try:
-            
-            latest_receipt = PaymentReciept.objects.latest('id')
-            tid = latest_receipt.transactionID
-            tranx = tid.replace("TXT445FE", "")
-            
-            # Check if tranx is not empty and can be converted to an integer
-            if tranx:
-                transactionID = f"TXT445FE{int(tranx) + 1}"
-            else:
-                transactionID = "TXT445FE101"  # Handle case where the transaction ID is missing or invalid
-        except PaymentReciept.DoesNotExist:
-            transactionID = "TXT445FE101"  # Default value if no previous receipts are found
-                # Determine receipt type
-        
-        payment_mode=data.get('payment_mode')
-        fee_recipt=data.get("fee_recipt")
-        fee_reciept_type=data.get('fee_reciept_type')
-        other_data=data.get('other_data')
-        reciept_type = other_data if fee_reciept_type == "Others" else fee_reciept_type
-        transaction_date=data.get('transaction_date')
-        other_bank=data.get('other_bank')
-        bank_name=data.get('bank_name')
-        remarks=data.get('remarks')
-        cheque_no=data.get('cheque_no')
-        if payment_mode=="Cheque":
-          payment_status="Not Realised"
-        else: 
-          payment_status="Realised"
-          
-
-        # Fetch the total fees for the given stream and substream
-        totalfees = SemesterFees.objects.filter(stream=stream, substream=substream).last()
-        print('totel fees',totalfees)
-        print('payment_status ',payment_status)
-        if totalfees is not None:
-            try:
-                # Convert total fees to float
-                total_fees_value = float(totalfees.totalfees)
-            except ValueError:
-                total_fees_value = 0  # Handle invalid data gracefully
-        else:
-            total_fees_value = 0
-
-        # Ensure 'fees' is a specific value, not a QuerySet
-        if isinstance(fees, QuerySet):
-            # Extract the first element's value, or handle empty QuerySet
-            fees_object = fees.last()
-            fees_value = float(fees_object.totalfees) if fees_object else 0  # Replace 'fee_amount' with the actual field name
-        else:
-            try:
-                # Convert fees to float for accurate calculations
-                fees_value = float(fees)
-            except (ValueError, TypeError):
-                fees_value = 0  # Handle invalid fees input
-
-        if fees_value and fee_reciept_type and transaction_date and payment_mode:
-          pending_fees = total_fees_value - fees_value
-            
-          if pending_fees > 0:
-              pending_amount = pending_fees
-              advance_amount = 0
-          elif pending_fees == 0:
-              pending_amount = 0
-              advance_amount = 0
-          else:
-              pending_amount = 0
-              advance_amount = abs(pending_fees)
-
-            # Determine payment type
-          paymenttype = "Full Payment" if pending_fees <= 0 else "Part Payment"
-
-          # Use the appropriate bank name
-          bank_name_to_use = other_bank if bank_name == "Others" else bank_name
-
-            # Set semester/year based on study pattern
-            
-          paidamount=data.get('paidamount')
-          paidamount = paidamount if payment_mode != "Cheque" else 0
-          semyear_value = "1" if studypattern == "Full Course" else semyear
-          uncleared_amount = fees_value if payment_mode == "Cheque" else None
-
-          add_payment_reciept = PaymentReciept(
-              student=student,
-              payment_for=fee_recipt,
-              payment_categories="New",
-              payment_type=paymenttype,
-              fee_reciept_type=reciept_type,
-              transaction_date=transaction_date,
-              cheque_no=cheque_no,
-              bank_name=bank_name_to_use,
-              semyearfees=total_fees_value,
-              paidamount=paidamount,
-              pendingamount=pending_amount,
-              advanceamount=advance_amount,
-              transactionID=transactionID,
-              paymentmode=payment_mode,
-              remarks=remarks,
-              session=session,
-              semyear=semyear_value,
-              uncleared_amount=uncleared_amount,
-              status=payment_status,
-          )
-
-          try:
-              add_payment_reciept.save()
-          except Exception as e:
-              # Log the full exception traceback
-              logger.error("Error saving payment receipt: %s", e)
-              logger.error("Traceback: %s", traceback.format_exc())
-              print(f"Error saving payment receipt: {e}")
-              print(f"Traceback: {traceback.format_exc()}")
-              raise
-        else:
-            print('inside else dataaaaaaaa')
-            pending_fees = total_fees_value - fees_value
-
-            if pending_fees > 0:
-                pending_amount = pending_fees
-                advance_amount = 0
-            elif pending_fees == 0:
-                pending_amount = 0
-                advance_amount = 0
-            else:
-                pending_amount = 0
-                advance_amount = abs(pending_fees)
-
-            # Determine payment type
-            paymenttype = "Full Payment" if pending_fees <= 0 else "Part Payment"
-
-            # Use the appropriate bank name
-            bank_name_to_use = other_bank if bank_name == "Others" else bank_name
-
-            # Set semester/year based on study pattern
-            paidamount = paidamount if payment_mode != "Cheque" else 0
-            semyear_value = "1" if studypattern == "Full Course" else semyear
-            uncleared_amount = fees_value if payment_mode == "Cheque" else None
-
-            add_payment_reciept = PaymentReciept(
-                student=student,
-                payment_for=fee_recipt,
-                payment_categories="New",
-                payment_type=paymenttype,
-                fee_reciept_type=reciept_type,
-                transaction_date=transaction_date,
-                cheque_no=cheque_no,
-                bank_name=bank_name_to_use,
-                semyearfees=total_fees_value,
-                paidamount=paidamount,
-                pendingamount=pending_amount,
-                advanceamount=advance_amount,
-                transactionID=transactionID,
-                paymentmode=payment_mode,
-                remarks=remarks,
-                session=session,
-                semyear=semyear_value,
-                uncleared_amount=uncleared_amount,
-                status=payment_status,
-            )
+        with transaction.atomic():
+            student_serializer = StudentSerializer(data={
+                "name": name,
+                "email": email,
+                "mobile": mobile,
+                "enrollment_id": enrollment_id,
+                "registration_id": registration_id,
+                "dob": data.get('dob'),
+                "university": university.id,
+                "is_quick_register": True,
+                "image": image
+            })
+            student_serializer.is_valid(raise_exception=True)
+            student = student_serializer.save()
 
             try:
-                add_payment_reciept.save()
+                User.objects.create(email=email, is_student=True, password=make_password(email))
             except Exception as e:
-                # Log the full exception traceback
-                logger.error("Error saving payment receipt: %s", e)
-                logger.error("Traceback: %s", traceback.format_exc())
-                print(f"Error saving payment receipt: {e}")
-                print(f"Traceback: {traceback.format_exc()}")
-                raise
+                logger.warning(f"User creation failed: {e}")
 
-        return Response(
-            {"message": "Student registered successfully."},
-            status=status.HTTP_201_CREATED
-        )
+            enrolled_serializer = EnrolledSerializer(data={
+                "student": student.id,
+                "course": course.id,
+                "stream": stream.id,
+                "substream": substream.id if substream else None,
+                "course_pattern": studypattern,
+                "session": session,
+                "entry_mode": entry_mode,
+                "total_semyear": int(stream.sem) * (2 if studypattern == "Semester" else 1),
+                "current_semyear": semyear
+            })
+            enrolled_serializer.is_valid(raise_exception=True)
+            enrolled_serializer.save()
+
+            add_serializer = AdditionalEnrollmentDetailsSerializer(data={
+                "student": student.id,
+                "counselor_name": data.get("counselor_name"),
+                "university_enrollment_id": data.get("university_enrollment_number"),
+                "reference_name": data.get("reference_name")
+            })
+            add_serializer.is_valid(raise_exception=True)
+            add_serializer.save()
+
+            fees_model = SemesterFees if studypattern == "Semester" else YearFees
+            fees = fees_model.objects.filter(stream=stream, substream=substream)
+            for fee in fees:
+                StudentFees.objects.create(
+                    student=student, stream=stream, substream=substream,
+                    studypattern=studypattern, tutionfees=fee.tutionfees,
+                    examinationfees=fee.examinationfees, totalfees=fee.totalfees,
+                    sem=fee.sem if studypattern == "Semester" else fee.year
+                )
+
+            try:
+                latest_receipt = PaymentReciept.objects.latest('id')
+                last_id = int(latest_receipt.transactionID.replace("TXT445FE", ""))
+                transactionID = f"TXT445FE{last_id + 1}"
+            except PaymentReciept.DoesNotExist:
+                transactionID = "TXT445FE101"
+
+            total_fees = float(fees.last().totalfees) if fees.exists() else 0
+            paid = float(data.get("paidamount") or 0)
+            pending = total_fees - paid
+            advance = abs(pending) if pending < 0 else 0
+            pending = pending if pending > 0 else 0
+
+            PaymentReciept.objects.create(
+                student=student,
+                payment_for=data.get("fee_recipt"),
+                payment_categories="New",
+                payment_type="Full Payment" if pending == 0 else "Part Payment",
+                fee_reciept_type=data.get("other_data") if data.get("fee_reciept_type") == "Others" else data.get("fee_reciept_type"),
+                transaction_date=data.get("transaction_date"),
+                cheque_no=data.get("cheque_no"),
+                bank_name=data.get("other_bank") if data.get("bank_name") == "Others" else data.get("bank_name"),
+                semyearfees=total_fees,
+                paidamount=0 if data.get("payment_mode") == "Cheque" else paid,
+                pendingamount=pending,
+                advanceamount=advance,
+                transactionID=transactionID,
+                paymentmode=data.get("payment_mode"),
+                remarks=data.get("remarks"),
+                session=session,
+                semyear="1" if studypattern == "Full Course" else semyear,
+                uncleared_amount=paid if data.get("payment_mode") == "Cheque" else None,
+                status="Not Realised" if data.get("payment_mode") == "Cheque" else "Realised"
+            )
+
+        return Response({"message": "Student registered successfully."}, status=201)
+
     except Exception as e:
-        logger.exception("An unexpected error occurred: %s", e)
-        return Response(
-            {"error": "An unexpected error occurred."},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
-        
-# @api_view(['PUT'])
-# def update_quick_student_details(request, enrollment_id):
-#     try:
-#         # Fetch student
-#         student = Student.objects.get(enrollment_id=enrollment_id)
-#         #logger.info(f"Updating details for student with enrollment_id: {enrollment_id}")
-
-#         # Update student basic details
-#         student_serializer = StudentSerializer(student, data=request.data, partial=True)
-#         if student_serializer.is_valid():
-#             student_serializer.save()
-#         else:
-#             logger.error(f"Validation error in student data: {student_serializer.errors}")
-#             return Response(student_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#         # Update enrollment details
-#         enrollment = Enrolled.objects.filter(student=student).first()
-#         if enrollment:
-#           enrollment.course_pattern = request.data.get('studypattern', enrollment.course_pattern)
-#           enrollment.session = request.data.get('session', enrollment.session)
-#           enrollment.entry_mode = request.data.get('entry_mode', enrollment.entry_mode)
-#           enrollment.total_semyear = request.data.get('total_semyear', enrollment.total_semyear)
-#           enrollment.current_semyear = request.data.get('semyear', enrollment.current_semyear)
-          
-#           course_id = request.data.get('course')
-#           if course_id:
-#               try:
-#                   enrollment.course = Course.objects.get(id=course_id)
-#               except Course.DoesNotExist:
-#                   return Response({"error": f"Course with id {course_id} does not exist."}, status=400)
-          
-#           stream_id = request.data.get('stream')
-#           if stream_id:
-#               try:
-#                   enrollment.stream = Stream.objects.get(id=stream_id)
-#               except Stream.DoesNotExist:
-#                   return Response({"error": f"Stream with id {stream_id} does not exist."}, status=400)
-
-#           substream_id = request.data.get('substream')
-#           if substream_id:
-#               try:
-#                   enrollment.substream = SubStream.objects.get(id=substream_id)
-#               except SubStream.DoesNotExist:
-#                   return Response({"error": f"SubStream with id {substream_id} does not exist."}, status=400)
-          
-#           enrollment.save()
-
-#         # Update additional enrollment details
-#         additional_details = AdditionalEnrollmentDetails.objects.filter(student=student).first()
-#         if additional_details:
-#             additional_serializer = AdditionalEnrollmentDetailsSerializer(additional_details, data=request.data, partial=True)
-#             if additional_serializer.is_valid():
-#                 additional_serializer.save()
-#             else:
-#                 logger.error(f"Validation error in additional details: {additional_serializer.errors}")
-#                 return Response(additional_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#         # Update payment details
-#         latest_payment = PaymentReciept.objects.filter(student=student).last()
-#         if latest_payment:
-#             payment_serializer = PaymentReceiptSerializer(latest_payment, data=request.data, partial=True)
-#             if payment_serializer.is_valid():
-#                 payment_serializer.save()
-#             else:
-#                 logger.error(f"Validation error in payment details: {payment_serializer.errors}")
-#                 return Response(payment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#         #logger.info(f"Successfully updated details for enrollment_id: {enrollment_id}")
-#         return Response({"message": "Student details updated successfully."}, status=status.HTTP_200_OK)
-
-#     except Student.DoesNotExist:
-#         logger.error(f"Student with enrollment_id {enrollment_id} not found.")
-#         return Response(
-#             {"error": "Student not found."},
-#             status=status.HTTP_404_NOT_FOUND
-#         )
-#     except Exception as e:
-#         logger.error(f"Internal Server Error: {str(e)}")
-#         return Response(
-#             {"error": str(e)},
-#             status=status.HTTP_500_INTERNAL_SERVER_ERROR
-#         )
+        logger.exception("Unexpected error during quick registration.")
+        return Response({"error": str(e)}, status=500)
 
 
-# @api_view(['POST'])
-# @parser_classes([MultiPartParser, FormParser])
-# def upload_student_documents(request):
-#     # Log request data and files for debugging
-#     try:
-#         logger.debug("Request data: %s", request.data)
-#         logger.debug("Request files: %s", request.FILES)
-#     except Exception as e:
-#         logger.error("Error logging request data: %s", str(e))
-#         return Response({"error": "Error processing the request data."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-#     # Fetch the student instance
-#     student_id = request.data.get('student_id')
-#     if not student_id:
-#         return Response({"error": "student_id is required."}, status=status.HTTP_400_BAD_REQUEST)
-#     student = get_object_or_404(Student, id=student_id)
 
-#     # Fetch documents and files
-#     document_objects = []
-#     index = 0
 
-#     # Iterate over document indices
-#     while f'documents[{index}][document]' in request.data:
-#         # Extract document data
-#         document_data = {
-#             "document": request.data.get(f'documents[{index}][document]'),
-#             "document_name": request.data.get(f'documents[{index}][document_name]'),
-#             "document_ID_no": request.data.get(f'documents[{index}][document_ID_no]'),
-#         }
-#         document_image_front = request.FILES.get(f'documents[{index}][document_image_front]')
-#         document_image_back = request.FILES.get(f'documents[{index}][document_image_back]')
-
-#         # Validate and append document object
-#         document_serializer = StudentDocumentsSerializer(data=document_data)
-#         if document_serializer.is_valid():
-#             validated_data = document_serializer.validated_data
-#             document_objects.append(StudentDocuments(
-#                 document=validated_data.get('document'),
-#                 document_name=validated_data.get('document_name'),
-#                 document_ID_no=validated_data.get('document_ID_no'),
-#                 document_image_front=document_image_front,
-#                 document_image_back=document_image_back,
-#                 student=student
-#             ))
-#         else:
-#             logger.error("Invalid document data: %s", document_serializer.errors)
-#             return Response({"error": "Invalid document data.", "details": document_serializer.errors},
-#                             status=status.HTTP_400_BAD_REQUEST)
-
-#         index += 1
-
-#     # Save all valid documents
-#     if document_objects:
-#         StudentDocuments.objects.bulk_create(document_objects)
-#         #logger.info("Documents saved for student: %s", student.id)
-#         return Response({"message": "Documents saved successfully!"}, status=status.HTTP_201_CREATED)
-#     else:
-#         logger.warning("No valid documents were provided for student: %s", student.id)
-#         return Response({"error": "No valid documents were provided."}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -3791,7 +2823,6 @@ def create_subject(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 from django.http import HttpResponse,FileResponse
-import pandas as pd
 from io import BytesIO
 
 def validate_row(row):
@@ -3954,7 +2985,6 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 import os
-import pandas as pd
 from .models import University, Course, Stream, SubStream, Subject, Examination, Questions
 import logging
 
@@ -6798,3 +5828,35 @@ def save_single_question_answer(request):
         return Response({"error": "An internal server error occurred."},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def list_of_all_cancelled_student(request):
+    try:
+        students = Student.objects.filter(is_cancelled=True).order_by('-id')
+
+        student_data = []
+        for student in students:
+            enrolled = Enrolled.objects.filter(student=student).first()
+
+            student_data.append({
+                "id": student.id,
+                "mobile": student.mobile,
+                "name": student.name,
+                "registration_id": student.registration_id,
+                "email": student.email,
+                "current_semyear": enrolled.current_semyear if enrolled else "",
+                "enrollment_id": student.enrollment_id,
+                "student_name": student.name,
+                "university_name": student.university.university_name if student.university else "",
+                "source": 'QR' if student.is_quick_register else 'SR',
+                "study_pattern_mode": enrolled.course_pattern if enrolled and enrolled.course_pattern else "",
+                "entry_mode": enrolled.entry_mode if enrolled and enrolled.entry_mode else "",
+                "enrollment_date": student.enrollment_date.strftime('%Y-%m-%d') if student.enrollment_date else ""
+            })
+
+        return Response({"status": "success", "data": student_data}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error(f"Error fetching cancelled students: {str(e)}")
+        return Response({"status": "error", "message": "Something went wrong!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

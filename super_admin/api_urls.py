@@ -127,7 +127,10 @@ urlpatterns = [
   
   path('substreams-withid/', api_views.get_substreams_with_id_by_university_course_stream, name='get_substreams_with_id_by_university_course_stream'),
 #---------------------------------------------------------------------------------------------
-  path('list_of_all_registered_student/', api_views.list_of_all_registered_student, name='list_of_all_registered_student'),  
+  path('list_of_all_registered_student/', api_views.list_of_all_registered_student, name='list_of_all_registered_student'), 
+  
+  path('list_of_all_cancelled_student/', api_views.list_of_all_cancelled_student, name='list_of_all_cancelled_student'),
+   
   path('get_student_enroll_to_next_year/<int:id>/', api_views.get_student_enroll_to_next_year, name='get_student_enroll_to_next_year'),
 
   path('get_subjects_by_stream/<int:stream_id>/', api_views.get_subjects_by_stream, name='get_subjects_by_stream'),
