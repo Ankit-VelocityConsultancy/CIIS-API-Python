@@ -2962,32 +2962,40 @@ def bulk_student_upload(request):
 def fetch_subject(request):
     try:
         stream_id = request.query_params.get('stream')
-        substream_id = request.query_params.get('substream')
+        substream_id = request.query_params.get('substream')  # Optional
         study_pattern = request.query_params.get('study_pattern')
         semyear = request.query_params.get('semyear')
-        subject = Subject.objects.filter(stream_id=stream_id, substream_id=substream_id, 
-                                         studypattern=study_pattern, semyear=semyear)
-        if not subject.exists():
+        
+        # Initialize the queryset for subjects
+        subject_query = Subject.objects.filter(
+            stream_id=stream_id,  # Filtering by stream
+            studypattern=study_pattern,  # Filtering by study pattern
+            semyear=semyear  # Filtering by semester/year
+        )
+
+        # If substream is provided, filter by substream
+        if substream_id:
+            subject_query = subject_query.filter(substream_id=substream_id)
+        else:
+            # If substream is not provided, include subjects that don't have a substream
+            subject_query = subject_query.filter(substream_id__isnull=True)
+
+        # Check if subjects exist for the given parameters
+        if not subject_query.exists():
             logger.warning("No subjects found for the given parameters.")
             return Response({"message": "No subjects found."}, status=status.HTTP_404_NOT_FOUND)
 
-        subjectdata = SubjectSerializer(subject, many=True)
+        # Serialize the subject data
+        subject_data = SubjectSerializer(subject_query, many=True)
 
-        return Response({"data": subjectdata.data},status=status.HTTP_200_OK)
+        # Return the subjects data
+        return Response({"data": subject_data.data}, status=status.HTTP_200_OK)
 
     except Exception as e:
+        # Log the error if an exception occurs
         logger.error("An error occurred while fetching subjects: %s", str(e), exc_info=True)
-        return Response({"message": "An error occurred while processing your request."},
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-from django.conf import settings
-from django.db import transaction
-from rest_framework.decorators import api_view, parser_classes
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.response import Response
-import os
-from .models import University, Course, Stream, SubStream, Subject, Examination, Questions
-import logging
-
+        return Response({"message": "An error occurred while processing your request."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+      
 def validate_excel_file(file_path):
     required_columns = [
         "COURSE", "STREAM", "SUBSTREAM", "SESSION", "MODE", "YEAR/SEMESTER",
@@ -3179,19 +3187,15 @@ def filter_questions(request):
 @api_view(['POST'])
 def fetch_exam(request):
     try:
-        # Extract data from the request
         university = request.data.get("university")
         course = request.data.get("course")
         stream = request.data.get("stream")
         session = request.data.get("session")
         studypattern = request.data.get("studypattern")
         semyear = request.data.get("semyear")
-        substream = request.data.get("substream", None)  # Optional field
+        substream = request.data.get("substream")  # Can be None or empty
 
-        # Log the incoming request
-        #logger.info(f"Request to fetch exam data: {request.data}")
-
-        # Filter the Examination model based on the input parameters
+        # Filters for Examination
         exam_filters = {
             'university_id': university,
             'course_id': course,
@@ -3204,19 +3208,16 @@ def fetch_exam(request):
 
         if substream:
             exam_filters['substream_id'] = substream
+        else:
+            exam_filters['substream_id__isnull'] = True
 
-        # Query the Examination model
         examinations = Examination.objects.filter(**exam_filters).values(
             'id', 'subject_id', 'subject__name', 'examtype'
         )
 
-        # Log the number of exams found
-        #logger.info(f"Found {len(examinations)} examinations")
-
         if not examinations:
             return Response({"message": "No examinations found matching the criteria."}, status=404)
 
-        # Prepare exam data
         exams_data = [
             {
                 'examination_id': exam['id'],
@@ -3227,7 +3228,7 @@ def fetch_exam(request):
             for exam in examinations
         ]
 
-        # Filter the Enrolled model based on the input parameters for students
+        # Filters for Enrolled
         student_filters = {
             'course_id': course,
             'stream_id': stream,
@@ -3238,6 +3239,8 @@ def fetch_exam(request):
 
         if substream:
             student_filters['substream_id'] = substream
+        else:
+            student_filters['substream_id__isnull'] = True
 
         enrolled_students = Enrolled.objects.filter(**student_filters).select_related('student').values(
             'student__id',
@@ -3247,7 +3250,6 @@ def fetch_exam(request):
             'student__enrollment_date'
         )
 
-        # Prepare student data
         student_data = [
             {
                 'id': student['student__id'],
@@ -3259,13 +3261,12 @@ def fetch_exam(request):
             for student in enrolled_students
         ]
 
-        # Return both exams and student data
         return Response({"exams_data": exams_data, "student_data": student_data}, status=200)
 
     except Exception as e:
-        # Log any errors that occur
         logger.error(f"Error in fetch_exam API: {str(e)}")
         return Response({"error": "An error occurred while processing the request."}, status=500)
+
       
 
 logger = logging.getLogger('student_registration')
@@ -3679,19 +3680,32 @@ def view_set_examination(request):
             'semyear': request.query_params.get('semyear')
         }
 
-        # Filter examinations based on the provided query parameters
+        # Initialize the examinations queryset
         examinations = Examination.objects.all()
 
+        # Check for empty or invalid parameters before filtering
         for param, value in query_params.items():
-            if value:
+            if value is not None and value != '':  # Only filter if the parameter is provided and non-empty
                 # Dynamically filter the queryset based on the query parameters
-                examinations = examinations.filter(**{param: value})
+                # Ensure the value is a number for parameters like course, stream, university
+                if param in ['university', 'course', 'stream', 'substream'] and value.isdigit():
+                    examinations = examinations.filter(**{param: value})
+                else:
+                    # Handle case where value is invalid (non-numeric when a number is expected)
+                    if param in ['university', 'course', 'stream', 'substream']:
+                        logger.error(f"Invalid {param}: {value}")
+                        return Response({"error": f"Invalid {param} parameter value."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # If `substream` is passed, apply that filter too
+        if query_params['substream'] is not None and query_params['substream'] != '':
+            examinations = examinations.filter(substream=query_params['substream'])
+
+        # If no substream is provided, show examinations for the same course, stream, and university, but no substream
+        if query_params['substream'] is None or query_params['substream'] == '':
+            examinations = examinations.filter(substream__isnull=True)
 
         # Serialize the filtered examination data
         serializer = ExaminationSerializer(examinations, many=True)
-
-        # Log the successful fetch of examinations
-        #logger.info(f"Successfully fetched {len(examinations)} examinations based on query parameters: {query_params}")
 
         # Return the serialized data in the response
         return Response(serializer.data, status=status.HTTP_200_OK)
