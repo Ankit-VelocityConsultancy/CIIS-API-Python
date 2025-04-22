@@ -155,7 +155,11 @@ urlpatterns = [
   path('get_university_reregistration/', api_views.get_university_reregistration, name='get_university_reregistration'),
   path('get_paid_fees/', api_views.get_paid_fees, name='get_paid_fees'),
 
-path('save_single_answers/', api_views.save_single_question_answer, name='save_single_answers'),
+  path('save_single_answers/', api_views.save_single_question_answer, name='save_single_answers'),
+
+  path('document-management/<int:enrollment_id>/',api_views.document_management, name='document_management'),
+
+
 
 ]
 if settings.DEBUG:

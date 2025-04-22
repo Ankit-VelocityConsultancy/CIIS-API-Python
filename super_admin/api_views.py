@@ -5874,3 +5874,49 @@ def list_of_all_cancelled_student(request):
     except Exception as e:
         logger.error(f"Error fetching cancelled students: {str(e)}")
         return Response({"status": "error", "message": "Something went wrong!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+def document_management(request, enrollment_id):
+    if not enrollment_id:
+        logger.error("Missing required parameter: enrollment_id in request URL")
+        return Response(
+            {"error": "Missing required parameter: enrollment_id"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        # Fetch the student by enrollment_id
+        student = Student.objects.get(enrollment_id=enrollment_id)
+        logger.info(f"Fetching documents for student: {student.name} (Enrollment ID: {student.enrollment_id})")
+
+        # Fetch student documents
+        student_documents = StudentDocuments.objects.filter(student=student)
+        student_documents_data = StudentDocumentsSerializerGET(student_documents, many=True).data
+
+        # Fetch student qualifications
+        qualifications = Qualification.objects.filter(student=student).first()
+        qualification_data = QualificationSerializer(qualifications).data if qualifications else None
+
+        # Prepare response data
+        response_data = {
+            "image": student.image.url if student.image else None,
+            "documents": student_documents_data,
+            "qualifications": qualification_data
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    except Student.DoesNotExist:
+        logger.error(f"Student with enrollment_id {enrollment_id} not found.")
+        return Response(
+            {"error": "Student not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    except Exception as e:
+        logger.error(f"Unexpected error while retrieving documents for student {enrollment_id}: {str(e)}")
+        return Response(
+            {"error": "An unexpected error occurred while retrieving student documents."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
