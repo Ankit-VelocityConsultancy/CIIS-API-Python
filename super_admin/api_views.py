@@ -34,9 +34,12 @@ def get_tokens_for_user(user):
         'refresh': str(refresh),
         'access': str(refresh.access_token)
         }
-
-@api_view(["POST"])
+    
+    
+@api_view(['POST'])
 def login_view(request):
+    # import pdb
+    # pdb.set_trace()
     print('inside login view')
     if request.method == "POST":
         print('inside post')
@@ -49,27 +52,95 @@ def login_view(request):
 
             if user is not None:
                 loggedin_user = User.objects.get(email=email)
-                token = get_tokens_for_user(user)  # Assuming you have this function defined
+                token = get_tokens_for_user(user)
 
-                return Response({
-                    "message": "Login Successful",
-                    "token": token,
-                    "email": user.email,
-                    "is_active": user.is_active,
-                }, status=200)
+                # Check if the user is a student or not
+                if loggedin_user.is_student:
+                    print('inside loggedin_user ', loggedin_user.is_student, loggedin_user.id)
+                    # Student: Return student-specific data like exams
+                    try:
+                        student = Student.objects.get(email=email)
+                        # Fetch StudentAppearingExam with related 'exam' to avoid missing 'exam' data
+                        exams = StudentAppearingExam.objects.filter(student_id__contains=[student.id]).select_related('exam')
+                        print('examsexamsexams', exams)
+
+                    except Student.DoesNotExist:
+                        return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+
+                    # If no exams found, still return the token with message
+                    if not exams.exists():
+                        return Response({
+                            "message": "Login Successful",
+                            "token": token,
+                            "is_student": True,  # User is a student
+                            "email": user.email,
+                            "is_active": user.is_active,
+                        }, status=200)
+
+                    # Prepare exam-related data for the student
+                    exam_details = []
+                    examination_data = []
+
+                    for exam in exams:
+                        try:
+                            # Ensure that 'exam' related object is not missing
+                            exam_details.append({
+                                "exam_id": exam.exam.id,
+                                "examstartdate": exam.examstartdate,
+                                "examenddate": exam.examenddate,
+                                "examstarttime": exam.examstarttime,
+                                "examendtime": exam.examendtime
+                            })
+
+                            examination = exam.exam
+                            examination_data.append({
+                                "id": examination.id,
+                                "course_id": examination.course.id,
+                                "stream_id": examination.stream.id,
+                                "subject_id": examination.subject.id,
+                                "studypattern": examination.studypattern,
+                                "semyear": examination.semyear,
+                                "substream_id": examination.substream.id if examination.substream else None,
+                                "course_name": examination.course.name,
+                                "stream_name": examination.stream.name,
+                                "subject_name": examination.subject.name,
+                                "substream_name": examination.substream.name if examination.substream else None
+                            })
+                        except Examination.DoesNotExist:
+                            # If the 'exam' field is missing, log the error and skip this record
+                            logger.error(f"Examination for exam_id {exam.id} does not exist. Skipping this exam.")
+                            continue  # Skip this exam if it's missing related data
+
+                    return Response({
+                        "message": "Login Successful",
+                        "token": token,
+                        "student_id": loggedin_user.id,
+                        "exam_details": exam_details,
+                        "examination_data": examination_data
+                    }, status=200)
+
+                else:
+                    # Admin: Return admin-specific data
+                    return Response({
+                        "message": "Login Successful",
+                        "token": token,
+                        "is_student": False,  # User is not a student (Admin)
+                        "email": user.email,
+                        "is_active": user.is_active,
+                    }, status=200)
 
             else:
-                print('inside errorssssssssssssssss')
                 return Response({"error": "Invalid Credentials"}, status=400)
 
-        # Collecting error messages
+        # Collecting error messages from serializer
         error_messages = []
         for field, errors in serializer.errors.items():
             for error in errors:
                 error_messages.append(error)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+  
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def add_university(request):
@@ -1804,11 +1875,11 @@ def student_registration(request):
             return Response({"error": "Validation failed", "details": student_serializer.errors}, status=400)
         student = student_serializer.save()
 
-        # Create user
-        try:
-            User.objects.create(email=email, is_student=True, password=make_password(email))
-        except Exception as e:
-            logger.warning("User creation failed: %s", e)
+        if student:
+          try:
+              User.objects.create(email=email, is_student=True, password=make_password(mobile))
+          except Exception as e:
+              logger.warning("User creation failed: %s", e)
 
         # Save Enrollment
         total_semyear = int(stream.sem) * (2 if studypattern == "Semester" else 1)
@@ -2670,11 +2741,11 @@ def quick_registration(request):
             })
             student_serializer.is_valid(raise_exception=True)
             student = student_serializer.save()
-
-            try:
-                User.objects.create(email=email, is_student=True, password=make_password(email))
-            except Exception as e:
-                logger.warning(f"User creation failed: {e}")
+            if student:
+              try:
+                  User.objects.create(email=email, is_student=True, password=make_password(mobile))
+              except Exception as e:
+                  logger.warning(f"User creation failed: {e}")
 
             enrolled_serializer = EnrolledSerializer(data={
                 "student": student.id,
@@ -4208,10 +4279,18 @@ def student_login(request):
             return Response({"error": "Invalid email or password."}, status=status.HTTP_401_UNAUTHORIZED)
 
         # Generate JWT Token
-        token = get_tokens_for_user(student)
+        try:
+            token = get_tokens_for_user(student)  # Ensure this function is working
+        except Exception as e:
+            logger.error(f"Error generating token for student {email}: {str(e)}")
+            return Response({"error": "An error occurred while generating the token."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        # Fetch student exams
-        exams = StudentAppearingExam.objects.filter(student_id__contains=[student.id])
+        # Fetch student exams by checking if student.id is in the student_id JSON list
+        try:
+            exams = StudentAppearingExam.objects.filter(student_id__contains=[student.id])
+        except Exception as e:
+            logger.error(f"Error fetching exams for student {email}: {str(e)}")
+            return Response({"error": "An error occurred while fetching exams."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         if not exams.exists():
             return Response({
@@ -4224,28 +4303,36 @@ def student_login(request):
         examination_data = []
 
         for exam in exams:
-            exam_details.append({
-                "exam_id": exam.exam.id,
-                "examstartdate": exam.examstartdate,
-                "examenddate": exam.examenddate,
-                "examstarttime": exam.examstarttime,
-                "examendtime": exam.examendtime
-            })
+            try:
+                exam_details.append({
+                    "exam_id": exam.exam.id,
+                    "examstartdate": exam.examstartdate,
+                    "examenddate": exam.examenddate,
+                    "examstarttime": exam.examstarttime,
+                    "examendtime": exam.examendtime
+                })
+            except Exception as e:
+                logger.error(f"Error fetching exam details for exam {exam.id}: {str(e)}")
+                continue  # Skip this exam if it's missing details
 
-            examination = exam.exam
-            examination_data.append({
-                "id": examination.id,
-                "course_id": examination.course.id,
-                "stream_id": examination.stream.id,
-                "subject_id": examination.subject.id,
-                "studypattern": examination.studypattern,
-                "semyear": examination.semyear,
-                "substream_id": examination.substream.id if examination.substream else None,
-                "course_name": examination.course.name,
-                "stream_name": examination.stream.name,
-                "subject_name": examination.subject.name,
-                "substream_name": examination.substream.name if examination.substream else None
-            })
+            try:
+                examination = exam.exam
+                examination_data.append({
+                    "id": examination.id,
+                    "course_id": examination.course.id,
+                    "stream_id": examination.stream.id,
+                    "subject_id": examination.subject.id,
+                    "studypattern": examination.studypattern,
+                    "semyear": examination.semyear,
+                    "substream_id": examination.substream.id if examination.substream else None,
+                    "course_name": examination.course.name,
+                    "stream_name": examination.stream.name,
+                    "subject_name": examination.subject.name,
+                    "substream_name": examination.substream.name if examination.substream else None
+                })
+            except Exception as e:
+                logger.error(f"Error fetching examination data for exam {exam.id}: {str(e)}")
+                continue  # Skip this examination if it's missing related data
 
         return Response({
             "message": "Login Successful",
@@ -4257,7 +4344,10 @@ def student_login(request):
 
     except Exception as e:
         logger.error(f"An error occurred while processing the student login: {str(e)}")
-        return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": f"An internal server error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 
 
 
