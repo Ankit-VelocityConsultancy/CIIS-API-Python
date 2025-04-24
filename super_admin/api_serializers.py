@@ -300,12 +300,13 @@ class ExaminationSerializer(serializers.ModelSerializer):
         ]
         
 class QuestionsSerializer(serializers.ModelSerializer):
-    # Include any nested relations you need
-    exam = serializers.PrimaryKeyRelatedField(queryset=Examination.objects.all())  # You can customize this if needed
+    exam = serializers.PrimaryKeyRelatedField(queryset=Examination.objects.all())
 
     class Meta:
         model = Questions
-        fields = '__all__'  # Alternatively, you can specify the fields explicitly like: ['id', 'question', 'marks', etc.]
+        fields = ['id','exam','question','image','type','marks','option1','option2','option3','option4','option5','option6','shortanswer','difficultylevel',
+        ]
+        
         
 class ResultUploadedSerializer(serializers.ModelSerializer):
     class Meta:

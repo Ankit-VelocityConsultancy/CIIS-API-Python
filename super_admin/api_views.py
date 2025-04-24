@@ -38,8 +38,6 @@ def get_tokens_for_user(user):
     
 @api_view(['POST'])
 def login_view(request):
-    # import pdb
-    # pdb.set_trace()
     print('inside login view')
     if request.method == "POST":
         print('inside post')
@@ -53,6 +51,7 @@ def login_view(request):
             if user is not None:
                 loggedin_user = User.objects.get(email=email)
                 token = get_tokens_for_user(user)
+                print('emaillll',loggedin_user.email,loggedin_user.is_student)
 
                 # Check if the user is a student or not
                 if loggedin_user.is_student:
@@ -113,8 +112,9 @@ def login_view(request):
 
                     return Response({
                         "message": "Login Successful",
+                        "is_student": True,  # User is a student
                         "token": token,
-                        "student_id": loggedin_user.id,
+                        "student_id": student.id,
                         "exam_details": exam_details,
                         "examination_data": examination_data
                     }, status=200)
@@ -124,9 +124,10 @@ def login_view(request):
                     return Response({
                         "message": "Login Successful",
                         "token": token,
-                        "is_student": False,  # User is not a student (Admin)
+                        "is_student": False,
                         "email": user.email,
                         "is_active": user.is_active,
+                        "user_id": loggedin_user.id,  # Add this
                     }, status=200)
 
             else:
@@ -4462,57 +4463,73 @@ def fetch_questions_based_on_exam_id(request):
    
 @api_view(['POST'])
 def save_all_questions_answers(request):
-    """
-    Save submitted answers for a student for an exam.
-    """
     try:
-        # Extract data from the request
         data = request.data
         student_id = data.get("student_id")
         exam_id = data.get("exam_id")
         questions = data.get("questions")
 
-        # Validate required fields
+        logger.info(f"Received submission for student_id={student_id}, exam_id={exam_id}")
+
+        # Validate presence of required fields
         if not student_id or not exam_id or not questions:
             logger.error("Missing required fields: student_id, exam_id, or questions.")
-            return Response({"error": "Missing required fields: student_id, exam_id, or questions."},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "error": "Missing required fields: student_id, exam_id, or questions."
+            }, status=status.HTTP_400_BAD_REQUEST)
 
-        # Process each question
+        # Fetch related instances
+        try:
+            student_instance = Student.objects.get(id=student_id)
+        except Student.DoesNotExist:
+            logger.error(f"Student with id {student_id} not found.")
+            return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            exam_instance = Examination.objects.get(id=exam_id)
+        except Examination.DoesNotExist:
+            logger.error(f"Examination with id {exam_id} not found.")
+            return Response({"error": "Examination not found."}, status=status.HTTP_404_NOT_FOUND)
+
         saved_answers = []
+
         for question in questions:
             question_id = question.get("id")
             submitted_answer = question.get("submitted_answer")
+            
+            print('submitted_answer',submitted_answer)
 
-            # Validate question fields
             if not question_id or submitted_answer is None:
-                logger.warning(f"Missing fields for question ID {question_id}. Skipping...")
+                logger.warning(f"Skipping question with incomplete data: {question}")
                 continue
 
-            # Retrieve the question object
             try:
                 question_instance = Questions.objects.get(id=question_id)
             except Questions.DoesNotExist:
-                logger.warning(f"Question with ID {question_id} does not exist. Skipping...")
+                logger.warning(f"Question with ID {question_id} does not exist. Skipping.")
                 continue
 
-            # Retrieve correct answer and marks for validation
-            correct_answer = question_instance.answer.lower()  # Assuming `Questions` model has this field
-            marks = question_instance.marks  # Assuming `Questions` model has this field
+            # Get correct answer and marks
+            correct_answer = question_instance.answer.lower().strip() if question_instance.answer else ""
+            
+            print('submitted_answer correct_answer ',correct_answer,submitted_answer)
+            
+            submitted_value = submitted_answer.lower().strip()
+            marks = question_instance.marks or "0"
 
-            # Calculate result and marks_obtained
-            if correct_answer == submitted_answer.lower():
+            # Evaluate
+            if correct_answer == submitted_value:
                 result = "Right"
                 marks_obtained = marks
             else:
                 result = "Wrong"
-                marks_obtained = 0
+                marks_obtained = "0"
 
-            # Save to the database using question_id as CharField
-            submitted_exam = SubmittedExamination.objects.create(
-                student_id=student_id,
-                exam_id=exam_id,
-                question=str(question_id),  # ✅ FIXED: Save question ID as string
+            # Save submission
+            SubmittedExamination.objects.create(
+                student=student_instance,
+                exam=exam_instance,
+                question=str(question_id),  # Question ID stored as CharField
                 type=question_instance.type,
                 marks=marks,
                 marks_obtained=marks_obtained,
@@ -4520,11 +4537,16 @@ def save_all_questions_answers(request):
                 answer=correct_answer,
                 result=result,
             )
+
+            logger.info(f"Saved answer for question_id={question_id}: {result}, Marks={marks_obtained}")
+
             saved_answers.append({
                 "question_id": question_id,
                 "result": result,
                 "marks_obtained": marks_obtained,
             })
+
+        logger.info(f"Successfully saved {len(saved_answers)} answers for student {student_id}.")
 
         return Response({
             "message": "Submitted answers saved successfully.",
@@ -4532,9 +4554,12 @@ def save_all_questions_answers(request):
         }, status=status.HTTP_201_CREATED)
 
     except Exception as e:
-        logger.exception(f"An error occurred while saving answers: {str(e)}")
-        return Response({"error": "An internal server error occurred."},
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.exception(f"Unexpected error while saving answers: {str(e)}")
+        return Response({
+            "error": "An internal server error occurred."
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 # @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
 # def get_result_to_show_based_on_subject(request):
