@@ -6035,3 +6035,33 @@ def document_management(request, enrollment_id):
             {"error": "An unexpected error occurred while retrieving student documents."},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+        
+
+@api_view(["POST"])
+def save_exam_timer(request):
+    student_id = request.data.get("student_id")
+    exam_id = request.data.get("exam_id")
+    time_left_ms = request.data.get("time_left_ms")
+
+    if not all([student_id, exam_id, time_left_ms]):
+        return Response({"error": "Missing data"}, status=400)
+
+    session, created = ExamSession.objects.get_or_create(
+        student_id=student_id,
+        exam_id=exam_id
+    )
+    session.time_left_ms = time_left_ms
+    session.save()
+
+    return Response({"status": "saved", "created": created})
+  
+@api_view(["GET"])
+def get_exam_timer(request):
+  student_id = request.query_params.get("student_id")
+  exam_id = request.query_params.get("exam_id")
+
+  try:
+      session = ExamSession.objects.get(student_id=student_id, exam_id=exam_id)
+      return Response({"time_left_ms": session.time_left_ms})
+  except ExamSession.DoesNotExist:
+      return Response({"time_left_ms": None})

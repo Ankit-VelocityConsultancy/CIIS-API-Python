@@ -301,10 +301,11 @@ class ExaminationSerializer(serializers.ModelSerializer):
         
 class QuestionsSerializer(serializers.ModelSerializer):
     exam = serializers.PrimaryKeyRelatedField(queryset=Examination.objects.all())
+    examduration = serializers.CharField(source='exam.examduration', read_only=True)
 
     class Meta:
         model = Questions
-        fields = ['id','exam','question','image','type','marks','option1','option2','option3','option4','option5','option6','shortanswer','difficultylevel',
+        fields = ['id','exam','question','image','type','marks','option1','option2','option3','option4','option5','option6','shortanswer','difficultylevel','examduration'
         ]
         
         

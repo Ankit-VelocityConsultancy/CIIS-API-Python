@@ -159,7 +159,8 @@ urlpatterns = [
 
   path('document-management/<int:enrollment_id>/',api_views.document_management, name='document_management'),
 
-
+  path('save_exam_timer/', api_views.save_exam_timer),
+  path('get_exam_timer/', api_views.get_exam_timer),
 
 ]
 if settings.DEBUG:

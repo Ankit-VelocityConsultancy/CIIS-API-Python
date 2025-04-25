@@ -733,3 +733,11 @@ class StudentAppearingExam(models.Model):
     # attempt=models.IntegerField(null=True,blank=True)
     class Meta:
         db_table = 'studentappearingexam'
+
+class ExamSession(models.Model):
+  student = models.ForeignKey('Student', on_delete=models.CASCADE)
+  exam = models.ForeignKey('Examination', on_delete=models.CASCADE)
+  time_left_ms = models.BigIntegerField(default=0)
+  updated_at = models.DateTimeField(auto_now=True)
+  class Meta:
+      unique_together = ('student', 'exam')
