@@ -313,3 +313,10 @@ class ResultUploadedSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResultUploaded
         fields = '__all__'
+        
+class ExaminationSubjectSerializer(serializers.ModelSerializer):
+    subject = SubjectSerializer(read_only=True)
+
+    class Meta:
+        model = Examination
+        fields = '__all__'

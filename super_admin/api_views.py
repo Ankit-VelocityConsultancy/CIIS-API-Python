@@ -19,6 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import date
 from django.db.models import Q
 import pandas as pd
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('student_registration')
@@ -3261,91 +3262,82 @@ def fetch_exam(request):
     try:
         university = request.data.get("university")
         course = request.data.get("course")
-        stream = request.data.get("stream")
+        stream = request.data.get("stream") or request.data.get("Stream")  # handle both 'stream' and 'Stream'
         session = request.data.get("session")
         studypattern = request.data.get("studypattern")
         semyear = request.data.get("semyear")
-        substream = request.data.get("substream")  # Can be None or empty
+        substream = request.data.get("substream")  # May be "" or actual ID
 
-        # Filters for Examination
-        exam_filters = {
-            'university_id': university,
-            'course_id': course,
-            'stream_id': stream,
-            'session': session,
-            'studypattern': studypattern,
-            'semyear': semyear,
-            'active': True,
-        }
+        if substream == "":
+            substream = None
 
-        if substream:
-            exam_filters['substream_id'] = substream
+        # === BUILD EXAM FILTERS (dynamic Q) ===
+        exam_filters = Q(university_id=university) & Q(course_id=course) & Q(stream_id=stream) & Q(active=True)
+
+        if session not in ["", None, "0"]:
+            exam_filters &= Q(session=session)
+
+        if studypattern not in ["", None, "0"]:
+            exam_filters &= Q(studypattern=studypattern)
+
+        if semyear not in ["", None, "0"]:
+            exam_filters &= Q(semyear=semyear)
+
+        if substream is None:
+            exam_filters &= (Q(substream__isnull=True) | Q(substream_id__isnull=True))
         else:
-            exam_filters['substream_id__isnull'] = True
+            exam_filters &= Q(substream_id=substream)
 
-        examinations = Examination.objects.filter(**exam_filters).values(
-            'id', 'subject_id', 'subject__name', 'examtype'
-        )
+        examinations = Examination.objects.filter(exam_filters).select_related("subject")
 
-        if not examinations:
+        if not examinations.exists():
             return Response({"message": "No examinations found matching the criteria."}, status=404)
 
-        exams_data = [
-            {
-                'examination_id': exam['id'],
-                'subject_id': exam['subject_id'],
-                'subject_name': exam['subject__name'],
-                'examtype': exam['examtype']
-            }
-            for exam in examinations
-        ]
+        # === BUILD STUDENT FILTERS (dynamic Q) ===
+        student_filters = Q(course_id=course) & Q(stream_id=stream)
 
-        # Filters for Enrolled
-        student_filters = {
-            'course_id': course,
-            'stream_id': stream,
-            'course_pattern': studypattern,
-            'session': session,
-            'current_semyear': semyear,
-        }
+        if session not in ["", None, "0"]:
+            student_filters &= Q(session=session)
 
-        if substream:
-            student_filters['substream_id'] = substream
+        if studypattern not in ["", None, "0"]:
+            student_filters &= Q(course_pattern=studypattern)
+
+        if semyear not in ["", None, "0"]:
+            student_filters &= Q(current_semyear=semyear)
+
+        if substream is None:
+            student_filters &= (Q(substream__isnull=True) | Q(substream_id__isnull=True))
         else:
-            student_filters['substream_id__isnull'] = True
+            student_filters &= Q(substream_id=substream)
 
-        enrolled_students = Enrolled.objects.filter(**student_filters).select_related('student').values(
-            'student__id',
-            'student__name',
-            'student__email',
-            'student__enrollment_id',
-            'student__enrollment_date'
-        )
+        enrolled_students = Enrolled.objects.filter(student_filters).select_related('student')
 
-        student_data = [
-            {
-                'id': student['student__id'],
-                'name': student['student__name'],
-                'email': student['student__email'],
-                'enrollment_id': student['student__enrollment_id'],
-                'enrollment_date': student['student__enrollment_date']
-            }
-            for student in enrolled_students
-        ]
+        students_list = []
+        for enrollment in enrolled_students:
+            try:
+                student_obj = Student.objects.get(id=enrollment.student.id)
+                students_list.append(student_obj)
+            except Student.DoesNotExist:
+                continue
 
-        return Response({"exams_data": exams_data, "student_data": student_data}, status=200)
+        # === SERIALIZE DATA ===
+        student_serializer = StudentSerializer(students_list, many=True)
+        exam_serializer = ExaminationSubjectSerializer(examinations, many=True)
+
+        return Response({
+            "studentdata": student_serializer.data,
+            "exams": exam_serializer.data
+        }, status=200)
 
     except Exception as e:
         logger.error(f"Error in fetch_exam API: {str(e)}")
         return Response({"error": "An error occurred while processing the request."}, status=500)
 
-      
-
 logger = logging.getLogger('student_registration')
 @api_view(['POST'])
 def view_assigned_students(request):
     try:
-        # Extract parameters from the request
+        # Extract parameters
         params = {
             "university": request.data.get("university"),
             "course": request.data.get("course"),
@@ -3353,15 +3345,23 @@ def view_assigned_students(request):
             "session": request.data.get("session"),
             "studypattern": request.data.get("studypattern"),
             "semyear": request.data.get("semyear"),
-            "substream": request.data.get("substream"),
             "subject": request.data.get("subject"),
         }
 
-        # Remove None or empty values from the parameters
+        # Handle substream separately
+        substream = request.data.get("substream")
+        if substream not in [None, "", "0", 0]:
+            try:
+                params["substream"] = int(substream)  # Safely cast to int
+            except (ValueError, TypeError):
+                logger.error(f"Invalid substream value: {substream}")
+                return Response({'message': 'Invalid substream value provided.'}, status=400)
+
+        # Remove None, empty or invalid entries
         filters = {key: value for key, value in params.items() if value not in [None, '', '0']}
-        
-        # Fetch exams based on the filters
+
         exams = Examination.objects.filter(**filters)
+
         if not exams.exists():
             return Response({'message': 'No results found', 'students': []}, status=404)
 
@@ -3374,10 +3374,9 @@ def view_assigned_students(request):
             serializer = StudentAppearingExamSerializer(student_data, many=True)
             for record in serializer.data:
                 for student_id in record['student_id']:
-                    # Determine exam status
                     has_appeared = StudentExaminationTime.objects.filter(student_id=student_id, exam=exam.id).exists()
                     submitted_exam = Result.objects.filter(student_id=student_id, exam=exam).exists()
-                    
+
                     if has_appeared and submitted_exam:
                         status = "Appeared"
                     elif has_appeared:
@@ -3385,7 +3384,6 @@ def view_assigned_students(request):
                     else:
                         status = "Not Appeared"
 
-                    # Fetch student details
                     student = Student.objects.filter(id=student_id).first()
                     if student:
                         formatted_data.append({
@@ -4386,38 +4384,38 @@ def download_excel_for_set_exam_for_subject(request):
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
         
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_all_subjects(request):
     try:
-        # Extract query parameters
         stream = request.query_params.get('stream')
         substream = request.query_params.get('substream')
 
-        # Validate stream parameter
         if not stream:
             logger.error("Missing 'stream' parameter in the request.")
             return Response({'error': "Stream parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Filter subjects based on stream and substream
+        # Base filter: stream must match
         filters = {'stream__id': stream}
+
+        # Handle substream filter
         if substream:
             filters['substream__id'] = substream
+        else:
+            filters['substream__isnull'] = True  # Important: fetch where substream is NULL
 
         subjects = Subject.objects.filter(**filters).values('id', 'name', 'code', 'stream', 'substream', 'studypattern', 'semyear')
-        
-        # If no subjects are found
+
         if not subjects.exists():
-            #logger.info(f"No subjects found for stream={stream} and substream={substream}.")
             return Response({'message': "No subjects found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Return response
         return Response({'subjects': list(subjects)}, status=status.HTTP_200_OK)
 
     except Exception as e:
-        # Log any unexpected errors
         logger.exception(f"An error occurred while fetching subjects: {str(e)}")
         return Response({'error': "An error occurred while fetching subjects."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['GET'])
 def fetch_questions_based_on_exam_id(request):
