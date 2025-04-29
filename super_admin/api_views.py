@@ -5928,7 +5928,7 @@ def save_single_question_answer(request):
             result = "Wrong"
             marks_obtained = "0"
 
-        # Try to update existing submission
+        # Try to update existing submission, or create a new one if it doesn't exist
         submission, created = SubmittedExamination.objects.update_or_create(
             student_id=student_id,
             exam_id=exam_id,
@@ -6063,3 +6063,149 @@ def get_exam_timer(request):
       return Response({"time_left_ms": session.time_left_ms})
   except ExamSession.DoesNotExist:
       return Response({"time_left_ms": None})
+    
+    
+
+@api_view(['POST'])
+def save_result_after_exam(request):
+    """
+    Save the result after an exam is finished. This includes saving answers for skipped questions as "NA".
+    """
+    try:
+        data = request.data
+        student_id = data.get("student_id")
+        exam_id = data.get("exam_id")
+
+        if not student_id or not exam_id:
+            return Response({"error": "Missing required fields: student_id or exam_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get all questions for the exam
+        questions = Questions.objects.filter(exam_id=exam_id)
+
+        # Loop through all the questions and check if answers are missing
+        for question in questions:
+            submitted_answer = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id, question=str(question.id)).first()
+
+            if not submitted_answer:
+                # If no answer has been submitted, mark it as skipped with "NA"
+                result = "Wrong"
+                marks_obtained = "0"
+                SubmittedExamination.objects.create(
+                    student_id=student_id,
+                    exam_id=exam_id,
+                    question=str(question.id),
+                    type=question.type,
+                    marks=question.marks,
+                    marks_obtained=marks_obtained,
+                    submitted_answer="NA",  # Skipped question
+                    answer=question.answer,
+                    result=result
+                )
+            else:
+                # If answer exists, we do nothing as it's already saved
+                continue
+
+        # After saving all data for the exam, we can create or update the result entry
+        total_questions = questions.count()
+        attempted = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id).count()
+        score = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id, result="Right").count()
+        total_marks = questions.aggregate(Sum('marks'))['marks__sum']
+
+        # Get passing marks from the Examination table
+        exam = Examination.objects.get(id=exam_id)
+        passing_marks = int(exam.passingmarks or 50)
+
+        # Calculate percentage
+        percentage = (score / total_questions) * 100
+
+        # Check if passed
+        result = "Passed" if percentage >= passing_marks else "Failed"
+
+        # Update or create the final result entry
+        result_obj, created = Result.objects.update_or_create(
+            student_id=student_id,
+            exam_id=exam_id,
+            defaults={
+                'total_question': total_questions,
+                'attempted': attempted,
+                'total_marks': total_marks,
+                'score': score,
+                'result': result,
+                'percentage': percentage
+            }
+        )
+
+        return Response({
+            "message": "Exam results saved successfully",
+            "result_id": result_obj.id
+        }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.exception(f"An error occurred while saving the exam result: {str(e)}")
+        return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+def check_exam_result(request):
+    """
+    Check if a result has been created for a student and exam.
+    """
+    try:
+        student_id = request.query_params.get("student_id")
+        exam_id = request.query_params.get("exam_id")
+
+        if not student_id or not exam_id:
+            return Response({"error": "Missing required fields: student_id or exam_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the result exists
+        result = Result.objects.filter(student_id=student_id, exam_id=exam_id).exists()
+
+        return Response({
+            "has_result": result
+        }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.exception(f"An error occurred while checking exam result: {str(e)}")
+        return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+def check_exam_availability(request):
+    """
+    Check if the current time is between exam start and end time, and if the exam date is valid for the student.
+    """
+    try:
+        student_id = request.query_params.get("student_id")
+        exam_id = request.query_params.get("exam_id")
+
+        if not student_id or not exam_id:
+            return Response({"error": "Missing student_id or exam_id."}, status=400)
+
+        # Get the exam and student appearing data
+        student_exam = StudentAppearingExam.objects.filter(exam_id=exam_id, student_id__contains=[student_id]).first()
+
+        if not student_exam:
+            return Response({"error": "Student is not enrolled for this exam."}, status=404)
+
+        # Get exam start/end date and time
+        exam = Examination.objects.get(id=exam_id)
+        print('examexam',exam)
+        print('examstartdate',student_exam.examstartdate)
+        print('examenddate',student_exam.examenddate)
+        print('examstarttime',student_exam.examstarttime)
+        print('examendtime',student_exam.examendtime)
+
+        start_datetime = datetime.combine(student_exam.examstartdate, student_exam.examstarttime)
+        end_datetime = datetime.combine(student_exam.examenddate, student_exam.examendtime)
+
+        now = datetime.now()
+
+        # Check if the current date and time are within the exam window
+        is_within_exam_window = now >= start_datetime and now <= end_datetime
+
+        if is_within_exam_window:
+            return Response({"can_start": True, "message": "You can start the exam."})
+        else:
+            return Response({"can_start": False, "message": "The exam is not available at this time."})
+
+    except Exception as e:
+        return Response({"error": f"An error occurred: {str(e)}"}, status=500)

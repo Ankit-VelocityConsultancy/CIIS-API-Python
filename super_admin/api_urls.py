@@ -161,6 +161,10 @@ urlpatterns = [
 
   path('save_exam_timer/', api_views.save_exam_timer),
   path('get_exam_timer/', api_views.get_exam_timer),
+  
+  path('save_result_after_exam/', api_views.save_result_after_exam),
+  path('check_exam_result/', api_views.check_exam_result),
+  path('check_exam_availability/', api_views.check_exam_availability),
 
 ]
 if settings.DEBUG:
