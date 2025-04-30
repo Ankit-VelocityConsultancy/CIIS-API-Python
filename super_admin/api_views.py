@@ -2915,6 +2915,121 @@ def validate_row(row):
 from openpyxl import load_workbook
 from datetime import datetime
 
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def bulk_student_upload(request):
+#     if 'upload_file' not in request.FILES:
+#         return Response({"error": "No file uploaded."}, status=400)
+
+#     file = request.FILES['upload_file']
+#     try:
+#         workbook = load_workbook(file)
+#         sheet = workbook.active
+#     except Exception as e:
+#         return Response({"error": f"Invalid Excel file: {str(e)}"}, status=400)
+
+#     errors = []
+#     successes = []
+#     row_number = 1
+
+#     for row in sheet.iter_rows(min_row=2, values_only=True):
+#       row_number += 1
+#       if all(value is None for value in row):
+#           continue  # Skip empty rows
+
+#       try:
+#           # Unpack row data
+#           (
+#               name, date_of_birth, mobile_number, email, university_name, course_name, stream_name,
+#               substream_name, current_semyear, admission_type, session, course_pattern,
+#               total_semyear, country_name, state_name, city_name
+#           ) = row
+
+#           # Process date_of_birth
+#           if isinstance(date_of_birth, datetime):
+#               date_of_birth = date_of_birth.date()  # Convert to date object if it's already datetime
+#           else:
+#               date_of_birth = datetime.strptime(date_of_birth, "%d-%m-%Y").date()  # Parse string
+
+#           print(f"Processing Row {row_number}: {row}")
+
+#           # Validate required fields
+#           if not all([name, date_of_birth, mobile_number, email, university_name, course_name, stream_name]):
+#               errors.append(f"Row {row_number}: Missing required fields.")
+#               continue
+
+#           # Fetch related models
+#           university = University.objects.filter(university_name=university_name).first()
+#           course = Course.objects.filter(name=course_name).first()
+#           stream = Stream.objects.filter(name=stream_name).first()
+#           substream = SubStream.objects.filter(name=substream_name).first() if substream_name else None
+#           country = Countries.objects.filter(name=country_name).first()
+#           state = States.objects.filter(name=state_name).first()
+#           city = Cities.objects.filter(name=city_name).first()
+
+#           print(f"Lookups for Row {row_number}: University={university}, Course={course}, Stream={stream}, "
+#                 f"SubStream={substream}, Country={country}, State={state}, City={city}")
+
+#           if not all([university, course, stream, country, state, city]):
+#               errors.append(f"Row {row_number}: Invalid data for required fields.")
+#               continue
+
+#           # Generate enrollment and registration IDs
+#           try:
+#               last_student = Student.objects.latest('id')
+#               enrollment_id = int(last_student.enrollment_id) + 1
+#               registration_id = int(last_student.registration_id) + 1
+#           except Student.DoesNotExist:
+#               enrollment_id = 50000
+#               registration_id = 250000
+
+#           # Create student
+#           user = User(
+#               email=email,
+#               is_student=True,
+#               password=make_password(email),
+#           )
+#           user.save()
+
+#           student = Student(
+#               name=name,
+#               dateofbirth=date_of_birth,
+#               mobile=mobile_number,
+#               email=email,
+#               university=university,
+#               enrollment_id=enrollment_id,
+#               registration_id=registration_id,
+#               country=country,
+#               state=state,
+#               city=city,
+#               student_remarks='Bulk Data Upload',
+#               verified=True,
+#               is_enrolled=True,
+#               user=user  # Associate the student with the created user
+
+#           )
+#           student.save()
+
+#           # Create enrollment details
+#           enrollment = Enrolled(
+#               student=student,
+#               course=course,
+#               stream=stream,
+#               substream=substream,
+#               current_semyear=current_semyear,
+#               total_semyear=total_semyear,
+#               course_pattern=course_pattern.capitalize(),
+#               session=session,
+#               entry_mode=admission_type,
+#           )
+#           enrollment.save()
+
+#           successes.append(f"Row {row_number}: Student data added successfully.")
+#       except Exception as e:
+#           errors.append(f"Row {row_number}: {str(e)}")
+#     return Response({"success": successes, "errors": errors})
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def bulk_student_upload(request):
@@ -2926,6 +3041,7 @@ def bulk_student_upload(request):
         workbook = load_workbook(file)
         sheet = workbook.active
     except Exception as e:
+        logger.error(f"Invalid Excel file: {str(e)}")
         return Response({"error": f"Invalid Excel file: {str(e)}"}, status=400)
 
     errors = []
@@ -2933,100 +3049,133 @@ def bulk_student_upload(request):
     row_number = 1
 
     for row in sheet.iter_rows(min_row=2, values_only=True):
-      row_number += 1
-      if all(value is None for value in row):
-          continue  # Skip empty rows
+        row_number += 1
+        if all(value is None for value in row):
+            continue  # Skip empty rows
 
-      try:
-          # Unpack row data
-          (
-              name, date_of_birth, mobile_number, email, university_name, course_name, stream_name,
-              substream_name, current_semyear, admission_type, session, course_pattern,
-              total_semyear, country_name, state_name, city_name
-          ) = row
+        try:
+            # Unpack row data
+            (
+                name, date_of_birth, mobile_number, email, university_name, course_name, stream_name,
+                substream_name, current_semyear, admission_type, session, course_pattern,
+                total_semyear, country_name, state_name, city_name
+            ) = row
 
-          # Process date_of_birth
-          if isinstance(date_of_birth, datetime):
-              date_of_birth = date_of_birth.date()  # Convert to date object if it's already datetime
-          else:
-              date_of_birth = datetime.strptime(date_of_birth, "%d-%m-%Y").date()  # Parse string
+            # Process date_of_birth
+            if isinstance(date_of_birth, datetime):
+                date_of_birth = date_of_birth.date()  # Convert to date object if it's already datetime
+            else:
+                date_of_birth = datetime.strptime(date_of_birth, "%d-%m-%Y").date()  # Parse string
 
-          print(f"Processing Row {row_number}: {row}")
+            logger.info(f"Processing Row {row_number}: {row}")
 
-          # Validate required fields
-          if not all([name, date_of_birth, mobile_number, email, university_name, course_name, stream_name]):
-              errors.append(f"Row {row_number}: Missing required fields.")
-              continue
+            # Validate required fields
+            if not all([name, date_of_birth, mobile_number, email, university_name, course_name, stream_name]):
+                missing_columns = []
+                if not name:
+                    missing_columns.append("Name")
+                if not date_of_birth:
+                    missing_columns.append("Date of Birth")
+                if not mobile_number:
+                    missing_columns.append("Mobile Number")
+                if not email:
+                    missing_columns.append("Email")
+                if not university_name:
+                    missing_columns.append("University Name")
+                if not course_name:
+                    missing_columns.append("Course Name")
+                if not stream_name:
+                    missing_columns.append("Stream Name")
+                
+                errors.append(f"Row {row_number}: Missing required fields: {', '.join(missing_columns)}.")
+                logger.warning(f"Row {row_number}: Missing required fields: {', '.join(missing_columns)}.")
+                continue
 
-          # Fetch related models
-          university = University.objects.filter(university_name=university_name).first()
-          course = Course.objects.filter(name=course_name).first()
-          stream = Stream.objects.filter(name=stream_name).first()
-          substream = SubStream.objects.filter(name=substream_name).first() if substream_name else None
-          country = Countries.objects.filter(name=country_name).first()
-          state = States.objects.filter(name=state_name).first()
-          city = Cities.objects.filter(name=city_name).first()
+            # Fetch related models
+            university = University.objects.filter(university_name=university_name).first()
+            course = Course.objects.filter(name=course_name).first()
+            stream = Stream.objects.filter(name=stream_name).first()
+            substream = SubStream.objects.filter(name=substream_name).first() if substream_name else None
+            country = Countries.objects.filter(name=country_name).first()
+            state = States.objects.filter(name=state_name).first()
+            city = Cities.objects.filter(name=city_name).first()
 
-          print(f"Lookups for Row {row_number}: University={university}, Course={course}, Stream={stream}, "
-                f"SubStream={substream}, Country={country}, State={state}, City={city}")
+            logger.info(f"Lookups for Row {row_number}: University={university}, Course={course}, Stream={stream}, "
+                        f"SubStream={substream}, Country={country}, State={state}, City={city}")
 
-          if not all([university, course, stream, country, state, city]):
-              errors.append(f"Row {row_number}: Invalid data for required fields.")
-              continue
+            if not all([university, course, stream, country, state, city]):
+                lookup_errors = []
+                if not university:
+                    lookup_errors.append("University")
+                if not course:
+                    lookup_errors.append("Course")
+                if not stream:
+                    lookup_errors.append("Stream")
+                if not country:
+                    lookup_errors.append("Country")
+                if not state:
+                    lookup_errors.append("State")
+                if not city:
+                    lookup_errors.append("City")
+                errors.append(f"Row {row_number}: Invalid data for fields: {', '.join(lookup_errors)}.")
+                logger.warning(f"Row {row_number}: Invalid data for fields: {', '.join(lookup_errors)}.")
+                continue
 
-          # Generate enrollment and registration IDs
-          try:
-              last_student = Student.objects.latest('id')
-              enrollment_id = int(last_student.enrollment_id) + 1
-              registration_id = int(last_student.registration_id) + 1
-          except Student.DoesNotExist:
-              enrollment_id = 50000
-              registration_id = 250000
+            # Generate enrollment and registration IDs
+            try:
+                last_student = Student.objects.latest('id')
+                enrollment_id = int(last_student.enrollment_id) + 1
+                registration_id = int(last_student.registration_id) + 1
+            except Student.DoesNotExist:
+                enrollment_id = 50000
+                registration_id = 250000
 
-          # Create student
-          user = User(
-              email=email,
-              is_student=True,
-              password=make_password(email),
-          )
-          user.save()
+            # Create student
+            user = User(
+                email=email,
+                is_student=True,
+                password=make_password(email),
+            )
+            user.save()
 
-          student = Student(
-              name=name,
-              dateofbirth=date_of_birth,
-              mobile=mobile_number,
-              email=email,
-              university=university,
-              enrollment_id=enrollment_id,
-              registration_id=registration_id,
-              country=country,
-              state=state,
-              city=city,
-              student_remarks='Bulk Data Upload',
-              verified=True,
-              is_enrolled=True,
-              user=user  # Associate the student with the created user
+            student = Student(
+                name=name,
+                dateofbirth=date_of_birth,
+                mobile=mobile_number,
+                email=email,
+                university=university,
+                enrollment_id=enrollment_id,
+                registration_id=registration_id,
+                country=country,
+                state=state,
+                city=city,
+                student_remarks='Bulk Data Upload',
+                verified=True,
+                is_enrolled=True,
+                user=user  # Associate the student with the created user
+            )
+            student.save()
 
-          )
-          student.save()
+            # Create enrollment details
+            enrollment = Enrolled(
+                student=student,
+                course=course,
+                stream=stream,
+                substream=substream,
+                current_semyear=current_semyear,
+                total_semyear=total_semyear,
+                course_pattern=course_pattern.capitalize(),
+                session=session,
+                entry_mode=admission_type,
+            )
+            enrollment.save()
 
-          # Create enrollment details
-          enrollment = Enrolled(
-              student=student,
-              course=course,
-              stream=stream,
-              substream=substream,
-              current_semyear=current_semyear,
-              total_semyear=total_semyear,
-              course_pattern=course_pattern.capitalize(),
-              session=session,
-              entry_mode=admission_type,
-          )
-          enrollment.save()
+            successes.append(f"Row {row_number}: Student data added successfully.")
+            logger.info(f"Row {row_number}: Student data added successfully.")
+        except Exception as e:
+            errors.append(f"Row {row_number}: {str(e)}")
+            logger.error(f"Error in Row {row_number}: {str(e)}")
 
-          successes.append(f"Row {row_number}: Student data added successfully.")
-      except Exception as e:
-          errors.append(f"Row {row_number}: {str(e)}")
     return Response({"success": successes, "errors": errors})
 
 #-----------------------------------------------------------------------------------------------------
@@ -6152,6 +6301,8 @@ def check_exam_result(request):
     try:
         student_id = request.query_params.get("student_id")
         exam_id = request.query_params.get("exam_id")
+        
+        print(student_id," --->student_id",exam_id,'" --->exam_id"')
 
         if not student_id or not exam_id:
             return Response({"error": "Missing required fields: student_id or exam_id"}, status=status.HTTP_400_BAD_REQUEST)

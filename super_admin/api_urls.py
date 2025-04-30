@@ -164,6 +164,7 @@ urlpatterns = [
   
   path('save_result_after_exam/', api_views.save_result_after_exam),
   path('check_exam_result/', api_views.check_exam_result),
+  
   path('check_exam_availability/', api_views.check_exam_availability),
 
 ]
