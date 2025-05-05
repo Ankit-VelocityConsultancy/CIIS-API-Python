@@ -741,3 +741,14 @@ class ExamSession(models.Model):
   updated_at = models.DateTimeField(auto_now=True)
   class Meta:
       unique_together = ('student', 'exam')
+      
+      
+class Categories(models.Model):
+    name = models.CharField(max_length=255)
+    status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'categories'
+  

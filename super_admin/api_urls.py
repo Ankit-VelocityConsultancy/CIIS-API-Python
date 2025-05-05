@@ -167,6 +167,11 @@ urlpatterns = [
   
   path('check_exam_availability/', api_views.check_exam_availability),
 
+#-----Leads module--------------------------------------
+  path('categories-create/', api_views.create_category, name='create_category'),
+  path('categories-update/<int:pk>/', api_views.update_category, name='update_category'),
+  path('categories/', api_views.list_categories, name='list_categories'),
+  
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

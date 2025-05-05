@@ -6360,3 +6360,57 @@ def check_exam_availability(request):
 
     except Exception as e:
         return Response({"error": f"An error occurred: {str(e)}"}, status=500)
+      
+
+@api_view(['POST'])
+def create_category(request):
+    serializer = CategoriesSerializer(data=request.data)
+    if serializer.is_valid():
+        try:
+            serializer.save()
+            logger.info(f"Category created successfully: {serializer.data}")
+            return Response({
+                'message': 'Category created successfully',
+                'data': serializer.data
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(f"Error saving category: {str(e)}", exc_info=True)
+            return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        logger.warning(f"Category creation failed due to validation errors: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT', 'PATCH'])
+def update_category(request, pk):
+    try:
+        category = Categories.objects.get(pk=pk)
+    except Categories.DoesNotExist:
+        logger.warning(f"Category update failed: Category with ID {pk} not found")
+        return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = CategoriesSerializer(category, data=request.data, partial=(request.method == 'PATCH'))
+    if serializer.is_valid():
+        try:
+            serializer.save()
+            logger.info(f"Category updated successfully (ID: {pk}): {serializer.data}")
+            return Response({
+                'message': 'Category updated successfully',
+                'data': serializer.data
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error updating category ID {pk}: {str(e)}", exc_info=True)
+            return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        logger.warning(f"Category update failed for ID {pk} due to validation errors: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+      
+@api_view(['GET'])
+def list_categories(request):
+    try:
+        categories = Categories.objects.all().order_by('-created_at')  # Optional: sorted by latest
+        serializer = CategoriesSerializer(categories, many=True)
+        logger.info(f"{len(categories)} categories fetched successfully.")
+        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        logger.error(f"Error fetching categories: {str(e)}", exc_info=True)
+        return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
