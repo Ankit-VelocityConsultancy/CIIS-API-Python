@@ -176,10 +176,9 @@ urlpatterns = [
   path('sources-update/<int:pk>/', api_views.update_source, name='update_source'),
   path('sources/', api_views.list_sources, name='list_sources'),
   
-  path('dispositions/', api_views.list_dispositions, name='list_dispositions'),
-  path('dispositions-create/', api_views.create_disposition, name='create_disposition'),
-  path('dispositions-update/<int:pk>/', api_views.update_disposition, name='update_disposition'),
-  
+  path('statuses/', api_views.list_statuses, name='list_statuses'),
+  path('statuses-create/', api_views.create_status, name='create_status'),
+  path('statuses-update/<int:pk>/', api_views.update_status, name='update_status'),
   
 ]
   
