@@ -183,6 +183,11 @@ urlpatterns = [
   path('common-lead-labels/', api_views.list_common_lead_labels, name='list_common_lead_labels'),
   path('common-lead-labels-create/', api_views.create_common_lead_label, name='create_common_lead_label'),
   path('common-lead-labels-update/<int:pk>/', api_views.update_common_lead_label, name='update_common_lead_label'),
+  
+  path('colors/', api_views.list_colors, name='list_colors'),
+  path('colors-create/', api_views.create_color, name='create_color'),
+  path('colors-update/<int:pk>/', api_views.update_color, name='update_color'),
+
     
 ]
   

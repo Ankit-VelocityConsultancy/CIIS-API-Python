@@ -342,3 +342,8 @@ class CommonLeadLabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Common_Lead_Label
         fields = '__all__'
+
+class ColorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Color
+        fields = '__all__'

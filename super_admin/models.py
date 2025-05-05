@@ -790,3 +790,15 @@ class Common_Lead_Label(models.Model):
 
     def __str__(self):
         return self.name
+      
+class Color(models.Model):
+    name = models.CharField(max_length=255)
+    color = models.CharField(max_length=50)  # This field stores color values (e.g., HEX or name)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'colors'
+
+    def __str__(self):
+        return f"{self.name} ({self.color})"
