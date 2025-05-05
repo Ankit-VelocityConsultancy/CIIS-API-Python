@@ -172,6 +172,17 @@ urlpatterns = [
   path('categories-update/<int:pk>/', api_views.update_category, name='update_category'),
   path('categories/', api_views.list_categories, name='list_categories'),
   
+  path('sources-create/', api_views.create_source, name='create_source'),
+  path('sources-update/<int:pk>/', api_views.update_source, name='update_source'),
+  path('sources/', api_views.list_sources, name='list_sources'),
+  
+  path('dispositions/', api_views.list_dispositions, name='list_dispositions'),
+  path('dispositions-create/', api_views.create_disposition, name='create_disposition'),
+  path('dispositions-update/<int:pk>/', api_views.update_disposition, name='update_disposition'),
+  
+  
 ]
+  
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

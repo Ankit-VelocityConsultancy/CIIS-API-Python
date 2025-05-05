@@ -751,4 +751,29 @@ class Categories(models.Model):
 
     class Meta:
         db_table = 'categories'
-  
+        
+
+class Source(models.Model):
+  name = models.CharField(max_length=255)
+  status = models.BooleanField(default=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
+
+  class Meta:
+      db_table = 'source'
+      ordering = ['-created_at']
+
+  def __str__(self):
+      return self.name
+
+
+class Status(models.Model):
+    name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'statuses'
+
+    def __str__(self):
+        return self.name

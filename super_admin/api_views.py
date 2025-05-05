@@ -6414,3 +6414,85 @@ def list_categories(request):
     except Exception as e:
         logger.error(f"Error fetching categories: {str(e)}", exc_info=True)
         return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+      
+      
+@api_view(['POST'])
+def create_source(request):
+    serializer = SourceSerializer(data=request.data)
+    if serializer.is_valid():
+        try:
+            serializer.save()
+            logger.info(f"Source created: {serializer.data}")
+            return Response({'message': 'Source created successfully', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(f"Error saving source: {str(e)}", exc_info=True)
+            return Response({'error': 'Internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        logger.warning(f"Validation failed: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT', 'PATCH'])
+def update_source(request, pk):
+    try:
+        source = Source.objects.get(pk=pk)
+    except Source.DoesNotExist:
+        logger.warning(f"Source with ID {pk} not found")
+        return Response({'error': 'Source not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = SourceSerializer(source, data=request.data, partial=(request.method == 'PATCH'))
+    if serializer.is_valid():
+        try:
+            serializer.save()
+            logger.info(f"Source updated (ID {pk}): {serializer.data}")
+            return Response({'message': 'Source updated successfully', 'data': serializer.data})
+        except Exception as e:
+            logger.error(f"Error updating source (ID {pk}): {str(e)}", exc_info=True)
+            return Response({'error': 'Internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        logger.warning(f"Validation failed during update for ID {pk}: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def list_sources(request):
+    try:
+        sources = Source.objects.all()
+        serializer = SourceSerializer(sources, many=True)
+        logger.info(f"{len(sources)} sources fetched.")
+        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        logger.error(f"Error fetching sources: {str(e)}", exc_info=True)
+        return Response({'error': 'Internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+      
+@api_view(['GET'])
+def list_statuses(request):
+    try:
+        statuses = Status.objects.all().order_by('-id')
+        serializer = StatusSerializer(statuses, many=True)
+        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        logger.error(f"Error listing statuses: {e}")
+        return Response({'error': 'Something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def create_status(request):
+    serializer = StatusSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'message': 'Status created successfully', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+    logger.warning(f"Create status validation error: {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT', 'PATCH'])
+def update_status(request, pk):
+    try:
+        status_instance = Status.objects.get(pk=pk)
+    except Status.DoesNotExist:
+        logger.warning(f"Status not found with id: {pk}")
+        return Response({'error': 'Status not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = StatusSerializer(status_instance, data=request.data, partial=(request.method == 'PATCH'))
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'message': 'Status updated successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
+    logger.warning(f"Update status validation error: {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
