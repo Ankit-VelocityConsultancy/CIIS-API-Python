@@ -6496,3 +6496,37 @@ def update_status(request, pk):
         return Response({'message': 'Status updated successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
     logger.warning(f"Update status validation error: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def list_common_lead_labels(request):
+    try:
+        labels = Common_Lead_Label.objects.all().order_by('-id')
+        serializer = CommonLeadLabelSerializer(labels, many=True)
+        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        logger.error(f"Error listing common lead labels: {e}")
+        return Response({'error': 'Something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def create_common_lead_label(request):
+    serializer = CommonLeadLabelSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'message': 'Common Lead Label created successfully', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+    logger.warning(f"Validation error while creating label: {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT', 'PATCH'])
+def update_common_lead_label(request, pk):
+    try:
+        label = Common_Lead_Label.objects.get(pk=pk)
+    except Common_Lead_Label.DoesNotExist:
+        logger.warning(f"Label not found with id: {pk}")
+        return Response({'error': 'Common Lead Label not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = CommonLeadLabelSerializer(label, data=request.data, partial=(request.method == 'PATCH'))
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'message': 'Common Lead Label updated successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
+    logger.warning(f"Validation error while updating label: {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -336,3 +336,9 @@ class StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
         fields = '__all__'
+        
+
+class CommonLeadLabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Common_Lead_Label
+        fields = '__all__'

@@ -180,6 +180,10 @@ urlpatterns = [
   path('statuses-create/', api_views.create_status, name='create_status'),
   path('statuses-update/<int:pk>/', api_views.update_status, name='update_status'),
   
+  path('common-lead-labels/', api_views.list_common_lead_labels, name='list_common_lead_labels'),
+  path('common-lead-labels-create/', api_views.create_common_lead_label, name='create_common_lead_label'),
+  path('common-lead-labels-update/<int:pk>/', api_views.update_common_lead_label, name='update_common_lead_label'),
+    
 ]
   
 

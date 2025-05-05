@@ -777,3 +777,16 @@ class Status(models.Model):
 
     def __str__(self):
         return self.name
+      
+
+
+class Common_Lead_Label(models.Model):
+    name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'common_lead_labels'
+
+    def __str__(self):
+        return self.name
