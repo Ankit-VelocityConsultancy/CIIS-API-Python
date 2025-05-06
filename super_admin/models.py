@@ -422,12 +422,7 @@ class ImportCsvData(models.Model):
         db_table = 'importcsv'
 
 
-class StudentExaminationTime(models.Model):
-    student = models.ForeignKey(Student,on_delete=models.CASCADE)
-    exam = models.CharField(max_length=100)
-    time_in_minutes = models.CharField(max_length=100)
-    class Meta:
-        db_table = 'studentexaminationtime'
+
     
 
 
@@ -693,35 +688,6 @@ class Descriptive_Answer(models.Model):
         db_table = "descriptive_answer"
 
 
-class SubmittedExamination(models.Model):
-    student = models.ForeignKey(Student,on_delete=models.CASCADE)
-    exam = models.ForeignKey(Examination,on_delete=models.CASCADE)
-    # question = models.ForeignKey(Questions,on_delete=models.CASCADE,default=" ") #modify by ankit on 22-01-2025
-    question = models.CharField(max_length=100, null=True, blank=True)
-    type = models.CharField(max_length=100,null=True,blank=True)
-    marks = models.CharField(max_length=100,null=True,blank=True)
-    marks_obtained = models.CharField(max_length=100,null=True,blank=True)
-    submitted_answer = models.CharField(max_length=999,null=True,blank=True)
-    answer = models.CharField(max_length=999,null=True,blank=True)
-    result = models.CharField(max_length=100,null=True,blank=True)
-    # attempt=models.IntegerField(null=True,blank=True)
-
-    class Meta:
-        db_table = "submitted_answer"
-
-class Result(models.Model):
-    student = models.ForeignKey(Student,on_delete=models.CASCADE)
-    exam = models.ForeignKey(Examination,on_delete=models.CASCADE)
-    total_question = models.CharField(max_length=10)
-    attempted = models.CharField(max_length=10)
-    total_marks = models.CharField(max_length=100,null=True,blank=True)
-    score = models.CharField(max_length=10)
-    result = models.CharField(max_length=10)
-    created_by = models.CharField(max_length=100,null=True,blank=True)
-    modified_by = models.CharField(max_length=100,null=True,blank=True)
-    percentage=models.FloatField(default=100)
-    class Meta:
-        db_table = 'result'
 
 class StudentAppearingExam(models.Model):
     exam = models.ForeignKey(Examination,on_delete=models.CASCADE)
@@ -733,12 +699,51 @@ class StudentAppearingExam(models.Model):
     # attempt=models.IntegerField(null=True,blank=True)
     class Meta:
         db_table = 'studentappearingexam'
+        
+# Not use added by ankit 06-05-2025
+class StudentExaminationTime(models.Model):
+    student = models.ForeignKey(Student,on_delete=models.CASCADE)
+    exam = models.CharField(max_length=100)
+    time_in_minutes = models.CharField(max_length=100)
+    # examdetails = models.ForeignKey(StudentAppearingExam, on_delete=models.CASCADE, null=True, blank=True) 
+    class Meta:
+        db_table = 'studentexaminationtime'
+        
+class Result(models.Model):
+    student = models.ForeignKey(Student,on_delete=models.CASCADE)
+    exam = models.ForeignKey(Examination,on_delete=models.CASCADE)
+    total_question = models.CharField(max_length=10)
+    attempted = models.CharField(max_length=10)
+    total_marks = models.CharField(max_length=100,null=True,blank=True)
+    score = models.CharField(max_length=10)
+    result = models.CharField(max_length=10)
+    created_by = models.CharField(max_length=100,null=True,blank=True)
+    modified_by = models.CharField(max_length=100,null=True,blank=True)
+    percentage=models.FloatField(default=100)
+    examdetails = models.ForeignKey(StudentAppearingExam, on_delete=models.CASCADE, null=True, blank=True)  ## added by Ankit for multiple results on reassign change
+    class Meta:
+        db_table = 'result'
+        
+class SubmittedExamination(models.Model):
+    student = models.ForeignKey(Student,on_delete=models.CASCADE)
+    exam = models.ForeignKey(Examination,on_delete=models.CASCADE)
+    question = models.CharField(max_length=100, null=True, blank=True)
+    type = models.CharField(max_length=100,null=True,blank=True)
+    marks = models.CharField(max_length=100,null=True,blank=True)
+    marks_obtained = models.CharField(max_length=100,null=True,blank=True)
+    submitted_answer = models.CharField(max_length=999,null=True,blank=True)
+    answer = models.CharField(max_length=999,null=True,blank=True)
+    result = models.CharField(max_length=100,null=True,blank=True)
+    examdetails = models.ForeignKey(StudentAppearingExam, on_delete=models.CASCADE, null=True, blank=True)
+    class Meta:
+        db_table = "submitted_answer"
 
 class ExamSession(models.Model):
   student = models.ForeignKey('Student', on_delete=models.CASCADE)
   exam = models.ForeignKey('Examination', on_delete=models.CASCADE)
   time_left_ms = models.BigIntegerField(default=0)
   updated_at = models.DateTimeField(auto_now=True)
+  examdetails = models.ForeignKey(StudentAppearingExam, on_delete=models.CASCADE, null=True, blank=True)
   class Meta:
       unique_together = ('student', 'exam')
       

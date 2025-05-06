@@ -3029,12 +3029,11 @@ from datetime import datetime
 #           errors.append(f"Row {row_number}: {str(e)}")
 #     return Response({"success": successes, "errors": errors})
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def bulk_student_upload(request):
     if 'upload_file' not in request.FILES:
-        return Response({"error": "No file uploaded."}, status=400)
+        return Response({"errors": ["No file uploaded."]}, status=400)
 
     file = request.FILES['upload_file']
     try:
@@ -3042,7 +3041,7 @@ def bulk_student_upload(request):
         sheet = workbook.active
     except Exception as e:
         logger.error(f"Invalid Excel file: {str(e)}")
-        return Response({"error": f"Invalid Excel file: {str(e)}"}, status=400)
+        return Response({"errors": [f"Invalid Excel file: {str(e)}"]}, status=400)
 
     errors = []
     successes = []
@@ -3051,77 +3050,78 @@ def bulk_student_upload(request):
     for row in sheet.iter_rows(min_row=2, values_only=True):
         row_number += 1
         if all(value is None for value in row):
-            continue  # Skip empty rows
+            continue
 
         try:
-            # Unpack row data
             (
                 name, date_of_birth, mobile_number, email, university_name, course_name, stream_name,
                 substream_name, current_semyear, admission_type, session, course_pattern,
                 total_semyear, country_name, state_name, city_name
             ) = row
 
-            # Process date_of_birth
             if isinstance(date_of_birth, datetime):
-                date_of_birth = date_of_birth.date()  # Convert to date object if it's already datetime
+                date_of_birth = date_of_birth.date()
             else:
-                date_of_birth = datetime.strptime(date_of_birth, "%d-%m-%Y").date()  # Parse string
+                date_of_birth = datetime.strptime(date_of_birth, "%d-%m-%Y").date()
 
             logger.info(f"Processing Row {row_number}: {row}")
 
-            # Validate required fields
-            if not all([name, date_of_birth, mobile_number, email, university_name, course_name, stream_name]):
-                missing_columns = []
-                if not name:
-                    missing_columns.append("Name")
-                if not date_of_birth:
-                    missing_columns.append("Date of Birth")
-                if not mobile_number:
-                    missing_columns.append("Mobile Number")
-                if not email:
-                    missing_columns.append("Email")
-                if not university_name:
-                    missing_columns.append("University Name")
-                if not course_name:
-                    missing_columns.append("Course Name")
-                if not stream_name:
-                    missing_columns.append("Stream Name")
-                
-                errors.append(f"Row {row_number}: Missing required fields: {', '.join(missing_columns)}.")
-                logger.warning(f"Row {row_number}: Missing required fields: {', '.join(missing_columns)}.")
+            required_fields = [name, date_of_birth, mobile_number, email, university_name, course_name, stream_name]
+            if not all(required_fields):
+                missing = [field_name for field_name, value in zip(
+                    ["Name", "Date of Birth", "Mobile Number", "Email", "University Name", "Course Name", "Stream Name"],
+                    required_fields
+                ) if not value]
+                error_msg = f"Row {row_number}: Missing required fields: {', '.join(missing)}."
+                logger.warning(error_msg)
+                errors.append(error_msg)
                 continue
 
-            # Fetch related models
+            mobile_number_str = str(mobile_number).strip()
+            email = str(email).strip().lower()
+
+            # Check if user with same email already exists
+            if User.objects.filter(email=email).exists():
+                msg = f"Row {row_number}: Email '{email}' already exists. Skipping entry."
+                logger.warning(msg)
+                errors.append(msg)
+                continue
+
+            # Check if student already exists (based on mobile or email)
+            if Student.objects.filter(email=email).exists():
+                msg = f"Row {row_number}: Student with email '{email}' already exists. Skipping entry."
+                logger.warning(msg)
+                errors.append(msg)
+                continue
+
+            if Student.objects.filter(mobile=mobile_number_str).exists():
+                msg = f"Row {row_number}: Student with mobile '{mobile_number_str}' already exists. Skipping entry."
+                logger.warning(msg)
+                errors.append(msg)
+                continue
+
             university = University.objects.filter(university_name=university_name).first()
-            course = Course.objects.filter(name=course_name).first()
-            stream = Stream.objects.filter(name=stream_name).first()
-            substream = SubStream.objects.filter(name=substream_name).first() if substream_name else None
+            course = Course.objects.filter(name=course_name, university=university).first()
+            stream = Stream.objects.filter(name=stream_name, course=course).first()
+            substream = SubStream.objects.filter(name=substream_name, stream=stream).first() if substream_name else None
             country = Countries.objects.filter(name=country_name).first()
             state = States.objects.filter(name=state_name).first()
             city = Cities.objects.filter(name=city_name).first()
 
-            logger.info(f"Lookups for Row {row_number}: University={university}, Course={course}, Stream={stream}, "
-                        f"SubStream={substream}, Country={country}, State={state}, City={city}")
+            missing_refs = []
+            if not university: missing_refs.append("University")
+            if not course: missing_refs.append("Course")
+            if not stream: missing_refs.append("Stream")
+            if not country: missing_refs.append("Country")
+            if not state: missing_refs.append("State")
+            if not city: missing_refs.append("City")
 
-            if not all([university, course, stream, country, state, city]):
-                lookup_errors = []
-                if not university:
-                    lookup_errors.append("University")
-                if not course:
-                    lookup_errors.append("Course")
-                if not stream:
-                    lookup_errors.append("Stream")
-                if not country:
-                    lookup_errors.append("Country")
-                if not state:
-                    lookup_errors.append("State")
-                if not city:
-                    lookup_errors.append("City")
-                errors.append(f"Row {row_number}: Invalid data for fields: {', '.join(lookup_errors)}.")
-                logger.warning(f"Row {row_number}: Invalid data for fields: {', '.join(lookup_errors)}.")
+            if missing_refs:
+                msg = f"Row {row_number}: Invalid references for fields: {', '.join(missing_refs)}."
+                logger.warning(msg)
+                errors.append(msg)
                 continue
 
-            # Generate enrollment and registration IDs
             try:
                 last_student = Student.objects.latest('id')
                 enrollment_id = int(last_student.enrollment_id) + 1
@@ -3130,18 +3130,19 @@ def bulk_student_upload(request):
                 enrollment_id = 50000
                 registration_id = 250000
 
-            # Create student
-            user = User(
+            # Create User
+            user = User.objects.create(
                 email=email,
+                mobile=mobile_number_str,
                 is_student=True,
-                password=make_password(email),
+                password=make_password(mobile_number_str)
             )
-            user.save()
 
-            student = Student(
+            # Create Student
+            student = Student.objects.create(
                 name=name,
                 dateofbirth=date_of_birth,
-                mobile=mobile_number,
+                mobile=mobile_number_str,
                 email=email,
                 university=university,
                 enrollment_id=enrollment_id,
@@ -3149,34 +3150,38 @@ def bulk_student_upload(request):
                 country=country,
                 state=state,
                 city=city,
-                student_remarks='Bulk Data Upload',
+                student_remarks="Bulk Data Upload",
                 verified=True,
                 is_enrolled=True,
-                user=user  # Associate the student with the created user
+                user=user
             )
-            student.save()
 
-            # Create enrollment details
-            enrollment = Enrolled(
+            # Enroll student
+            Enrolled.objects.create(
                 student=student,
                 course=course,
                 stream=stream,
                 substream=substream,
                 current_semyear=current_semyear,
                 total_semyear=total_semyear,
-                course_pattern=course_pattern.capitalize(),
+                course_pattern=(course_pattern or "").capitalize(),
                 session=session,
                 entry_mode=admission_type,
             )
-            enrollment.save()
 
-            successes.append(f"Row {row_number}: Student data added successfully.")
-            logger.info(f"Row {row_number}: Student data added successfully.")
+            msg = f"Row {row_number}: Student '{name}' added successfully."
+            logger.info(msg)
+            successes.append(msg)
+
         except Exception as e:
-            errors.append(f"Row {row_number}: {str(e)}")
-            logger.error(f"Error in Row {row_number}: {str(e)}")
+            error_msg = f"Row {row_number}: Unexpected error: {str(e)}"
+            logger.error(error_msg, exc_info=True)
+            errors.append(error_msg)
 
-    return Response({"success": successes, "errors": errors})
+    return Response({
+        "success": successes,
+        "errors": errors
+    }, status=200)
 
 #-----------------------------------------------------------------------------------------------------
 @api_view(['GET'])
@@ -3237,6 +3242,7 @@ def validate_excel_file(file_path):
         logger.error(f"Error reading Excel file: {str(e)}", exc_info=True)
         return None, "Invalid Excel file"
 
+
 @api_view(['POST'])
 @parser_classes([MultiPartParser, FormParser])
 def bulk_exam_upload(request):
@@ -3258,29 +3264,30 @@ def bulk_exam_upload(request):
             return Response({"status": "error", "message": error}, status=400)
 
         university_id = request.data.get("university")
-        print('university_id',university_id)
         try:
             university = University.objects.get(id=university_id)
         except University.DoesNotExist:
             return Response({"status": "error", "message": f"University with ID {university_id} not found"}, status=400)
 
         errors = []
+        success_rows = []
+
         with transaction.atomic():
             for index, row in data.iterrows():
                 try:
-                    # Validate and retrieve Course, Stream, SubStream, and Subject
-                    course_name = row["COURSE"].strip()
-                    course = Course.objects.get(name=course_name, university=university)
+                    # Normalize all fields
+                    course_name = str(row["COURSE"]).strip()
+                    stream_name = str(row["STREAM"]).strip()
+                    subject_name = str(row["SUBJECT NAME"]).strip()
+                    substream_name = str(row["SUBSTREAM"]).strip() if pd.notna(row["SUBSTREAM"]) and str(row["SUBSTREAM"]).strip().lower() != 'nan' else None
 
-                    stream_name = row["STREAM"].strip()
+                    course = Course.objects.get(name=course_name, university=university)
                     stream = Stream.objects.get(name=stream_name, course=course)
 
-                    substream_name = row["SUBSTREAM"].strip() if pd.notna(row["SUBSTREAM"]) else None
                     substream = None
                     if substream_name:
                         substream = SubStream.objects.get(name=substream_name, stream=stream)
 
-                    subject_name = row["SUBJECT NAME"].strip()
                     subject = Subject.objects.get(
                         name=subject_name,
                         stream=stream,
@@ -3294,30 +3301,27 @@ def bulk_exam_upload(request):
                         stream=stream,
                         substream=substream,
                         subject=subject,
-                        examtype=row["TYPE OF EXAM"],
-                        session=row["SESSION"],
-                        studypattern=row["MODE"]
+                        examtype=str(row["TYPE OF EXAM"]).strip(),
+                        session=str(row["SESSION"]).strip(),
+                        studypattern=str(row["MODE"]).strip()
                     ).first()
 
                     if exam:
-                      # Update existing Examination
-                      exam.totalquestions = (int(exam.totalquestions) if exam.totalquestions else 0) + 1
-                      exam.totalmarks = (int(exam.totalmarks) if exam.totalmarks else 0) + int(row["MARKS"])
-                      exam.save()
-
+                        exam.totalquestions = (int(exam.totalquestions) if exam.totalquestions else 0) + 1
+                        exam.totalmarks = (int(exam.totalmarks) if exam.totalmarks else 0) + int(row["MARKS"])
+                        exam.save()
                     else:
-                        # Create a new Examination
                         exam = Examination.objects.create(
                             university=university,
                             course=course,
                             stream=stream,
                             substream=substream,
                             subject=subject,
-                            examtype=row["TYPE OF EXAM"],
-                            examduration=row["EXAM DURATION"],
-                            studypattern=row["MODE"],
-                            semyear=row["YEAR/SEMESTER"],
-                            session=row["SESSION"],
+                            examtype=str(row["TYPE OF EXAM"]).strip(),
+                            examduration=str(row["EXAM DURATION"]).strip(),
+                            studypattern=str(row["MODE"]).strip(),
+                            semyear=str(row["YEAR/SEMESTER"]).strip(),
+                            session=str(row["SESSION"]).strip(),
                             totalquestions=1,
                             totalmarks=row["MARKS"],
                             passingmarks=row["PASSING MARKS"],
@@ -3329,19 +3333,21 @@ def bulk_exam_upload(request):
                     # Create Questions record
                     Questions.objects.create(
                         exam=exam,
-                        question=row["QUESTION"],
-                        type=row["QUESTION TYPE"],
+                        question=str(row["QUESTION"]).strip(),
+                        type=str(row["QUESTION TYPE"]).strip(),
                         marks=int(row["MARKS"]),
-                        option1=row["OPTION 1"],
-                        option2=row["OPTION 2"],
-                        option3=row["OPTION 3"],
-                        option4=row["OPTION 4"],
-                        answer=row["ANSWER"].lower(),
-                        difficultylevel=row["DIFFICULTY LEVEL"],
+                        option1=str(row["OPTION 1"]).strip(),
+                        option2=str(row["OPTION 2"]).strip(),
+                        option3=str(row["OPTION 3"]).strip(),
+                        option4=str(row["OPTION 4"]).strip(),
+                        answer=str(row["ANSWER"]).strip().lower(),
+                        difficultylevel=str(row["DIFFICULTY LEVEL"]).strip(),
                     )
 
+                    success_rows.append(f"Question for row: {index + 2} saved successfully")
+
                 except (Course.DoesNotExist, Stream.DoesNotExist, SubStream.DoesNotExist, Subject.DoesNotExist) as e:
-                    error_message = f"Row {index + 2}: {str(e)}"
+                    error_message = f"{str(e)} in row {index + 2}."
                     logger.error(error_message)
                     errors.append(error_message)
                     continue
@@ -3358,7 +3364,8 @@ def bulk_exam_upload(request):
         return Response({
             "status": "success",
             "message": "Data processed successfully",
-            "errors": errors
+            "success_logs": success_rows,
+            "error_logs": errors
         }, status=200)
 
     except Exception as e:
@@ -3650,28 +3657,20 @@ BTU Examination Team
 
 
         
-logger = logging.getLogger('student_registration')
 @api_view(['POST'])
 def save_exam_details(request):
     try:
-        # Log the incoming request data
-        #logger.info(f"Request Data: {request.data}")
-
-        # Retrieve and validate exam and student data
         examdata = request.data.get("examsdata")
         studentdata = request.data.get("studentdata")
 
         if not examdata:
-            logger.error("Exam data is missing in the request.")
             return Response({'message': 'Exam data is required'}, status=400)
         if not studentdata:
-            logger.error("Student data is missing in the request.")
             return Response({'message': 'Student data is required'}, status=400)
 
         messages = []
         errors = []
 
-        # Process each exam
         for exam in examdata:
             exam_id = exam.get("examination_id")
             start_date = exam.get("start_date")
@@ -3679,90 +3678,68 @@ def save_exam_details(request):
             start_time = exam.get("start_time")
             end_time = exam.get("end_time")
 
-            #logger.info(f"Processing exam ID: {exam_id}")
-
             if not all([exam_id, start_date, end_date, start_time, end_time]):
-                error_message = "Incomplete exam details provided."
-                logger.error(error_message)
-                errors.append(error_message)
+                errors.append("Incomplete exam details provided.")
                 continue
 
             try:
-                # Ensure the exam exists
                 exam_instance = Examination.objects.get(id=exam_id)
 
-                # Fetch or create a single record for the exam
                 existing_exam, created = StudentAppearingExam.objects.get_or_create(
                     exam=exam_instance,
                     examstartdate=start_date,
                     examenddate=end_date,
                     examstarttime=start_time,
                     examendtime=end_time,
-                    defaults={"student_id": []},  # Default to an empty list
+                    defaults={"student_id": []},
                 )
 
-                # Update the `student_id` list
                 current_students = existing_exam.student_id or []
                 new_student_ids = [student['id'] for student in studentdata if student['id'] not in current_students]
+
                 if new_student_ids:
                     current_students.extend(new_student_ids)
                     existing_exam.student_id = current_students
                     existing_exam.save()
-                    #logger.info(f"Updated exam ID {exam_id} with student IDs: {new_student_ids}")
-                # else:
-                    #logger.info(f"No new students to add for exam ID {exam_id}")messages.append(f"Exam details saved/updated successfully for exam ID: {exam_id}")
 
-                # Send email notifications
-                email_subject = "Examination Details"
-                login_url = f"{settings.DOMAIN_NAME}/examination_login/"
-                for student_id in new_student_ids:
-                    try:
-                        student_instance = Student.objects.get(id=student_id)
-                        email_message = f"""
-                        Dear {student_instance.name},
+                    for student_id in new_student_ids:
+                        try:
+                            student_instance = Student.objects.get(id=student_id)
+                            messages.append(f"Exam details saved successfully for {student_instance.name}")
 
-                        You are invited to take the {exam_instance.subject.name} {exam_instance.studypattern} {exam_instance.semyear} Test.
-                        Exam Link: {login_url}
-                        User ID: {student_instance.email}
-                        Password: {student_instance.mobile}
+                            email_subject = "Examination Details"
+                            login_url = f"{settings.DOMAIN_NAME}/examination_login/"
+                            email_message = f"""
+                            Dear {student_instance.name},
 
-                        The exam is available from {start_date} to {end_date} between {start_time} and {end_time}.
-                        """
-                        #logger.info(f"Sending email to {student_instance.email} with message: {email_message.strip()}")
-                        print(f"Dear {student_instance.name},\n"
-                          f"You are invited to take the {exam_instance.subject.name} {exam_instance.studypattern} {exam_instance.semyear} Test.\n"
-                          f"Exam Link: {login_url}\n"
-                          f"User ID: {student_instance.email}\n"
-                          f"Password: {student_instance.mobile}\n"
-                          f"The exam is available from {start_date} to {end_date} between {start_time} and {end_time}.\n")
-                        # Send email in a separate thread
-                        Thread(
-                            target=send_exam_email,
-                            args=(email_subject, email_message, [student_instance.email])
-                        ).start()
-                        #logger.info(f"Email successfully sent to {student_instance.email}.")
-                    except Exception as email_error:
-                        error_message = f"Failed to send email to {student_instance.email}: {str(email_error)}"
-                        logger.error(error_message)
-                        errors.append(error_message)
+                            You are invited to take the {exam_instance.subject.name} {exam_instance.studypattern} {exam_instance.semyear} Test.
+                            Exam Link: {login_url}
+                            User ID: {student_instance.email}
+                            Password: {student_instance.mobile}
+
+                            The exam is available from {start_date} to {end_date} between {start_time} and {end_time}.
+                            """
+
+                            Thread(
+                                target=send_exam_email,
+                                args=(email_subject, email_message, [student_instance.email])
+                            ).start()
+
+                        except Student.DoesNotExist:
+                            errors.append(f"Student with ID {student_id} not found.")
+                        except Exception as email_error:
+                            errors.append(f"Failed to send email to student ID {student_id}: {str(email_error)}")
+
             except Examination.DoesNotExist:
-                error_message = f"Invalid exam ID: {exam_id}"
-                logger.error(error_message)
-                errors.append(error_message)
-            except Student.DoesNotExist as e:
-                error_message = "Invalid student ID in student data."
-                logger.error(f"{error_message} Error: {str(e)}")
-                errors.append(error_message)
+                errors.append(f"Invalid exam ID: {exam_id}")
             except Exception as e:
-                error_message = f"Failed to save exam details for exam ID: {exam_id}"
-                logger.error(f"{error_message} Error: {str(e)}", exc_info=True)
-                errors.append(error_message)
+                errors.append(f"Failed to save exam details for exam ID {exam_id}: {str(e)}")
 
         return Response({'messages': messages, 'errors': errors}, status=200)
 
     except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}", exc_info=True)
-        return Response({'message': 'An unexpected error occurred.'}, status=500)
+        return Response({'message': 'An unexpected error occurred.', 'error': str(e)}, status=500)
+
 
 
 # @api_view(['POST'])
@@ -6045,11 +6022,65 @@ def get_paid_fees(request):
         logger.error(f"Unexpected error: {str(e)}")
         return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
       
+# @api_view(['POST'])
+# def save_single_question_answer(request):
+#     try:
+#         data = request.data
+#         student_id = data.get("student_id")
+#         exam_id = data.get("exam_id")
+#         question_id = data.get("question_id")
+#         submitted_answer = data.get("submitted_answer")
+
+#         # Validation
+#         if not student_id or not exam_id or not question_id or submitted_answer is None:
+#             return Response({"error": "Missing required fields: student_id, exam_id, question_id, or submitted_answer"}, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             question_instance = Questions.objects.get(id=question_id)
+#         except Questions.DoesNotExist:
+#             return Response({"error": f"Question ID {question_id} does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+#         correct_answer = question_instance.answer.lower()
+#         marks = question_instance.marks
+
+#         # Result calculation
+#         if submitted_answer.lower() == correct_answer:
+#             result = "Right"
+#             marks_obtained = marks
+#         else:
+#             result = "Wrong"
+#             marks_obtained = "0"
+
+#         # Try to update existing submission, or create a new one if it doesn't exist
+#         submission, created = SubmittedExamination.objects.update_or_create(
+#             student_id=student_id,
+#             exam_id=exam_id,
+#             question=str(question_id),
+#             defaults={
+#                 "type": question_instance.type,
+#                 "marks": marks,
+#                 "marks_obtained": marks_obtained,
+#                 "submitted_answer": submitted_answer,
+#                 "answer": correct_answer,
+#                 "result": result
+#             }
+#         )
+
+#         return Response({
+#             "message": "Answer updated successfully." if not created else "Answer submitted successfully.",
+#             "question_id": question_id,
+#             "result": result,
+#             "marks_obtained": marks_obtained,
+#         }, status=status.HTTP_200_OK)
+
+#     except Exception as e:
+#         logger.exception(f"An error occurred while saving answer: {str(e)}")
+#         return Response({"error": "An internal server error occurred."},
+#                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 @api_view(['POST'])
 def save_single_question_answer(request):
-    """
-    Save or update a submitted answer for a single question of a student for an exam.
-    """
     try:
         data = request.data
         student_id = data.get("student_id")
@@ -6059,17 +6090,22 @@ def save_single_question_answer(request):
 
         # Validation
         if not student_id or not exam_id or not question_id or submitted_answer is None:
-            return Response({"error": "Missing required fields: student_id, exam_id, question_id, or submitted_answer"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             question_instance = Questions.objects.get(id=question_id)
         except Questions.DoesNotExist:
             return Response({"error": f"Question ID {question_id} does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
+        # Get or fail StudentAppearingExam record
+        try:
+            exam_details_instance = StudentAppearingExam.objects.get(student_id__contains=[int(student_id)], exam_id=exam_id)
+        except StudentAppearingExam.DoesNotExist:
+            return Response({"error": "StudentAppearingExam record not found"}, status=status.HTTP_404_NOT_FOUND)
+
         correct_answer = question_instance.answer.lower()
         marks = question_instance.marks
 
-        # Result calculation
         if submitted_answer.lower() == correct_answer:
             result = "Right"
             marks_obtained = marks
@@ -6077,7 +6113,7 @@ def save_single_question_answer(request):
             result = "Wrong"
             marks_obtained = "0"
 
-        # Try to update existing submission, or create a new one if it doesn't exist
+        # Save or update with examdetails
         submission, created = SubmittedExamination.objects.update_or_create(
             student_id=student_id,
             exam_id=exam_id,
@@ -6088,7 +6124,8 @@ def save_single_question_answer(request):
                 "marks_obtained": marks_obtained,
                 "submitted_answer": submitted_answer,
                 "answer": correct_answer,
-                "result": result
+                "result": result,
+                "examdetails": exam_details_instance  # 💡 Set here
             }
         )
 
@@ -6101,9 +6138,7 @@ def save_single_question_answer(request):
 
     except Exception as e:
         logger.exception(f"An error occurred while saving answer: {str(e)}")
-        return Response({"error": "An internal server error occurred."},
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -6184,6 +6219,24 @@ def document_management(request, enrollment_id):
         )
         
 
+# @api_view(["POST"])
+# def save_exam_timer(request):
+#     student_id = request.data.get("student_id")
+#     exam_id = request.data.get("exam_id")
+#     time_left_ms = request.data.get("time_left_ms")
+
+#     if not all([student_id, exam_id, time_left_ms]):
+#         return Response({"error": "Missing data"}, status=400)
+
+#     session, created = ExamSession.objects.get_or_create(
+#         student_id=student_id,
+#         exam_id=exam_id
+#     )
+#     session.time_left_ms = time_left_ms
+#     session.save()
+
+#     return Response({"status": "saved", "created": created})
+
 @api_view(["POST"])
 def save_exam_timer(request):
     student_id = request.data.get("student_id")
@@ -6193,11 +6246,24 @@ def save_exam_timer(request):
     if not all([student_id, exam_id, time_left_ms]):
         return Response({"error": "Missing data"}, status=400)
 
+    try:
+        # Get the StudentAppearingExam instance for linking
+        examdetails_instance = StudentAppearingExam.objects.get(
+            student_id__contains=[int(student_id)],  # Use `student_id=student_id` if FK
+            exam_id=exam_id
+        )
+    except StudentAppearingExam.DoesNotExist:
+        return Response({"error": "Matching StudentAppearingExam not found"}, status=404)
+
+    # Create or update the ExamSession
     session, created = ExamSession.objects.get_or_create(
         student_id=student_id,
-        exam_id=exam_id
+        exam_id=exam_id,
+        defaults={"examdetails": examdetails_instance}
     )
+
     session.time_left_ms = time_left_ms
+    session.examdetails = examdetails_instance  # Ensure this is updated every time
     session.save()
 
     return Response({"status": "saved", "created": created})
@@ -6215,18 +6281,100 @@ def get_exam_timer(request):
     
     
 
+# @api_view(['POST'])
+# def save_result_after_exam(request):
+#     """
+#     Save the result after an exam is finished. This includes saving answers for skipped questions as "NA".
+#     """
+#     try:
+#         data = request.data
+#         student_id = data.get("student_id")
+#         exam_id = data.get("exam_id")
+
+#         if not student_id or not exam_id:
+#             return Response({"error": "Missing required fields: student_id or exam_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # Get all questions for the exam
+#         questions = Questions.objects.filter(exam_id=exam_id)
+
+#         # Loop through all the questions and check if answers are missing
+#         for question in questions:
+#             submitted_answer = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id, question=str(question.id)).first()
+
+#             if not submitted_answer:
+#                 # If no answer has been submitted, mark it as skipped with "NA"
+#                 result = "Wrong"
+#                 marks_obtained = "0"
+#                 SubmittedExamination.objects.create(
+#                     student_id=student_id,
+#                     exam_id=exam_id,
+#                     question=str(question.id),
+#                     type=question.type,
+#                     marks=question.marks,
+#                     marks_obtained=marks_obtained,
+#                     submitted_answer="NA",  # Skipped question
+#                     answer=question.answer,
+#                     result=result,
+#                 )
+#             else:
+#                 # If answer exists, we do nothing as it's already saved
+#                 continue
+
+#         # After saving all data for the exam, we can create or update the result entry
+#         total_questions = questions.count()
+#         attempted = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id).count()
+#         score = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id, result="Right").count()
+#         total_marks = questions.aggregate(Sum('marks'))['marks__sum']
+
+#         # Get passing marks from the Examination table
+#         exam = Examination.objects.get(id=exam_id)
+#         passing_marks = int(exam.passingmarks or 50)
+
+#         # Calculate percentage
+#         percentage = (score / total_questions) * 100
+
+#         # Check if passed
+#         result = "Passed" if percentage >= passing_marks else "Failed"
+
+#         # Update or create the final result entry
+#         result_obj, created = Result.objects.update_or_create(
+#             student_id=student_id,
+#             exam_id=exam_id,
+#             defaults={
+#                 'total_question': total_questions,
+#                 'attempted': attempted,
+#                 'total_marks': total_marks,
+#                 'score': score,
+#                 'result': result,
+#                 'percentage': percentage
+#             }
+#         )
+
+#         return Response({
+#             "message": "Exam results saved successfully",
+#             "result_id": result_obj.id
+#         }, status=status.HTTP_200_OK)
+
+#     except Exception as e:
+#         logger.exception(f"An error occurred while saving the exam result: {str(e)}")
+#         return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 @api_view(['POST'])
 def save_result_after_exam(request):
     """
-    Save the result after an exam is finished. This includes saving answers for skipped questions as "NA".
+    Save the result after an exam is finished. This includes saving answers for skipped questions as "NA"
+    and linking to the examdetails_id.
     """
     try:
         data = request.data
         student_id = data.get("student_id")
         exam_id = data.get("exam_id")
+        examdetails_id = data.get("examdetails_id")
 
-        if not student_id or not exam_id:
-            return Response({"error": "Missing required fields: student_id or exam_id"}, status=status.HTTP_400_BAD_REQUEST)
+        if not student_id or not exam_id or not examdetails_id:
+            return Response({"error": "Missing required fields: student_id, exam_id, or examdetails_id"}, 
+                            status=status.HTTP_400_BAD_REQUEST)
 
         # Get all questions for the exam
         questions = Questions.objects.filter(exam_id=exam_id)
@@ -6248,7 +6396,8 @@ def save_result_after_exam(request):
                     marks_obtained=marks_obtained,
                     submitted_answer="NA",  # Skipped question
                     answer=question.answer,
-                    result=result
+                    result=result,
+                    examdetails_id=examdetails_id  # Save the examdetails_id here
                 )
             else:
                 # If answer exists, we do nothing as it's already saved
@@ -6270,10 +6419,11 @@ def save_result_after_exam(request):
         # Check if passed
         result = "Passed" if percentage >= passing_marks else "Failed"
 
-        # Update or create the final result entry
+        # Create or update the result entry using both examdetails_id and exam_id
         result_obj, created = Result.objects.update_or_create(
             student_id=student_id,
             exam_id=exam_id,
+            examdetails_id=examdetails_id,  # Save examdetails_id here
             defaults={
                 'total_question': total_questions,
                 'attempted': attempted,
@@ -6292,6 +6442,7 @@ def save_result_after_exam(request):
     except Exception as e:
         logger.exception(f"An error occurred while saving the exam result: {str(e)}")
         return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['GET'])
 def check_exam_result(request):
