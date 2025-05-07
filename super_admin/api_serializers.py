@@ -6,13 +6,17 @@ from django.contrib.auth import authenticate
 class UserSerializers(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'password', 'is_verified', 'is_student', 'is_data_entry', 'is_fee_clerk']
+        fields = ['email', 'password', 'is_verified', 'is_student', 'is_data_entry', 'is_fee_clerk', 'is_superuser']
 
     def validate(self, data):
         required_fields = ['email', 'password', 'is_verified', 'is_student', 'is_data_entry', 'is_fee_clerk']
+        
         for field in required_fields:
             if field not in data or data[field] is None:
                 raise serializers.ValidationError({field: f"{field} is required."})
+
+        # is_superuser should not be required unless it's for a superuser
+        # In the POST request for user creation, let's set `is_superuser` conditionally
         return data
     
     def create(self, validated_data):

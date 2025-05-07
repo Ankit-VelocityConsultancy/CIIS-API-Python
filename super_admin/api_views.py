@@ -233,6 +233,8 @@ def university_detail(request, university_id):
 @permission_classes([IsAuthenticated])
 def create_user(request):
     user = request.user
+    
+    # Handle GET request
     if request.method == "GET":
         if user.is_superuser:
             users = User.objects.filter(Q(is_fee_clerk=True) | Q(is_data_entry=True))
@@ -242,15 +244,20 @@ def create_user(request):
         logger.warning(f"[{user.email}] attempted to fetch users without permission.")
         return Response({"message": "You do not have permission to view users."}, status=status.HTTP_403_FORBIDDEN)
 
+    # Handle POST request
     if request.method == "POST":
         if user.is_superuser:
+            # If is_superuser is not provided, default to False
             serializer = UserSerializers(data=request.data)
+            request.data['is_superuser'] = True
+
             if serializer.is_valid():
-                serializer.save()
-                logger.info(f"[{user.email}] created new user with email: {serializer.validated_data['email']}")
+                new_user = serializer.save()
+                logger.info(f"[{user.email}] created new user with email: {new_user.email}")
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             logger.error(f"[{user.email}] user creation failed: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
         logger.warning(f"[{user.email}] attempted to create user without permission.")
         return Response({"message": "You do not have permission to create users."}, status=status.HTTP_403_FORBIDDEN)
 
@@ -258,9 +265,9 @@ def create_user(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_semester_fees(request):
-    if not request.user.is_superuser:
-        logger.warning(f"Unauthorized access attempt by user {request.user.email}")
-        return Response({"message": "You don't have permission to add"}, status=status.HTTP_403_FORBIDDEN)
+    # if not request.user.is_superuser:
+    #     logger.warning(f"Unauthorized access attempt by user {request.user.email}")
+    #     return Response({"message": "You don't have permission to add"}, status=status.HTTP_403_FORBIDDEN)
 
     try:
         data = request.data if isinstance(request.data, list) else [request.data]
@@ -343,9 +350,9 @@ def create_semester_fees(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_year_fees(request):
-    if not request.user.is_superuser:
-        logger.warning(f"Unauthorized access attempt by user {request.user.email}")
-        return Response({"message": "You don't have permission to add"}, status=status.HTTP_403_FORBIDDEN)
+    # if not request.user.is_superuser:
+    #     logger.warning(f"Unauthorized access attempt by user {request.user.email}")
+    #     return Response({"message": "You don't have permission to add"}, status=status.HTTP_403_FORBIDDEN)
 
     try:
         data = request.data if isinstance(request.data, list) else [request.data]
@@ -424,9 +431,9 @@ def create_year_fees(request):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def payment_modes(request):
-    if not request.user.is_superuser:
-        logger.warning(f"[{request.user.email}] Unauthorized access to payment_modes.")
-        return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+    # if not request.user.is_superuser:
+    #     logger.warning(f"[{request.user.email}] Unauthorized access to payment_modes.")
+    #     return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'GET':
         modes = PaymentModes.objects.all()
@@ -477,9 +484,9 @@ def payment_mode_detail(request, id):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def fee_receipt_options(request):
-    if not request.user.is_superuser:
-        logger.warning(f"[{request.user.email}] Unauthorized access to fee_receipt_options.")
-        return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+    # if not request.user.is_superuser:
+    #     logger.warning(f"[{request.user.email}] Unauthorized access to fee_receipt_options.")
+    #     return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'GET':
         options = FeeReceiptOptions.objects.all()
@@ -500,9 +507,9 @@ def fee_receipt_options(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def fee_receipt_option_detail(request, id):
-    if not request.user.is_superuser:
-        logger.warning(f"[{request.user.email}] Unauthorized access to fee_receipt_option_detail.")
-        return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+    # if not request.user.is_superuser:
+    #     logger.warning(f"[{request.user.email}] Unauthorized access to fee_receipt_option_detail.")
+    #     return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
     try:
         option = FeeReceiptOptions.objects.get(id=id)
@@ -531,9 +538,9 @@ def fee_receipt_option_detail(request, id):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def bank_names(request):
-    if not request.user.is_superuser:
-        logger.warning(f"[{request.user.email}] Unauthorized access to bank_names.")
-        return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+    # if not request.user.is_superuser:
+    #     logger.warning(f"[{request.user.email}] Unauthorized access to bank_names.")
+    #     return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'GET':
         banks = BankNames.objects.all()
@@ -588,9 +595,9 @@ def session_names(request):
     Handles GET and POST for SessionNames.
     Only superusers can perform these operations.
     """
-    if not request.user.is_superuser:
-        logger.warning(f"[{request.user.email}] Unauthorized access to session_names.")
-        return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+    # if not request.user.is_superuser:
+    #     logger.warning(f"[{request.user.email}] Unauthorized access to session_names.")
+    #     return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'GET':
         sessions = SessionNames.objects.all()
@@ -618,9 +625,9 @@ def session_name_detail(request, id):
     Handles GET, PUT, and DELETE for a specific SessionName by ID.
     Only superusers can perform these operations.
     """
-    if not request.user.is_superuser:
-        logger.warning(f"[{request.user.email}] Unauthorized access to session_name_detail.")
-        return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+    # if not request.user.is_superuser:
+    #     logger.warning(f"[{request.user.email}] Unauthorized access to session_name_detail.")
+    #     return Response({"error": "You are not authorized to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
     try:
         session = SessionNames.objects.get(id=id)
@@ -6078,7 +6085,6 @@ def get_paid_fees(request):
 #         return Response({"error": "An internal server error occurred."},
 #                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 @api_view(['POST'])
 def save_single_question_answer(request):
     try:
@@ -6097,9 +6103,9 @@ def save_single_question_answer(request):
         except Questions.DoesNotExist:
             return Response({"error": f"Question ID {question_id} does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Get or fail StudentAppearingExam record
+        # Get the latest StudentAppearingExam record for the student and exam
         try:
-            exam_details_instance = StudentAppearingExam.objects.get(student_id__contains=[int(student_id)], exam_id=exam_id)
+          exam_details_instance = StudentAppearingExam.objects.filter(student_id=student_id, exam_id=exam_id).order_by('-id').first()
         except StudentAppearingExam.DoesNotExist:
             return Response({"error": "StudentAppearingExam record not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -6113,7 +6119,7 @@ def save_single_question_answer(request):
             result = "Wrong"
             marks_obtained = "0"
 
-        # Save or update with examdetails
+        # Save or update the submitted answer with the examdetails_id
         submission, created = SubmittedExamination.objects.update_or_create(
             student_id=student_id,
             exam_id=exam_id,
@@ -6125,7 +6131,7 @@ def save_single_question_answer(request):
                 "submitted_answer": submitted_answer,
                 "answer": correct_answer,
                 "result": result,
-                "examdetails": exam_details_instance  # 💡 Set here
+                "examdetails": exam_details_instance  # Save the latest examdetails_id here
             }
         )
 
@@ -6359,32 +6365,40 @@ def get_exam_timer(request):
 #         logger.exception(f"An error occurred while saving the exam result: {str(e)}")
 #         return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 @api_view(['POST'])
 def save_result_after_exam(request):
     """
     Save the result after an exam is finished. This includes saving answers for skipped questions as "NA"
-    and linking to the examdetails_id.
+    and linking to the examdetails_id from the latest StudentAppearingExam record.
     """
     try:
         data = request.data
         student_id = data.get("student_id")
         exam_id = data.get("exam_id")
-        examdetails_id = data.get("examdetails_id")
 
-        if not student_id or not exam_id or not examdetails_id:
-            return Response({"error": "Missing required fields: student_id, exam_id, or examdetails_id"}, 
+        print("student_id exam_id ",student_id,exam_id)
+        # Check for required fields
+        if not student_id or not exam_id:
+            return Response({"error": "Missing required fields: student_id or exam_id"}, 
                             status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the latest StudentAppearingExam instance for the student and exam
+        try:
+          examdetails_instance = StudentAppearingExam.objects.filter(student_id__contains=[int(student_id)], exam_id=exam_id).order_by('-id').first()
+
+            
+        except StudentAppearingExam.DoesNotExist:
+            return Response({"error": "No StudentAppearingExam record found for the given student and exam."},
+                            status=status.HTTP_404_NOT_FOUND)
 
         # Get all questions for the exam
         questions = Questions.objects.filter(exam_id=exam_id)
 
-        # Loop through all the questions and check if answers are missing
         for question in questions:
-            submitted_answer = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id, question=str(question.id)).first()
+            # Check if the student has already submitted an answer for the question
+            submitted_answer = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id, question=str(question.id)).order_by('-id').first()
 
             if not submitted_answer:
-                # If no answer has been submitted, mark it as skipped with "NA"
                 result = "Wrong"
                 marks_obtained = "0"
                 SubmittedExamination.objects.create(
@@ -6397,13 +6411,12 @@ def save_result_after_exam(request):
                     submitted_answer="NA",  # Skipped question
                     answer=question.answer,
                     result=result,
-                    examdetails_id=examdetails_id  # Save the examdetails_id here
+                    examdetails_id=examdetails_instance.id  # Save the latest examdetails_id
                 )
             else:
-                # If answer exists, we do nothing as it's already saved
                 continue
 
-        # After saving all data for the exam, we can create or update the result entry
+        # After saving all data, calculate and update the result
         total_questions = questions.count()
         attempted = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id).count()
         score = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id, result="Right").count()
@@ -6419,11 +6432,11 @@ def save_result_after_exam(request):
         # Check if passed
         result = "Passed" if percentage >= passing_marks else "Failed"
 
-        # Create or update the result entry using both examdetails_id and exam_id
+        # Create or update the result entry
         result_obj, created = Result.objects.update_or_create(
             student_id=student_id,
             exam_id=exam_id,
-            examdetails_id=examdetails_id,  # Save examdetails_id here
+            examdetails_id=examdetails_instance.id,
             defaults={
                 'total_question': total_questions,
                 'attempted': attempted,
@@ -6442,6 +6455,7 @@ def save_result_after_exam(request):
     except Exception as e:
         logger.exception(f"An error occurred while saving the exam result: {str(e)}")
         return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 @api_view(['GET'])
