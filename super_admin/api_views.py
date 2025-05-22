@@ -37,6 +37,112 @@ def get_tokens_for_user(user):
         }
     
     
+# @api_view(['POST'])
+# def login_view(request):
+#     print('inside login view')
+#     if request.method == "POST":
+#         print('inside post')
+#         serializer = UserLoginSerializer(data=request.data)
+        
+#         if serializer.is_valid():
+#             email = serializer.validated_data.get("email")
+#             password = serializer.validated_data.get("password")
+#             user = authenticate(email=email, password=password)
+
+#             if user is not None:
+#                 loggedin_user = User.objects.get(email=email)
+#                 token = get_tokens_for_user(user)
+#                 print('emaillll',loggedin_user.email,loggedin_user.is_student)
+
+#                 # Check if the user is a student or not
+#                 if loggedin_user.is_student:
+#                     print('inside loggedin_user ', loggedin_user.is_student, loggedin_user.id)
+#                     # Student: Return student-specific data like exams
+#                     try:
+#                         student = Student.objects.get(email=email)
+#                         # Fetch StudentAppearingExam with related 'exam' to avoid missing 'exam' data
+#                         exams = StudentAppearingExam.objects.filter(student_id__contains=[student.id]).select_related('exam')
+#                         print('examsexamsexams', exams)
+
+#                     except Student.DoesNotExist:
+#                         return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+
+#                     # If no exams found, still return the token with message
+#                     if not exams.exists():
+#                         return Response({
+#                             "message": "Login Successful",
+#                             "token": token,
+#                             "is_student": True,  # User is a student
+#                             "email": user.email,
+#                             "is_active": user.is_active,
+#                         }, status=200)
+
+#                     # Prepare exam-related data for the student
+#                     exam_details = []
+#                     examination_data = []
+
+#                     for exam in exams:
+#                         try:
+#                             # Ensure that 'exam' related object is not missing
+#                             exam_details.append({
+#                                 "exam_id": exam.exam.id,
+#                                 "examstartdate": exam.examstartdate,
+#                                 "examenddate": exam.examenddate,
+#                                 "examstarttime": exam.examstarttime,
+#                                 "examendtime": exam.examendtime
+#                             })
+
+#                             examination = exam.exam
+#                             examination_data.append({
+#                                 "id": examination.id,
+#                                 "course_id": examination.course.id,
+#                                 "stream_id": examination.stream.id,
+#                                 "subject_id": examination.subject.id,
+#                                 "studypattern": examination.studypattern,
+#                                 "semyear": examination.semyear,
+#                                 "substream_id": examination.substream.id if examination.substream else None,
+#                                 "course_name": examination.course.name,
+#                                 "stream_name": examination.stream.name,
+#                                 "subject_name": examination.subject.name,
+#                                 "substream_name": examination.substream.name if examination.substream else None
+#                             })
+#                         except Examination.DoesNotExist:
+#                             # If the 'exam' field is missing, log the error and skip this record
+#                             logger.error(f"Examination for exam_id {exam.id} does not exist. Skipping this exam.")
+#                             continue  # Skip this exam if it's missing related data
+
+#                     return Response({
+#                         "message": "Login Successful",
+#                         "is_student": True,  # User is a student
+#                         "token": token,
+#                         "student_id": student.id,
+#                         "exam_details": exam_details,
+#                         "examination_data": examination_data
+#                     }, status=200)
+
+#                 else:
+#                     # Admin: Return admin-specific data
+#                     return Response({
+#                         "message": "Login Successful",
+#                         "token": token,
+#                         "is_student": False,
+#                         "email": user.email,
+#                         "is_active": user.is_active,
+#                         "user_id": loggedin_user.id,  # Add this
+#                     }, status=200)
+
+#             else:
+#                 return Response({"error": "Invalid Credentials"}, status=400)
+
+#         # Collecting error messages from serializer
+#         error_messages = []
+#         for field, errors in serializer.errors.items():
+#             for error in errors:
+#                 error_messages.append(error)
+
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['POST'])
 def login_view(request):
     print('inside login view')
@@ -52,47 +158,56 @@ def login_view(request):
             if user is not None:
                 loggedin_user = User.objects.get(email=email)
                 token = get_tokens_for_user(user)
-                print('emaillll',loggedin_user.email,loggedin_user.is_student)
+                print('emaillll', loggedin_user.email, loggedin_user.is_student)
 
-                # Check if the user is a student or not
                 if loggedin_user.is_student:
                     print('inside loggedin_user ', loggedin_user.is_student, loggedin_user.id)
-                    # Student: Return student-specific data like exams
                     try:
                         student = Student.objects.get(email=email)
-                        # Fetch StudentAppearingExam with related 'exam' to avoid missing 'exam' data
-                        exams = StudentAppearingExam.objects.filter(student_id__contains=[student.id]).select_related('exam')
-                        print('examsexamsexams', exams)
+                        exams = StudentAppearingExam.objects.filter(
+                            student_id__contains=[student.id]
+                        ).select_related('exam__course__university', 'exam__stream', 'exam__subject', 'exam__substream')
 
                     except Student.DoesNotExist:
                         return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
 
-                    # If no exams found, still return the token with message
                     if not exams.exists():
                         return Response({
                             "message": "Login Successful",
                             "token": token,
-                            "is_student": True,  # User is a student
+                            "is_student": True,
                             "email": user.email,
                             "is_active": user.is_active,
                         }, status=200)
 
-                    # Prepare exam-related data for the student
                     exam_details = []
                     examination_data = []
+                    university = None
 
                     for exam in exams:
                         try:
-                            # Ensure that 'exam' related object is not missing
+                            examination = exam.exam
+                            university_obj = examination.course.university if examination.course and examination.course.university else None
+
+                            # Add once (or overwrite safely each iteration)
+                            if university_obj:
+                                university = {
+                                    "id": university_obj.id,
+                                    "name": university_obj.university_name,
+                                    "city": university_obj.university_city,
+                                    "state": university_obj.university_state,
+                                    "pincode": university_obj.university_pincode,
+                                    "logo": request.build_absolute_uri(university_obj.university_logo.url) if university_obj.university_logo else None
+                                }
+
                             exam_details.append({
-                                "exam_id": exam.exam.id,
+                                "exam_id": examination.id,
                                 "examstartdate": exam.examstartdate,
                                 "examenddate": exam.examenddate,
                                 "examstarttime": exam.examstarttime,
                                 "examendtime": exam.examendtime
                             })
 
-                            examination = exam.exam
                             examination_data.append({
                                 "id": examination.id,
                                 "course_id": examination.course.id,
@@ -106,39 +221,35 @@ def login_view(request):
                                 "subject_name": examination.subject.name,
                                 "substream_name": examination.substream.name if examination.substream else None
                             })
+
                         except Examination.DoesNotExist:
-                            # If the 'exam' field is missing, log the error and skip this record
                             logger.error(f"Examination for exam_id {exam.id} does not exist. Skipping this exam.")
-                            continue  # Skip this exam if it's missing related data
+                            continue
 
                     return Response({
                         "message": "Login Successful",
-                        "is_student": True,  # User is a student
+                        "is_student": True,
                         "token": token,
-                        "student_id": student.id,
+                        "student_id": student.id,                        
+                        "student_name": student.name,  
+                        "university_logo": university["logo"] if university else None,
                         "exam_details": exam_details,
-                        "examination_data": examination_data
+                        "examination_data": examination_data,
+                        "university": university  # Include university in response
                     }, status=200)
 
                 else:
-                    # Admin: Return admin-specific data
                     return Response({
                         "message": "Login Successful",
                         "token": token,
                         "is_student": False,
                         "email": user.email,
                         "is_active": user.is_active,
-                        "user_id": loggedin_user.id,  # Add this
+                        "user_id": loggedin_user.id,
                     }, status=200)
 
             else:
                 return Response({"error": "Invalid Credentials"}, status=400)
-
-        # Collecting error messages from serializer
-        error_messages = []
-        for field, errors in serializer.errors.items():
-            for error in errors:
-                error_messages.append(error)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -3381,43 +3492,45 @@ def bulk_exam_upload(request):
 
 
 logger = logging.getLogger('student_registration')
+
 @api_view(['GET'])
 def filter_questions(request):
     try:
         # Extract filters from request query parameters
-        examtype = request.query_params.get('examtype', None)
-        semyear = request.query_params.get('semyear', None)
-        subject = request.query_params.get('subject', None)
+        examtype = request.query_params.get('examtype')
+        semyear = request.query_params.get('semyear')
+        subject = request.query_params.get('subject')
+        university_id = request.query_params.get('university')
+        course_id = request.query_params.get('course')
+        stream_id = request.query_params.get('stream')
+        substream_id = request.query_params.get('substream')
 
-        # Log incoming request with filtering parameters
-        #logger.info(f"Received request with examtype={examtype}, semyear={semyear}, subject={subject}")
+        print("Filters =>", examtype, semyear, subject, university_id, course_id, stream_id, substream_id)
 
         # Start with all questions
         questions_queryset = Questions.objects.all()
 
-        # Apply filters if they are provided
         if examtype:
             questions_queryset = questions_queryset.filter(exam__examtype=examtype)
         if semyear:
-            print('inside sem year')
             questions_queryset = questions_queryset.filter(exam__semyear=semyear)
         if subject:
             questions_queryset = questions_queryset.filter(exam__subject__name=subject)
+        if university_id:
+            questions_queryset = questions_queryset.filter(exam__university__id=university_id)
+        if course_id:
+            questions_queryset = questions_queryset.filter(exam__course__id=course_id)
+        if stream_id:
+            questions_queryset = questions_queryset.filter(exam__stream__id=stream_id)
+        if substream_id:
+            questions_queryset = questions_queryset.filter(exam__substream__id=substream_id)
 
-        # Serialize the filtered questions
+        questions_queryset = questions_queryset.distinct()
         serializer = QuestionsSerializer(questions_queryset, many=True)
-
-        # Log the number of results found
-        #logger.info(f"Found {len(serializer.data)} questions matching the criteria")
-
-        # Return the serialized data as JSON
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     except Exception as e:
-        # Log error details
         logger.error(f"Error occurred while filtering questions: {str(e)}")
-
-        # Return an error response
         return Response({"error": "Something went wrong!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
@@ -3495,7 +3608,7 @@ def fetch_exam(request):
     except Exception as e:
         logger.error(f"Error in fetch_exam API: {str(e)}")
         return Response({"error": "An error occurred while processing the request."}, status=500)
-
+      
 logger = logging.getLogger('student_registration')
 @api_view(['POST'])
 def view_assigned_students(request):
@@ -3537,7 +3650,7 @@ def view_assigned_students(request):
             serializer = StudentAppearingExamSerializer(student_data, many=True)
             for record in serializer.data:
                 for student_id in record['student_id']:
-                    has_appeared = StudentExaminationTime.objects.filter(student_id=student_id, exam=exam.id).exists()
+                    has_appeared = ExamSession.objects.filter(student_id=student_id, exam=exam.id).exists()
                     submitted_exam = Result.objects.filter(student_id=student_id, exam=exam).exists()
 
                     if has_appeared and submitted_exam:
