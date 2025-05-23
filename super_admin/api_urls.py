@@ -187,6 +187,7 @@ urlpatterns = [
   path('colors/', api_views.list_colors, name='list_colors'),
   path('colors-create/', api_views.create_color, name='create_color'),
   path('colors-update/<int:pk>/', api_views.update_color, name='update_color'),
+  path('sync_answers/', api_views.sync_answers, name='sync_answers'),
 
     
 ]
