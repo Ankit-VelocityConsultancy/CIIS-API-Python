@@ -2431,6 +2431,7 @@ def get_substreams_by_university_course_stream_with_id(request):
 @permission_classes([IsAuthenticated])
 def get_country(request):
     try:
+        from .models import Countries  # ✅ Make sure this matches your actual model
         data = Countries.objects.all()
         serializer = CountrySerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -2445,41 +2446,61 @@ def get_country(request):
 @permission_classes([IsAuthenticated])
 def get_states(request):
     try:
-        country_id = request.query_params.get('country_id')
-        if not country_id:
+        country_input = request.query_params.get('country_id')
+
+        if not country_input:
             return Response(
                 {"error": "country_id is required as a query parameter."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        data = States.objects.filter(country_id=country_id)
+
+        from .models import Countries  
+
+        if country_input.isdigit():
+            data = States.objects.filter(country_id=int(country_input))
+        else:
+            country = Countries.objects.filter(name__iexact=country_input.strip()).first()
+            if not country:
+                return Response({"error": f"No country found with name '{country_input}'"}, status=404)
+            data = States.objects.filter(country_id=country.id)
+
         serializer = StateSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
     except Exception as e:
         logger.error(f"Error in get_states: {str(e)}")
-        return Response(
-            {"error": "An internal server error occurred."},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+        return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_cities(request):
     try:
-        state_id = request.query_params.get('state_id')
-        if not state_id:
+        state_input = request.query_params.get('state_id')
+
+        if not state_input:
             return Response(
                 {"error": "state_id is required as a query parameter."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        data = Cities.objects.filter(state_id=state_id)
+
+        from .models import States  # Ensure States model is imported
+
+        if state_input.isdigit():
+            data = Cities.objects.filter(state_id=int(state_input))
+        else:
+            state = States.objects.filter(name__iexact=state_input.strip()).first()
+            if not state:
+                return Response({"error": f"No state found with name '{state_input}'"}, status=404)
+            data = Cities.objects.filter(state_id=state.id)
+
         serializer = CitySerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
     except Exception as e:
         logger.error(f"Error in get_cities: {str(e)}")
-        return Response(
-            {"error": "An internal server error occurred."},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+        return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -2493,6 +2514,8 @@ def get_student_details(request, enrollment_id):
 
     try:
         student = Student.objects.get(enrollment_id=enrollment_id)
+
+        # === STUDENT DATA ===
         student_data = {
             "id": student.id,
             "name": student.name,
@@ -2521,9 +2544,9 @@ def get_student_details(request, enrollment_id):
             "enrollment_id": student.enrollment_id,
             "university": student.university.university_name if student.university else None,
             "university_id": student.university.id if student.university else None,
-            "student_remarks":student.student_remarks
         }
 
+        # === ENROLLMENT DATA ===
         enrollment = Enrolled.objects.filter(student=student).first()
         enrollment_data = {
             "course": enrollment.course.name if enrollment and enrollment.course else None,
@@ -2539,6 +2562,7 @@ def get_student_details(request, enrollment_id):
             "semyear": enrollment.current_semyear if enrollment else None,
         } if enrollment else {}
 
+        # === ADDITIONAL ENROLLMENT DETAILS ===
         additional_details = AdditionalEnrollmentDetails.objects.filter(student=student).first()
         additional_details_data = {
             "counselor_name": additional_details.counselor_name if additional_details else None,
@@ -2546,33 +2570,43 @@ def get_student_details(request, enrollment_id):
             "university_enroll_number": additional_details.university_enrollment_id if additional_details else None,
         }
 
+        # === DOCUMENTS ===
         student_documents = StudentDocuments.objects.filter(student=student)
         student_documents_data = StudentDocumentsSerializerGET(student_documents, many=True).data
 
+        # === QUALIFICATION ===
         qualifications = Qualification.objects.filter(student=student).first()
         qualification_data = QualificationSerializer(qualifications).data if qualifications else None
 
+        # === PAYMENT RECEIPT ===
         latest_payment = PaymentReciept.objects.filter(student=student).last()
+        due_amount = None
+        payment_data = {}
+
         if latest_payment:
-            semyearfees = float(latest_payment.semyearfees) if latest_payment.semyearfees else 0.0
-            paidamount = float(latest_payment.paidamount) if latest_payment.paidamount else 0.0
-            due_amount = semyearfees - paidamount
-        else:
-            due_amount = None
+            try:
+                semyearfees = float(latest_payment.semyearfees) if latest_payment.semyearfees else 0.0
+                paidamount = float(latest_payment.paidamount) if latest_payment.paidamount else 0.0
+                due_amount = semyearfees - paidamount
 
-        payment_data = {
-            "Exam_Fee": latest_payment.payment_for if latest_payment else None,
-            "transaction_date": latest_payment.transaction_date if latest_payment else None,
-            "total_fees":latest_payment.semyearfees,
-            "Due": due_amount,
-            "cheque_no": latest_payment.cheque_no if latest_payment else None,
-            "bank_name": latest_payment.bank_name if latest_payment else None,
-            "paymentmode": latest_payment.paymentmode if latest_payment else None,
-            "remarks": latest_payment.remarks if latest_payment else None,
-            "paidamount": latest_payment.paidamount if latest_payment else None,
-            "fee_recipt_type": latest_payment.fee_reciept_type if latest_payment else None,
-        }
+                payment_data = {
+                    "Exam_Fee": latest_payment.payment_for,
+                    "transaction_date": latest_payment.transaction_date,
+                    "total_fees": latest_payment.semyearfees,
+                    "Due": due_amount,
+                    "cheque_no": latest_payment.cheque_no,
+                    "bank_name": latest_payment.bank_name,
+                    "paymentmode": latest_payment.paymentmode,
+                    "remarks": latest_payment.remarks,
+                    "paidamount": latest_payment.paidamount,
+                    "fee_recipt_type": latest_payment.fee_reciept_type,
+                }
 
+            except Exception as pe:
+                logger.warning(f"Could not calculate payment due for enrollment_id {enrollment_id}: {pe}")
+                payment_data = {}
+
+        # === FINAL RESPONSE ===
         response_data = {
             **student_data,
             **enrollment_data,
@@ -2597,6 +2631,8 @@ def get_student_details(request, enrollment_id):
             {"error": "An unexpected error occurred while retrieving student details."},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+       
         
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -3557,35 +3593,181 @@ def filter_questions(request):
         logger.error(f"Error occurred while filtering questions: {str(e)}")
         return Response({"error": "Something went wrong!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# @api_view(['POST'])
+# def fetch_exam(request):
+#     try:
+#         university = request.data.get("university")
+#         course = request.data.get("course")
+#         stream = request.data.get("stream") or request.data.get("Stream")  # handle both 'stream' and 'Stream'
+#         session = request.data.get("session")
+#         studypattern = request.data.get("studypattern")
+#         semyear = request.data.get("semyear")
+#         substream = request.data.get("substream")  # May be "" or actual ID
+
+#         if substream == "":
+#             substream = None
+
+#         # === BUILD EXAM FILTERS (dynamic Q) ===
+#         exam_filters = Q(university_id=university) & Q(course_id=course) & Q(stream_id=stream) & Q(active=True)
+
+#         if session not in ["", None, "0"]:
+#             exam_filters &= Q(session=session)
+
+#         if studypattern not in ["", None, "0"]:
+#             exam_filters &= Q(studypattern=studypattern)
+
+#         if semyear not in ["", None, "0"]:
+#             exam_filters &= Q(semyear=semyear)
+
+#         if substream is None:
+#             exam_filters &= (Q(substream__isnull=True) | Q(substream_id__isnull=True))
+#         else:
+#             exam_filters &= Q(substream_id=substream)
+
+#         examinations = Examination.objects.filter(exam_filters).select_related("subject")
+
+#         if not examinations.exists():
+#             return Response({"message": "No examinations found matching the criteria."}, status=404)
+
+#         # === BUILD STUDENT FILTERS (dynamic Q) ===
+#         student_filters = Q(course_id=course) & Q(stream_id=stream)
+
+#         if session not in ["", None, "0"]:
+#             student_filters &= Q(session=session)
+
+#         if studypattern not in ["", None, "0"]:
+#             student_filters &= Q(course_pattern=studypattern)
+
+#         if semyear not in ["", None, "0"]:
+#             student_filters &= Q(current_semyear=semyear)
+
+#         if substream is None:
+#             student_filters &= (Q(substream__isnull=True) | Q(substream_id__isnull=True))
+#         else:
+#             student_filters &= Q(substream_id=substream)
+
+#         enrolled_students = Enrolled.objects.filter(student_filters).select_related('student')
+
+#         students_list = []
+#         for enrollment in enrolled_students:
+#             try:
+#                 student_obj = Student.objects.get(id=enrollment.student.id)
+#                 students_list.append(student_obj)
+#             except Student.DoesNotExist:
+#                 continue
+
+#         # === SERIALIZE DATA ===
+#         student_serializer = StudentSerializer(students_list, many=True)
+#         exam_serializer = ExaminationSubjectSerializer(examinations, many=True)
+
+#         return Response({
+#             "studentdata": student_serializer.data,
+#             "exams": exam_serializer.data
+#         }, status=200)
+
+#     except Exception as e:
+#         logger.error(f"Error in fetch_exam API: {str(e)}")
+#         return Response({"error": "An error occurred while processing the request."}, status=500)
+
+
+# @api_view(['POST'])
+# def fetch_exam(request):
+#     try:
+#         university = request.data.get("university")
+#         course = request.data.get("course")
+#         stream = request.data.get("stream") or request.data.get("Stream")  # Allow both
+#         session = request.data.get("session")
+#         studypattern = request.data.get("studypattern")
+#         semyear = request.data.get("semyear")
+#         substream = request.data.get("substream")
+
+#         # Normalize empty substream
+#         if not substream or substream in ["", "null", "None", None, 0, "0"]:
+#             substream = None
+
+#         # === EXAM FILTERS ===
+#         exam_filters = Q(university_id=university) & Q(course_id=course) & Q(stream_id=stream) & Q(active=True)
+
+#         if session:
+#             exam_filters &= Q(session=session)
+
+#         if studypattern:
+#             exam_filters &= Q(studypattern=studypattern)
+
+#         if semyear:
+#             exam_filters &= Q(semyear=semyear)
+
+#         if substream is None:
+#             exam_filters &= Q(substream__isnull=True)
+#         else:
+#             exam_filters &= Q(substream_id=substream)
+
+#         examinations = Examination.objects.filter(exam_filters).select_related("subject")
+
+#         if not examinations.exists():
+#             return Response({"message": "No examinations found matching the criteria."}, status=404)
+
+#         # === STUDENT FILTERS ===
+#         student_filters = Q(course_id=course) & Q(stream_id=stream)
+
+#         if session:
+#             student_filters &= Q(session=session)
+
+#         if studypattern:
+#             student_filters &= Q(course_pattern=studypattern)
+
+#         if semyear:
+#             student_filters &= Q(current_semyear=semyear)
+
+#         if substream is None:
+#             student_filters &= Q(substream__isnull=True)
+#         else:
+#             student_filters &= Q(substream_id=substream)
+
+#         enrolled_students = Enrolled.objects.filter(student_filters).select_related('student')
+
+#         students_list = [enr.student for enr in enrolled_students if enr.student]
+
+#         # === SERIALIZE ===
+#         student_serializer = StudentSerializer(students_list, many=True)
+#         exam_serializer = ExaminationSubjectSerializer(examinations, many=True)
+
+#         return Response({
+#             "studentdata": student_serializer.data,
+#             "exams": exam_serializer.data
+#         }, status=200)
+
+#     except Exception as e:
+#         logger.error(f"Error in fetch_exam API: {str(e)}")
+#         return Response({"error": "An error occurred while processing the request."}, status=500)
+
+
 @api_view(['POST'])
 def fetch_exam(request):
     try:
         university = request.data.get("university")
         course = request.data.get("course")
-        stream = request.data.get("stream") or request.data.get("Stream")  # handle both 'stream' and 'Stream'
+        stream = request.data.get("stream") or request.data.get("Stream")
         session = request.data.get("session")
         studypattern = request.data.get("studypattern")
         semyear = request.data.get("semyear")
-        substream = request.data.get("substream")  # May be "" or actual ID
+        substream = request.data.get("substream")
 
-        if substream == "":
-            substream = None
+        # Treat blank/invalid substream as no filter
+        apply_substream_filter = False
+        if substream and str(substream).strip().isdigit():
+            apply_substream_filter = True
 
-        # === BUILD EXAM FILTERS (dynamic Q) ===
+        # === BASE EXAM FILTERS ===
         exam_filters = Q(university_id=university) & Q(course_id=course) & Q(stream_id=stream) & Q(active=True)
 
-        if session not in ["", None, "0"]:
+        if session:
             exam_filters &= Q(session=session)
-
-        if studypattern not in ["", None, "0"]:
+        if studypattern:
             exam_filters &= Q(studypattern=studypattern)
-
-        if semyear not in ["", None, "0"]:
+        if semyear:
             exam_filters &= Q(semyear=semyear)
-
-        if substream is None:
-            exam_filters &= (Q(substream__isnull=True) | Q(substream_id__isnull=True))
-        else:
+        if apply_substream_filter:
             exam_filters &= Q(substream_id=substream)
 
         examinations = Examination.objects.filter(exam_filters).select_related("subject")
@@ -3593,34 +3775,21 @@ def fetch_exam(request):
         if not examinations.exists():
             return Response({"message": "No examinations found matching the criteria."}, status=404)
 
-        # === BUILD STUDENT FILTERS (dynamic Q) ===
+        # === STUDENT FILTERS ===
         student_filters = Q(course_id=course) & Q(stream_id=stream)
 
-        if session not in ["", None, "0"]:
+        if session:
             student_filters &= Q(session=session)
-
-        if studypattern not in ["", None, "0"]:
+        if studypattern:
             student_filters &= Q(course_pattern=studypattern)
-
-        if semyear not in ["", None, "0"]:
+        if semyear:
             student_filters &= Q(current_semyear=semyear)
-
-        if substream is None:
-            student_filters &= (Q(substream__isnull=True) | Q(substream_id__isnull=True))
-        else:
+        if apply_substream_filter:
             student_filters &= Q(substream_id=substream)
 
         enrolled_students = Enrolled.objects.filter(student_filters).select_related('student')
+        students_list = [e.student for e in enrolled_students if e.student]
 
-        students_list = []
-        for enrollment in enrolled_students:
-            try:
-                student_obj = Student.objects.get(id=enrollment.student.id)
-                students_list.append(student_obj)
-            except Student.DoesNotExist:
-                continue
-
-        # === SERIALIZE DATA ===
         student_serializer = StudentSerializer(students_list, many=True)
         exam_serializer = ExaminationSubjectSerializer(examinations, many=True)
 
@@ -3630,8 +3799,10 @@ def fetch_exam(request):
         }, status=200)
 
     except Exception as e:
-        logger.error(f"Error in fetch_exam API: {str(e)}")
+        logger.error(f"Error in fetch_exam API: {str(e)}", exc_info=True)
         return Response({"error": "An error occurred while processing the request."}, status=500)
+
+
       
 logger = logging.getLogger('student_registration')
 @api_view(['POST'])
