@@ -2684,7 +2684,11 @@ def update_student_details(request, enrollment_id):
                     elif data_field == 'stream':
                         enrollment.stream = Stream.objects.get(id=request.data[data_field])
                     elif data_field == 'substream':
-                        enrollment.substream = SubStream.objects.get(id=request.data[data_field])
+                      substream_id = request.data[data_field]
+                      if substream_id and str(substream_id).isdigit():
+                          enrollment.substream = SubStream.objects.get(id=substream_id)
+                      else:
+                          enrollment.substream = None
                     else:
                         setattr(enrollment, field, request.data[data_field])
             enrollment.save()
