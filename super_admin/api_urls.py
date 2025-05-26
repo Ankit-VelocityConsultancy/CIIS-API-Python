@@ -133,6 +133,9 @@ urlpatterns = [
    
   path('get_student_enroll_to_next_year/<int:id>/', api_views.get_student_enroll_to_next_year, name='get_student_enroll_to_next_year'),
 
+  path('registered_save_enrollment_to_next_semyear/', api_views.registered_save_enrollment_to_next_semyear, name='save_enrollment_to_next_semyear'),
+
+
   path('get_subjects_by_stream/<int:stream_id>/', api_views.get_subjects_by_stream, name='get_subjects_by_stream'),
 
 

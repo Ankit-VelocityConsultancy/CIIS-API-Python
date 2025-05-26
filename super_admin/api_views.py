@@ -3383,7 +3383,6 @@ def validate_excel_file(file_path):
         logger.error(f"Error reading Excel file: {str(e)}", exc_info=True)
         return None, "Invalid Excel file"
 
-
 @api_view(['POST'])
 @parser_classes([MultiPartParser, FormParser])
 def bulk_exam_upload(request):
@@ -3391,7 +3390,6 @@ def bulk_exam_upload(request):
         if 'file' not in request.FILES:
             return Response({"status": "error", "message": "No file uploaded"}, status=400)
 
-        # Save the uploaded file temporarily
         file = request.FILES['file']
         temp_file_path = os.path.join(settings.MEDIA_ROOT, 'temp', file.name)
         os.makedirs(os.path.dirname(temp_file_path), exist_ok=True)
@@ -3416,11 +3414,11 @@ def bulk_exam_upload(request):
         with transaction.atomic():
             for index, row in data.iterrows():
                 try:
-                    # Normalize all fields
                     course_name = str(row["COURSE"]).strip()
                     stream_name = str(row["STREAM"]).strip()
                     subject_name = str(row["SUBJECT NAME"]).strip()
                     substream_name = str(row["SUBSTREAM"]).strip() if pd.notna(row["SUBSTREAM"]) and str(row["SUBSTREAM"]).strip().lower() != 'nan' else None
+                    exam_semyear = str(row["YEAR/SEMESTER"]).strip()
 
                     course = Course.objects.get(name=course_name, university=university)
                     stream = Stream.objects.get(name=stream_name, course=course)
@@ -3429,13 +3427,18 @@ def bulk_exam_upload(request):
                     if substream_name:
                         substream = SubStream.objects.get(name=substream_name, stream=stream)
 
-                    subject = Subject.objects.get(
+                    subject = Subject.objects.filter(
                         name=subject_name,
                         stream=stream,
-                        substream=substream
-                    )
+                        substream=substream,
+                        semyear=exam_semyear
+                    ).first()
 
-                    # Check if Examination already exists
+                    if not subject:
+                        raise Subject.DoesNotExist(
+                            f"Subject '{subject_name}' with sem/year '{exam_semyear}' not found in row {index + 2}"
+                        )
+
                     exam = Examination.objects.filter(
                         university=university,
                         course=course,
@@ -3461,7 +3464,7 @@ def bulk_exam_upload(request):
                             examtype=str(row["TYPE OF EXAM"]).strip(),
                             examduration=str(row["EXAM DURATION"]).strip(),
                             studypattern=str(row["MODE"]).strip(),
-                            semyear=str(row["YEAR/SEMESTER"]).strip(),
+                            semyear=exam_semyear,
                             session=str(row["SESSION"]).strip(),
                             totalquestions=1,
                             totalmarks=row["MARKS"],
@@ -3471,7 +3474,7 @@ def bulk_exam_upload(request):
                             archive=False,
                         )
 
-                    # Create Questions record
+                    # Create Questions
                     Questions.objects.create(
                         exam=exam,
                         question=str(row["QUESTION"]).strip(),
@@ -3485,10 +3488,10 @@ def bulk_exam_upload(request):
                         difficultylevel=str(row["DIFFICULTY LEVEL"]).strip(),
                     )
 
-                    success_rows.append(f"Question for row: {index + 2} saved successfully")
+                    success_rows.append(f"Row {index + 2}: Question added successfully.")
 
                 except (Course.DoesNotExist, Stream.DoesNotExist, SubStream.DoesNotExist, Subject.DoesNotExist) as e:
-                    error_message = f"{str(e)} in row {index + 2}."
+                    error_message = f"{str(e)} in row {index + 2}"
                     logger.error(error_message)
                     errors.append(error_message)
                     continue
@@ -3498,7 +3501,6 @@ def bulk_exam_upload(request):
                     errors.append(error_message)
                     continue
 
-        # Cleanup temporary file
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
 
@@ -3512,7 +3514,6 @@ def bulk_exam_upload(request):
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}", exc_info=True)
         return Response({"status": "error", "message": "Internal server error"}, status=500)
-
 
 logger = logging.getLogger('student_registration')
 
@@ -6804,3 +6805,38 @@ def sync_answers(request):
             continue
 
     return Response({"answers": answer_dict}, status=status.HTTP_200_OK)
+  
+  
+
+@api_view(['POST'])
+def registered_save_enrollment_to_next_semyear(request):
+    student_id = request.data.get('student_id')
+    current_semyear = request.data.get('current_semyear')
+    total_semyear = request.data.get('total_semyear')
+    next_semyear = request.data.get('next_semyear')
+
+    if not all([student_id, current_semyear, total_semyear, next_semyear]):
+        logger.warning("Missing required fields")
+        return Response({"status": "error", "message": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        current = int(current_semyear)
+        total = int(total_semyear)
+        next_s = int(next_semyear)
+    except ValueError:
+        logger.error("Invalid data types for semester fields")
+        return Response({"status": "error", "message": "Invalid semester values"}, status=status.HTTP_400_BAD_REQUEST)
+
+    if total <= current:
+        logger.warning(f"Next semester not allowed. Current: {current}, Total: {total}")
+        return Response({"status": "error", "message": "Cannot enroll beyond total sem/year"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        enrolled = Enrolled.objects.get(student=student_id)
+        enrolled.current_semyear = next_s
+        enrolled.save()
+        logger.info(f"Student {student_id} promoted to sem/year {next_s}")
+        return Response({"status": "success", "message": "Student enrolled to next semester/year"}, status=status.HTTP_200_OK)
+    except Enrolled.DoesNotExist:
+        logger.error(f"No enrollment found for student ID {student_id}")
+        return Response({"status": "error", "message": "Enrollment not found"}, status=status.HTTP_404_NOT_FOUND)
