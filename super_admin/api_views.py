@@ -4835,22 +4835,25 @@ def download_excel_for_set_exam_for_subject(request):
 def get_all_subjects(request):
     try:
         stream = request.query_params.get('stream')
-        substream = request.query_params.get('substream')
+        substream = request.query_params.get('substream')  # Can be "", None, or valid ID
+        semyear = request.query_params.get('semyear')
 
         if not stream:
-            logger.error("Missing 'stream' parameter in the request.")
             return Response({'error': "Stream parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        if not semyear:
+            return Response({'error': "Semester/Year parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Base filter: stream must match
-        filters = {'stream__id': stream}
+        # Base filters
+        filters = {'stream__id': stream, 'semyear': semyear}
 
-        # Handle substream filter
-        if substream:
+        # Filter by substream only if passed and valid
+        if substream not in [None, '', 'null']:
             filters['substream__id'] = substream
-        else:
-            filters['substream__isnull'] = True  # Important: fetch where substream is NULL
+        # else: no substream filter applied to include all with/without substream
 
-        subjects = Subject.objects.filter(**filters).values('id', 'name', 'code', 'stream', 'substream', 'studypattern', 'semyear')
+        subjects = Subject.objects.filter(**filters).values(
+            'id', 'name', 'code', 'stream', 'substream', 'studypattern', 'semyear'
+        )
 
         if not subjects.exists():
             return Response({'message': "No subjects found."}, status=status.HTTP_404_NOT_FOUND)
@@ -4858,8 +4861,8 @@ def get_all_subjects(request):
         return Response({'subjects': list(subjects)}, status=status.HTTP_200_OK)
 
     except Exception as e:
-        logger.exception(f"An error occurred while fetching subjects: {str(e)}")
-        return Response({'error': "An error occurred while fetching subjects."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.exception(f"Error in get_all_subjects: {str(e)}")
+        return Response({'error': "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
