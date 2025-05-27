@@ -4059,126 +4059,6 @@ def save_exam_details(request):
     except Exception as e:
         return Response({'message': 'An unexpected error occurred.', 'error': str(e)}, status=500)
 
-
-
-# @api_view(['POST'])
-# def save_exam_details(request):
-#     try:
-#         # Log the incoming request data
-#         #logger.info(f"Request Data: {request.data}")
-
-#         # Retrieve and validate exam and student data
-#         examdata = request.data.get("examsdata")
-#         studentdata = request.data.get("studentdata")
-
-#         if not examdata:
-#             logger.error("Exam data is missing in the request.")
-#             return Response({'message': 'Exam data is required'}, status=400)
-#         if not studentdata:
-#             logger.error("Student data is missing in the request.")
-#             return Response({'message': 'Student data is required'}, status=400)
-
-#         messages = []
-#         errors = []
-
-#         # Process each exam
-#         for exam in examdata:
-#             exam_id = exam.get("examination_id")
-#             start_date = exam.get("start_date")
-#             end_date = exam.get("end_date")
-#             start_time = exam.get("start_time")
-#             end_time = exam.get("end_time")
-
-#             #logger.info(f"Processing exam ID: {exam_id}")
-
-#             if not all([exam_id, start_date, end_date, start_time, end_time]):
-#                 error_message = "Incomplete exam details provided."
-#                 logger.error(error_message)
-#                 errors.append(error_message)
-#                 continue
-
-#             try:
-#                 # Ensure the exam exists
-#                 exam_instance = Examination.objects.get(id=exam_id)
-
-#                 # Determine the attempt value
-#                 latest_exam = StudentAppearingExam.objects.filter(exam=exam_instance).order_by('-attempt').first()
-#                 next_attempt = (latest_exam.attempt + 1) if latest_exam and latest_exam.attempt else 1
-
-#                 # Fetch or create a single record for the exam
-#                 existing_exam, created = StudentAppearingExam.objects.get_or_create(
-#                     exam=exam_instance,
-#                     examstartdate=start_date,
-#                     examenddate=end_date,
-#                     examstarttime=start_time,
-#                     examendtime=end_time,
-#                     defaults={"student_id": [], "attempt": next_attempt},  # Set the calculated attempt value
-#                 )
-
-#                 if not created:
-#                     #logger.info(f"Exam ID {exam_id} already exists with attempt {existing_exam.attempt}.")
-#                 else:
-#                     #logger.info(f"Created new record for exam ID {exam_id} with attempt {next_attempt}.")
-
-#                 # Update the `student_id` list
-#                 current_students = existing_exam.student_id or []
-#                 new_student_ids = [student['id'] for student in studentdata if student['id'] not in current_students]
-#                 if new_student_ids:
-#                     current_students.extend(new_student_ids)
-#                     existing_exam.student_id = current_students
-#                     existing_exam.save()
-#                     #logger.info(f"Updated exam ID {exam_id} with student IDs: {new_student_ids}")
-#                 else:
-#                     #logger.info(f"No new students to add for exam ID {exam_id}")
-
-#                 messages.append(f"Exam details saved/updated successfully for exam ID: {exam_id}")
-
-#                 # Send email notifications
-#                 email_subject = "Examination Details"
-#                 login_url = f"{settings.DOMAIN_NAME}/examination_login/"
-#                 for student_id in new_student_ids:
-#                     try:
-#                         student_instance = Student.objects.get(id=student_id)
-#                         email_message = f"""
-#                         Dear {student_instance.name},
-
-#                         You are invited to take the {exam_instance.subject.name} {exam_instance.studypattern} {exam_instance.semyear} Test.
-#                         Exam Link: {login_url}
-#                         User ID: {student_instance.email}
-#                         Password: {student_instance.mobile}
-
-#                         The exam is available from {start_date} to {end_date} between {start_time} and {end_time}.
-#                         """
-#                         #logger.info(f"Sending email to {student_instance.email} with message: {email_message.strip()}")
-
-#                         # Send email in a separate thread
-#                         Thread(
-#                             target=send_exam_email,
-#                             args=(email_subject, email_message, [student_instance.email])
-#                         ).start()
-#                         #logger.info(f"Email successfully sent to {student_instance.email}.")
-#                     except Exception as email_error:
-#                         error_message = f"Failed to send email to {student_instance.email}: {str(email_error)}"
-#                         logger.error(error_message)
-#                         errors.append(error_message)
-#             except Examination.DoesNotExist:
-#                 error_message = f"Invalid exam ID: {exam_id}"
-#                 logger.error(error_message)
-#                 errors.append(error_message)
-#             except Student.DoesNotExist as e:
-#                 error_message = "Invalid student ID in student data."
-#                 logger.error(f"{error_message} Error: {str(e)}")
-#                 errors.append(error_message)
-#             except Exception as e:
-#                 error_message = f"Failed to save exam details for exam ID: {exam_id}"
-#                 logger.error(f"{error_message} Error: {str(e)}", exc_info=True)
-#                 errors.append(error_message)
-
-#         return Response({'messages': messages, 'errors': errors}, status=200)
-
-#     except Exception as e:
-#         logger.error(f"Unexpected error: {str(e)}", exc_info=True)
-#         return Response({'message': 'An unexpected error occurred.'}, status=500)
       
       
 @api_view(['GET'])
@@ -4222,6 +4102,7 @@ def view_set_examination(request):
         # Serialize the filtered examination data
         serializer = ExaminationSerializer(examinations, many=True)
 
+
         # Return the serialized data in the response
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -4234,6 +4115,56 @@ def view_set_examination(request):
             {"error": "An error occurred while processing your request."},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+# @api_view(['GET'])
+# def view_set_examination(request):
+#     try:
+#         # Extract query parameters
+#         university = request.query_params.get('university')
+#         course = request.query_params.get('course')
+#         stream = request.query_params.get('stream')
+#         substream = request.query_params.get('substream')
+#         session = request.query_params.get('session')
+#         studypattern = request.query_params.get('studypattern')
+#         semyear = request.query_params.get('semyear')
+
+#         # Validate semyear presence
+#         if not semyear or semyear.strip() == '':
+#             return Response({"error": "semyear parameter is required."}, status=400)
+#         semyear = semyear.strip()
+
+#         # Initialize queryset
+#         examinations = Examination.objects.all()
+
+#         # Filter by semyear (case insensitive exact match)
+#         examinations = examinations.filter(semyear__iexact=semyear)
+
+#         # Filter other numeric parameters if valid
+#         for param in ['university', 'course', 'stream', 'substream']:
+#             value = locals()[param]
+#             if value and value.strip() != '':
+#                 if not value.isdigit():
+#                     return Response({"error": f"Invalid {param} parameter value."}, status=400)
+#                 examinations = examinations.filter(**{param: value.strip()})
+
+#         # Filter session and studypattern if provided
+#         if session and session.strip() != '':
+#             examinations = examinations.filter(session=session.strip())
+#         if studypattern and studypattern.strip() != '':
+#             examinations = examinations.filter(studypattern=studypattern.strip())
+
+#         # If substream is empty or None, filter exams with substream NULL
+#         if not substream or substream.strip() == '':
+#             examinations = examinations.filter(substream__isnull=True)
+
+#         serializer = ExaminationSerializer(examinations, many=True)
+#         return Response(serializer.data, status=200)
+
+#     except Exception as e:
+#         logger.error(f"Error occurred while fetching examinations: {str(e)}")
+#         return Response({"error": "An error occurred while processing your request."}, status=500)
+
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

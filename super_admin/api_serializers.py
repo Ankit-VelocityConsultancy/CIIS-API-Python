@@ -289,6 +289,8 @@ class StudentAppearingExamSerializer(serializers.ModelSerializer):
         ]
 
 class ExaminationSerializer(serializers.ModelSerializer):
+    subject_name = serializers.CharField(source='subject.name', read_only=True) 
+
     class Meta:
         model = Examination
         fields = [
@@ -296,6 +298,7 @@ class ExaminationSerializer(serializers.ModelSerializer):
             'studypattern',
             'semyear',
             'subject',
+            'subject_name',
             'examtype',
             'totalmarks',
             'passingmarks',
