@@ -37,116 +37,143 @@ def get_tokens_for_user(user):
         }
     
 
+
 # @api_view(['POST'])
 # def login_view(request):
-#     print('inside login view')
-#     if request.method == "POST":
-#         print('inside post')
-#         serializer = UserLoginSerializer(data=request.data)
-        
-#         if serializer.is_valid():
-#             email = serializer.validated_data.get("email")
-#             password = serializer.validated_data.get("password")
-#             user = authenticate(email=email, password=password)
+#     serializer = UserLoginSerializer(data=request.data)
+    
+#     if serializer.is_valid():
+#         email = serializer.validated_data.get("email")
+#         password = serializer.validated_data.get("password")
+#         user = authenticate(email=email, password=password)
 
-#             if user is not None:
-#                 loggedin_user = User.objects.get(email=email)
-#                 token = get_tokens_for_user(user)
-#                 print('emaillll', loggedin_user.email, loggedin_user.is_student)
+#         if user is not None:
+#             loggedin_user = user  # Already fetched by authenticate
+#             token = get_tokens_for_user(user)
 
-#                 if loggedin_user.is_student:
-#                     print('inside loggedin_user ', loggedin_user.is_student, loggedin_user.id)
-#                     try:
-#                         student = Student.objects.get(email=email)
-#                         exams = StudentAppearingExam.objects.filter(
-#                             student_id__contains=[student.id]
-#                         ).select_related('exam__course__university', 'exam__stream', 'exam__subject', 'exam__substream')
+#             if loggedin_user.is_student:
+#                 try:
+#                     student = Student.objects.get(email=email)
+#                     exams = StudentAppearingExam.objects.filter(
+#                         student_id__contains=[student.id]
+#                     ).select_related('exam__course__university', 'exam__stream', 'exam__subject', 'exam__substream')
+#                 except Student.DoesNotExist:
+#                     return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
 
-#                     except Student.DoesNotExist:
-#                         return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
-
-#                     if not exams.exists():
-#                         return Response({
-#                             "message": "Login Successful",
-#                             "token": token,
-#                             "is_student": True,
-#                             "email": user.email,
-#                             "is_active": user.is_active,
-#                         }, status=200)
-
-#                     exam_details = []
-#                     examination_data = []
-#                     university = None
-
-#                     for exam in exams:
-#                         try:
-#                             examination = exam.exam
-#                             university_obj = examination.course.university if examination.course and examination.course.university else None
-
-#                             # Add once (or overwrite safely each iteration)
-#                             if university_obj:
-#                                 university = {
-#                                     "id": university_obj.id,
-#                                     "name": university_obj.university_name,
-#                                     "city": university_obj.university_city,
-#                                     "state": university_obj.university_state,
-#                                     "pincode": university_obj.university_pincode,
-#                                     "logo": request.build_absolute_uri(university_obj.university_logo.url) if university_obj.university_logo else None
-#                                 }
-
-#                             exam_details.append({
-#                                 "exam_id": examination.id,
-#                                 "examstartdate": exam.examstartdate,
-#                                 "examenddate": exam.examenddate,
-#                                 "examstarttime": exam.examstarttime,
-#                                 "examendtime": exam.examendtime
-#                             })
-
-#                             examination_data.append({
-#                                 "id": examination.id,
-#                                 "course_id": examination.course.id,
-#                                 "stream_id": examination.stream.id,
-#                                 "subject_id": examination.subject.id,
-#                                 "studypattern": examination.studypattern,
-#                                 "semyear": examination.semyear,
-#                                 "substream_id": examination.substream.id if examination.substream else None,
-#                                 "course_name": examination.course.name,
-#                                 "stream_name": examination.stream.name,
-#                                 "subject_name": examination.subject.name,
-#                                 "substream_name": examination.substream.name if examination.substream else None
-#                             })
-
-#                         except Examination.DoesNotExist:
-#                             logger.error(f"Examination for exam_id {exam.id} does not exist. Skipping this exam.")
-#                             continue
-
+#                 if not exams.exists():
 #                     return Response({
 #                         "message": "Login Successful",
+#                         "token": token,
 #                         "is_student": True,
-#                         "token": token,
-#                         "student_id": student.id,                        
-#                         "student_name": student.name,  
-#                         "university_logo": university["logo"] if university else None,
-#                         "exam_details": exam_details,
-#                         "examination_data": examination_data,
-#                         "university": university  # Include university in response
-#                     }, status=200)
-
-#                 else:
-#                     return Response({
-#                         "message": "Login Successful",
-#                         "token": token,
-#                         "is_student": False,
 #                         "email": user.email,
 #                         "is_active": user.is_active,
-#                         "user_id": loggedin_user.id,
-#                     }, status=200)
+#                     }, status=status.HTTP_200_OK)
+
+#                 exam_details = []
+#                 examination_data = []
+#                 university = None
+#                 exam_progress = []
+
+#                 for exam in exams:
+#                     try:
+#                         examination = exam.exam
+#                         university_obj = examination.course.university if examination.course and examination.course.university else None
+
+#                         if university_obj:
+#                             university = {
+#                                 "id": university_obj.id,
+#                                 "name": university_obj.university_name,
+#                                 "city": university_obj.university_city,
+#                                 "state": university_obj.university_state,
+#                                 "pincode": university_obj.university_pincode,
+#                                 "logo": request.build_absolute_uri(university_obj.university_logo.url) if university_obj.university_logo else None
+#                             }
+
+#                         exam_details.append({
+#                             "exam_id": examination.id,
+#                             "examstartdate": exam.examstartdate,
+#                             "examenddate": exam.examenddate,
+#                             "examstarttime": exam.examstarttime,
+#                             "examendtime": exam.examendtime
+#                         })
+
+#                         examination_data.append({
+#                             "id": examination.id,
+#                             "course_id": examination.course.id,
+#                             "stream_id": examination.stream.id,
+#                             "subject_id": examination.subject.id,
+#                             "studypattern": examination.studypattern,
+#                             "semyear": examination.semyear,
+#                             "substream_id": examination.substream.id if examination.substream else None,
+#                             "course_name": examination.course.name,
+#                             "stream_name": examination.stream.name,
+#                             "subject_name": examination.subject.name,
+#                             "substream_name": examination.substream.name if examination.substream else None
+#                         })
+
+#                         # Get ExamSession for time left
+#                         exam_session = ExamSession.objects.filter(student=student, exam=examination).first()
+#                         time_left_ms = exam_session.time_left_ms if exam_session else None
+
+#                         # Get answered question IDs for this exam
+#                         answered_questions_qs = SubmittedExamination.objects.filter(student=student, exam=examination)
+#                         answered_questions = list(answered_questions_qs.values_list('question', flat=True))
+
+#                         # Find last answered question id (max)
+#                         last_answered_question_id = None
+#                         if answered_questions:
+#                             try:
+#                                 last_answered_question_id = max(int(q) for q in answered_questions if q.isdigit())
+#                             except Exception:
+#                                 last_answered_question_id = None
+
+#                         exam_progress.append({
+#                             "exam_id": examination.id,
+#                             "time_left_ms": time_left_ms,
+#                             "answered_questions": answered_questions,
+#                             "last_answered_question_id": last_answered_question_id,
+#                         })
+
+#                     except Examination.DoesNotExist:
+#                         logger.error(f"Examination for exam_id {exam.id} does not exist. Skipping.")
+#                         continue
+
+#                 return Response({
+#                     "message": "Login Successful",
+#                     "is_student": True,
+#                     "token": token,
+#                     "student_id": student.id,
+#                     "student_name": student.name,
+#                     "university_logo": university["logo"] if university else None,
+#                     "exam_details": exam_details,
+#                     "examination_data": examination_data,
+#                     "university": university,
+#                     "exam_progress": exam_progress,  # <-- New field for frontend resume
+#                 }, status=status.HTTP_200_OK)
 
 #             else:
-#                 return Response({"error": "Invalid Credentials"}, status=400)
+#                 return Response({
+#                     "message": "Login Successful",
+#                     "token": token,
+#                     "is_student": False,
+#                     "email": user.email,
+#                     "is_active": user.is_active,
+#                     "user_id": loggedin_user.id,
+#                 }, status=status.HTTP_200_OK)
 
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         else:
+#             return Response({"error": "Invalid Credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth import authenticate
+import logging
+
+logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 def login_view(request):
@@ -158,15 +185,19 @@ def login_view(request):
         user = authenticate(email=email, password=password)
 
         if user is not None:
-            loggedin_user = user  # Already fetched by authenticate
             token = get_tokens_for_user(user)
 
-            if loggedin_user.is_student:
+            if user.is_student:
                 try:
                     student = Student.objects.get(email=email)
                     exams = StudentAppearingExam.objects.filter(
                         student_id__contains=[student.id]
-                    ).select_related('exam__course__university', 'exam__stream', 'exam__subject', 'exam__substream')
+                    ).select_related(
+                        'exam__course__university', 
+                        'exam__stream', 
+                        'exam__subject', 
+                        'exam__substream'
+                    )
                 except Student.DoesNotExist:
                     return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -200,6 +231,7 @@ def login_view(request):
                             }
 
                         exam_details.append({
+                            "id": exam.id,
                             "exam_id": examination.id,
                             "examstartdate": exam.examstartdate,
                             "examenddate": exam.examenddate,
@@ -221,15 +253,15 @@ def login_view(request):
                             "substream_name": examination.substream.name if examination.substream else None
                         })
 
-                        # Get ExamSession for time left
+                        # ExamSession time left
                         exam_session = ExamSession.objects.filter(student=student, exam=examination).first()
                         time_left_ms = exam_session.time_left_ms if exam_session else None
 
-                        # Get answered question IDs for this exam
+                        # Submitted answers
                         answered_questions_qs = SubmittedExamination.objects.filter(student=student, exam=examination)
                         answered_questions = list(answered_questions_qs.values_list('question', flat=True))
 
-                        # Find last answered question id (max)
+                        # Last answered question id
                         last_answered_question_id = None
                         if answered_questions:
                             try:
@@ -248,6 +280,24 @@ def login_view(request):
                         logger.error(f"Examination for exam_id {exam.id} does not exist. Skipping.")
                         continue
 
+                # Fetch all Result records for this student filtered by student
+                result_qs = Result.objects.filter(student=student)
+
+                result_data = []
+                for res in result_qs:
+                    result_data.append({
+                        "id": res.id,
+                        "student_id": res.student.id,  # Added student_id here
+                        "exam_id": res.exam.id if res.exam else None,
+                        "total_question": res.total_question,
+                        "attempted": res.attempted,
+                        "total_marks": res.total_marks,
+                        "score": res.score,
+                        "result": res.result,
+                        "percentage": res.percentage,
+                        "examdetails_id": res.examdetails.id if res.examdetails else None,
+                    })
+
                 return Response({
                     "message": "Login Successful",
                     "is_student": True,
@@ -258,7 +308,8 @@ def login_view(request):
                     "exam_details": exam_details,
                     "examination_data": examination_data,
                     "university": university,
-                    "exam_progress": exam_progress,  # <-- New field for frontend resume
+                    "exam_progress": exam_progress,
+                    "result_data": result_data,  # Included result data here
                 }, status=status.HTTP_200_OK)
 
             else:
@@ -268,13 +319,15 @@ def login_view(request):
                     "is_student": False,
                     "email": user.email,
                     "is_active": user.is_active,
-                    "user_id": loggedin_user.id,
+                    "user_id": user.id,
                 }, status=status.HTTP_200_OK)
 
         else:
             return Response({"error": "Invalid Credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
   
 @api_view(['GET', 'POST'])
@@ -4394,7 +4447,7 @@ def reassign_student(request):
 
     try:
         # Delete existing result for student and exam
-        Result.objects.filter(exam_id=exam_id, student_id=student_id).delete()
+        # Result.objects.filter(exam_id=exam_id, student_id=student_id).delete()
 
         # Create new StudentAppearingExam record
         new_exam = StudentAppearingExam(
@@ -6275,28 +6328,108 @@ def get_paid_fees(request):
         logger.error(f"Unexpected error: {str(e)}")
         return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# @api_view(['POST'])
+# def save_single_question_answer(request):
+#     try:
+#         data = request.data
+#         student_id = data.get("student_id")
+#         student_id = int(data.get("student_id"))
+#         exam_id = data.get("exam_id")
+#         question_id = data.get("question_id")
+#         submitted_answer = data.get("submitted_answer")
+
+#         print("student_idstudent_id",student_id ,exam_id)
+#         # Validation
+#         if not student_id or not exam_id or not question_id or submitted_answer is None:
+#             return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             question_instance = Questions.objects.get(id=question_id)
+#         except Questions.DoesNotExist:
+#             return Response({"error": f"Question ID {question_id} does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+#         # Get the latest StudentAppearingExam record for the student and exam
+#         try:
+#           exam_details_instance = StudentAppearingExam.objects.filter(
+#               student_id__contains=student_id,
+#               exam_id=exam_id
+#           ).order_by('-id').first()
+#           print('exam_details_instance',exam_details_instance)
+#         except StudentAppearingExam.DoesNotExist:
+#             return Response({"error": "StudentAppearingExam record not found"}, status=status.HTTP_404_NOT_FOUND)
+
+#         correct_answer = question_instance.answer.lower()
+#         marks = question_instance.marks
+
+#         if submitted_answer.lower() == correct_answer:
+#             result = "Right"
+#             marks_obtained = marks
+#         else:
+#             result = "Wrong"
+#             marks_obtained = "0"
+
+#         # Save or update the submitted answer with the examdetails_id
+#         submission, created = SubmittedExamination.objects.update_or_create(
+#             student_id=student_id,
+#             exam_id=exam_id,
+#             question=str(question_id),
+#             defaults={
+#                 "type": question_instance.type,
+#                 "marks": marks,
+#                 "marks_obtained": marks_obtained,
+#                 "submitted_answer": submitted_answer,
+#                 "answer": correct_answer,
+#                 "result": result,
+#                 "examdetails": exam_details_instance  # Save the latest examdetails_id here
+#             }
+#         )
+
+#         return Response({
+#             "message": "Answer updated successfully." if not created else "Answer submitted successfully.",
+#             "question_id": question_id,
+#             "result": result,
+#             "marks_obtained": marks_obtained,
+#         }, status=status.HTTP_200_OK)
+
+#     except Exception as e:
+#         logger.exception(f"An error occurred while saving answer: {str(e)}")
+#         return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# working 
 @api_view(['POST'])
 def save_single_question_answer(request):
     try:
         data = request.data
-        student_id = data.get("student_id")
-        exam_id = data.get("exam_id")
+
+        # Convert student_id and exam_id to int for proper filtering
+        try:
+            student_id = int(data.get("student_id"))
+            exam_id = int(data.get("exam_id"))
+        except (TypeError, ValueError):
+            return Response({"error": "Invalid student_id or exam_id. Must be integer."}, status=status.HTTP_400_BAD_REQUEST)
+
         question_id = data.get("question_id")
         submitted_answer = data.get("submitted_answer")
 
-        # Validation
+        print("student_idstudent_id", student_id, exam_id)
+
+        # Validate required fields
         if not student_id or not exam_id or not question_id or submitted_answer is None:
             return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Get question instance
         try:
             question_instance = Questions.objects.get(id=question_id)
         except Questions.DoesNotExist:
             return Response({"error": f"Question ID {question_id} does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
         # Get the latest StudentAppearingExam record for the student and exam
-        try:
-          exam_details_instance = StudentAppearingExam.objects.filter(student_id=student_id, exam_id=exam_id).order_by('-id').first()
-        except StudentAppearingExam.DoesNotExist:
+        exam_details_instance = StudentAppearingExam.objects.filter(
+            student_id__contains=[student_id],  # pass a list to match JSONField list
+            exam_id=exam_id
+        ).order_by('-id').first()
+
+        if not exam_details_instance:
             return Response({"error": "StudentAppearingExam record not found"}, status=status.HTTP_404_NOT_FOUND)
 
         correct_answer = question_instance.answer.lower()
@@ -6310,6 +6443,7 @@ def save_single_question_answer(request):
             marks_obtained = "0"
 
         # Save or update the submitted answer with the examdetails_id
+        # Note: use student_id and exam_id foreign keys correctly by using _id suffix
         submission, created = SubmittedExamination.objects.update_or_create(
             student_id=student_id,
             exam_id=exam_id,
@@ -6321,7 +6455,75 @@ def save_single_question_answer(request):
                 "submitted_answer": submitted_answer,
                 "answer": correct_answer,
                 "result": result,
-                "examdetails": exam_details_instance  # Save the latest examdetails_id here
+                "examdetails": exam_details_instance  # foreign key to StudentAppearingExam instance
+            }
+        )
+
+        return Response({
+            "message": "Answer updated successfully." if not created else "Answer submitted successfully.",
+            "question_id": question_id,
+            "result": result,
+            "marks_obtained": marks_obtained,
+        }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.exception(f"An error occurred while saving answer: {str(e)}")
+        return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def save_single_question_answer(request):
+    try:
+        data = request.data
+
+        # Convert student_id and exam_id to int for filtering
+        try:
+            student_id = int(data.get("student_id"))
+            exam_id = int(data.get("exam_id"))
+        except (TypeError, ValueError):
+            return Response({"error": "Invalid student_id or exam_id. Must be integer."}, status=status.HTTP_400_BAD_REQUEST)
+
+        question_id = data.get("question_id")
+        submitted_answer = data.get("submitted_answer")
+        exam_details_id = data.get("exam_details_id")  # NEW: get exam_details_id from request
+
+        if not student_id or not exam_id or not question_id or submitted_answer is None:
+            return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate question exists
+        try:
+            question_instance = Questions.objects.get(id=question_id)
+        except Questions.DoesNotExist:
+            return Response({"error": f"Question ID {question_id} does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Validate exam_details_id
+        try:
+            exam_details_instance = StudentAppearingExam.objects.get(id=int(exam_details_id))
+        except (StudentAppearingExam.DoesNotExist, ValueError, TypeError):
+            return Response({"error": "Invalid or missing exam_details_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        correct_answer = question_instance.answer.lower()
+        marks = question_instance.marks
+
+        if submitted_answer.lower() == correct_answer:
+            result = "Right"
+            marks_obtained = marks
+        else:
+            result = "Wrong"
+            marks_obtained = "0"
+
+        submission, created = SubmittedExamination.objects.update_or_create(
+            student_id=student_id,
+            exam_id=exam_id,
+            question=str(question_id),
+            examdetails=exam_details_instance,  # use passed exam_details_id here
+            defaults={
+                "type": question_instance.type,
+                "marks": marks,
+                "marks_obtained": marks_obtained,
+                "submitted_answer": submitted_answer,
+                "answer": correct_answer,
+                "result": result,
             }
         )
 
@@ -6415,56 +6617,6 @@ def document_management(request, enrollment_id):
         )
         
 
-# @api_view(["POST"])
-# def save_exam_timer(request):
-#     student_id = request.data.get("student_id")
-#     exam_id = request.data.get("exam_id")
-#     time_left_ms = request.data.get("time_left_ms")
-
-#     if not all([student_id, exam_id, time_left_ms]):
-#         return Response({"error": "Missing data"}, status=400)
-
-#     session, created = ExamSession.objects.get_or_create(
-#         student_id=student_id,
-#         exam_id=exam_id
-#     )
-#     session.time_left_ms = time_left_ms
-#     session.save()
-
-#     return Response({"status": "saved", "created": created})
-
-# @api_view(["POST"])
-# def save_exam_timer(request):
-#     student_id = request.data.get("student_id")
-#     exam_id = request.data.get("exam_id")
-#     time_left_ms = request.data.get("time_left_ms")
-
-#     if not all([student_id, exam_id, time_left_ms]):
-#         return Response({"error": "Missing data"}, status=400)
-
-#     try:
-#         # Get the StudentAppearingExam instance for linking
-#         examdetails_instance = StudentAppearingExam.objects.filter(
-#             student_id__contains=[int(student_id)],  # Use `student_id=student_id` if FK
-#             exam_id=exam_id
-#         ).order_by('-id').first()
-#     except StudentAppearingExam.DoesNotExist:
-#         return Response({"error": "Matching StudentAppearingExam not found"}, status=404)
-
-#     # Create or update the ExamSession
-#     session, created = ExamSession.objects.get_or_create(
-#         student_id=student_id,
-#         exam_id=exam_id,
-#         defaults={"examdetails": examdetails_instance}
-#     )
-
-#     session.time_left_ms = time_left_ms
-#     session.examdetails = examdetails_instance  # Ensure this is updated every time
-#     session.save()
-
-#     return Response({"status": "saved", "created": created})
-
-
 @api_view(["POST"])
 def save_exam_timer(request):
     student_id = request.data.get("student_id")
@@ -6472,39 +6624,59 @@ def save_exam_timer(request):
     time_left_ms = request.data.get("time_left_ms")
 
     if not all([student_id, exam_id, time_left_ms]):
-        return Response({"error": "Missing data"}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        examdetails_instance = StudentAppearingExam.objects.filter(
-            student_id__contains=[int(student_id)],
-            exam_id=exam_id
-        ).order_by('-id').first()
-
-        if not examdetails_instance:
-            return Response({"error": "Matching StudentAppearingExam not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    except Exception as e:
-        return Response({"error": f"Error fetching StudentAppearingExam: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        student_obj = Student.objects.get(id=student_id)
-        exam_obj = Examination.objects.get(id=exam_id)
-    except (Student.DoesNotExist, Examination.DoesNotExist) as e:
-        logger.error(f"Student or Exam not found: {str(e)}")
-        return Response({"error": "Student or Exam not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Missing data"}, status=400)
 
     session, created = ExamSession.objects.get_or_create(
-        student=student_obj,
-        exam=exam_obj,
-        defaults={"examdetails": examdetails_instance, "time_left_ms": time_left_ms}
+        student_id=student_id,
+        exam_id=exam_id
     )
-    if not created:
-        session.time_left_ms = time_left_ms
-        session.examdetails = examdetails_instance
-        session.save()
+    session.time_left_ms = time_left_ms
+    session.save()
 
-    return Response({"status": "saved", "created": created}, status=status.HTTP_200_OK)
-  
+    return Response({"status": "saved", "created": created})
+
+
+# @api_view(["POST"])
+# def save_exam_timer(request):
+#     student_id = request.data.get("student_id")
+#     exam_id = request.data.get("exam_id")
+#     time_left_ms = request.data.get("time_left_ms")
+
+#     if not all([student_id, exam_id, time_left_ms]):
+#         return Response({"error": "Missing data"}, status=status.HTTP_400_BAD_REQUEST)
+
+#     try:
+#         examdetails_instance = StudentAppearingExam.objects.filter(
+#             student_id__contains=[int(student_id)],
+#             exam_id=exam_id
+#         ).order_by('-id').first()
+
+#         if not examdetails_instance:
+#             return Response({"error": "Matching StudentAppearingExam not found"}, status=status.HTTP_404_NOT_FOUND)
+
+#     except Exception as e:
+#         return Response({"error": f"Error fetching StudentAppearingExam: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+#     try:
+#         student_obj = Student.objects.get(id=student_id)
+#         exam_obj = Examination.objects.get(id=exam_id)
+#     except (Student.DoesNotExist, Examination.DoesNotExist) as e:
+#         logger.error(f"Student or Exam not found: {str(e)}")
+#         return Response({"error": "Student or Exam not found"}, status=status.HTTP_404_NOT_FOUND)
+
+#     session, created = ExamSession.objects.get_or_create(
+#         student=student_obj,
+#         exam=exam_obj,
+#         defaults={"examdetails": examdetails_instance, "time_left_ms": time_left_ms}
+#     )
+#     if not created:
+#         session.time_left_ms = time_left_ms
+#         session.examdetails = examdetails_instance
+#         session.save()
+
+#     return Response({"status": "saved", "created": created}, status=status.HTTP_200_OK)
+
+
 @api_view(["GET"])
 def get_exam_timer(request):
   student_id = request.query_params.get("student_id")
@@ -6516,87 +6688,129 @@ def get_exam_timer(request):
   except ExamSession.DoesNotExist:
       return Response({"time_left_ms": None})
     
+# @api_view(["GET"])
+# def get_exam_timer(request):
+#     student_id = request.query_params.get("student_id")
+#     exam_id = request.query_params.get("exam_id")
+#     exam_details_id = request.query_params.get("exam_details_id")  # new
+
+#     if not all([student_id, exam_id, exam_details_id]):
+#         return Response({"error": "Missing required parameters"}, status=400)
+
+#     try:
+#         session = ExamSession.objects.get(
+#             student_id=student_id,
+#             exam_id=exam_id,
+#             examdetails_id=exam_details_id  # filter by exam_details_id
+#         )
+#         return Response({"time_left_ms": session.time_left_ms})
+#     except ExamSession.DoesNotExist:
+#         return Response({"time_left_ms": None})
     
+
+
+
 
 @api_view(['POST'])
 def save_result_after_exam(request):
     """
-    Save the result after an exam is finished. This includes saving answers for skipped questions as "NA"
-    and linking to the examdetails_id from the latest StudentAppearingExam record.
+    Save the result after an exam is finished.
+    Use provided exam_details_id instead of latest.
     """
     try:
         data = request.data
         student_id = data.get("student_id")
         exam_id = data.get("exam_id")
+        exam_details_id = data.get("exam_details_id")  # <-- new param
+        created_by = data.get("created_by", None)
+        modified_by = data.get("modified_by", None)
 
-        print("student_id exam_id ",student_id,exam_id)
-        # Check for required fields
         if not student_id or not exam_id:
             return Response({"error": "Missing required fields: student_id or exam_id"}, 
                             status=status.HTTP_400_BAD_REQUEST)
 
-        # Get the latest StudentAppearingExam instance for the student and exam
         try:
-          examdetails_instance = StudentAppearingExam.objects.filter(student_id__contains=[int(student_id)], exam_id=exam_id).order_by('-id').first()
+            student_id_int = int(student_id)
+            exam_id_int = int(exam_id)
+        except (TypeError, ValueError):
+            return Response({"error": "Invalid student_id or exam_id"}, status=status.HTTP_400_BAD_REQUEST)
 
-            
-        except StudentAppearingExam.DoesNotExist:
-            return Response({"error": "No StudentAppearingExam record found for the given student and exam."},
+        examdetails_instance = None
+        if exam_details_id:
+            try:
+                exam_details_id_int = int(exam_details_id)
+                examdetails_instance = StudentAppearingExam.objects.get(id=exam_details_id_int)
+            except (ValueError, StudentAppearingExam.DoesNotExist):
+                return Response({"error": "Invalid exam_details_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not examdetails_instance:
+            # fallback: get latest
+            examdetails_instance = StudentAppearingExam.objects.filter(
+                student_id__contains=[student_id_int],
+                exam_id=exam_id_int
+            ).order_by('-id').first()
+
+        if not examdetails_instance:
+            return Response({"error": "No StudentAppearingExam record found for given student and exam."},
                             status=status.HTTP_404_NOT_FOUND)
 
-        # Get all questions for the exam
-        questions = Questions.objects.filter(exam_id=exam_id)
+
+        questions = Questions.objects.filter(exam_id=exam_id_int)
 
         for question in questions:
-            # Check if the student has already submitted an answer for the question
-            submitted_answer = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id, question=str(question.id)).order_by('-id').first()
+            submitted_answer = SubmittedExamination.objects.filter(
+                student_id=student_id_int,
+                exam_id=exam_id_int,
+                question=str(question.id),
+                examdetails=examdetails_instance
+            ).order_by('-id').first()
 
             if not submitted_answer:
-                result = "Wrong"
-                marks_obtained = "0"
                 SubmittedExamination.objects.create(
-                    student_id=student_id,
-                    exam_id=exam_id,
+                    student_id=student_id_int,
+                    exam_id=exam_id_int,
                     question=str(question.id),
                     type=question.type,
                     marks=question.marks,
-                    marks_obtained=marks_obtained,
-                    submitted_answer="NA",  # Skipped question
+                    marks_obtained="0",
+                    submitted_answer="NA",
                     answer=question.answer,
-                    result=result,
-                    examdetails_id=examdetails_instance.id  # Save the latest examdetails_id
+                    result="Wrong",
+                    examdetails=examdetails_instance
                 )
-            else:
-                continue
 
-        # After saving all data, calculate and update the result
         total_questions = questions.count()
-        attempted = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id).count()
-        score = SubmittedExamination.objects.filter(student_id=student_id, exam_id=exam_id, result="Right").count()
-        total_marks = questions.aggregate(Sum('marks'))['marks__sum']
+        attempted = SubmittedExamination.objects.filter(
+            student_id=student_id_int, 
+            exam_id=exam_id_int,
+            examdetails=examdetails_instance
+        ).count()
+        score = SubmittedExamination.objects.filter(
+            student_id=student_id_int, 
+            exam_id=exam_id_int, 
+            result="Right",
+            examdetails=examdetails_instance
+        ).count()
+        total_marks = questions.aggregate(Sum('marks'))['marks__sum'] or 0
 
-        # Get passing marks from the Examination table
-        exam = Examination.objects.get(id=exam_id)
+        exam = Examination.objects.get(id=exam_id_int)
         passing_marks = int(exam.passingmarks or 50)
+        percentage = (score / total_questions) * 100 if total_questions > 0 else 0
+        result_status = "Passed" if percentage >= passing_marks else "Failed"
 
-        # Calculate percentage
-        percentage = (score / total_questions) * 100
-
-        # Check if passed
-        result = "Passed" if percentage >= passing_marks else "Failed"
-
-        # Create or update the result entry
         result_obj, created = Result.objects.update_or_create(
-            student_id=student_id,
-            exam_id=exam_id,
-            examdetails_id=examdetails_instance.id,
+            student_id=student_id_int,
+            exam_id=exam_id_int,
+            examdetails=examdetails_instance,
             defaults={
-                'total_question': total_questions,
-                'attempted': attempted,
-                'total_marks': total_marks,
-                'score': score,
-                'result': result,
-                'percentage': percentage
+                'total_question': str(total_questions),
+                'attempted': str(attempted),
+                'total_marks': str(total_marks),
+                'score': str(score),
+                'result': result_status,
+                'percentage': percentage,
+                'created_by': created_by,
+                'modified_by': modified_by,
             }
         )
 
@@ -6606,9 +6820,8 @@ def save_result_after_exam(request):
         }, status=status.HTTP_200_OK)
 
     except Exception as e:
-        logger.exception(f"An error occurred while saving the exam result: {str(e)}")
-        return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        logger.exception(f"Error saving exam result: {str(e)}")
+        return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
@@ -6635,6 +6848,40 @@ def check_exam_result(request):
     except Exception as e:
         logger.exception(f"An error occurred while checking exam result: {str(e)}")
         return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+@api_view(['GET'])
+def check_exam_result(request):
+    """
+    Check if a result has been created for a student, exam, and specific examdetails (StudentAppearingExam).
+    """
+    try:
+        student_id = request.query_params.get("student_id")
+        exam_id = request.query_params.get("exam_id")
+        examdetails_id = request.query_params.get("examdetails_id")
+
+        # Validate presence
+        if not student_id or not exam_id or not examdetails_id:
+            return Response({"error": "Missing required fields: student_id, exam_id or examdetails_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Convert to integers safely
+        try:
+            student_id_int = int(student_id)
+            exam_id_int = int(exam_id)
+            examdetails_id_int = int(examdetails_id)
+        except ValueError:
+            return Response({"error": "student_id, exam_id and examdetails_id must be integers"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Filter with typed parameters
+        result_exists = Result.objects.filter(
+            student_id=student_id_int,
+            exam_id=exam_id_int,
+            examdetails_id=examdetails_id_int
+        ).exists()
+
+        return Response({"has_result": result_exists}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.exception(f"Error checking exam result: {str(e)}")
+        return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)  
 
 
 @api_view(['GET'])
@@ -6887,10 +7134,11 @@ def update_color(request, pk):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
-def sync_answers(request):
+# @api_view(['GET'])
+# def sync_answers(request):
     student_id = request.query_params.get("student_id")
     exam_id = request.query_params.get("exam_id")
+    exam_details_id = request.query_params.get("exam_details_id")
 
     if not student_id or not exam_id:
         return Response({"error": "Missing student_id or exam_id"}, status=status.HTTP_400_BAD_REQUEST)
@@ -6898,6 +7146,7 @@ def sync_answers(request):
     try:
         student_obj = Student.objects.get(id=student_id)
         exam_obj = Examination.objects.get(id=exam_id)
+        
     except (Student.DoesNotExist, Examination.DoesNotExist):
         return Response({"error": "Student or Exam not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -6915,6 +7164,39 @@ def sync_answers(request):
 
     return Response({"answers": answer_dict}, status=status.HTTP_200_OK)
   
+  
+@api_view(['GET'])
+def sync_answers(request):
+    student_id = request.query_params.get("student_id")
+    exam_id = request.query_params.get("exam_id")
+    exam_details_id = request.query_params.get("exam_details_id")  # new param
+
+    if not student_id or not exam_id or not exam_details_id:
+        return Response({"error": "Missing student_id, exam_id, or exam_details_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        student_obj = Student.objects.get(id=student_id)
+        exam_obj = Examination.objects.get(id=exam_id)
+        exam_details_obj = StudentAppearingExam.objects.get(id=exam_details_id)
+    except (Student.DoesNotExist, Examination.DoesNotExist, StudentAppearingExam.DoesNotExist):
+        return Response({"error": "Student, Exam, or Exam Details not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    submitted_answers = SubmittedExamination.objects.filter(
+        student=student_obj,
+        exam=exam_obj,
+        examdetails=exam_details_obj
+    )
+
+    answer_dict = {}
+    for ans in submitted_answers:
+        try:
+            question_id_int = int(ans.question)
+            answer_dict[question_id_int] = ans.submitted_answer
+        except (ValueError, TypeError):
+            continue
+
+    return Response({"answers": answer_dict}, status=status.HTTP_200_OK)
+
   
 
 @api_view(['POST'])
