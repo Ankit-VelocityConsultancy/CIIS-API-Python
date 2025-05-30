@@ -37,136 +37,6 @@ def get_tokens_for_user(user):
         }
     
 
-
-# @api_view(['POST'])
-# def login_view(request):
-#     serializer = UserLoginSerializer(data=request.data)
-    
-#     if serializer.is_valid():
-#         email = serializer.validated_data.get("email")
-#         password = serializer.validated_data.get("password")
-#         user = authenticate(email=email, password=password)
-
-#         if user is not None:
-#             loggedin_user = user  # Already fetched by authenticate
-#             token = get_tokens_for_user(user)
-
-#             if loggedin_user.is_student:
-#                 try:
-#                     student = Student.objects.get(email=email)
-#                     exams = StudentAppearingExam.objects.filter(
-#                         student_id__contains=[student.id]
-#                     ).select_related('exam__course__university', 'exam__stream', 'exam__subject', 'exam__substream')
-#                 except Student.DoesNotExist:
-#                     return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
-
-#                 if not exams.exists():
-#                     return Response({
-#                         "message": "Login Successful",
-#                         "token": token,
-#                         "is_student": True,
-#                         "email": user.email,
-#                         "is_active": user.is_active,
-#                     }, status=status.HTTP_200_OK)
-
-#                 exam_details = []
-#                 examination_data = []
-#                 university = None
-#                 exam_progress = []
-
-#                 for exam in exams:
-#                     try:
-#                         examination = exam.exam
-#                         university_obj = examination.course.university if examination.course and examination.course.university else None
-
-#                         if university_obj:
-#                             university = {
-#                                 "id": university_obj.id,
-#                                 "name": university_obj.university_name,
-#                                 "city": university_obj.university_city,
-#                                 "state": university_obj.university_state,
-#                                 "pincode": university_obj.university_pincode,
-#                                 "logo": request.build_absolute_uri(university_obj.university_logo.url) if university_obj.university_logo else None
-#                             }
-
-#                         exam_details.append({
-#                             "exam_id": examination.id,
-#                             "examstartdate": exam.examstartdate,
-#                             "examenddate": exam.examenddate,
-#                             "examstarttime": exam.examstarttime,
-#                             "examendtime": exam.examendtime
-#                         })
-
-#                         examination_data.append({
-#                             "id": examination.id,
-#                             "course_id": examination.course.id,
-#                             "stream_id": examination.stream.id,
-#                             "subject_id": examination.subject.id,
-#                             "studypattern": examination.studypattern,
-#                             "semyear": examination.semyear,
-#                             "substream_id": examination.substream.id if examination.substream else None,
-#                             "course_name": examination.course.name,
-#                             "stream_name": examination.stream.name,
-#                             "subject_name": examination.subject.name,
-#                             "substream_name": examination.substream.name if examination.substream else None
-#                         })
-
-#                         # Get ExamSession for time left
-#                         exam_session = ExamSession.objects.filter(student=student, exam=examination).first()
-#                         time_left_ms = exam_session.time_left_ms if exam_session else None
-
-#                         # Get answered question IDs for this exam
-#                         answered_questions_qs = SubmittedExamination.objects.filter(student=student, exam=examination)
-#                         answered_questions = list(answered_questions_qs.values_list('question', flat=True))
-
-#                         # Find last answered question id (max)
-#                         last_answered_question_id = None
-#                         if answered_questions:
-#                             try:
-#                                 last_answered_question_id = max(int(q) for q in answered_questions if q.isdigit())
-#                             except Exception:
-#                                 last_answered_question_id = None
-
-#                         exam_progress.append({
-#                             "exam_id": examination.id,
-#                             "time_left_ms": time_left_ms,
-#                             "answered_questions": answered_questions,
-#                             "last_answered_question_id": last_answered_question_id,
-#                         })
-
-#                     except Examination.DoesNotExist:
-#                         logger.error(f"Examination for exam_id {exam.id} does not exist. Skipping.")
-#                         continue
-
-#                 return Response({
-#                     "message": "Login Successful",
-#                     "is_student": True,
-#                     "token": token,
-#                     "student_id": student.id,
-#                     "student_name": student.name,
-#                     "university_logo": university["logo"] if university else None,
-#                     "exam_details": exam_details,
-#                     "examination_data": examination_data,
-#                     "university": university,
-#                     "exam_progress": exam_progress,  # <-- New field for frontend resume
-#                 }, status=status.HTTP_200_OK)
-
-#             else:
-#                 return Response({
-#                     "message": "Login Successful",
-#                     "token": token,
-#                     "is_student": False,
-#                     "email": user.email,
-#                     "is_active": user.is_active,
-#                     "user_id": loggedin_user.id,
-#                 }, status=status.HTTP_200_OK)
-
-#         else:
-#             return Response({"error": "Invalid Credentials"}, status=status.HTTP_400_BAD_REQUEST)
-
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -3959,9 +3829,6 @@ def send_exam_email(subject, message, recipient_list):
 
 @api_view(['POST'])
 def resend_exam_email(request):
-    """
-    Resend exam details email to a student with additional details from request.
-    """
     data = request.data
     student_id = data.get("studentid")
     exam_id = data.get("examid")
@@ -3970,7 +3837,6 @@ def resend_exam_email(request):
     exam_start_time = data.get("examstarttime")
     exam_end_time = data.get("examendtime")
 
-    # Validate required fields
     if not all([student_id, exam_id, exam_start_date, exam_end_date, exam_start_time, exam_end_time]):
         logger.error("Required fields are missing in the request.")
         return Response(
@@ -3979,14 +3845,14 @@ def resend_exam_email(request):
         )
 
     try:
-        # Fetch student and exam details
         student = Student.objects.get(id=int(student_id))
         exam = Examination.objects.get(id=int(exam_id))
         subject = Subject.objects.get(id=exam.subject_id)
 
-        # Email content
-        email_subject = "BTU Examination - Exam Details"
-        login_url = f"{settings.DOMAIN_NAME}/examination_login/"
+        university_name = student.university.university_name if student.university else "Your University"
+
+        email_subject = f"{university_name} Examination - Exam Details"
+        login_url = f"{settings.DOMAIN_NAME}"
         email_message = f"""Dear {student.name},
 
 Your examination details are as follows:
@@ -4005,15 +3871,12 @@ Click here to log in:
 {login_url}
 
 Best regards,
-BTU Examination Team
-        """
+{university_name} Examination Team
+"""
 
-        # Send email in a separate thread
         Thread(target=send_exam_email, args=(email_subject, email_message, [student.email])).start()
-        #logger.info(f"Resend email triggered for student {student.email}.")
 
         return Response({"message": "Email resent successfully."}, status=status.HTTP_200_OK)
-
     except Student.DoesNotExist:
         logger.error(f"Student with ID {student_id} does not exist.")
         return Response({"error": "Invalid student ID."}, status=status.HTTP_400_BAD_REQUEST)
@@ -4080,7 +3943,7 @@ def save_exam_details(request):
                             messages.append(f"Exam details saved successfully for {student_instance.name}")
 
                             email_subject = "Examination Details"
-                            login_url = f"{settings.DOMAIN_NAME}/examination_login/"
+                            login_url = f"{settings.DOMAIN_NAME}"
                             email_message = f"""
                             Dear {student_instance.name},
 
@@ -4348,17 +4211,14 @@ def set_exam_for_subject(request):
         logger.error(f"Unexpected error: {str(e)}")
         return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
       
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def delete_exam_for_student(request):
     try:
-        # Check user permissions
-        if not (request.user.is_superuser or request.user.is_data_entry):
+        if not (request.user.is_superuser or getattr(request.user, 'is_data_entry', False)):
             logger.warning(f"User {request.user} attempted unauthorized access to recall_exam_for_student.")
             return Response({"error": "You do not have permission to perform this action."}, status=403)
         
-        # Extract request data
         student_id = request.data.get("studentid")
         exam_id = request.data.get("examid")
         
@@ -4366,7 +4226,6 @@ def delete_exam_for_student(request):
             logger.error("Missing required fields: studentid or examid.")
             return Response({"error": "Both studentid and examid are required."}, status=400)
         
-        # Retrieve the exam and student records
         get_exam_data = StudentAppearingExam.objects.filter(id=exam_id).first()
         student = Student.objects.filter(id=student_id).first()
         
@@ -4378,32 +4237,26 @@ def delete_exam_for_student(request):
             logger.error(f"Student record with id {student_id} not found.")
             return Response({"error": "Student record not found."}, status=404)
         
-        # Process student removal from exam
         list_of_students = get_exam_data.student_id
-        #logger.info(f"Original student list for exam {exam_id}: {list_of_students}")
         
         if isinstance(list_of_students, list) and int(student_id) in list_of_students:
+            university_name = student.university.university_name if student.university else "Your University"
+            
             if len(list_of_students) > 1:
-                # Remove the specific student_id from the list
                 list_of_students.remove(int(student_id))
                 get_exam_data.student_id = list_of_students
                 get_exam_data.save()
-                #logger.info(f"Updated student list for exam {exam_id}: {list_of_students}")
                 
-                # Send email notification
-                email_subject = "BTU Examination - Recall of Exam"
-                email_message = "An exam incorrectly assigned to you has been recalled."
+                email_subject = f"{university_name} Examination - Recall of Exam"
+                email_message = f"An exam incorrectly assigned to you has been recalled by {university_name}."
                 Thread(target=send_exam_email, args=(email_subject, email_message, [student.email])).start()
                 
                 return Response({"message": "Exam recalled for the student."}, status=200)
             else:
-                # Delete the exam record if only one student remains
                 get_exam_data.delete()
-                #logger.info(f"Exam record {exam_id} deleted as only one student was present.")
                 
-                # Send email notification
-                email_subject = "BTU Examination - Recall of Exam"
-                email_message = "An exam incorrectly assigned to you has been recalled."
+                email_subject = f"{university_name} Examination - Recall of Exam"
+                email_message = f"An exam incorrectly assigned to you has been recalled by {university_name}."
                 Thread(target=send_exam_email, args=(email_subject, email_message, [student.email])).start()
                 
                 return Response({"message": "Exam recalled and record deleted as only one student was present."}, status=200)
@@ -4414,10 +4267,11 @@ def delete_exam_for_student(request):
         logger.error(f"Unexpected error in recall_exam_for_student: {str(e)}")
         return Response({"error": "An unexpected error occurred."}, status=500)
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def reassign_student(request):
-    if not (request.user.is_superuser or hasattr(request.user, 'is_data_entry') and request.user.is_data_entry):
+    if not (request.user.is_superuser or (hasattr(request.user, 'is_data_entry') and request.user.is_data_entry)):
         logger.warning(f"Unauthorized access attempt by user {request.user.id}")
         return Response({"message": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
@@ -4429,10 +4283,7 @@ def reassign_student(request):
     exam_start_date = data.get("examstartdate")
     exam_end_date = data.get("examenddate")
 
-    #logger.info(f"Reassigning exam {exam_id} for student {student_id}")
-
     try:
-        # Validate and retrieve exam
         exam = Examination.objects.get(id=int(exam_id))
         subject = Subject.objects.get(id=exam.subject_id)
     except Examination.DoesNotExist:
@@ -4446,10 +4297,6 @@ def reassign_student(request):
         return Response({"message": "Exam ID must be a valid integer."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        # Delete existing result for student and exam
-        # Result.objects.filter(exam_id=exam_id, student_id=student_id).delete()
-
-        # Create new StudentAppearingExam record
         new_exam = StudentAppearingExam(
             exam=exam,
             examstartdate=exam_start_date,
@@ -4459,13 +4306,15 @@ def reassign_student(request):
             student_id=[int(student_id)]
         )
         new_exam.save()
-        #logger.info(f"Exam {exam_id} reassigned successfully for student {student_id}.")
 
-        # Send email notification to student
         student = Student.objects.get(id=student_id)
-        email_subject = "BTU Examination - Reassign of Exam"
-        login_url = f"{settings.DOMAIN_NAME}/examination_login/"
-        email_message = f"""Your exam for {subject.name} has been reassigned. Please find the new details:
+        university_name = student.university.university_name if student.university else "Your University"
+
+        email_subject = f"{university_name} Examination - Reassign of Exam"
+        login_url = f"{settings.DOMAIN_NAME}"
+        email_message = f"""Dear {student.name},
+
+Your exam for {subject.name} has been reassigned by {university_name}. Please find the new details:
 
 Exam Start Date: {exam_start_date}
 Exam End Date: {exam_end_date}
@@ -4479,9 +4328,8 @@ Password: {student.mobile}
 
 Click on the link to Login:
 {login_url}
-        """
+"""
         Thread(target=send_exam_email, args=(email_subject, email_message, [student.email])).start()
-        #logger.info(f"Notification email sent to student {student.email}.")
 
         return Response({"message": "Exam reassigned successfully."}, status=status.HTTP_200_OK)
     except Student.DoesNotExist:
@@ -4490,93 +4338,6 @@ Click on the link to Login:
     except Exception as e:
         logger.exception(f"Error occurred while reassigning exam: {e}")
         return Response({"message": "An error occurred while reassigning the exam."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def reassign_student(request):
-#     if not (request.user.is_superuser or hasattr(request.user, 'is_data_entry') and request.user.is_data_entry):
-#         logger.warning(f"Unauthorized access attempt by user {request.user.id}")
-#         return Response({"message": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
-
-#     data = request.data
-#     student_id = data.get("studentid")
-#     exam_id = data.get("examid")
-#     exam_start_time = data.get("examstarttime")
-#     exam_end_time = data.get("examendtime")
-#     exam_start_date = data.get("examstartdate")
-#     exam_end_date = data.get("examenddate")
-
-#     #logger.info(f"Reassigning exam {exam_id} for student {student_id}")
-
-#     try:
-#         # Validate and retrieve exam
-#         exam = Examination.objects.get(id=int(exam_id))
-#         subject = Subject.objects.get(id=exam.subject_id)
-#     except Examination.DoesNotExist:
-#         logger.error(f"Examination with ID {exam_id} does not exist.")
-#         return Response({"message": "Invalid exam ID."}, status=status.HTTP_400_BAD_REQUEST)
-#     except Subject.DoesNotExist:
-#         logger.error(f"Subject for exam ID {exam_id} does not exist.")
-#         return Response({"message": "Invalid subject for the given exam."}, status=status.HTTP_400_BAD_REQUEST)
-#     except ValueError as e:
-#         logger.error(f"Invalid exam ID: {exam_id}. Error: {e}")
-#         return Response({"message": "Exam ID must be a valid integer."}, status=status.HTTP_400_BAD_REQUEST)
-
-#     try:
-#         # Delete existing result for student and exam
-#         Result.objects.filter(exam_id=exam_id, student_id=student_id).delete()
-
-#         # Fetch the latest attempt for this exam and student
-#         latest_attempt = (
-#             StudentAppearingExam.objects.filter(exam=exam, student_id__contains=[int(student_id)])
-#             .order_by("-attempt")
-#             .first()
-#         )
-#         next_attempt = latest_attempt.attempt + 1 if latest_attempt else 1
-
-#         # Create new StudentAppearingExam record
-#         new_exam = StudentAppearingExam(
-#             exam=exam,
-#             examstartdate=exam_start_date,
-#             examenddate=exam_end_date,
-#             examstarttime=exam_start_time,
-#             examendtime=exam_end_time,
-#             student_id=[int(student_id)],
-#             attempt=next_attempt,
-#         )
-#         new_exam.save()
-#         #logger.info(f"Exam {exam_id} reassigned successfully for student {student_id} with attempt {next_attempt}.")
-
-#         # Send email notification to student
-#         student = Student.objects.get(id=student_id)
-#         email_subject = "BTU Examination - Reassign of Exam"
-#         login_url = f"{settings.DOMAIN_NAME}/examination_login/"
-#         email_message = f"""Your exam for {subject.name} has been reassigned. Please find the new details:
-
-# Exam Start Date: {exam_start_date}
-# Exam End Date: {exam_end_date}
-# Exam Start Time: {exam_start_time}
-# Exam End Time: {exam_end_time}
-
-# Enter Email ID & Password in the link below:
-
-# Email: {student.email}
-# Password: {student.mobile}
-
-# Click on the link to Login:
-# {login_url}
-#         """
-#         Thread(target=send_exam_email, args=(email_subject, email_message, [student.email])).start()
-#         #logger.info(f"Notification email sent to student {student.email}.")
-
-#         return Response({"message": "Exam reassigned successfully."}, status=status.HTTP_200_OK)
-#     except Student.DoesNotExist:
-#         logger.error(f"Student with ID {student_id} does not exist.")
-#         return Response({"message": "Invalid student ID."}, status=status.HTTP_400_BAD_REQUEST)
-#     except Exception as e:
-#         logger.exception(f"Error occurred while reassigning exam: {e}")
-#         return Response({"message": "An error occurred while reassigning the exam."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 @api_view(['GET'])
 def get_course_duration(request):
@@ -4773,9 +4534,6 @@ def student_login(request):
     except Exception as e:
         logger.error(f"An error occurred while processing the student login: {str(e)}")
         return Response({"error": f"An internal server error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
 
 
 
@@ -4990,68 +4748,6 @@ def save_all_questions_answers(request):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def get_result_to_show_based_on_subject(request):
-#     try:
-#         # Extract query parameters
-#         query_params = {
-#             'university': request.query_params.get('university'),
-#             'course': request.query_params.get('course'),
-#             'stream': request.query_params.get('stream'),
-#             'substream': request.query_params.get('substream'),
-#             'session': request.query_params.get('session'),
-#             'studypattern': request.query_params.get('studypattern'),
-#             'semyear': request.query_params.get('semyear')
-#         }
-
-#         # Filter examinations based on the provided query parameters
-#         examinations = Examination.objects.all()
-#         for param, value in query_params.items():
-#             if value:
-#                 examinations = examinations.filter(**{param: value})
-
-#         # Manually construct the response data
-#         response_data = []
-#         for exam in examinations:
-#             # Fetch exam timing details from StudentAppearingExam
-#             student_exam_details = StudentAppearingExam.objects.filter(exam=exam).first()
-            
-#             response_data.append({
-#                 "id": exam.id,
-#                 # "university": exam.university.id if exam.university else None,
-#                 # "course": exam.course.id if exam.course else None,
-#                 # "stream": exam.stream.id if exam.stream else None,
-#                 # "substream": exam.substream.id if exam.substream else None,
-#                 "subject": exam.subject.id if exam.subject else None,
-#                 "subject_name": exam.subject.name if exam.subject else None,
-#                 "exam_start_date": student_exam_details.examstartdate if student_exam_details else None,
-#                 "exam_end_date": student_exam_details.examenddate if student_exam_details else None,
-#                 "exam_start_time": student_exam_details.examstarttime if student_exam_details else None,
-#                 "exam_end_time": student_exam_details.examendtime if student_exam_details else None,
-#                 "total_questions": exam.totalquestions,
-#                 "total_marks": exam.totalmarks,
-#                 # "examtype": exam.examtype,
-#                 # "studypattern": exam.studypattern,
-#                 # "semyear": exam.semyear,
-#                 # "session": exam.session
-#             })
-
-#         # Log the successful fetch of examinations
-#         #logger.info(f"Successfully fetched {len(response_data)} examinations based on query parameters: {query_params}")
-
-#         # Return the constructed data in the response
-#         return Response(response_data, status=status.HTTP_200_OK)
-
-#     except Exception as e:
-#         # Log the error if an exception occurs
-#         logger.error(f"Error occurred while fetching examinations: {str(e)}")
-        
-#         # Return a structured error response
-#         return Response(
-#             {"error": "An error occurred while processing your request."},
-#             status=status.HTTP_500_INTERNAL_SERVER_ERROR
-#         )
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -6328,148 +6024,6 @@ def get_paid_fees(request):
         logger.error(f"Unexpected error: {str(e)}")
         return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# @api_view(['POST'])
-# def save_single_question_answer(request):
-#     try:
-#         data = request.data
-#         student_id = data.get("student_id")
-#         student_id = int(data.get("student_id"))
-#         exam_id = data.get("exam_id")
-#         question_id = data.get("question_id")
-#         submitted_answer = data.get("submitted_answer")
-
-#         print("student_idstudent_id",student_id ,exam_id)
-#         # Validation
-#         if not student_id or not exam_id or not question_id or submitted_answer is None:
-#             return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
-
-#         try:
-#             question_instance = Questions.objects.get(id=question_id)
-#         except Questions.DoesNotExist:
-#             return Response({"error": f"Question ID {question_id} does not exist"}, status=status.HTTP_404_NOT_FOUND)
-
-#         # Get the latest StudentAppearingExam record for the student and exam
-#         try:
-#           exam_details_instance = StudentAppearingExam.objects.filter(
-#               student_id__contains=student_id,
-#               exam_id=exam_id
-#           ).order_by('-id').first()
-#           print('exam_details_instance',exam_details_instance)
-#         except StudentAppearingExam.DoesNotExist:
-#             return Response({"error": "StudentAppearingExam record not found"}, status=status.HTTP_404_NOT_FOUND)
-
-#         correct_answer = question_instance.answer.lower()
-#         marks = question_instance.marks
-
-#         if submitted_answer.lower() == correct_answer:
-#             result = "Right"
-#             marks_obtained = marks
-#         else:
-#             result = "Wrong"
-#             marks_obtained = "0"
-
-#         # Save or update the submitted answer with the examdetails_id
-#         submission, created = SubmittedExamination.objects.update_or_create(
-#             student_id=student_id,
-#             exam_id=exam_id,
-#             question=str(question_id),
-#             defaults={
-#                 "type": question_instance.type,
-#                 "marks": marks,
-#                 "marks_obtained": marks_obtained,
-#                 "submitted_answer": submitted_answer,
-#                 "answer": correct_answer,
-#                 "result": result,
-#                 "examdetails": exam_details_instance  # Save the latest examdetails_id here
-#             }
-#         )
-
-#         return Response({
-#             "message": "Answer updated successfully." if not created else "Answer submitted successfully.",
-#             "question_id": question_id,
-#             "result": result,
-#             "marks_obtained": marks_obtained,
-#         }, status=status.HTTP_200_OK)
-
-#     except Exception as e:
-#         logger.exception(f"An error occurred while saving answer: {str(e)}")
-#         return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# working 
-@api_view(['POST'])
-def save_single_question_answer(request):
-    try:
-        data = request.data
-
-        # Convert student_id and exam_id to int for proper filtering
-        try:
-            student_id = int(data.get("student_id"))
-            exam_id = int(data.get("exam_id"))
-        except (TypeError, ValueError):
-            return Response({"error": "Invalid student_id or exam_id. Must be integer."}, status=status.HTTP_400_BAD_REQUEST)
-
-        question_id = data.get("question_id")
-        submitted_answer = data.get("submitted_answer")
-
-        print("student_idstudent_id", student_id, exam_id)
-
-        # Validate required fields
-        if not student_id or not exam_id or not question_id or submitted_answer is None:
-            return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Get question instance
-        try:
-            question_instance = Questions.objects.get(id=question_id)
-        except Questions.DoesNotExist:
-            return Response({"error": f"Question ID {question_id} does not exist"}, status=status.HTTP_404_NOT_FOUND)
-
-        # Get the latest StudentAppearingExam record for the student and exam
-        exam_details_instance = StudentAppearingExam.objects.filter(
-            student_id__contains=[student_id],  # pass a list to match JSONField list
-            exam_id=exam_id
-        ).order_by('-id').first()
-
-        if not exam_details_instance:
-            return Response({"error": "StudentAppearingExam record not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        correct_answer = question_instance.answer.lower()
-        marks = question_instance.marks
-
-        if submitted_answer.lower() == correct_answer:
-            result = "Right"
-            marks_obtained = marks
-        else:
-            result = "Wrong"
-            marks_obtained = "0"
-
-        # Save or update the submitted answer with the examdetails_id
-        # Note: use student_id and exam_id foreign keys correctly by using _id suffix
-        submission, created = SubmittedExamination.objects.update_or_create(
-            student_id=student_id,
-            exam_id=exam_id,
-            question=str(question_id),
-            defaults={
-                "type": question_instance.type,
-                "marks": marks,
-                "marks_obtained": marks_obtained,
-                "submitted_answer": submitted_answer,
-                "answer": correct_answer,
-                "result": result,
-                "examdetails": exam_details_instance  # foreign key to StudentAppearingExam instance
-            }
-        )
-
-        return Response({
-            "message": "Answer updated successfully." if not created else "Answer submitted successfully.",
-            "question_id": question_id,
-            "result": result,
-            "marks_obtained": marks_obtained,
-        }, status=status.HTTP_200_OK)
-
-    except Exception as e:
-        logger.exception(f"An error occurred while saving answer: {str(e)}")
-        return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 @api_view(['POST'])
 def save_single_question_answer(request):
@@ -6530,8 +6084,6 @@ def save_single_question_answer(request):
         return Response({
             "message": "Answer updated successfully." if not created else "Answer submitted successfully.",
             "question_id": question_id,
-            "result": result,
-            "marks_obtained": marks_obtained,
         }, status=status.HTTP_200_OK)
 
     except Exception as e:
@@ -6617,98 +6169,79 @@ def document_management(request, enrollment_id):
         )
         
 
+
 @api_view(["POST"])
 def save_exam_timer(request):
     student_id = request.data.get("student_id")
     exam_id = request.data.get("exam_id")
-    time_left_ms = request.data.get("time_left_ms")
+    time_left_ms_raw = request.data.get("time_left_ms")
+    exam_details_id = request.data.get("exam_details_id")
 
-    if not all([student_id, exam_id, time_left_ms]):
-        return Response({"error": "Missing data"}, status=400)
+    if not all([student_id, exam_id, time_left_ms_raw, exam_details_id]):
+        return Response({"error": "Missing data"}, status=status.HTTP_400_BAD_REQUEST)
 
-    session, created = ExamSession.objects.get_or_create(
-        student_id=student_id,
-        exam_id=exam_id
-    )
-    session.time_left_ms = time_left_ms
-    session.save()
+    try:
+        time_left_ms = int(time_left_ms_raw)
+    except (TypeError, ValueError):
+        return Response({"error": "Invalid time_left_ms, must be integer"}, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response({"status": "saved", "created": created})
+    try:
+        examdetails_instance = StudentAppearingExam.objects.get(id=int(exam_details_id))
+    except (StudentAppearingExam.DoesNotExist, ValueError):
+        return Response({"error": "Invalid exam_details_id"}, status=status.HTTP_400_BAD_REQUEST)
 
+    try:
+        student_obj = Student.objects.get(id=student_id)
+        exam_obj = Examination.objects.get(id=exam_id)
+    except (Student.DoesNotExist, Examination.DoesNotExist):
+        return Response({"error": "Student or Exam not found"}, status=status.HTTP_404_NOT_FOUND)
 
-# @api_view(["POST"])
-# def save_exam_timer(request):
-#     student_id = request.data.get("student_id")
-#     exam_id = request.data.get("exam_id")
-#     time_left_ms = request.data.get("time_left_ms")
+    try:
+        session = ExamSession.objects.get(
+            student=student_obj,
+            exam=exam_obj,
+            examdetails=examdetails_instance
+        )
+        session.time_left_ms = time_left_ms
+        session.save()
+        created = False
+    except ExamSession.DoesNotExist:
+        duration_minutes = getattr(exam_obj, "examduration", None)
+        if duration_minutes is not None:
+            init_time_left_ms = int(duration_minutes) * 60 * 1000
+        else:
+            init_time_left_ms = time_left_ms
 
-#     if not all([student_id, exam_id, time_left_ms]):
-#         return Response({"error": "Missing data"}, status=status.HTTP_400_BAD_REQUEST)
+        session = ExamSession.objects.create(
+            student=student_obj,
+            exam=exam_obj,
+            examdetails=examdetails_instance,
+            time_left_ms=init_time_left_ms
+        )
+        created = True
 
-#     try:
-#         examdetails_instance = StudentAppearingExam.objects.filter(
-#             student_id__contains=[int(student_id)],
-#             exam_id=exam_id
-#         ).order_by('-id').first()
+    return Response({"status": "saved", "created": created, "time_left_ms": session.time_left_ms}, status=status.HTTP_200_OK)
 
-#         if not examdetails_instance:
-#             return Response({"error": "Matching StudentAppearingExam not found"}, status=status.HTTP_404_NOT_FOUND)
-
-#     except Exception as e:
-#         return Response({"error": f"Error fetching StudentAppearingExam: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
-
-#     try:
-#         student_obj = Student.objects.get(id=student_id)
-#         exam_obj = Examination.objects.get(id=exam_id)
-#     except (Student.DoesNotExist, Examination.DoesNotExist) as e:
-#         logger.error(f"Student or Exam not found: {str(e)}")
-#         return Response({"error": "Student or Exam not found"}, status=status.HTTP_404_NOT_FOUND)
-
-#     session, created = ExamSession.objects.get_or_create(
-#         student=student_obj,
-#         exam=exam_obj,
-#         defaults={"examdetails": examdetails_instance, "time_left_ms": time_left_ms}
-#     )
-#     if not created:
-#         session.time_left_ms = time_left_ms
-#         session.examdetails = examdetails_instance
-#         session.save()
-
-#     return Response({"status": "saved", "created": created}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
 def get_exam_timer(request):
-  student_id = request.query_params.get("student_id")
-  exam_id = request.query_params.get("exam_id")
+    student_id = request.query_params.get("student_id")
+    exam_id = request.query_params.get("exam_id")
+    exam_details_id = request.query_params.get("exam_details_id")
 
-  try:
-      session = ExamSession.objects.get(student_id=student_id, exam_id=exam_id)
-      return Response({"time_left_ms": session.time_left_ms})
-  except ExamSession.DoesNotExist:
-      return Response({"time_left_ms": None})
-    
-# @api_view(["GET"])
-# def get_exam_timer(request):
-#     student_id = request.query_params.get("student_id")
-#     exam_id = request.query_params.get("exam_id")
-#     exam_details_id = request.query_params.get("exam_details_id")  # new
+    if not all([student_id, exam_id, exam_details_id]):
+        return Response({"error": "Missing data"}, status=status.HTTP_400_BAD_REQUEST)
 
-#     if not all([student_id, exam_id, exam_details_id]):
-#         return Response({"error": "Missing required parameters"}, status=400)
-
-#     try:
-#         session = ExamSession.objects.get(
-#             student_id=student_id,
-#             exam_id=exam_id,
-#             examdetails_id=exam_details_id  # filter by exam_details_id
-#         )
-#         return Response({"time_left_ms": session.time_left_ms})
-#     except ExamSession.DoesNotExist:
-#         return Response({"time_left_ms": None})
-    
-
-
+    try:
+        session = ExamSession.objects.get(
+            student_id=student_id,
+            exam_id=exam_id,
+            examdetails_id=exam_details_id
+        )
+        return Response({"time_left_ms": session.time_left_ms})
+    except ExamSession.DoesNotExist:
+        return Response({"time_left_ms": None})
 
 
 @api_view(['POST'])
@@ -6848,6 +6381,7 @@ def check_exam_result(request):
     except Exception as e:
         logger.exception(f"An error occurred while checking exam result: {str(e)}")
         return Response({"error": "An internal server error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+      
 @api_view(['GET'])
 def check_exam_result(request):
     """

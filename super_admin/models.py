@@ -739,13 +739,14 @@ class SubmittedExamination(models.Model):
         db_table = "submitted_answer"
 
 class ExamSession(models.Model):
-  student = models.ForeignKey('Student', on_delete=models.CASCADE)
-  exam = models.ForeignKey('Examination', on_delete=models.CASCADE)
-  time_left_ms = models.BigIntegerField(default=0)
-  updated_at = models.DateTimeField(auto_now=True)
-  examdetails = models.ForeignKey(StudentAppearingExam, on_delete=models.CASCADE, null=True, blank=True)
-  class Meta:
-      unique_together = ('student', 'exam')
+    student = models.ForeignKey('Student', on_delete=models.CASCADE)
+    exam = models.ForeignKey('Examination', on_delete=models.CASCADE)
+    examdetails = models.ForeignKey(StudentAppearingExam, on_delete=models.CASCADE, null=True, blank=True)
+    time_left_ms = models.BigIntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('student', 'exam', 'examdetails')
       
       
 class Categories(models.Model):
