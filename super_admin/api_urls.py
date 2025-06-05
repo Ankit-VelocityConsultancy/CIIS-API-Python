@@ -191,6 +191,11 @@ urlpatterns = [
   path('colors-create/', api_views.create_color, name='create_color'),
   path('colors-update/<int:pk>/', api_views.update_color, name='update_color'),
   path('sync_answers/', api_views.sync_answers, name='sync_answers'),
+  
+  path('export_exam_data_to_excel/', api_views.export_exam_data_to_excel, name='export_exam_data_to_excel'),
+  path('fetch_complete_student_data/', api_views.fetch_complete_student_data_api, name='fetch_complete_student_data'),
+  path('view_all_assigned_students_api/', api_views.view_all_assigned_students_api, name='view_all_assigned_students_api'),
+
 
 ]
   

@@ -20,6 +20,8 @@ from datetime import date
 from django.db.models import Q
 import pandas as pd
 from django.conf import settings
+import openpyxl
+from openpyxl.styles import Font
 
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('student_registration')
@@ -2931,6 +2933,74 @@ def quick_registration(request):
 
 
 
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def create_subject(request):
+#     logger.info("Received request to create subject.")
+    
+#     # Extract input data from the request
+#     subject_data = {
+#         'name': request.data.get('name'),
+#         'code': request.data.get('code'),
+#         'stream_id': request.data.get('stream_id'),  # Ensure you're passing the ID here
+#         'substream_id': request.data.get('substream_id'),  # This may be null or missing
+#         'studypattern': request.data.get('studypattern'),
+#         'semyear': request.data.get('semyear'),
+#     }
+#     logger.debug(f"Extracted subject data: {subject_data}")
+
+#     # Validate required fields
+#     if not subject_data['name'] or not subject_data['code']:
+#         logger.warning("Subject name and code are required but missing.")
+#         return Response({'error': 'Subject name and code are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#     # Get the stream object
+#     try:
+#         stream = Stream.objects.get(id=subject_data['stream_id'])
+#         logger.info(f"Stream with id {subject_data['stream_id']} found.")
+#     except Stream.DoesNotExist:
+#         logger.error(f"Stream with id {subject_data['stream_id']} not found.")
+#         return Response({'error': 'Stream not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+#     # Get the substream object (optional)
+#     substream = None
+#     if subject_data['substream_id']:
+#         try:
+#             substream = SubStream.objects.get(id=subject_data['substream_id'], stream=stream)
+#             logger.info(f"Substream with id {subject_data['substream_id']} found for the stream.")
+#         except SubStream.DoesNotExist:
+#             logger.error(f"Substream with id {subject_data['substream_id']} not found for stream with id {subject_data['stream_id']}.")
+#             return Response({'error': 'SubStream not found for the specified stream.'}, status=status.HTTP_404_NOT_FOUND)
+#     else:
+#         logger.info("No substream ID provided, substream will be set to null.")
+
+#     # Check for duplicate Subject
+#     if Subject.objects.filter(
+#         name=subject_data['name'],
+#         code=subject_data['code'],
+#         stream=stream,
+#         substream=substream
+#     ).exists():
+#         logger.warning(f"Duplicate subject found: {subject_data['name']} with code {subject_data['code']} in the specified stream/substream.")
+#         return Response(
+#             {'error': 'Subject with this name and code already exists for the specified stream/substream.'},
+#             status=status.HTTP_400_BAD_REQUEST
+#         )
+
+#     # Pass stream and substream ID to the serializer context
+#     subject_data['stream'] = subject_data['stream_id']  # Pass stream_id instead of the stream object
+#     subject_data['substream'] = subject_data['substream_id']  # Pass substream_id instead of the substream object
+
+#     serializer = SubjectSerializer(data=subject_data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         logger.info(f"Subject '{subject_data['name']}' with code '{subject_data['code']}' successfully created.")
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+#     # Handle validation errors
+#     logger.error(f"Validation failed: {serializer.errors}")
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_subject(request):
@@ -2940,8 +3010,8 @@ def create_subject(request):
     subject_data = {
         'name': request.data.get('name'),
         'code': request.data.get('code'),
-        'stream_id': request.data.get('stream_id'),  # Ensure you're passing the ID here
-        'substream_id': request.data.get('substream_id'),  # This may be null or missing
+        'stream_id': request.data.get('stream_id'),
+        'substream_id': request.data.get('substream_id'),
         'studypattern': request.data.get('studypattern'),
         'semyear': request.data.get('semyear'),
     }
@@ -2972,22 +3042,23 @@ def create_subject(request):
     else:
         logger.info("No substream ID provided, substream will be set to null.")
 
-    # Check for duplicate Subject
-    if Subject.objects.filter(
-        name=subject_data['name'],
-        code=subject_data['code'],
+    # ✅ Improved duplicate check logic
+    duplicate_subject = Subject.objects.filter(
+        name__iexact=subject_data['name'],
+        code__iexact=subject_data['code'],
         stream=stream,
-        substream=substream
-    ).exists():
-        logger.warning(f"Duplicate subject found: {subject_data['name']} with code {subject_data['code']} in the specified stream/substream.")
-        return Response(
-            {'error': 'Subject with this name and code already exists for the specified stream/substream.'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        substream=substream,
+        studypattern__iexact=subject_data['studypattern'],
+        semyear__iexact=subject_data['semyear']
+    ).first()
 
-    # Pass stream and substream ID to the serializer context
-    subject_data['stream'] = subject_data['stream_id']  # Pass stream_id instead of the stream object
-    subject_data['substream'] = subject_data['substream_id']  # Pass substream_id instead of the substream object
+    if duplicate_subject:
+        logger.warning(f"Subject already exists: {subject_data['name']} ({subject_data['code']})")
+        return Response({'msg': 'Subject already exists'}, status=status.HTTP_200_OK)
+
+    # Prepare data for serializer
+    subject_data['stream'] = subject_data['stream_id']
+    subject_data['substream'] = subject_data['substream_id']
 
     serializer = SubjectSerializer(data=subject_data)
     if serializer.is_valid():
@@ -2995,9 +3066,9 @@ def create_subject(request):
         logger.info(f"Subject '{subject_data['name']}' with code '{subject_data['code']}' successfully created.")
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    # Handle validation errors
     logger.error(f"Validation failed: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 from django.http import HttpResponse,FileResponse
 from io import BytesIO
@@ -6317,7 +6388,10 @@ def save_result_after_exam(request):
             student_id=student_id_int, 
             exam_id=exam_id_int,
             examdetails=examdetails_instance
-        ).count()
+        ).filter(
+                ~Q(submitted_answer="NA"),
+                ~Q(submitted_answer="")
+            ).count()
         score = SubmittedExamination.objects.filter(
             student_id=student_id_int, 
             exam_id=exam_id_int, 
@@ -6765,3 +6839,652 @@ def registered_save_enrollment_to_next_semyear(request):
     except Enrolled.DoesNotExist:
         logger.error(f"No enrollment found for student ID {student_id}")
         return Response({"status": "error", "message": "Enrollment not found"}, status=status.HTTP_404_NOT_FOUND)
+      
+      
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def export_exam_data_to_excel(request):
+    user = request.user
+    logger.info(f"[EXPORT] Request received by user: {user.username} (ID: {user.id})")
+
+    if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
+        logger.warning(f"[EXPORT] Unauthorized access attempt by user: {user.username}")
+        return Response({"message": "Unauthorized access"}, status=status.HTTP_403_FORBIDDEN)
+
+    data = request.data
+    university = data.get("university")
+    course = data.get("course")
+    stream = data.get('stream')
+    session = data.get('session')
+    studypattern = data.get('studypattern')
+    semyear = data.get('semyear')
+    substream = data.get('substream')
+
+    logger.debug(f"[EXPORT] Filters received: university={university}, course={course}, stream={stream}, session={session}, studypattern={studypattern}, semyear={semyear}, substream={substream}")
+
+    try:
+        filters = Q(university=university, course=course, stream=stream)
+        if session not in ['0', '', None]:
+            filters &= Q(session=session)
+        if studypattern not in ['0', '', None]:
+            filters &= Q(studypattern=studypattern)
+        if semyear not in ['0', '', None]:
+            filters &= Q(semyear=semyear)
+        if substream not in ['0', '', None]:
+            filters &= Q(substream=substream)
+
+        exams = Examination.objects.filter(filters)
+        if not exams.exists():
+            logger.info("[EXPORT] No matching exams found for the given filters.")
+            return Response({"message": "No results found"}, status=status.HTTP_400_BAD_REQUEST)
+
+        formatted_data = []
+        for exam in exams:
+            logger.debug(f"[EXPORT] Processing exam: ID={exam.id}, subject={exam.subject_id}")
+            subject = Subject.objects.filter(id=exam.subject_id).first()
+            student_exam_qs = StudentAppearingExam.objects.filter(exam=exam.id)
+
+            if student_exam_qs.exists():
+                serializer = StudentAppearingExamSerializer(student_exam_qs, many=True)
+                for record in serializer.data:
+                    for student_id in record['student_id']:
+                        logger.debug(f"[EXPORT] Processing student ID={student_id} for exam ID={exam.id}")
+                        has_appeared = ExamSession.objects.filter(
+                            student_id=student_id,
+                            exam=exam.id,
+                            examdetails_id=record['id']
+                        )
+                        submitted_exam = Result.objects.filter(
+                            student_id=student_id,
+                            exam=exam,
+                            examdetails_id=record['id']
+                        )
+
+                        status_str = "Not Appeared"
+                        if has_appeared.exists() and submitted_exam.exists():
+                            status_str = "Appeared"
+                        elif has_appeared.exists():
+                            status_str = "Ongoing Exam"
+
+                        student = Student.objects.filter(id=student_id).first()
+                        university_obj = University.objects.filter(id=university).first()
+                        course_obj = Course.objects.filter(id=course).first()
+                        stream_obj = Stream.objects.filter(id=stream).first()
+                        substream_obj = SubStream.objects.filter(id=substream).first() if substream else None
+                        enrolled = Enrolled.objects.filter(student_id=student_id).first()
+
+                        if not enrolled:
+                            logger.warning(f"[EXPORT] No enrollment found for student ID={student_id}. Skipping.")
+                            continue
+
+                        course_duration = int(enrolled.total_semyear) if enrolled.course_pattern == 'Annual' else int(enrolled.total_semyear) / 2
+
+                        marks_obtained = ''
+                        attempted_questions = ''
+                        result_status = ''
+                        if status_str == "Appeared":
+                            sub_exam = submitted_exam.first()
+                            if sub_exam:
+                                marks_obtained = sub_exam.score
+                                attempted_questions = sub_exam.attempted
+                                result_status = sub_exam.result
+
+                        formatted_data.append({
+                            'University': university_obj.university_name if university_obj else '',
+                            'Course': course_obj.name if course_obj else '',
+                            'Stream': stream_obj.name if stream_obj else '',
+                            'Substream': substream_obj.name if substream_obj else '',
+                            'Session': session,
+                            'Study Pattern': studypattern,
+                            'Semester/Year': semyear,
+                            'Course Duration': course_duration,
+                            'Subject Name': subject.name if subject else '',
+                            'Student Name': student.name if student else '',
+                            'Student Email ID': student.email if student else '',
+                            'Student Mobile Number': student.mobile if student else '',
+                            'Enrollment ID': student.enrollment_id if student else '',
+                            'Exam Start Time': record['examstarttime'],
+                            'Exam End Time': record['examendtime'],
+                            'Exam Start Date': record['examstartdate'],
+                            'Exam End Date': record['examenddate'],
+                            'Status': status_str,
+                            'Total Marks': exam.totalmarks,
+                            'Passing Marks': exam.passingmarks,
+                            'Marks Obtained': marks_obtained,
+                            'Questions Attempted': attempted_questions,
+                            'Result': result_status,
+                        })
+
+        if not formatted_data:
+            logger.info("[EXPORT] No student data available to export.")
+            return Response({"message": "No students assigned"}, status=status.HTTP_400_BAD_REQUEST)
+
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+        sheet.title = "Exam Data"
+
+        headers = list(formatted_data[0].keys())
+        for col_num, header in enumerate(headers, 1):
+            cell = sheet.cell(row=1, column=col_num)
+            cell.value = header.upper()
+            cell.font = Font(bold=True)
+
+        for row_num, row_data in enumerate(formatted_data, 2):
+            for col_num, header in enumerate(headers, 1):
+                value = row_data[header]
+                sheet.cell(row=row_num, column=col_num).value = value.upper() if isinstance(value, str) else value
+
+        logger.info(f"[EXPORT] Excel file prepared with {len(formatted_data)} records.")
+
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        response['Content-Disposition'] = 'attachment; filename="exam_data_export.xlsx"'
+        workbook.save(response)
+
+        logger.info("[EXPORT] Excel file successfully sent as response.")
+        return response
+
+    except Exception as e:
+        logger.exception(f"[EXPORT] An unexpected error occurred: {str(e)}")
+        return Response({"message": "An error occurred during export."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+import zipfile
+import io
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def view_all_assigned_students_api(request):
+    print('inside view_all_assigned_students_api')
+    user = request.user
+    logger.info(f"[VIEW-STUDENTS] API accessed by user: {user.username} (ID: {user.id})")
+
+    if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
+        logger.warning(f"[VIEW-STUDENTS] Unauthorized access attempt by {user.username}")
+        return Response({'error': 'Unauthorized'}, status=status.HTTP_403_FORBIDDEN)
+
+    data = request.data
+    try:
+        university_id = int(data.get("university"))
+        course_id = int(data.get("course"))
+        stream_id = int(data.get("stream") or data.get("Stream"))  # Handle both camel/pascal case
+        session = data.get("session", "").strip()
+        studypattern = data.get("studypattern", "").upper().strip()
+        semyear = data.get("semyear", "").strip()
+        substream_id = data.get("substream")
+
+        print('studypattern_studypattern',studypattern)
+        filters = {
+            'course_id': course_id,
+            'stream_id': stream_id,
+            'student__university_id': university_id
+        }
+
+        if substream_id and str(substream_id).lower() != 'null':
+            try:
+                filters['substream_id'] = int(substream_id)
+            except ValueError:
+                logger.error("[VIEW-STUDENTS] Invalid substream_id format.")
+                return Response({'error': 'Invalid substream_id'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if session:
+            filters['session__iexact'] = session
+
+        if studypattern:
+            filters['course_pattern__iexact'] = studypattern
+
+        if semyear:
+            filters['current_semyear'] = semyear
+
+        logger.debug(f"[VIEW-STUDENTS] Filters applied: {filters}")
+        enrolled_students = Enrolled.objects.filter(**filters).select_related('student')
+
+        student_data = [
+            {
+                "student_id": e.student.id,
+                "name": e.student.name,
+                "email": e.student.email,
+                "mobile": e.student.mobile,
+                "enrollment_id": e.student.enrollment_id,
+                "current_semyear": e.current_semyear,
+                "session": e.session,
+                "entry_mode": e.entry_mode,
+                "course_pattern": e.course_pattern,
+            }
+            for e in enrolled_students if e.student
+        ]
+
+        logger.info(f"[VIEW-STUDENTS] Found {len(student_data)} students")
+        return Response({'message': 'Students fetched successfully', 'students': student_data}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.exception(f"[VIEW-STUDENTS] Unexpected error: {str(e)}")
+        return Response({'error': 'Internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def fetch_complete_student_data_api(request):
+#     user = request.user
+#     logger.info(f"[EXPORT-ZIP] Started by {user.username} (ID={user.id})")
+
+#     if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
+#         logger.warning(f"[EXPORT-ZIP] Unauthorized access attempt by {user.username}")
+#         return Response({'error': 'Unauthorized'}, status=status.HTTP_403_FORBIDDEN)
+
+#     try:
+#         data = request.data
+#         student_ids = data.get('student_ids', [])
+#         course_id = data.get("course")
+#         stream_id = data.get("stream")
+#         substream_id = data.get("substream")
+#         session = data.get("session")
+#         semyear = data.get("semyear")
+#         studypattern = data.get("studypattern")
+
+#         course = Course.objects.get(id=course_id)
+#         stream = Stream.objects.get(id=stream_id)
+#         substream = SubStream.objects.get(id=substream_id) if substream_id else None
+
+#         results = Result.objects.filter(student_id__in=student_ids).select_related(
+#             'exam__subject', 'student'
+#         ).order_by('student_id', 'exam_id')
+
+#         student_subject_map = {}
+#         student_name_map = {}
+#         all_exam_ids, all_examdetail_ids, all_student_ids = set(), set(), set()
+
+#         for r in results:
+#             sid = str(r.student_id)
+#             subject_name = r.exam.subject.name.strip() if r.exam and r.exam.subject else f"Exam_{r.exam_id}"
+#             student_name = r.student.name.strip() if r.student else f"Student_{sid}"
+#             student_subject_map.setdefault(sid, {}).setdefault(subject_name, []).append(r)
+#             student_name_map[sid] = student_name
+#             all_exam_ids.add(r.exam_id)
+#             all_examdetail_ids.add(r.examdetails_id)
+#             all_student_ids.add(r.student_id)
+
+#         students_without_data = []
+#         for sid in student_ids:
+#             if int(sid) not in all_student_ids:
+#                 try:
+#                     student = Student.objects.get(id=sid)
+#                     students_without_data.append(student.name.strip())
+#                 except Student.DoesNotExist:
+#                     students_without_data.append(f"Student_{sid}")
+
+#         questions = Questions.objects.filter(exam_id__in=all_exam_ids)
+#         questions_map = {}
+#         for q in questions:
+#             questions_map.setdefault(q.exam_id, []).append(q)
+
+#         exam_times = StudentExaminationTime.objects.filter(
+#             examdetails__in=all_examdetail_ids,
+#             student__in=all_student_ids
+#         )
+#         exam_time_map = {
+#             (et.examdetails.id, et.student.id): et.time_in_minutes
+#             for et in exam_times
+#         }
+
+#         submitted_answers = SubmittedExamination.objects.filter(
+#             student_id__in=all_student_ids,
+#             examdetails_id__in=all_examdetail_ids
+#         )
+
+#         submitted_answer_map = {
+#             (int(sa.question), sa.student_id, sa.examdetails_id): sa
+#             for sa in submitted_answers if sa.question.isdigit()
+#         }
+
+#         zip_buffer = io.BytesIO()
+#         with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
+#             for sid, subjects in student_subject_map.items():
+#                 student_name = student_name_map.get(sid, f"Student_{sid}")
+#                 safe_name = student_name.replace(" ", "_").replace("/", "_")
+#                 excel_buffer = io.BytesIO()
+
+#                 with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
+#                     for subject_name, result_list in subjects.items():
+#                         any_result = result_list[0]
+
+#                         exam_month = (
+#                             any_result.examdetails.examstartdate.strftime("%B %Y")
+#                             if any_result.examdetails and any_result.examdetails.examstartdate
+#                             else ""
+#                         )
+#                         time_key = (any_result.examdetails_id, any_result.student_id)
+#                         time_appeared = f"{exam_time_map[time_key]} mins" if time_key in exam_time_map else "Not Recorded"
+#                         duration = f"{any_result.exam.examduration} mins" if any_result.exam else ""
+
+#                         metadata = [
+#                             ['Student Name', student_name],
+#                             ['Course', course.name],
+#                             ['Stream', stream.name],
+#                         ]
+#                         if substream:
+#                             metadata.append(['Substream', substream.name])
+#                         metadata += [
+#                             ['Session', session],
+#                             ['Study Pattern', studypattern],
+#                             ['Semester/Year', semyear],
+#                             ['Subject Name', subject_name],
+#                             ['Exam Month', exam_month],
+#                             ['Time Appeared', time_appeared],
+#                             ['Duration', duration]
+#                         ]
+#                         meta_df = pd.DataFrame(metadata, columns=["", ""])
+
+#                         exam_questions = questions_map.get(any_result.exam_id, [])
+#                         question_rows = []
+#                         for idx, q in enumerate(exam_questions, start=1):
+#                             key = (q.id, any_result.student_id, any_result.examdetails_id)
+#                             sa = submitted_answer_map.get(key)
+#                             question_rows.append({
+#                                 "SR. NO.": idx,
+#                                 "QUESTION": q.question,
+#                                 "OPTION 1": q.option1,
+#                                 "OPTION 2": q.option2,
+#                                 "OPTION 3": q.option3,
+#                                 "OPTION 4": q.option4,
+#                                 "MARKED ANSWER": sa.submitted_answer if sa else "",
+#                                 "CORRECT ANSWER": sa.answer if sa else "",
+#                                 "OBTAINED MARKS": sa.marks_obtained if sa else "",
+#                                 "MAX MARKS": sa.marks if sa else ""
+#                             })
+
+#                         data_df = pd.DataFrame(question_rows)
+#                         sheet_name = subject_name[:31]
+#                         meta_df.to_excel(writer, sheet_name=sheet_name, startrow=0, header=False, index=False)
+#                         data_df.to_excel(writer, sheet_name=sheet_name, startrow=len(metadata) + 2, index=False)
+
+#                         workbook = writer.book
+#                         worksheet = writer.sheets[sheet_name]
+#                         bold_border = workbook.add_format({'bold': True, 'border': 1})
+#                         border_only = workbook.add_format({'border': 1})
+#                         header_format = workbook.add_format({'bold': True, 'bg_color': '#D9E1F2', 'border': 1})
+#                         right_align_bold_border = workbook.add_format({'bold': True, 'border': 1, 'align': 'right'})
+#                         left_align_border = workbook.add_format({'border': 1, 'align': 'left'})
+
+#                         for i in range(len(metadata)):
+#                             worksheet.write(i, 0, metadata[i][0], bold_border)
+#                             worksheet.write(i, 1, metadata[i][1], border_only)
+
+#                         for col_num, value in enumerate(data_df.columns.values):
+#                             worksheet.write(len(metadata) + 2, col_num, value, header_format)
+
+#                         worksheet.set_column('A:A', 25)
+#                         worksheet.set_column('B:B', 80)
+#                         worksheet.set_column('C:G', 25)
+#                         worksheet.set_column('H:J', 18)
+
+#                         total_obtained = sum(
+#                             float(sa.marks_obtained)
+#                             for sa in submitted_answer_map.values()
+#                             if sa.student_id == any_result.student_id and
+#                                sa.examdetails_id == any_result.examdetails_id and
+#                                sa.question.isdigit() and
+#                                int(sa.question) in [q.id for q in exam_questions] and
+#                                sa.marks_obtained
+#                         )
+
+#                         total_max = sum(
+#                             float(sa.marks)
+#                             for sa in submitted_answer_map.values()
+#                             if sa.student_id == any_result.student_id and
+#                                sa.examdetails_id == any_result.examdetails_id and
+#                                sa.question.isdigit() and
+#                                int(sa.question) in [q.id for q in exam_questions] and
+#                                sa.marks
+#                         )
+
+#                         summary_row = len(metadata) + 2 + len(data_df) + 2
+#                         worksheet.merge_range(summary_row, 0, summary_row, 7, "MARKS OBTAINED", right_align_bold_border)
+#                         worksheet.write(summary_row, 8, total_obtained, left_align_border)
+#                         worksheet.write(summary_row, 9, total_max, left_align_border)
+
+#                 zip_file.writestr(f"{safe_name}.xlsx", excel_buffer.getvalue())
+
+#         if not student_subject_map:
+#             logger.warning("[EXPORT-ZIP] No data found for selected students.")
+#             return Response({'error': 'No data found for selected students'}, status=404)
+
+#         zip_buffer.seek(0)
+#         filename_parts = [course.name.replace(" ", "_"), stream.name.replace(" ", "_")]
+#         if substream:
+#             filename_parts.append(substream.name.replace(" ", "_"))
+#         filename = "_".join(filename_parts).lower() + ".zip"
+
+#         response = HttpResponse(zip_buffer, content_type='application/zip')
+#         response['Content-Disposition'] = f'attachment; filename="{filename}"'
+#         if students_without_data:
+#             response['X-Missing-Students'] = ', '.join(students_without_data[:10])
+#             response['X-Missing-Count'] = str(len(students_without_data))
+
+#         logger.info(f"[EXPORT-ZIP] Successfully generated ZIP for {len(student_subject_map)} students")
+#         return response
+
+#     except Exception as e:
+#         logger.exception(f"[EXPORT-ZIP] Internal error: {str(e)}")
+#         return Response({'error': 'Internal Server Error'}, status=500)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def fetch_complete_student_data_api(request):
+    user = request.user
+    logger.info(f"[EXPORT-ZIP] Started by {user.username} (ID={user.id})")
+
+    if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
+        logger.warning(f"[EXPORT-ZIP] Unauthorized access attempt by {user.username}")
+        return Response({'error': 'Unauthorized'}, status=status.HTTP_403_FORBIDDEN)
+
+    try:
+        data = request.data
+
+        # FIX: ensure student_ids is parsed correctly
+        raw_ids = data.get('student_ids', [])
+        if isinstance(raw_ids, str):
+            try:
+                student_ids = json.loads(raw_ids)
+            except json.JSONDecodeError:
+                return Response({'error': 'Invalid student_ids format'}, status=400)
+        else:
+            student_ids = raw_ids
+
+        course_id = data.get("course")
+        stream_id = data.get("stream")
+        substream_id = data.get("substream")
+        session = data.get("session")
+        semyear = data.get("semyear")
+        studypattern = data.get("studypattern")
+
+        course = Course.objects.get(id=course_id)
+        stream = Stream.objects.get(id=stream_id)
+        substream = SubStream.objects.get(id=substream_id) if substream_id else None
+
+        results = Result.objects.filter(student_id__in=student_ids).select_related(
+            'exam__subject', 'student'
+        ).order_by('student_id', 'exam_id')
+
+        student_subject_map = {}
+        student_name_map = {}
+        all_exam_ids, all_examdetail_ids, all_student_ids = set(), set(), set()
+
+        for r in results:
+            sid = str(r.student_id)
+            subject_name = r.exam.subject.name.strip() if r.exam and r.exam.subject else f"Exam_{r.exam_id}"
+            student_name = r.student.name.strip() if r.student else f"Student_{sid}"
+            student_subject_map.setdefault(sid, {}).setdefault(subject_name, []).append(r)
+            student_name_map[sid] = student_name
+            all_exam_ids.add(r.exam_id)
+            all_examdetail_ids.add(r.examdetails_id)
+            all_student_ids.add(r.student_id)
+
+        students_without_data = []
+        for sid in student_ids:
+            if int(sid) not in all_student_ids:
+                try:
+                    student = Student.objects.get(id=sid)
+                    students_without_data.append(student.name.strip())
+                except Student.DoesNotExist:
+                    students_without_data.append(f"Student_{sid}")
+
+        questions = Questions.objects.filter(exam_id__in=all_exam_ids)
+        questions_map = {}
+        for q in questions:
+            questions_map.setdefault(q.exam_id, []).append(q)
+
+        exam_sessions = ExamSession.objects.filter(
+            examdetails__in=all_examdetail_ids,
+            student__in=all_student_ids
+        )
+        exam_time_map = {
+            (es.examdetails_id, es.student_id): f"{int(es.time_left_ms / 60000)} mins"  # Convert ms to minutes
+            for es in exam_sessions
+        }
+
+        submitted_answers = SubmittedExamination.objects.filter(
+            student_id__in=all_student_ids,
+            examdetails_id__in=all_examdetail_ids
+        )
+
+        submitted_answer_map = {
+            (int(sa.question), sa.student_id, sa.examdetails_id): sa
+            for sa in submitted_answers if sa.question.isdigit()
+        }
+
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
+            for sid, subjects in student_subject_map.items():
+                student_name = student_name_map.get(sid, f"Student_{sid}")
+                safe_name = student_name.replace(" ", "_").replace("/", "_")
+                excel_buffer = io.BytesIO()
+
+                with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
+                    for subject_name, result_list in subjects.items():
+                        any_result = result_list[0]
+
+                        exam_month = (
+                            any_result.examdetails.examstartdate.strftime("%B %Y")
+                            if any_result.examdetails and any_result.examdetails.examstartdate
+                            else ""
+                        )
+                        time_key = (any_result.examdetails_id, any_result.student_id)
+                        time_appeared = f"{exam_time_map[time_key]} mins" if time_key in exam_time_map else "Not Recorded"
+                        duration = f"{any_result.exam.examduration} mins" if any_result.exam else ""
+
+                        metadata = [
+                            ['Student Name', student_name],
+                            ['Course', course.name],
+                            ['Stream', stream.name],
+                        ]
+                        if substream:
+                            metadata.append(['Substream', substream.name])
+                        metadata += [
+                            ['Session', session],
+                            ['Study Pattern', studypattern],
+                            ['Semester/Year', semyear],
+                            ['Subject Name', subject_name],
+                            ['Exam Month', exam_month],
+                            ['Time Appeared', time_appeared],
+                            ['Duration', duration]
+                        ]
+                        meta_df = pd.DataFrame(metadata, columns=["", ""])
+
+                        exam_questions = questions_map.get(any_result.exam_id, [])
+                        question_rows = []
+                        for idx, q in enumerate(exam_questions, start=1):
+                            key = (q.id, any_result.student_id, any_result.examdetails_id)
+                            sa = submitted_answer_map.get(key)
+                            question_rows.append({
+                                "SR. NO.": idx,
+                                "QUESTION": q.question,
+                                "OPTION 1": q.option1,
+                                "OPTION 2": q.option2,
+                                "OPTION 3": q.option3,
+                                "OPTION 4": q.option4,
+                                "MARKED ANSWER": sa.submitted_answer if sa else "",
+                                "CORRECT ANSWER": sa.answer if sa else "",
+                                "OBTAINED MARKS": sa.marks_obtained if sa else "",
+                                "MAX MARKS": sa.marks if sa else ""
+                            })
+
+                        data_df = pd.DataFrame(question_rows)
+                        sheet_name = subject_name[:31]
+                        meta_df.to_excel(writer, sheet_name=sheet_name, startrow=0, header=False, index=False)
+                        data_df.to_excel(writer, sheet_name=sheet_name, startrow=len(metadata) + 2, index=False)
+
+                        worksheet = writer.sheets[sheet_name]
+                        workbook = writer.book
+                        bold_border = workbook.add_format({'bold': True, 'border': 1})
+                        border_only = workbook.add_format({'border': 1})
+                        header_format = workbook.add_format({'bold': True, 'bg_color': '#D9E1F2', 'border': 1})
+                        right_align_bold_border = workbook.add_format({'bold': True, 'border': 1, 'align': 'right'})
+                        left_align_border = workbook.add_format({'border': 1, 'align': 'left'})
+
+                        for i in range(len(metadata)):
+                            worksheet.write(i, 0, metadata[i][0], bold_border)
+                            worksheet.write(i, 1, metadata[i][1], border_only)
+
+                        for col_num, value in enumerate(data_df.columns.values):
+                            worksheet.write(len(metadata) + 2, col_num, value, header_format)
+
+                        worksheet.set_column('A:A', 25)
+                        worksheet.set_column('B:B', 80)
+                        worksheet.set_column('C:G', 25)
+                        worksheet.set_column('H:J', 18)
+
+                        total_obtained = sum(
+                            float(sa.marks_obtained)
+                            for sa in submitted_answer_map.values()
+                            if sa.student_id == any_result.student_id and
+                               sa.examdetails_id == any_result.examdetails_id and
+                               sa.question.isdigit() and
+                               int(sa.question) in [q.id for q in exam_questions] and
+                               sa.marks_obtained
+                        )
+
+                        total_max = sum(
+                            float(sa.marks)
+                            for sa in submitted_answer_map.values()
+                            if sa.student_id == any_result.student_id and
+                               sa.examdetails_id == any_result.examdetails_id and
+                               sa.question.isdigit() and
+                               int(sa.question) in [q.id for q in exam_questions] and
+                               sa.marks
+                        )
+
+                        summary_row = len(metadata) + 2 + len(data_df) + 2
+                        worksheet.merge_range(summary_row, 0, summary_row, 7, "MARKS OBTAINED", right_align_bold_border)
+                        worksheet.write(summary_row, 8, total_obtained, left_align_border)
+                        worksheet.write(summary_row, 9, total_max, left_align_border)
+
+                zip_file.writestr(f"{safe_name}.xlsx", excel_buffer.getvalue())
+
+        if not student_subject_map:
+            logger.warning("[EXPORT-ZIP] No data found for selected students.")
+            return Response({'error': 'No data found for selected students'}, status=404)
+
+        zip_buffer.seek(0)
+        filename_parts = [course.name.replace(" ", "_"), stream.name.replace(" ", "_")]
+        if substream:
+            filename_parts.append(substream.name.replace(" ", "_"))
+        filename = "_".join(filename_parts).lower() + ".zip"
+
+        response = HttpResponse(zip_buffer, content_type='application/zip')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        if students_without_data:
+            response['X-Missing-Students'] = ', '.join(students_without_data[:10])
+            response['X-Missing-Count'] = str(len(students_without_data))
+
+        logger.info(f"[EXPORT-ZIP] Successfully generated ZIP for {len(student_subject_map)} students")
+        return response
+
+    except Exception as e:
+        logger.exception(f"[EXPORT-ZIP] Internal error: {str(e)}")
+        return Response({'error': 'Internal Server Error'}, status=500)
