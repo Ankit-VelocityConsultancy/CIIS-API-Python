@@ -7062,6 +7062,87 @@ def view_all_assigned_students_api(request):
     except Exception as e:
         logger.exception(f"[VIEW-STUDENTS] Unexpected error: {str(e)}")
         return Response({'error': 'Internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+      
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def view_all_assigned_students_api(request):
+    print('inside view_all_assigned_students_api')
+    user = request.user
+    logger.info(f"[VIEW-STUDENTS] API accessed by user: {user.username} (ID: {user.id})")
+
+    if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
+        logger.warning(f"[VIEW-STUDENTS] Unauthorized access attempt by {user.username}")
+        return Response({'error': 'Unauthorized'}, status=status.HTTP_403_FORBIDDEN)
+
+    try:
+        data = request.data
+        university_id = int(data.get("university"))
+        course_id = int(data.get("course"))
+        stream_id = int(data.get("stream") or data.get("Stream"))
+        session = data.get("session", "").strip()
+        studypattern = data.get("studypattern", "").upper().strip()
+        semyear = data.get("semyear", "").strip()
+        substream_id = data.get("substream")
+
+        # ✅ Ensure semyear is mandatory
+        if not semyear:
+            logger.warning("[VIEW-STUDENTS] Missing semyear in request.")
+            return Response({'error': 'Semester/Year (semyear) is required.'}, status=400)
+
+        # Prepare filter for matching results via exams
+        exam_filter = {
+            'course_id': course_id,
+            'stream_id': stream_id,
+            'semyear__iexact': semyear
+        }
+
+        if substream_id and str(substream_id).lower() != 'null':
+            try:
+                exam_filter['substream_id'] = int(substream_id)
+            except ValueError:
+                logger.error("[VIEW-STUDENTS] Invalid substream_id format.")
+                return Response({'error': 'Invalid substream_id'}, status=400)
+
+        if session:
+            exam_filter['session__iexact'] = session
+
+        if studypattern:
+            exam_filter['studypattern__iexact'] = studypattern
+
+        logger.debug(f"[VIEW-STUDENTS] Exam filter: {exam_filter}")
+
+        # Get results that match the exam filters
+        matched_results = Result.objects.filter(
+            exam__in=Examination.objects.filter(**exam_filter),
+            student__university_id=university_id
+        ).select_related('student', 'exam')
+
+        # Build unique student response from results
+        student_data = []
+        seen_ids = set()
+
+        for r in matched_results:
+            if r.student and r.student.id not in seen_ids:
+                student = r.student
+                seen_ids.add(student.id)
+                student_data.append({
+                    "student_id": student.id,
+                    "name": student.name,
+                    "email": student.email,
+                    "mobile": student.mobile,
+                    "enrollment_id": student.enrollment_id,
+                    "current_semyear": "",  # optional: could be pulled from Enrolled
+                    "session": r.exam.session,
+                    "entry_mode": "",       # optional: could be pulled from Enrolled
+                    "course_pattern": r.exam.studypattern,
+                })
+
+        logger.info(f"[VIEW-STUDENTS] Found {len(student_data)} students with result records")
+        return Response({'message': 'Students fetched successfully', 'students': student_data}, status=200)
+
+    except Exception as e:
+        logger.exception(f"[VIEW-STUDENTS] Unexpected error: {str(e)}")
+        return Response({'error': 'Internal server error'}, status=500)
 
 
 
@@ -7307,9 +7388,11 @@ def fetch_complete_student_data_api(request):
         stream = Stream.objects.get(id=stream_id)
         substream = SubStream.objects.get(id=substream_id) if substream_id else None
 
-        results = Result.objects.filter(student_id__in=student_ids).select_related(
-            'exam__subject', 'student'
-        ).order_by('student_id', 'exam_id')
+        results = Result.objects.filter(
+            student_id__in=student_ids,
+            exam__semyear=str(semyear)  # cast to string to match field type
+        ).select_related('exam__subject', 'student').order_by('student_id', 'exam_id')
+
 
         student_subject_map = {}
         student_name_map = {}
@@ -7388,7 +7471,7 @@ def fetch_complete_student_data_api(request):
                         metadata += [
                             ['Session', session],
                             ['Study Pattern', studypattern],
-                            ['Semester/Year', semyear],
+                            ['Semester/Year', any_result.exam.semyear or semyear],
                             ['Subject Name', subject_name],
                             ['Exam Month', exam_month],
                             ['Time Appeared', time_appeared],
@@ -7460,10 +7543,18 @@ def fetch_complete_student_data_api(request):
                         )
 
                         summary_row = len(metadata) + 2 + len(data_df) + 2
-                        worksheet.merge_range(summary_row, 0, summary_row, 7, "MARKS OBTAINED", right_align_bold_border)
+                        
+                        try:
+                            worksheet.merge_range(summary_row, 0, summary_row, 7, "MARKS OBTAINED", right_align_bold_border)
+                        except Exception as merge_err:
+                            logger.warning(f"Skipping merge range due to overlap: {merge_err}")
+                            worksheet.write(summary_row, 7, "MARKS OBTAINED", right_align_bold_border)
+
                         worksheet.write(summary_row, 8, total_obtained, left_align_border)
                         worksheet.write(summary_row, 9, total_max, left_align_border)
 
+                        
+                        
                 zip_file.writestr(f"{safe_name}.xlsx", excel_buffer.getvalue())
 
         if not student_subject_map:
