@@ -3551,6 +3551,7 @@ def bulk_exam_upload(request):
 
 logger = logging.getLogger('student_registration')
 
+
 @api_view(['GET'])
 def filter_questions(request):
     try:
@@ -3590,6 +3591,26 @@ def filter_questions(request):
     except Exception as e:
         logger.error(f"Error occurred while filtering questions: {str(e)}")
         return Response({"error": "Something went wrong!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+
+@api_view(['GET'])
+def filter_questions(request):
+    try:
+        exam_id = request.query_params.get('exam_id')
+
+        if not exam_id:
+            return Response({"error": "Missing exam_id in request"}, status=status.HTTP_400_BAD_REQUEST)
+
+        questions_queryset = Questions.objects.filter(exam__id=exam_id).distinct()
+        serializer = QuestionsSerializer(questions_queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error(f"Error occurred while filtering questions: {str(e)}")
+        return Response({"error": "Something went wrong!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 # @api_view(['POST'])
 # def fetch_exam(request):
