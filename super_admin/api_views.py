@@ -3550,50 +3550,6 @@ def bulk_exam_upload(request):
         return Response({"status": "error", "message": "Internal server error"}, status=500)
 
 logger = logging.getLogger('student_registration')
-
-
-@api_view(['GET'])
-def filter_questions(request):
-    try:
-        # Extract filters from request query parameters
-        examtype = request.query_params.get('examtype')
-        semyear = request.query_params.get('semyear')
-        subject = request.query_params.get('subject')
-        university_id = request.query_params.get('university')
-        course_id = request.query_params.get('course')
-        stream_id = request.query_params.get('stream')
-        substream_id = request.query_params.get('substream')
-
-        print("Filters =>", examtype, semyear, subject, university_id, course_id, stream_id, substream_id)
-
-        # Start with all questions
-        questions_queryset = Questions.objects.all()
-
-        if examtype:
-            questions_queryset = questions_queryset.filter(exam__examtype=examtype)
-        if semyear:
-            questions_queryset = questions_queryset.filter(exam__semyear=semyear)
-        if subject:
-            questions_queryset = questions_queryset.filter(exam__subject__name=subject)
-        if university_id:
-            questions_queryset = questions_queryset.filter(exam__university__id=university_id)
-        if course_id:
-            questions_queryset = questions_queryset.filter(exam__course__id=course_id)
-        if stream_id:
-            questions_queryset = questions_queryset.filter(exam__stream__id=stream_id)
-        if substream_id:
-            questions_queryset = questions_queryset.filter(exam__substream__id=substream_id)
-
-        questions_queryset = questions_queryset.distinct()
-        serializer = QuestionsSerializer(questions_queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    except Exception as e:
-        logger.error(f"Error occurred while filtering questions: {str(e)}")
-        return Response({"error": "Something went wrong!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-
-
 @api_view(['GET'])
 def filter_questions(request):
     try:
