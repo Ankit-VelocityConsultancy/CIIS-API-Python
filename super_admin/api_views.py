@@ -210,7 +210,7 @@ def add_university(request):
     if request.method == 'GET':
         universities = University.objects.all()
         serializer = UniversitySerializer(universities, many=True)
-        logger.info(f"[{user.email}] fetched universities list.")
+        #logger.info(f"[{user.email}] fetched universities list.")
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
@@ -245,7 +245,7 @@ def add_university(request):
     serializer = UniversitySerializer(data=data)
     if serializer.is_valid():
         serializer.save()
-        logger.info(f"[{user.email}] Successfully added university: {university_name}")
+        #logger.info(f"[{user.email}] Successfully added university: {university_name}")
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     logger.error(f"[{user.email}] Error validating university data: {serializer.errors}")
@@ -263,7 +263,7 @@ def university_detail(request, university_id):
 
     if request.method == 'GET':
         serializer = UniversitySerializer(university)
-        logger.info(f"[{user.email}] viewed university ID: {university_id}")
+        #logger.info(f"[{user.email}] viewed university ID: {university_id}")
         return Response(serializer.data)
 
     if request.method == 'PUT':
@@ -274,7 +274,7 @@ def university_detail(request, university_id):
         serializer = UniversitySerializer(university, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            logger.info(f"[{user.email}] updated university ID: {university_id}")
+            #logger.info(f"[{user.email}] updated university ID: {university_id}")
             return Response(serializer.data)
         logger.error(f"[{user.email}] error updating university ID: {university_id} | {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -284,7 +284,7 @@ def university_detail(request, university_id):
             logger.warning(f"[{user.email}] Unauthorized university deletion attempt.")
             return Response({"message": "Only superusers can delete universities."}, status=status.HTTP_403_FORBIDDEN)
         university.delete()
-        logger.info(f"[{user.email}] deleted university ID: {university_id}")
+        #logger.info(f"[{user.email}] deleted university ID: {university_id}")
         return Response({"message": "University deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
   
 
@@ -298,7 +298,7 @@ def create_user(request):
         if user.is_superuser:
             users = User.objects.filter(Q(is_fee_clerk=True) | Q(is_data_entry=True))
             serializer = UserSerializers(users, many=True)
-            logger.info(f"[{user.email}] fetched all fee clerk and data entry users.")
+            #logger.info(f"[{user.email}] fetched all fee clerk and data entry users.")
             return Response(serializer.data, status=status.HTTP_200_OK)
         logger.warning(f"[{user.email}] attempted to fetch users without permission.")
         return Response({"message": "You do not have permission to view users."}, status=status.HTTP_403_FORBIDDEN)
@@ -312,7 +312,7 @@ def create_user(request):
 
             if serializer.is_valid():
                 new_user = serializer.save()
-                logger.info(f"[{user.email}] created new user with email: {new_user.email}")
+                #logger.info(f"[{user.email}] created new user with email: {new_user.email}")
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             logger.error(f"[{user.email}] user creation failed: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -497,7 +497,7 @@ def payment_modes(request):
     if request.method == 'GET':
         modes = PaymentModes.objects.all()
         serializer = PaymentModesSerializer(modes, many=True)
-        logger.info("Payment modes list fetched.")
+        #logger.info("Payment modes list fetched.")
         return Response(serializer.data)
 
     if request.method == 'POST':
@@ -508,7 +508,7 @@ def payment_modes(request):
                 logger.warning(f"Duplicate payment mode attempted: {name}")
                 return Response({"error": "Mode already exists"}, status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
-            logger.info(f"Payment mode created: {name}")
+            #logger.info(f"Payment mode created: {name}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         logger.error(f"Payment mode creation failed: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -530,14 +530,14 @@ def payment_mode_detail(request, id):
         serializer = PaymentModesSerializer(mode, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            logger.info(f"Updated payment mode ID {id}.")
+            #logger.info(f"Updated payment mode ID {id}.")
             return Response(serializer.data)
         logger.error(f"Failed to update payment mode ID {id}: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'DELETE':
         mode.delete()
-        logger.info(f"Deleted payment mode ID {id}.")
+        #logger.info(f"Deleted payment mode ID {id}.")
         return Response({"message": "Payment mode deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
 @api_view(['GET', 'POST'])
@@ -550,14 +550,14 @@ def fee_receipt_options(request):
     if request.method == 'GET':
         options = FeeReceiptOptions.objects.all()
         serializer = FeeReceiptOptionsSerializer(options, many=True)
-        logger.info("Fetched all fee receipt options.")
+        #logger.info("Fetched all fee receipt options.")
         return Response(serializer.data)
 
     if request.method == 'POST':
         serializer = FeeReceiptOptionsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            logger.info("Created new fee receipt option.")
+            #logger.info("Created new fee receipt option.")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         logger.error(f"Failed to create fee receipt option: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -583,14 +583,14 @@ def fee_receipt_option_detail(request, id):
         serializer = FeeReceiptOptionsSerializer(option, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            logger.info(f"Updated fee receipt option ID {id}.")
+            #logger.info(f"Updated fee receipt option ID {id}.")
             return Response(serializer.data)
         logger.error(f"Failed to update fee receipt option ID {id}: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'DELETE':
         option.delete()
-        logger.info(f"Deleted fee receipt option ID {id}.")
+        #logger.info(f"Deleted fee receipt option ID {id}.")
         return Response({"message": "Fee receipt option deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
 
@@ -604,7 +604,7 @@ def bank_names(request):
     if request.method == 'GET':
         banks = BankNames.objects.all()
         serializer = BankNamesSerializer(banks, many=True)
-        logger.info("Fetched all bank names.")
+        #logger.info("Fetched all bank names.")
         return Response(serializer.data)
 
     if request.method == 'POST':
@@ -615,7 +615,7 @@ def bank_names(request):
                 logger.warning(f"Attempted to create duplicate bank name: {name}")
                 return Response({"error": "Bank name already exists"}, status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
-            logger.info(f"Created new bank name: {name}")
+            #logger.info(f"Created new bank name: {name}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         logger.error(f"Failed to create bank name: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -637,14 +637,14 @@ def bank_name_detail(request, id):
         serializer = BankNamesSerializer(bank, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            logger.info(f"Updated bank name ID {id}.")
+            #logger.info(f"Updated bank name ID {id}.")
             return Response(serializer.data)
         logger.error(f"Failed to update bank name ID {id}: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'DELETE':
         bank.delete()
-        logger.info(f"Deleted bank name ID {id}.")
+        #logger.info(f"Deleted bank name ID {id}.")
         return Response({"message": "Bank name deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'POST'])
@@ -661,7 +661,7 @@ def session_names(request):
     if request.method == 'GET':
         sessions = SessionNames.objects.all()
         serializer = SessionNamesSerializer(sessions, many=True)
-        logger.info("Fetched all session names.")
+        #logger.info("Fetched all session names.")
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     if request.method == 'POST':
@@ -671,7 +671,7 @@ def session_names(request):
                 logger.warning("Attempt to create duplicate session name.")
                 return Response({"error": "Session name already exists"}, status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
-            logger.info(f"Session name created: {serializer.validated_data['name']}")
+            #logger.info(f"Session name created: {serializer.validated_data['name']}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         logger.error(f"Failed to create session name: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -708,14 +708,14 @@ def session_name_detail(request, id):
                 return Response({"error": "Session name already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
             serializer.save()
-            logger.info(f"Updated session name ID {id}")
+            #logger.info(f"Updated session name ID {id}")
             return Response(serializer.data, status=status.HTTP_200_OK)
         logger.error(f"Failed to update session name ID {id}: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'DELETE':
         session.delete()
-        logger.info(f"Deleted session name ID {id}")
+        #logger.info(f"Deleted session name ID {id}")
         return Response({"message": "Session name deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
 
@@ -736,7 +736,7 @@ def change_password(request):
     if serializer.is_valid():
         user.set_password(serializer.validated_data['password'])
         user.save()
-        logger.info(f"[{user.email}] changed their password.")
+        #logger.info(f"[{user.email}] changed their password.")
         return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
 
     logger.error(f"[{user.email}] failed password change: {serializer.errors}")
@@ -760,7 +760,7 @@ def get_courses_by_university(request):
     courses = university.course_set.all()
     course_names = [course.name for course in courses]
 
-    logger.info(f"Courses fetched for university: {university_name}")
+    #logger.info(f"Courses fetched for university: {university_name}")
     return Response({
         "university": university_name,
         "courses": course_names
@@ -801,7 +801,7 @@ def get_stream_by_course_one(request):
             for stream in streams
         ]
 
-        logger.info("Streams fetched for course '%s' at university '%s'", course.name, university.university_name)
+        #logger.info("Streams fetched for course '%s' at university '%s'", course.name, university.university_name)
 
         return Response({
             "university_name": university.university_name,
@@ -851,7 +851,7 @@ def get_substreams_by_university_course_stream(request):
     substreams = SubStream.objects.filter(stream=stream)
     substream_names = [substream.name for substream in substreams]
 
-    logger.info("Fetched %d substreams for stream '%s'", len(substream_names), stream.name)
+    #logger.info("Fetched %d substreams for stream '%s'", len(substream_names), stream.name)
     return Response(substream_names, status=status.HTTP_200_OK)
         
 from django.contrib.auth.hashers import make_password
@@ -868,7 +868,7 @@ def search_by_enrollment_id(request):
     try:
         student = Student.objects.get(enrollment_id=enrollment_id)
         serializer = StudentSearchSerializer(student)
-        logger.info(f"Student found with enrollment_id: {enrollment_id}")
+        #logger.info(f"Student found with enrollment_id: {enrollment_id}")
         return Response({"data": serializer.data}, status=status.HTTP_200_OK)
     except Student.DoesNotExist:
         logger.warning(f"No student found for enrollment_id: {enrollment_id}")
@@ -890,10 +890,10 @@ def search_by_student_name(request):
 
     if students.exists():
         serializer = StudentSearchSerializer(students, many=True)
-        logger.info(f"Found {students.count()} student(s) matching: '{name_query}'")
+        #logger.info(f"Found {students.count()} student(s) matching: '{name_query}'")
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        logger.info(f"No students found for name search: '{name_query}'")
+        #logger.info(f"No students found for name search: '{name_query}'")
         return Response({"message": "No students found."}, status=status.HTTP_404_NOT_FOUND)
   
 
@@ -2936,7 +2936,7 @@ def quick_registration(request):
 # @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
 # def create_subject(request):
-#     logger.info("Received request to create subject.")
+#     #logger.info("Received request to create subject.")
     
 #     # Extract input data from the request
 #     subject_data = {
@@ -2957,7 +2957,7 @@ def quick_registration(request):
 #     # Get the stream object
 #     try:
 #         stream = Stream.objects.get(id=subject_data['stream_id'])
-#         logger.info(f"Stream with id {subject_data['stream_id']} found.")
+#         #logger.info(f"Stream with id {subject_data['stream_id']} found.")
 #     except Stream.DoesNotExist:
 #         logger.error(f"Stream with id {subject_data['stream_id']} not found.")
 #         return Response({'error': 'Stream not found.'}, status=status.HTTP_404_NOT_FOUND)
@@ -2967,12 +2967,12 @@ def quick_registration(request):
 #     if subject_data['substream_id']:
 #         try:
 #             substream = SubStream.objects.get(id=subject_data['substream_id'], stream=stream)
-#             logger.info(f"Substream with id {subject_data['substream_id']} found for the stream.")
+#             #logger.info(f"Substream with id {subject_data['substream_id']} found for the stream.")
 #         except SubStream.DoesNotExist:
 #             logger.error(f"Substream with id {subject_data['substream_id']} not found for stream with id {subject_data['stream_id']}.")
 #             return Response({'error': 'SubStream not found for the specified stream.'}, status=status.HTTP_404_NOT_FOUND)
 #     else:
-#         logger.info("No substream ID provided, substream will be set to null.")
+#         #logger.info("No substream ID provided, substream will be set to null.")
 
 #     # Check for duplicate Subject
 #     if Subject.objects.filter(
@@ -2994,7 +2994,7 @@ def quick_registration(request):
 #     serializer = SubjectSerializer(data=subject_data)
 #     if serializer.is_valid():
 #         serializer.save()
-#         logger.info(f"Subject '{subject_data['name']}' with code '{subject_data['code']}' successfully created.")
+#         #logger.info(f"Subject '{subject_data['name']}' with code '{subject_data['code']}' successfully created.")
 #         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 #     # Handle validation errors
@@ -3004,7 +3004,7 @@ def quick_registration(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_subject(request):
-    logger.info("Received request to create subject.")
+    #logger.info("Received request to create subject.")
     
     # Extract input data from the request
     subject_data = {
@@ -3025,7 +3025,7 @@ def create_subject(request):
     # Get the stream object
     try:
         stream = Stream.objects.get(id=subject_data['stream_id'])
-        logger.info(f"Stream with id {subject_data['stream_id']} found.")
+        #logger.info(f"Stream with id {subject_data['stream_id']} found.")
     except Stream.DoesNotExist:
         logger.error(f"Stream with id {subject_data['stream_id']} not found.")
         return Response({'error': 'Stream not found.'}, status=status.HTTP_404_NOT_FOUND)
@@ -3035,12 +3035,13 @@ def create_subject(request):
     if subject_data['substream_id']:
         try:
             substream = SubStream.objects.get(id=subject_data['substream_id'], stream=stream)
-            logger.info(f"Substream with id {subject_data['substream_id']} found for the stream.")
+            #logger.info(f"Substream with id {subject_data['substream_id']} found for the stream.")
         except SubStream.DoesNotExist:
             logger.error(f"Substream with id {subject_data['substream_id']} not found for stream with id {subject_data['stream_id']}.")
             return Response({'error': 'SubStream not found for the specified stream.'}, status=status.HTTP_404_NOT_FOUND)
     else:
-        logger.info("No substream ID provided, substream will be set to null.")
+        pass
+        #logger.info("No substream ID provided, substream will be set to null.")
 
     # ✅ Improved duplicate check logic
     duplicate_subject = Subject.objects.filter(
@@ -3063,7 +3064,7 @@ def create_subject(request):
     serializer = SubjectSerializer(data=subject_data)
     if serializer.is_valid():
         serializer.save()
-        logger.info(f"Subject '{subject_data['name']}' with code '{subject_data['code']}' successfully created.")
+        #logger.info(f"Subject '{subject_data['name']}' with code '{subject_data['code']}' successfully created.")
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     logger.error(f"Validation failed: {serializer.errors}")
@@ -3239,7 +3240,7 @@ def bulk_student_upload(request):
             else:
                 date_of_birth = datetime.strptime(date_of_birth, "%d-%m-%Y").date()
 
-            logger.info(f"Processing Row {row_number}: {row}")
+            #logger.info(f"Processing Row {row_number}: {row}")
 
             required_fields = [name, date_of_birth, mobile_number, email, university_name, course_name, stream_name]
             if not all(required_fields):
@@ -3345,7 +3346,7 @@ def bulk_student_upload(request):
             )
 
             msg = f"Row {row_number}: Student '{name}' added successfully."
-            logger.info(msg)
+            #logger.info(msg)
             successes.append(msg)
 
         except Exception as e:
@@ -4705,7 +4706,7 @@ def save_all_questions_answers(request):
         exam_id = data.get("exam_id")
         questions = data.get("questions")
 
-        logger.info(f"Received submission for student_id={student_id}, exam_id={exam_id}")
+        #logger.info(f"Received submission for student_id={student_id}, exam_id={exam_id}")
 
         # Validate presence of required fields
         if not student_id or not exam_id or not questions:
@@ -4774,7 +4775,7 @@ def save_all_questions_answers(request):
                 result=result,
             )
 
-            logger.info(f"Saved answer for question_id={question_id}: {result}, Marks={marks_obtained}")
+            #logger.info(f"Saved answer for question_id={question_id}: {result}, Marks={marks_obtained}")
 
             saved_answers.append({
                 "question_id": question_id,
@@ -4782,7 +4783,7 @@ def save_all_questions_answers(request):
                 "marks_obtained": marks_obtained,
             })
 
-        logger.info(f"Successfully saved {len(saved_answers)} answers for student {student_id}.")
+        #logger.info(f"Successfully saved {len(saved_answers)} answers for student {student_id}.")
 
         return Response({
             "message": "Submitted answers saved successfully.",
@@ -5088,7 +5089,7 @@ def delete_university(request, university_id):
             return Response({"message": "Cannot delete university as it has associated courses."}, status=status.HTTP_400_BAD_REQUEST)
         university_name = university.university_name
         university.delete()
-        logger.info(f"University '{university_name}' with ID {university_id} deleted successfully.")
+        #logger.info(f"University '{university_name}' with ID {university_id} deleted successfully.")
         return Response({"message": f"University '{university_name}' deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     except University.DoesNotExist:
         logger.warning(f"Attempt to delete non-existent university with ID {university_id}.")
@@ -5102,7 +5103,7 @@ def delete_course(request, course_id):
             return Response({"message": "Cannot delete course as it has associated streams."}, status=status.HTTP_400_BAD_REQUEST)
         course_name = course.name
         course.delete()
-        logger.info(f"Course '{course_name}' with ID {course_id} deleted successfully.")
+        #logger.info(f"Course '{course_name}' with ID {course_id} deleted successfully.")
         return Response({"message": f"Course '{course_name}' deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     except Course.DoesNotExist:
         logger.warning(f"Attempt to delete non-existent course with ID {course_id}.")
@@ -5116,7 +5117,7 @@ def delete_stream(request, stream_id):
             return Response({"message": "Cannot delete stream as it has associated substreams or subjects."}, status=status.HTTP_400_BAD_REQUEST)
         stream_name = stream.name
         stream.delete()
-        logger.info(f"Stream '{stream_name}' with ID {stream_id} deleted successfully.")
+        #logger.info(f"Stream '{stream_name}' with ID {stream_id} deleted successfully.")
         return Response({"message": f"Stream '{stream_name}' deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     except Stream.DoesNotExist:
         logger.warning(f"Attempt to delete non-existent stream with ID {stream_id}.")
@@ -5130,7 +5131,7 @@ def delete_substream(request, substream_id):
             return Response({"message": "Cannot delete substream as it has associated subjects."}, status=status.HTTP_400_BAD_REQUEST)
         substream_name = substream.name
         substream.delete()
-        logger.info(f"SubStream '{substream_name}' with ID {substream_id} deleted successfully.")
+        #logger.info(f"SubStream '{substream_name}' with ID {substream_id} deleted successfully.")
         return Response({"message": f"SubStream '{substream_name}' deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     except SubStream.DoesNotExist:
         logger.warning(f"Attempt to delete non-existent substream with ID {substream_id}.")
@@ -5142,7 +5143,7 @@ def delete_subject(request, subject_id):
         subject = Subject.objects.get(id=subject_id)
         subject_name = subject.name
         subject.delete()
-        logger.info(f"Subject '{subject_name}' with ID {subject_id} deleted successfully.")
+        #logger.info(f"Subject '{subject_name}' with ID {subject_id} deleted successfully.")
         return Response({"message": f"Subject '{subject_name}' deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     except Subject.DoesNotExist:
         logger.warning(f"Attempt to delete non-existent subject with ID {subject_id}.")
@@ -5258,7 +5259,7 @@ def get_student_enroll_to_next_year(request, id):
                     "current_semyear": enrolled.current_semyear,
                     "next_semyear": int(enrolled.current_semyear) + 1,
                 }
-                logger.info(f"GET Request - Student ID: {id}, Response: {student_data}")
+                #logger.info(f"GET Request - Student ID: {id}, Response: {student_data}")
                 return Response({"status": "success", "data": student_data}, status=status.HTTP_200_OK)
 
         if request.method == "POST":
@@ -5278,7 +5279,7 @@ def get_student_enroll_to_next_year(request, id):
                 "stream": enrolled.stream.name if enrolled.stream else "",  # Stream Name
             }
 
-            logger.info(f"POST Request - Student ID: {id}, New Semester/Year: {new_semyear}, Response: {response_data}")
+            #logger.info(f"POST Request - Student ID: {id}, New Semester/Year: {new_semyear}, Response: {response_data}")
             return Response({"status": "success", "data": response_data}, status=status.HTTP_200_OK)
 
     except Student.DoesNotExist:
@@ -5337,7 +5338,7 @@ def update_multiple_subjects(request):
 
             subject.save()
             updated_subjects.append({"id": subject.id, "updated_fields": fields_updated})
-            logger.info(f"Updated Subject ID {subject.id}. Fields updated: {', '.join(fields_updated)}")
+            #logger.info(f"Updated Subject ID {subject.id}. Fields updated: {', '.join(fields_updated)}")
 
         response_data = {"status": "success", "updated_subjects": updated_subjects}
         if errors:
@@ -5376,7 +5377,7 @@ def register_cancel_student(request, id):
             student.is_enrolled = False
             student.is_cancelled = True
             student.save()
-            logger.info(f"Student with ID {id} has been cancelled.")
+            #logger.info(f"Student with ID {id} has been cancelled.")
             return Response({"status": "success", "message": "Student registration cancelled successfully."}, status=status.HTTP_200_OK)
         else:
             logger.error(f"Invalid cancel_status received: {cancel_status}")
@@ -6183,7 +6184,7 @@ def document_management(request, enrollment_id):
     try:
         # Fetch the student by enrollment_id
         student = Student.objects.get(enrollment_id=enrollment_id)
-        logger.info(f"Fetching documents for student: {student.name} (Enrollment ID: {student.enrollment_id})")
+        #logger.info(f"Fetching documents for student: {student.name} (Enrollment ID: {student.enrollment_id})")
 
         # Fetch student documents
         student_documents = StudentDocuments.objects.filter(student=student)
@@ -6518,7 +6519,7 @@ def create_category(request):
     if serializer.is_valid():
         try:
             serializer.save()
-            logger.info(f"Category created successfully: {serializer.data}")
+            #logger.info(f"Category created successfully: {serializer.data}")
             return Response({
                 'message': 'Category created successfully',
                 'data': serializer.data
@@ -6542,7 +6543,7 @@ def update_category(request, pk):
     if serializer.is_valid():
         try:
             serializer.save()
-            logger.info(f"Category updated successfully (ID: {pk}): {serializer.data}")
+            #logger.info(f"Category updated successfully (ID: {pk}): {serializer.data}")
             return Response({
                 'message': 'Category updated successfully',
                 'data': serializer.data
@@ -6559,7 +6560,7 @@ def list_categories(request):
     try:
         categories = Categories.objects.all().order_by('-created_at')  # Optional: sorted by latest
         serializer = CategoriesSerializer(categories, many=True)
-        logger.info(f"{len(categories)} categories fetched successfully.")
+        #logger.info(f"{len(categories)} categories fetched successfully.")
         return Response({'data': serializer.data}, status=status.HTTP_200_OK)
     except Exception as e:
         logger.error(f"Error fetching categories: {str(e)}", exc_info=True)
@@ -6572,7 +6573,7 @@ def create_source(request):
     if serializer.is_valid():
         try:
             serializer.save()
-            logger.info(f"Source created: {serializer.data}")
+            #logger.info(f"Source created: {serializer.data}")
             return Response({'message': 'Source created successfully', 'data': serializer.data}, status=status.HTTP_201_CREATED)
         except Exception as e:
             logger.error(f"Error saving source: {str(e)}", exc_info=True)
@@ -6593,7 +6594,7 @@ def update_source(request, pk):
     if serializer.is_valid():
         try:
             serializer.save()
-            logger.info(f"Source updated (ID {pk}): {serializer.data}")
+            #logger.info(f"Source updated (ID {pk}): {serializer.data}")
             return Response({'message': 'Source updated successfully', 'data': serializer.data})
         except Exception as e:
             logger.error(f"Error updating source (ID {pk}): {str(e)}", exc_info=True)
@@ -6607,7 +6608,7 @@ def list_sources(request):
     try:
         sources = Source.objects.all()
         serializer = SourceSerializer(sources, many=True)
-        logger.info(f"{len(sources)} sources fetched.")
+        #logger.info(f"{len(sources)} sources fetched.")
         return Response({'data': serializer.data}, status=status.HTTP_200_OK)
     except Exception as e:
         logger.error(f"Error fetching sources: {str(e)}", exc_info=True)
@@ -6778,7 +6779,7 @@ def registered_save_enrollment_to_next_semyear(request):
         enrolled = Enrolled.objects.get(student=student_id)
         enrolled.current_semyear = next_s
         enrolled.save()
-        logger.info(f"Student {student_id} promoted to sem/year {next_s}")
+        #logger.info(f"Student {student_id} promoted to sem/year {next_s}")
         return Response({"status": "success", "message": "Student enrolled to next semester/year"}, status=status.HTTP_200_OK)
     except Enrolled.DoesNotExist:
         logger.error(f"No enrollment found for student ID {student_id}")
@@ -6788,7 +6789,7 @@ def registered_save_enrollment_to_next_semyear(request):
 @permission_classes([IsAuthenticated])
 def export_exam_data_to_excel(request):
     user = request.user
-    logger.info(f"[EXPORT] Request received by user: {user.username} (ID: {user.id})")
+    #logger.info(f"[EXPORT] Request received by user: {user.username} (ID: {user.id})")
 
     if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
         logger.warning(f"[EXPORT] Unauthorized access attempt by user: {user.username}")
@@ -6818,7 +6819,7 @@ def export_exam_data_to_excel(request):
 
         exams = Examination.objects.filter(filters)
         if not exams.exists():
-            logger.info("[EXPORT] No matching exams found for the given filters.")
+            #logger.info("[EXPORT] No matching exams found for the given filters.")
             return Response({"message": "No results found"}, status=status.HTTP_400_BAD_REQUEST)
 
         formatted_data = []
@@ -6899,7 +6900,7 @@ def export_exam_data_to_excel(request):
                         })
 
         if not formatted_data:
-            logger.info("[EXPORT] No student data available to export.")
+            #logger.info("[EXPORT] No student data available to export.")
             return Response({"message": "No students assigned"}, status=status.HTTP_400_BAD_REQUEST)
 
         workbook = openpyxl.Workbook()
@@ -6917,7 +6918,7 @@ def export_exam_data_to_excel(request):
                 value = row_data[header]
                 sheet.cell(row=row_num, column=col_num).value = value.upper() if isinstance(value, str) else value
 
-        logger.info(f"[EXPORT] Excel file prepared with {len(formatted_data)} records.")
+        #logger.info(f"[EXPORT] Excel file prepared with {len(formatted_data)} records.")
 
         response = HttpResponse(
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -6925,7 +6926,7 @@ def export_exam_data_to_excel(request):
         response['Content-Disposition'] = 'attachment; filename="exam_data_export.xlsx"'
         workbook.save(response)
 
-        logger.info("[EXPORT] Excel file successfully sent as response.")
+        #logger.info("[EXPORT] Excel file successfully sent as response.")
         return response
 
     except Exception as e:
@@ -6940,7 +6941,7 @@ import io
 def view_all_assigned_students_api(request):
     print('inside view_all_assigned_students_api')
     user = request.user
-    logger.info(f"[VIEW-STUDENTS] API accessed by user: {user.username} (ID: {user.id})")
+    #logger.info(f"[VIEW-STUDENTS] API accessed by user: {user.username} (ID: {user.id})")
 
     if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
         logger.warning(f"[VIEW-STUDENTS] Unauthorized access attempt by {user.username}")
@@ -7009,7 +7010,7 @@ def view_all_assigned_students_api(request):
                     "course_pattern": r.exam.studypattern,
                 })
 
-        logger.info(f"[VIEW-STUDENTS] Found {len(student_data)} students with result records")
+        #logger.info(f"[VIEW-STUDENTS] Found {len(student_data)} students with result records")
         return Response({'message': 'Students fetched successfully', 'students': student_data}, status=200)
 
     except Exception as e:
@@ -7020,7 +7021,7 @@ def view_all_assigned_students_api(request):
 @permission_classes([IsAuthenticated])
 def fetch_complete_student_data_api(request):
     user = request.user
-    logger.info(f"[EXPORT-ZIP] Started by {user.username} (ID={user.id})")
+    #logger.info(f"[EXPORT-ZIP] Started by {user.username} (ID={user.id})")
 
     if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
         logger.warning(f"[EXPORT-ZIP] Unauthorized access attempt by {user.username}")
@@ -7235,7 +7236,7 @@ def fetch_complete_student_data_api(request):
             response['X-Missing-Students'] = ', '.join(students_without_data[:10])
             response['X-Missing-Count'] = str(len(students_without_data))
 
-        logger.info(f"[EXPORT-ZIP] Successfully generated ZIP for {len(student_subject_map)} students")
+        #logger.info(f"[EXPORT-ZIP] Successfully generated ZIP for {len(student_subject_map)} students")
         return response
 
     except Exception as e:
