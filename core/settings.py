@@ -105,7 +105,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ciis_exam_test',
+        'NAME': 'testing_local_ciis_exam',
         'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'root',
