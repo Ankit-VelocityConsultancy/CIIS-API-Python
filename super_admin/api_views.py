@@ -210,7 +210,7 @@ def add_university(request):
     if request.method == 'GET':
         universities = University.objects.all()
         serializer = UniversitySerializer(universities, many=True)
-        #logger.info(f"[{user.email}] fetched universities list.")
+        logger.info(f"[{user.email}] fetched universities list.")
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
@@ -6969,7 +6969,7 @@ import io
 def view_all_assigned_students_api(request):
     print('inside view_all_assigned_students_api')
     user = request.user
-    #logger.info(f"[VIEW-STUDENTS] API accessed by user: {user.username} (ID: {user.id})")
+    logger.info(f"[VIEW-STUDENTS] API accessed by user: {user.username} (ID: {user.id})")
 
     if not (user.is_superuser or getattr(user, 'is_data_entry', False)):
         logger.warning(f"[VIEW-STUDENTS] Unauthorized access attempt by {user.username}")

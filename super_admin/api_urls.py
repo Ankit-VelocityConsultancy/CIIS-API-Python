@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from super_admin import api_views
 from rest_framework_simplejwt.views import  TokenObtainPairView,TokenRefreshView
-
+from super_admin import api_role
 urlpatterns = [
   path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
   path('login/',api_views.login_view,name="login" ),
@@ -195,8 +195,12 @@ urlpatterns = [
   path('export_exam_data_to_excel/', api_views.export_exam_data_to_excel, name='export_exam_data_to_excel'),
   path('fetch_complete_student_data/', api_views.fetch_complete_student_data_api, name='fetch_complete_student_data'),
   path('view_all_assigned_students_api/', api_views.view_all_assigned_students_api, name='view_all_assigned_students_api'),
+#---------------------Role----------------------------------------------#
 
+  path('get_roles/', api_role.get_roles, name='view_all_assigned_students_api'),
+  path('create_role/', api_role.create_role, name='create_role'),
 
+  
 ]
   
 

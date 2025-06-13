@@ -7,28 +7,43 @@ import os
 #8000
 
 default_permissions = {
-    "post_job": 0,
-    "view_resume": 0,
-    "create_student": 0,
-    "delete_student": 0,
-    "edit_student": 0,
-    "view_reports": 0,
-    "create_course": 0,
-    "delete_course": 0,
-    "update_fees": 0
+    # New permissions for different sections
+    "dashboard": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "user": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "report": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "department": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "categories": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "subcategories": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "paymentmodes": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "sources": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "statuses": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "tags": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "colors": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "countries": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "states": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "templates": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "leads": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "settings": {"add": 0, "view": 0, "edit": 0, "delete": 0},
 }
 
 # Permissions for super admins (set to 1 for full access)
 super_admin_permissions = {
-    "post_job": 1,
-    "view_resume": 1,
-    "create_student": 1,
-    "delete_student": 1,
-    "edit_student": 1,
-    "view_reports": 1,
-    "create_course": 1,
-    "delete_course": 1,
-    "update_fees": 1
+    "dashboard": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "user": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "report": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "department": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "categories": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "subcategories": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "paymentmodes": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "sources": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "statuses": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "tags": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "colors": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "countries": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "states": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "templates": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "leads": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "settings": {"add": 1, "view": 1, "edit": 1, "delete": 1},
 }
 
 
@@ -59,8 +74,6 @@ class User(AbstractUser):
 
     # Link to the Role model
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
-    permissions = models.JSONField(default=dict)  # Store user-specific permissions
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
