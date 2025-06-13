@@ -5,28 +5,90 @@ from .manager import UserManager
 import os
 # Create your models here.
 #8000
+
+default_permissions = {
+    "post_job": 0,
+    "view_resume": 0,
+    "create_student": 0,
+    "delete_student": 0,
+    "edit_student": 0,
+    "view_reports": 0,
+    "create_course": 0,
+    "delete_course": 0,
+    "update_fees": 0
+}
+
+# Permissions for super admins (set to 1 for full access)
+super_admin_permissions = {
+    "post_job": 1,
+    "view_resume": 1,
+    "create_student": 1,
+    "delete_student": 1,
+    "edit_student": 1,
+    "view_reports": 1,
+    "create_course": 1,
+    "delete_course": 1,
+    "update_fees": 1
+}
+
+
+class Role(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    permissions = models.JSONField(default=dict)  # Default to an empty dict for permissions
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'role'
+
 class User(AbstractUser):
     username = None
     mobile = models.CharField(max_length=14)
     email = models.EmailField(unique=True)
-    birthdate = models.DateField(null=True,blank=True)
-    gender = models.CharField(max_length=50,null=True,blank=True)
-    address = models.CharField(max_length = 80,null=True,blank=True)
+    birthdate = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=50, null=True, blank=True)
+    address = models.CharField(max_length=80, null=True, blank=True)
     is_verified = models.BooleanField(default=False)
     is_student = models.BooleanField(default=False)
     is_data_entry = models.BooleanField(default=False)
     is_fee_clerk = models.BooleanField(default=False)
-    
-    objects = UserManager()
+
+    # Link to the Role model
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
+    permissions = models.JSONField(default=dict)  # Store user-specific permissions
+
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = [] 
+    REQUIRED_FIELDS = []
+
+    def __str__(self):
+        return self.email
+
     class Meta:
         db_table = 'user'
+
+    def save(self, *args, **kwargs):
+        # Assign default permissions when the user is created
+        if not self.permissions:
+            if self.is_superuser:  # If the user is superadmin, give all permissions
+                self.permissions = super_admin_permissions
+            elif self.role and self.role.permissions:
+                # If the user has a role, assign permissions from that role
+                self.permissions = self.role.permissions
+            else:
+                # Otherwise, assign default permissions (0 for regular users)
+                self.permissions = default_permissions
+        super(User, self).save(*args, **kwargs)
+  
+
 
 class Countries(models.Model):
     shortname = models.CharField(max_length=5)
     name = models.CharField(max_length=150)
-    phonecode = models.IntegerField(max_length=11)
+    phonecode = models.IntegerField()
     class Meta:
         db_table = "countries"
 

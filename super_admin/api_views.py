@@ -287,37 +287,65 @@ def university_detail(request, university_id):
         #logger.info(f"[{user.email}] deleted university ID: {university_id}")
         return Response({"message": "University deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
   
-
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def create_user(request):
     user = request.user
-    
+
     # Handle GET request
     if request.method == "GET":
         if user.is_superuser:
-            users = User.objects.filter(Q(is_fee_clerk=True) | Q(is_data_entry=True))
+            # Filter users by specific roles (e.g., Fee Clerk, Data Entry)
+            roles_filter = request.query_params.get('role', None)
+            if roles_filter:
+                # Filter users by the role passed in query parameters
+                users = User.objects.filter(role__name=roles_filter)
+            else:
+                # Default filter if no role is provided
+                users = User.objects.filter(role__name__in=['Fee_clerk', 'Data_entry'])
+            
+            # Serialize the users
             serializer = UserSerializers(users, many=True)
-            #logger.info(f"[{user.email}] fetched all fee clerk and data entry users.")
             return Response(serializer.data, status=status.HTTP_200_OK)
-        logger.warning(f"[{user.email}] attempted to fetch users without permission.")
+        
+        # Return forbidden if the user is not a superuser
         return Response({"message": "You do not have permission to view users."}, status=status.HTTP_403_FORBIDDEN)
 
-    # Handle POST request
+    # Handle POST request to create new users
     if request.method == "POST":
         if user.is_superuser:
-            # If is_superuser is not provided, default to False
+            # Ensure that the incoming data contains role information
+            role_name = request.data.get('role', None)
+            if role_name:
+                try:
+                    role = Role.objects.get(name=role_name)
+                except Role.DoesNotExist:
+                    return Response({"error": "Role does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({"error": "Role is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Initialize serializer
             serializer = UserSerializers(data=request.data)
-            request.data['is_superuser'] = True
 
             if serializer.is_valid():
-                new_user = serializer.save()
-                #logger.info(f"[{user.email}] created new user with email: {new_user.email}")
+                # Assign role and default permissions based on role
+                new_user = serializer.save(role=role)
+
+                # Assign default permissions based on user role or super admin status
+                if new_user.is_superuser:
+                    new_user.permissions = super_admin_permissions
+                elif new_user.role:
+                    new_user.permissions = new_user.role.permissions
+                else:
+                    new_user.permissions = default_permissions
+
+                new_user.save()
+
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-            logger.error(f"[{user.email}] user creation failed: {serializer.errors}")
+
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-        logger.warning(f"[{user.email}] attempted to create user without permission.")
+        # Return forbidden if the user is not a superuser
         return Response({"message": "You do not have permission to create users."}, status=status.HTTP_403_FORBIDDEN)
 
 
@@ -7242,3 +7270,5 @@ def fetch_complete_student_data_api(request):
     except Exception as e:
         logger.exception(f"[EXPORT-ZIP] Internal error: {str(e)}")
         return Response({'error': 'Internal Server Error'}, status=500)
+      
+
