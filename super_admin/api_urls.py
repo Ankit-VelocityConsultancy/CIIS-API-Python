@@ -199,6 +199,11 @@ urlpatterns = [
 
   path('get_roles/', api_role.get_roles, name='view_all_assigned_students_api'),
   path('create_role/', api_role.create_role, name='create_role'),
+  path("roles/save-permissions", api_role.save_role_permissions, name="save-role-permissions"),
+  path("roles/permissions/<str:role_name>/", api_role.get_role_permissions, name="get-role-permissions"),
+  path("edit_role/<int:role_id>/", api_role.edit_role, name="edit_role"),
+  path('get_role_user/', api_role.get_role_user, name='get_role_user'),
+
 
   
 ]

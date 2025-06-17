@@ -71,7 +71,7 @@ class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_data_entry = models.BooleanField(default=False)
     is_fee_clerk = models.BooleanField(default=False)
-
+    status=models.BooleanField(default=True)
     # Link to the Role model
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
     USERNAME_FIELD = 'email'
