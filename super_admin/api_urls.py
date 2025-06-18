@@ -203,7 +203,10 @@ urlpatterns = [
   path("roles/permissions/<str:role_name>/", api_role.get_role_permissions, name="get-role-permissions"),
   path("edit_role/<int:role_id>/", api_role.edit_role, name="edit_role"),
   path('get_role_user/', api_role.get_role_user, name='get_role_user'),
-
+  path('create_or_update_user/', api_role.create_or_update_user, name='create_user'),
+  path('get_user/<int:user_id>/', api_role.get_user_by_id, name='get_user_by_id'),
+  path('create_category/', api_role.create_category, name='create_category'),
+  path('get_all_categories/', api_role.get_all_categories, name='get_all_categories'),
 
   
 ]

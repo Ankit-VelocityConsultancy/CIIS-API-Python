@@ -105,7 +105,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ciis_exam_test',
+        'NAME': 'testing_role_ciis_exam',
         'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'root',
@@ -198,37 +198,6 @@ SIMPLE_JWT = {
 }
 
 
-# CRONJOBS = [
-#     ('*/1 * * * *', 'super_admin.cron.doCron')
-# ]
-
-# LOGGING = { 
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'file': {
-#             'level': 'DEBUG',
-#             'class': 'logging.FileHandler',
-#             'filename': 'customfile.log',  # Specify the desired log file path
-#             'formatter': 'custom',
-#         },
-#     },
-#     'formatters': {
-#         'custom': {
-#             'format': '{asctime} [{levelname}] {user_id}:{email} - {message} ({page})',
-#             'style': '{',
-#         },
-#     },
-#     'loggers': {
-#         'super_admin': {
-#             'handlers': ['file'],
-#             'level': 'DEBUG',
-#             'propagate': True,
-#         },
-#     },
-# }
-
-
 import os
 
 LOGGING = {
@@ -270,6 +239,7 @@ LOGGING = {
         },
     },
 }
+
 
 # Email configuration (for example, using Gmail)
 

@@ -6,6 +6,32 @@ import os
 # Create your models here.
 #8000
 
+from django.contrib.auth.models import BaseUserManager
+
+class CustomUserManager(BaseUserManager):
+  def create_user(self, email, password=None, **extra_fields):
+    if not email:
+        raise ValueError("The Email field must be set")
+    email = self.normalize_email(email)
+    user = self.model(email=email, **extra_fields)
+    user.set_password(password)
+    user.save(using=self._db)
+    return user
+
+  def create_superuser(self, email, password=None, **extra_fields):
+    """
+    Create and return a superuser with the given email and password.
+    """
+    extra_fields.setdefault('is_staff', True)
+    extra_fields.setdefault('is_superuser', True)
+    
+    # Automatically set the role to Super Admin (ID=1)
+    role = Role.objects.get(id=1)  # Assuming the Super Admin role has ID=1
+    extra_fields['role'] = role
+
+    # Create the superuser
+    return self.create_user(email, password, **extra_fields)
+
 default_permissions = {
     # New permissions for different sections
     "dashboard": {"add": 0, "view": 0, "edit": 0, "delete": 0},
@@ -71,11 +97,12 @@ class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_data_entry = models.BooleanField(default=False)
     is_fee_clerk = models.BooleanField(default=False)
-    status=models.BooleanField(default=True)
+    # status=models.BooleanField(default=True)
     # Link to the Role model
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+    objects = CustomUserManager()  # Assign the custom manager
 
     def __str__(self):
         return self.email
@@ -85,17 +112,16 @@ class User(AbstractUser):
 
     def save(self, *args, **kwargs):
         # Assign default permissions when the user is created
-        if not self.permissions:
-            if self.is_superuser:  # If the user is superadmin, give all permissions
-                self.permissions = super_admin_permissions
-            elif self.role and self.role.permissions:
-                # If the user has a role, assign permissions from that role
-                self.permissions = self.role.permissions
-            else:
-                # Otherwise, assign default permissions (0 for regular users)
-                self.permissions = default_permissions
-        super(User, self).save(*args, **kwargs)
-  
+      if self.is_superuser:  # If the user is superadmin, give all permissions
+          self.permissions = super_admin_permissions
+      elif self.role and self.role.permissions:
+          # If the user has a role, assign permissions from that role
+          self.permissions = self.role.permissions
+      else:
+          # Otherwise, assign default permissions (0 for regular users)
+          self.permissions = default_permissions
+      super(User, self).save(*args, **kwargs)
+
 
 
 class Countries(models.Model):
