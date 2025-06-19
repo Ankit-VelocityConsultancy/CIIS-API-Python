@@ -127,7 +127,6 @@ class User(AbstractUser):
 class Countries(models.Model):
     shortname = models.CharField(max_length=5)
     name = models.CharField(max_length=150)
-    phonecode = models.IntegerField()
     class Meta:
         db_table = "countries"
 
@@ -874,26 +873,28 @@ class Source(models.Model):
       return self.name
 
 
-class Status(models.Model):
+class RoleStatus(models.Model):
     name = models.CharField(max_length=255)
+    status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'statuses'
+        db_table = 'role_status'
 
     def __str__(self):
         return self.name
       
 
 
-class Common_Lead_Label(models.Model):
+class Common_Lead_Label_Tags(models.Model):
     name = models.CharField(max_length=255)
+    status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'common_lead_labels'
+        db_table = 'common_lead_labels_tags'
 
     def __str__(self):
         return self.name
@@ -909,3 +910,4 @@ class Color(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.color})"
+      

@@ -9,4 +9,31 @@ class RoleSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
-        fields = '__all__' 
+        fields = ['id', 'name', 'status', 'created_at', 'updated_at']
+        
+class SourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Source
+        fields = ['id', 'name', 'status', 'created_at', 'updated_at']
+        
+class RoleStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoleStatus
+        fields = ['id', 'name', 'status', 'created_at', 'updated_at']
+      
+class CommonLeadLabelTagsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Common_Lead_Label_Tags
+        fields = ['id', 'name', 'status', 'created_at', 'updated_at']
+
+class CountriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Countries
+        fields = ['id', 'shortname', 'name']
+
+
+class StatesSerializer(serializers.ModelSerializer):
+    country_name = serializers.CharField(source='country.name')  # Display country name
+    class Meta:
+        model = States
+        fields = ['id', 'name', 'country', 'country_name']

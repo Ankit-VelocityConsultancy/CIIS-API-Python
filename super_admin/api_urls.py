@@ -171,7 +171,7 @@ urlpatterns = [
   path('check_exam_availability/', api_views.check_exam_availability),
 
 #-----Leads module--------------------------------------
-  path('categories-create/', api_views.create_category, name='create_category'),
+  # path('categories-create/', api_views.create_category, name='create_category'),
   path('categories-update/<int:pk>/', api_views.update_category, name='update_category'),
   path('categories/', api_views.list_categories, name='list_categories'),
   
@@ -207,8 +207,31 @@ urlpatterns = [
   path('get_user/<int:user_id>/', api_role.get_user_by_id, name='get_user_by_id'),
   path('create_category/', api_role.create_category, name='create_category'),
   path('get_all_categories/', api_role.get_all_categories, name='get_all_categories'),
+  path('update_category/<int:category_id>/', api_role.update_category, name='update_category'),
+  path('delete_category/<int:category_id>/', api_role.delete_category, name='delete_category'),
+  path('get_all_sources/', api_role.get_all_sources, name='get_all_sources'),
+  path('create_source/', api_role.create_source, name='create_source'),
+  path('update_source/<int:source_id>/', api_role.update_source, name='update_source'),
+  path('delete_source/<int:source_id>/', api_role.delete_source, name='delete_source'),
+  path('get_all_role_status/', api_role.get_all_role_status, name='get_all_role_status'),
+  path('create_role_status/', api_role.create_role_status, name='create_role_status'),
+  path('update_role_status/<int:role_status_id>/', api_role.update_role_status, name='update_role_status'),
+  path('delete_role_status/<int:role_status_id>/', api_role.delete_role_status, name='delete_role_status'),  
+  path('get_all_lead_label_tags/', api_role.get_all_lead_label_tags, name='get_all_lead_label_tags'),
+  path('create_lead_label_tag/', api_role.create_lead_label_tag, name='create_lead_label_tag'),
+  path('update_lead_label_tag/<int:tag_id>/', api_role.update_lead_label_tag, name='update_lead_label_tag'),
+  path('delete_lead_label_tag/<int:tag_id>/', api_role.delete_lead_label_tag, name='delete_lead_label_tag'),  
+  path('get_all_countries/', api_role.get_all_countries, name='get_all_countries'),
+  path('create_country/', api_role.create_country, name='create_country'),
+  path('update_country/<int:country_id>/', api_role.update_country, name='update_country'),
+  path('delete_country/<int:country_id>/', api_role.delete_country, name='delete_country'),
 
-  
+  path('get_all_states/', api_role.get_all_states, name='get_all_states'),
+  path('create_state/', api_role.create_state, name='create_state'),
+  path('update_state/<int:state_id>/', api_role.update_state, name='update_state'),
+  path('delete_state/<int:state_id>/', api_role.delete_state, name='delete_state'),
+  path('get_states_by_country/<int:country_id>/', api_role.get_states_by_country, name='get_states_by_country'),  # Fetch states by country
+
 ]
   
 

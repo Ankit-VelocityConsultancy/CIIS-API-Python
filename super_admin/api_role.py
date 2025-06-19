@@ -242,14 +242,17 @@ def get_user_by_id(request, user_id):
     except Exception as e:
         logger.error("Error fetching user with ID: %s. Error: %s", user_id, str(e))
         return Response({"error": "User not found."}, status=404)
-
+      
 @api_view(['POST'])
 def create_category(request):
-    """
-    Create a new category.
-    """
     if request.method == 'POST':
-        serializer = CategorySerializer(data=request.data)
+        # Parse status to ensure it is a boolean
+        request_data = request.data.copy()
+        if isinstance(request_data.get('status'), str):
+            request_data['status'] = request_data['status'].lower() == 'true'
+
+        # Pass the cleaned data to the serializer
+        serializer = CategorySerializer(data=request_data)
 
         if serializer.is_valid():
             serializer.save()
@@ -261,11 +264,349 @@ def create_category(request):
 
 @api_view(['GET'])
 def get_all_categories(request):
-    """
-    Retrieve all categories.
-    """
     if request.method == 'GET':
         categories = Categories.objects.all()
         serializer = CategorySerializer(categories, many=True)
         logger.info(f"Fetched {len(categories)} categories.")
         return Response(serializer.data, status=status.HTTP_200_OK)
+      
+@api_view(['PUT'])
+def update_category(request, category_id):
+    try:
+        category = Categories.objects.get(id=category_id)
+    except Categories.DoesNotExist:
+        return Response({"error": "Category not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Parse status to ensure it is a boolean
+    request_data = request.data.copy()
+    if isinstance(request_data.get('status'), str):
+        request_data['status'] = request_data['status'].lower() == 'true'
+
+    # Pass the cleaned data to the serializer
+    serializer = CategorySerializer(category, data=request_data)
+
+    if serializer.is_valid():
+        serializer.save()
+        logger.info(f"Category updated successfully with name: {serializer.data['name']}")
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        logger.error(f"Category update failed: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+      
+@api_view(['DELETE'])
+def delete_category(request, category_id):
+    try:
+        category = Categories.objects.get(id=category_id)
+        category.delete()  # Delete the category
+        logger.info(f"Category deleted successfully with ID: {category_id}")
+        return Response({"message": "Category deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    except Categories.DoesNotExist:
+        return Response({"error": "Category not found"}, status=status.HTTP_404_NOT_FOUND)
+      
+@api_view(['GET'])
+def get_all_sources(request):
+    """
+    Fetch all sources.
+    """
+    sources = Source.objects.all()
+    serializer = SourceSerializer(sources, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def create_source(request):
+    """
+    Create a new source.
+    """
+    if request.method == 'POST':
+        request_data = request.data.copy()
+        if isinstance(request_data.get('status'), str):
+            request_data['status'] = request_data['status'].lower() == 'true'
+
+        serializer = SourceSerializer(data=request_data)
+
+        if serializer.is_valid():
+            serializer.save()
+            logger.info(f"Source created successfully with name: {serializer.data['name']}")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            logger.error(f"Source creation failed: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def update_source(request, source_id):
+    """
+    Update an existing source.
+    """
+    try:
+        source = Source.objects.get(id=source_id)
+    except Source.DoesNotExist:
+        return Response({"error": "Source not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    request_data = request.data.copy()
+    if isinstance(request_data.get('status'), str):
+        request_data['status'] = request_data['status'].lower() == 'true'
+
+    serializer = SourceSerializer(source, data=request_data)
+
+    if serializer.is_valid():
+        serializer.save()
+        logger.info(f"Source updated successfully with name: {serializer.data['name']}")
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        logger.error(f"Source update failed: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def delete_source(request, source_id):
+    """
+    Delete an existing source.
+    """
+    try:
+        source = Source.objects.get(id=source_id)
+        source.delete()
+        logger.info(f"Source deleted successfully with ID: {source_id}")
+        return Response({"message": "Source deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    except Source.DoesNotExist:
+        return Response({"error": "Source not found"}, status=status.HTTP_404_NOT_FOUND)
+      
+
+@api_view(['GET'])
+def get_all_role_status(request):
+    """
+    Fetch all role statuses.
+    """
+    role_status = RoleStatus.objects.all()
+    serializer = RoleStatusSerializer(role_status, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def create_role_status(request):
+    """
+    Create a new role status.
+    """
+    if request.method == 'POST':
+        request_data = request.data.copy()
+        if isinstance(request_data.get('status'), str):
+            request_data['status'] = request_data['status'].lower() == 'true'
+
+        serializer = RoleStatusSerializer(data=request_data)
+
+        if serializer.is_valid():
+            serializer.save()
+            logger.info(f"RoleStatus created successfully with name: {serializer.data['name']}")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            logger.error(f"RoleStatus creation failed: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def update_role_status(request, role_status_id):
+    """
+    Update an existing role status.
+    """
+    try:
+        role_status = RoleStatus.objects.get(id=role_status_id)
+    except RoleStatus.DoesNotExist:
+        return Response({"error": "RoleStatus not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    request_data = request.data.copy()
+    if isinstance(request_data.get('status'), str):
+        request_data['status'] = request_data['status'].lower() == 'true'
+
+    serializer = RoleStatusSerializer(role_status, data=request_data)
+
+    if serializer.is_valid():
+        serializer.save()
+        logger.info(f"RoleStatus updated successfully with name: {serializer.data['name']}")
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        logger.error(f"RoleStatus update failed: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def delete_role_status(request, role_status_id):
+    """
+    Delete an existing role status.
+    """
+    try:
+        role_status = RoleStatus.objects.get(id=role_status_id)
+        role_status.delete()
+        logger.info(f"RoleStatus deleted successfully with ID: {role_status_id}")
+        return Response({"message": "RoleStatus deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    except RoleStatus.DoesNotExist:
+        return Response({"error": "RoleStatus not found"}, status=status.HTTP_404_NOT_FOUND)
+      
+@api_view(['GET'])
+def get_all_lead_label_tags(request):
+    """
+    Fetch all common lead label tags.
+    """
+    lead_label_tags = Common_Lead_Label_Tags.objects.all()
+    serializer = CommonLeadLabelTagsSerializer(lead_label_tags, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def create_lead_label_tag(request):
+    """
+    Create a new lead label tag.
+    """
+    if request.method == 'POST':
+        request_data = request.data.copy()
+        if isinstance(request_data.get('status'), str):
+            request_data['status'] = request_data['status'].lower() == 'true'
+
+        serializer = CommonLeadLabelTagsSerializer(data=request_data)
+
+        if serializer.is_valid():
+            serializer.save()
+            logger.info(f"Lead Label Tag created successfully with name: {serializer.data['name']}")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            logger.error(f"Lead Label Tag creation failed: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def update_lead_label_tag(request, tag_id):
+    """
+    Update an existing lead label tag.
+    """
+    try:
+        tag = Common_Lead_Label_Tags.objects.get(id=tag_id)
+    except Common_Lead_Label_Tags.DoesNotExist:
+        return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    request_data = request.data.copy()
+    if isinstance(request_data.get('status'), str):
+        request_data['status'] = request_data['status'].lower() == 'true'
+
+    serializer = CommonLeadLabelTagsSerializer(tag, data=request_data)
+
+    if serializer.is_valid():
+        serializer.save()
+        logger.info(f"Lead Label Tag updated successfully with name: {serializer.data['name']}")
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        logger.error(f"Lead Label Tag update failed: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def delete_lead_label_tag(request, tag_id):
+    """
+    Delete an existing lead label tag.
+    """
+    try:
+        tag = Common_Lead_Label_Tags.objects.get(id=tag_id)
+        tag.delete()
+        logger.info(f"Lead Label Tag deleted successfully with ID: {tag_id}")
+        return Response({"message": "Lead Label Tag deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    except Common_Lead_Label_Tags.DoesNotExist:
+        return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
+      
+# Fetch all countries
+@api_view(['GET'])
+def get_all_countries(request):
+    countries = Countries.objects.all()
+    serializer = CountriesSerializer(countries, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def create_country(request):
+    if request.method == 'POST':
+        # Get shortname and name from request data
+        shortname = request.data.get('shortname')
+        name = request.data.get('name')
+        
+        if not shortname or not name:
+            return Response({"error": "Shortname and Name are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create the new country
+        country = Countries.objects.create(shortname=shortname, name=name)
+        serializer = CountriesSerializer(country)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['PUT'])
+def update_country(request, country_id):
+    try:
+        country = Countries.objects.get(id=country_id)
+    except Countries.DoesNotExist:
+        return Response({"error": "Country not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Update the country with the new data
+    country.shortname = request.data.get('shortname', country.shortname)
+    country.name = request.data.get('name', country.name)
+    country.save()
+
+    serializer = CountriesSerializer(country)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+  
+@api_view(['DELETE'])
+def delete_country(request, country_id):
+    try:
+        country = Countries.objects.get(id=country_id)
+    except Countries.DoesNotExist:
+        return Response({"error": "Country not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    country.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def get_states_by_country(request, country_id):
+    try:
+        country = Countries.objects.get(id=country_id)
+    except Countries.DoesNotExist:
+        return Response({"error": "Country not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    states = States.objects.filter(country=country)
+    serializer = StatesSerializer(states, many=True)
+    return Response(serializer.data)
+
+# Fetch all states for a given country
+@api_view(['GET'])
+def get_all_states(request):
+    states = States.objects.all()
+    serializer = StatesSerializer(states, many=True)
+    return Response(serializer.data)
+
+# Create a new state
+@api_view(['POST'])
+def create_state(request):
+    try:
+        country = Countries.objects.get(id=request.data['country_id'])  # Get country by ID
+    except Countries.DoesNotExist:
+        return Response({"error": "Country not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+    state = States.objects.create(
+        name=request.data['name'],
+        country=country
+    )
+    serializer = StatesSerializer(state)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+# Update an existing state
+@api_view(['PUT'])
+def update_state(request, state_id):
+    try:
+        state = States.objects.get(id=state_id)
+    except States.DoesNotExist:
+        return Response({"error": "State not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Update fields
+    state.name = request.data.get('name', state.name)
+    state.country = Countries.objects.get(id=request.data['country_id'])  # Update country
+    state.save()
+
+    serializer = StatesSerializer(state)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+# Delete a state
+@api_view(['DELETE'])
+def delete_state(request, state_id):
+    try:
+        state = States.objects.get(id=state_id)
+    except States.DoesNotExist:
+        return Response({"error": "State not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    state.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
