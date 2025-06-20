@@ -80,6 +80,7 @@ def login_view(request):
                         "is_student": True,
                         "email": user.email,
                         "is_active": user.is_active,
+                        "permissions": user.role.permissions
                     }, status=status.HTTP_200_OK)
 
                 exam_details = []
@@ -182,6 +183,7 @@ def login_view(request):
                     "university": university,
                     "exam_progress": exam_progress,
                     "result_data": result_data,  # Included result data here
+                    "permissions": user.role.permissions
                 }, status=status.HTTP_200_OK)
 
             else:
@@ -192,6 +194,7 @@ def login_view(request):
                     "email": user.email,
                     "is_active": user.is_active,
                     "user_id": user.id,
+                    "permissions": user.role.permissions
                 }, status=status.HTTP_200_OK)
 
         else:
