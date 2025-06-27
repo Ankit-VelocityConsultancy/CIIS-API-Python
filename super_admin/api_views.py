@@ -22,6 +22,7 @@ import pandas as pd
 from django.conf import settings
 import openpyxl
 from openpyxl.styles import Font
+from super_admin.role_serializers import *
 
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('student_registration')
@@ -6682,7 +6683,7 @@ def update_status(request, pk):
 @api_view(['GET'])
 def list_common_lead_labels(request):
     try:
-        labels = Common_Lead_Label.objects.all().order_by('-id')
+        labels = Common_Lead_Label_Tags.objects.all().order_by('-id')
         serializer = CommonLeadLabelSerializer(labels, many=True)
         return Response({'data': serializer.data}, status=status.HTTP_200_OK)
     except Exception as e:
@@ -6701,8 +6702,8 @@ def create_common_lead_label(request):
 @api_view(['PUT', 'PATCH'])
 def update_common_lead_label(request, pk):
     try:
-        label = Common_Lead_Label.objects.get(pk=pk)
-    except Common_Lead_Label.DoesNotExist:
+        label = Common_Lead_Label_Tags.objects.get(pk=pk)
+    except Common_Lead_Label_Tags.DoesNotExist:
         logger.warning(f"Label not found with id: {pk}")
         return Response({'error': 'Common Lead Label not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -6714,41 +6715,41 @@ def update_common_lead_label(request, pk):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
   
 
-@api_view(['GET'])
-def list_colors(request):
-    try:
-        colors = Color.objects.all().order_by('-id')
-        serializer = ColorSerializer(colors, many=True)
-        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
-    except Exception as e:
-        logger.error(f"Error listing colors: {e}")
-        return Response({'error': 'Something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+# @api_view(['GET'])
+# def list_colors(request):
+#     try:
+#         colors = Color.objects.all().order_by('-id')
+#         serializer = ColorSerializer(colors, many=True)
+#         return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+#     except Exception as e:
+#         logger.error(f"Error listing colors: {e}")
+#         return Response({'error': 'Something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
-def create_color(request):
-    serializer = ColorSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response({'message': 'Color created successfully', 'data': serializer.data}, status=status.HTTP_201_CREATED)
-    logger.warning(f"Create color validation error: {serializer.errors}")
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['POST'])
+# def create_color(request):
+#     serializer = ColorSerializer(data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response({'message': 'Color created successfully', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+#     logger.warning(f"Create color validation error: {serializer.errors}")
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['PUT', 'PATCH'])
-def update_color(request, pk):
-    try:
-        color_instance = Color.objects.get(pk=pk)
-    except Color.DoesNotExist:
-        logger.warning(f"Color not found with id: {pk}")
-        return Response({'error': 'Color not found'}, status=status.HTTP_404_NOT_FOUND)
+# @api_view(['PUT', 'PATCH'])
+# def update_color(request, pk):
+#     try:
+#         color_instance = Color.objects.get(pk=pk)
+#     except Color.DoesNotExist:
+#         logger.warning(f"Color not found with id: {pk}")
+#         return Response({'error': 'Color not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = ColorSerializer(color_instance, data=request.data, partial=(request.method == 'PATCH'))
-    if serializer.is_valid():
-        serializer.save()
-        return Response({'message': 'Color updated successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
-    logger.warning(f"Update color validation error: {serializer.errors}")
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     serializer = ColorSerializer(color_instance, data=request.data, partial=(request.method == 'PATCH'))
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response({'message': 'Color updated successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
+#     logger.warning(f"Update color validation error: {serializer.errors}")
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
   
 @api_view(['GET'])
 def sync_answers(request):

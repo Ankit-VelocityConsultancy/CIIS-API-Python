@@ -12,6 +12,16 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 default_permissions = {
+    # New permissions for different sections
+    "set_exam":{"add":0,"view":0},
+    "assign_exam":{"add":0,"view":0},
+    "subject_wise_analysis":{"view":0},
+    "university": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "course": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "stream": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "substream": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "subject": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "student_registration": {"add": 0, "view": 0, "edit": 0, "delete": 0},    
     "dashboard": {"add": 0, "view": 0, "edit": 0, "delete": 0},
     "user": {"add": 0, "view": 0, "edit": 0, "delete": 0},
     "report": {"add": 0, "view": 0, "edit": 0, "delete": 0},
@@ -79,21 +89,25 @@ def create_role(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def save_role_permissions(request):
-    role_name = request.data.get("role_name")
+    role_id = request.data.get("role_id")
     permissions_list = request.data.get("permissions")
 
-    if not role_name or not isinstance(permissions_list, list):
+    if not role_id or not isinstance(permissions_list, list):
         return Response({"error": "Invalid payload."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        role = Role.objects.get(name=role_name)
+        role = Role.objects.get(id=role_id)
     except Role.DoesNotExist:
         return Response({"error": "Role not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    # Transform list into permission dictionary
     new_permissions = {}
+
     for item in permissions_list:
-        module_key = slugify(item.get("module", "")).replace("-", "")
+        module_key = item.get("module", "").strip().lower()
+
+        if not module_key:
+            continue
+
         new_permissions[module_key] = {
             "add": int(item.get("add", False)),
             "view": int(item.get("view", False)),
@@ -101,23 +115,22 @@ def save_role_permissions(request):
             "delete": int(item.get("delete", False)),
         }
 
-    # Update the role
     role.permissions = new_permissions
     role.save()
 
-    logger.info(f"Permissions updated for role: {role.name} by {request.user.email}")
+    logger.info(f"Permissions updated for role ID: {role.id} by {request.user.email}")
     return Response({"message": "Permissions updated successfully."}, status=status.HTTP_200_OK)
-  
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_role_permissions(request, role_name):
+def get_role_permissions(request, role_id):
     try:
-        role = Role.objects.get(name=role_name)
+        role = Role.objects.get(id=role_id)
     except Role.DoesNotExist:
         return Response({"error": "Role not found."}, status=status.HTTP_404_NOT_FOUND)
 
     return Response({"role_name": role.name, "permissions": role.permissions}, status=status.HTTP_200_OK)
+
   
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -551,62 +564,87 @@ def delete_country(request, country_id):
     country.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET'])
-def get_states_by_country(request, country_id):
-    try:
-        country = Countries.objects.get(id=country_id)
-    except Countries.DoesNotExist:
-        return Response({"error": "Country not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    states = States.objects.filter(country=country)
-    serializer = StatesSerializer(states, many=True)
-    return Response(serializer.data)
-
-# Fetch all states for a given country
 @api_view(['GET'])
-def get_all_states(request):
+def list_states(request):
     states = States.objects.all()
     serializer = StatesSerializer(states, many=True)
     return Response(serializer.data)
 
-# Create a new state
-@api_view(['POST'])
-def create_state(request):
-    try:
-        country = Countries.objects.get(id=request.data['country_id'])  # Get country by ID
-    except Countries.DoesNotExist:
-        return Response({"error": "Country not found"}, status=status.HTTP_400_BAD_REQUEST)
-
-    state = States.objects.create(
-        name=request.data['name'],
-        country=country
-    )
-    serializer = StatesSerializer(state)
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-# Update an existing state
 @api_view(['PUT'])
 def update_state(request, state_id):
     try:
         state = States.objects.get(id=state_id)
     except States.DoesNotExist:
-        return Response({"error": "State not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "State not found."}, status=404)
+    serializer = StatesSerializer(state, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=400)
 
-    # Update fields
-    state.name = request.data.get('name', state.name)
-    state.country = Countries.objects.get(id=request.data['country_id'])  # Update country
-    state.save()
-
-    serializer = StatesSerializer(state)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-# Delete a state
 @api_view(['DELETE'])
 def delete_state(request, state_id):
     try:
         state = States.objects.get(id=state_id)
     except States.DoesNotExist:
-        return Response({"error": "State not found"}, status=status.HTTP_404_NOT_FOUND)
-
+        return Response({"error": "State not found."}, status=404)
     state.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(status=204)
+
+@api_view(['POST'])
+def create_state(request):
+    serializer = StatesSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
+  
+  
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_profile(request):
+    print("API HIT")
+    user = request.user
+    return Response({
+        "user_id": user.id,
+        "email": user.email,
+        "is_student": user.is_student,
+        "permissions": user.role.permissions if user.role else {},  # Safe fallback
+    })
+    
+
+@api_view(['GET'])
+def get_all_colors(request):
+    colors = Color.objects.all()
+    serializer = ColorSerializer(colors, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def create_color(request):
+    serializer = ColorSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def update_color(request, color_id):
+    try:
+        color = Color.objects.get(id=color_id)
+    except Color.DoesNotExist:
+        return Response({"error": "Color not found"}, status=404)
+    serializer = ColorSerializer(color, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=400)
+
+@api_view(['DELETE'])
+def delete_color(request, color_id):
+    try:
+        color = Color.objects.get(id=color_id)
+    except Color.DoesNotExist:
+        return Response({"error": "Color not found"}, status=404)
+    color.delete()
+    return Response(status=204)

@@ -34,6 +34,15 @@ class CustomUserManager(BaseUserManager):
 
 default_permissions = {
     # New permissions for different sections
+    "set_exam":{"add":0,"view":0},
+    "assign_exam":{"add":0,"view":0},
+    "subject_wise_analysis":{"view":0},
+    "university": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "course": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "stream": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "substream": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "subject": {"add": 0, "view": 0, "edit": 0, "delete": 0},
+    "student_registration": {"add": 0, "view": 0, "edit": 0, "delete": 0},    
     "dashboard": {"add": 0, "view": 0, "edit": 0, "delete": 0},
     "user": {"add": 0, "view": 0, "edit": 0, "delete": 0},
     "report": {"add": 0, "view": 0, "edit": 0, "delete": 0},
@@ -54,6 +63,15 @@ default_permissions = {
 
 # Permissions for super admins (set to 1 for full access)
 super_admin_permissions = {
+    "set_exam":{"add":1,"view":1},
+    "assign_exam":{"add":1,"view":1},
+    "subject_wise_analysis":{"view":1},
+    "university": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "course": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "stream": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "substream": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "subject": {"add": 1, "view": 1, "edit": 1, "delete": 1},
+    "student_registration": {"add": 1, "view": 1, "edit": 1, "delete": 1},  
     "dashboard": {"add": 1, "view": 1, "edit": 1, "delete": 1},
     "user": {"add": 1, "view": 1, "edit": 1, "delete": 1},
     "report": {"add": 1, "view": 1, "edit": 1, "delete": 1},
@@ -111,7 +129,6 @@ class User(AbstractUser):
         db_table = 'user'
 
     def save(self, *args, **kwargs):
-        # Assign default permissions when the user is created
       if self.is_superuser:  # If the user is superadmin, give all permissions
           self.permissions = super_admin_permissions
       elif self.role and self.role.permissions:

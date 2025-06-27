@@ -187,9 +187,9 @@ urlpatterns = [
   path('common-lead-labels-create/', api_views.create_common_lead_label, name='create_common_lead_label'),
   path('common-lead-labels-update/<int:pk>/', api_views.update_common_lead_label, name='update_common_lead_label'),
   
-  path('colors/', api_views.list_colors, name='list_colors'),
-  path('colors-create/', api_views.create_color, name='create_color'),
-  path('colors-update/<int:pk>/', api_views.update_color, name='update_color'),
+  # path('colors/', api_views.list_colors, name='list_colors'),
+  # path('colors-create/', api_views.create_color, name='create_color'),
+  # path('colors-update/<int:pk>/', api_views.update_color, name='update_color'),
   path('sync_answers/', api_views.sync_answers, name='sync_answers'),
   
   path('export_exam_data_to_excel/', api_views.export_exam_data_to_excel, name='export_exam_data_to_excel'),
@@ -199,8 +199,8 @@ urlpatterns = [
 
   path('get_roles/', api_role.get_roles, name='view_all_assigned_students_api'),
   path('create_role/', api_role.create_role, name='create_role'),
-  path("roles/save-permissions", api_role.save_role_permissions, name="save-role-permissions"),
-  path("roles/permissions/<str:role_name>/", api_role.get_role_permissions, name="get-role-permissions"),
+  path("roles/save-permissions/", api_role.save_role_permissions, name="save-role-permissions"),
+  path("roles/permissions/<int:role_id>/", api_role.get_role_permissions, name="get-role-permissions"),
   path("edit_role/<int:role_id>/", api_role.edit_role, name="edit_role"),
   path('get_role_user/', api_role.get_role_user, name='get_role_user'),
   path('create_or_update_user/', api_role.create_or_update_user, name='create_user'),
@@ -226,11 +226,19 @@ urlpatterns = [
   path('update_country/<int:country_id>/', api_role.update_country, name='update_country'),
   path('delete_country/<int:country_id>/', api_role.delete_country, name='delete_country'),
 
-  path('get_all_states/', api_role.get_all_states, name='get_all_states'),
-  path('create_state/', api_role.create_state, name='create_state'),
-  path('update_state/<int:state_id>/', api_role.update_state, name='update_state'),
-  path('delete_state/<int:state_id>/', api_role.delete_state, name='delete_state'),
-  path('get_states_by_country/<int:country_id>/', api_role.get_states_by_country, name='get_states_by_country'),  # Fetch states by country
+
+  path('states_new/', api_role.list_states, name='list_states'),
+  path('states_new/create/', api_role.create_state, name='create_state'),
+  path('states_new/<int:state_id>/update/', api_role.update_state, name='update_state'),
+  path('states_new/<int:state_id>/delete/', api_role.delete_state, name='delete_state'),
+  
+  # path('get_states_by_country/<int:country_id>/', api_role.get_states_by_country, name='get_states_by_country'),  # Fetch states by country
+  path("get_user_profile/", api_role.get_user_profile, name="get_user_profile"),
+
+  path('get_all_colors/', api_role.get_all_colors, name='get_all_colors'),
+  path('create_color/', api_role.create_color, name='create_color'),
+  path('update_color/<int:color_id>/', api_role.update_color, name='update_color'),
+  path('delete_color/<int:color_id>/', api_role.delete_color, name='delete_color'),
 
 ]
   
