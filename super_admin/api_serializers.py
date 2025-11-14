@@ -199,11 +199,41 @@ class PaymentModesSerializer(serializers.ModelSerializer):
         model = PaymentModes
         fields = '__all__'  # You can specify fields explicitly if needed
         
-
+        
 class PaymentReceiptSerializer(serializers.ModelSerializer):
+    fee_receipt_type = serializers.CharField(source="fee_reciept_type", allow_null=True)
+    total_fees = serializers.CharField(source="semyearfees", allow_null=True)
+    paid_amount = serializers.CharField(source="paidamount", allow_null=True)
+    transaction_date = serializers.CharField(allow_null=True)
+    payment_mode = serializers.CharField(source="paymentmode", allow_null=True)
+    cheque_no = serializers.CharField(allow_null=True)
+    bank_name = serializers.CharField(allow_null=True)
+    remarks = serializers.CharField(allow_null=True)
+    pending_amount = serializers.CharField(source="pendingamount", allow_null=True)
+    advance_amount = serializers.CharField(source="advanceamount", allow_null=True)
+    # Internal “receipt code” and external UTR/UPI:
+    receipt_code = serializers.CharField(source="transactionID", allow_null=True)
+    payment_transaction_id = serializers.CharField(source="payment_transactionID", allow_null=True)
+
     class Meta:
         model = PaymentReciept
-        fields = '__all__'  # You can specify fields explicitly if needed
+        fields = [
+            "id",
+            "fee_receipt_type",
+            "total_fees",
+            "paid_amount",
+            "transaction_date",
+            "payment_mode",
+            "cheque_no",
+            "bank_name",
+            "remarks",
+            "pending_amount",
+            "advance_amount",
+            "receipt_code",
+            "payment_transaction_id",
+        ]
+        
+
 
 class Student_Quick_RegisteredSerializer(serializers.ModelSerializer):
   class Meta:
@@ -294,6 +324,7 @@ class ExaminationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Examination
         fields = [
+            'id',
             'session',
             'studypattern',
             'semyear',
@@ -320,7 +351,10 @@ class ResultUploadedSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResultUploaded
         fields = '__all__'
-        
+        extra_kwargs = {
+            'uploaded_file': {'required': False, 'allow_null': True}
+        }
+
 class ExaminationSubjectSerializer(serializers.ModelSerializer):
     subject = SubjectSerializer(read_only=True)
 
@@ -328,29 +362,250 @@ class ExaminationSubjectSerializer(serializers.ModelSerializer):
         model = Examination
         fields = '__all__'
         
-class CategoriesSerializer(serializers.ModelSerializer):
+class ChangePasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        min_length=8,
+        style={'input_type': 'password'},
+        help_text="Password must be at least 8 characters long."
+    )
+    confirm_password = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={'input_type': 'password'},
+        help_text="Confirm password must match the password."
+    )
+
+    def validate(self, data):
+        """
+        Check if the password and confirm_password match.
+        """
+        if data['password'] != data['confirm_password']:
+            raise serializers.ValidationError("The passwords do not match.")
+        return data
+    
+class StudentFeesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Categories
-        fields = '__all__'
+        model = StudentFees
+        fields = "__all__"
         
-class SourceSerializer(serializers.ModelSerializer):
+
+# app/serializers.py
+from rest_framework import serializers
+
+class PaymentReceiptCreateSerializer(serializers.Serializer):
+    # Mandatory
+    student_id = serializers.IntegerField()
+    semyear = serializers.CharField(max_length=10)
+
+    # Optional
+    payment_for = serializers.CharField(max_length=50, required=False, allow_blank=True)
+    payment_categories = serializers.CharField(max_length=50, required=False, allow_blank=True)
+    payment_type = serializers.CharField(max_length=30, required=False, allow_blank=True)
+    fee_reciept_type = serializers.CharField(max_length=30, required=False, allow_blank=True)
+    transaction_date = serializers.CharField(max_length=20, required=False, allow_blank=True)
+    cheque_no = serializers.CharField(max_length=50, required=False, allow_blank=True)
+    bank_name = serializers.CharField(max_length=50, required=False, allow_blank=True)
+    semyearfees = serializers.CharField(max_length=10, required=False, allow_blank=True)
+    paidamount = serializers.CharField(max_length=10, required=False, allow_blank=True)
+    pendingamount = serializers.CharField(max_length=10, required=False, allow_blank=True)
+    advanceamount = serializers.CharField(max_length=10, required=False, allow_blank=True)
+    paymentmode = serializers.CharField(max_length=20, required=False, allow_blank=True)
+    remarks = serializers.CharField(max_length=500, required=False, allow_blank=True)
+    session = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    uncleared_amount = serializers.CharField(max_length=10, required=False, allow_blank=True)
+    status = serializers.CharField(max_length=100, required=False, allow_blank=True)
+
+    def validate_semyear(self, value):
+        if not str(value).strip():
+            raise serializers.ValidationError("This field is required.")
+        return value
+
+
+class PaymentRecieptSerializer(serializers.ModelSerializer):
+    total_fees_display = serializers.SerializerMethodField()
+    
     class Meta:
-        model = Source
+        model = PaymentReciept
+        fields = "__all__"
+    
+    def get_total_fees_display(self, obj):
+        """Return pendingamount as total_fees_display"""
+        return obj.pendingamount
+        
+class PaymentRecieptSerializersave(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentReciept
+        fields = "__all__"
+        read_only_fields = ("id", "transactiontime", "transactionID", "student")
+
+class SubjectResultItemSerializer(serializers.Serializer):
+    subject_name = serializers.CharField()
+    subject_code = serializers.CharField(allow_blank=True, required=False)
+    max_marks = serializers.FloatField()
+    total_questions = serializers.IntegerField(allow_null=True)
+    marks_obtained = serializers.FloatField()
+
+class StudentResultAggregateSerializer(serializers.Serializer):
+    student_name = serializers.CharField()
+    father_name = serializers.CharField(allow_null=True, required=False)
+    enrollment_no = serializers.CharField()
+    semyear = serializers.CharField()
+    subjects = SubjectResultItemSerializer(many=True)
+    total_obtained = serializers.FloatField()
+    total_max = serializers.FloatField()
+    
+class AdditionalPaymentReceiptSerializer(serializers.ModelSerializer):
+    # If you added these fields on the model, keep them optional:
+    uploaded_file = serializers.FileField(required=False, allow_null=True)
+    # If you also use an ImageField:
+    # receipt_image = serializers.ImageField(required=False, allow_null=True)
+
+    class Meta:
+        model = Additional_PaymentReciept
+        fields = "__all__"  # keep everything, but make some read-only
+        read_only_fields = [
+            "transactionID",     # generated in view
+            "created_by",        # set in view
+            "modified_by",       # set in view
+            "transactiontime",   # auto_now
+        ]
+        # If you prefer __all__, ensure these aren't required by validation:
+        extra_kwargs = {
+            "uploaded_file": {"required": False, "allow_null": True},
+            # "receipt_image": {"required": False, "allow_null": True},  # if used
+        }
+
+class AdditionalPaymentReceiptRefundSerializer(serializers.ModelSerializer):
+    uploaded_file = serializers.FileField(required=False, allow_null=True)
+
+    class Meta:
+        model = Additional_PaymentReciept
+        fields = "__all__"
+        read_only_fields = [
+            "transactionID",
+            "created_by",
+            "modified_by",
+            "transactiontime",
+            "student",          # we pass the actual Student instance in save()
+            "payment_for",      # we force this to "Refund"
+        ]
+        extra_kwargs = {
+            "uploaded_file": {"required": False, "allow_null": True},
+        }
+class UniversityReregistrtationFeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UniversityReregistrtationFee
         fields = '__all__'
         
 
-class StatusSerializer(serializers.ModelSerializer):
+class StudentDocumentsSerializerCreate(serializers.ModelSerializer):
     class Meta:
-        model = Status
-        fields = '__all__'
-        
-
-class CommonLeadLabelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Common_Lead_Label
+        model = StudentDocuments
         fields = '__all__'
 
-class ColorSerializer(serializers.ModelSerializer):
+class PersonalDocumentsSerializerCreate(serializers.ModelSerializer):
     class Meta:
-        model = Color
+        model = PersonalDocuments
         fields = '__all__'
+
+class StudentFormSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentForm
+        fields = '__all__'
+        read_only_fields = ['created_at', 'updated_at']
+
+
+from django.conf import settings
+from rest_framework import serializers
+
+from .models import CallRecording, DriveFolder, SyncLog, PlaybackLog
+
+
+class CallRecordingSerializer(serializers.ModelSerializer):
+    user_email = serializers.EmailField(source='user.email', read_only=True)
+    file_size_display = serializers.SerializerMethodField()
+    duration_display = serializers.SerializerMethodField()
+    formatted_date = serializers.SerializerMethodField()
+    audio_url = serializers.SerializerMethodField()  # <-- changed to computed URL
+
+    class Meta:
+        model = CallRecording
+        fields = [
+            'id', 'user', 'user_email', 'phone_number', 'local_file_path',
+            'file_name', 'file_size', 'file_size_display', 'google_drive_file_id',
+            'google_drive_link', 'drive_file_name', 'audio_url', 'duration',
+            'duration_display', 'play_count', 'last_played_at', 'status',
+            'upload_attempts', 'error_message', 'created_at', 'recording_date',
+            'formatted_date', 'uploaded_at', 'last_synced_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'last_synced_at']
+
+    def get_file_size_display(self, obj):
+        return obj.get_file_size_display()
+
+    def get_duration_display(self, obj):
+        return obj.get_duration_display()
+
+    def get_formatted_date(self, obj):
+        return obj.recording_date.strftime('%b %d, %Y %I:%M %p') if obj.recording_date else None
+
+    def get_audio_url(self, obj):
+        """
+        Prefer stored obj.audio_url, else build from local_file_path.
+        Returns an absolute URL if request is in context.
+        """
+        request = self.context.get('request')
+
+        # 1) If audio_url is already set
+        if obj.audio_url:
+            # If stored as relative path (/media/...), make it absolute
+            if request and obj.audio_url.startswith('/'):
+                return request.build_absolute_uri(obj.audio_url)
+            return obj.audio_url
+
+        # 2) Build from local_file_path if available
+        if obj.local_file_path:
+            rel_url = settings.MEDIA_URL + obj.local_file_path
+            if request:
+                return request.build_absolute_uri(rel_url)
+            return rel_url
+
+        # 3) Nothing available
+        return None
+
+
+class DriveFolderSerializer(serializers.ModelSerializer):
+    recording_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DriveFolder
+        fields = ['id', 'name', 'folder_id', 'user', 'is_active', 'recording_count', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+    def get_recording_count(self, obj):
+        # You can adjust this logic later if needed
+        return CallRecording.objects.filter(drive_file_name__icontains=obj.name).count()
+
+
+class SyncLogSerializer(serializers.ModelSerializer):
+    folder_name = serializers.CharField(source='folder.name', read_only=True)
+
+    class Meta:
+        model = SyncLog
+        fields = [
+            'id', 'folder', 'folder_name', 'sync_started_at', 'sync_completed_at',
+            'total_files_found', 'new_files_added', 'status', 'error_message'
+        ]
+        read_only_fields = ['id', 'sync_started_at']
+
+
+class PlaybackLogSerializer(serializers.ModelSerializer):
+    recording_name = serializers.CharField(source='recording.file_name', read_only=True)
+    phone_number = serializers.CharField(source='recording.phone_number', read_only=True)
+
+    class Meta:
+        model = PlaybackLog
+        fields = ['id', 'recording', 'recording_name', 'phone_number', 'played_at', 'ip_address', 'user_agent']
+        read_only_fields = ['id', 'played_at']

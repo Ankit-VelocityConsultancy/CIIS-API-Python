@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>{{ title }}</title>
+  <style>
+    body { font-family: "Arial","Helvetica","Liberation Sans",sans-serif; background:#f9f9f9; color:#333; font-size:12px; line-height:1.4; padding:15px; }
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    .receipt-container{ max-width:750px; margin:0 auto; background:#fff; border:1px solid #ddd; box-shadow:0 1px 5px rgba(0,0,0,0.1); padding:20px; }
+    .header{ text-align:center; border-bottom:2px solid #d24845; padding-bottom:15px; margin-bottom:20px; }
+    .header h1{ color:#d24845; font-size:20px; margin:0; line-height:1.2; }
+    .header h2{ color:#333; font-size:14px; font-weight:normal; margin:3px 0; }
+    table{ width:100%; border-collapse:collapse; margin:10px 0; font-size:11px; }
+    th,td{ border:1px solid #333; padding:6px 8px; text-align:left; word-wrap:break-word; }
+    th{ background:#f4f4f4; font-weight:bold; }
+    .amount-section{ background:#f9f9f9; border:1px solid #ddd; padding:10px; margin:15px 0; font-size:11px; }
+    .total-amount{ font-size:14px; font-weight:bold; color:#d24845; text-align:right; }
+    .narration{ margin:15px 0; font-size:11px; color:#333; padding:8px; border:1px solid #ccc; background:#fafafa; line-height:1.3; }
+    .conditions{ margin:15px 0; font-size:10px; color:#666; line-height:1.3; }
+    .conditions h3{ color:#333; font-size:11px; margin-bottom:5px; }
+    .conditions ol{ padding-left:15px; margin:5px 0; }
+    .conditions li{ margin-bottom:3px; }
+    .footer{ margin-top:20px; text-align:right; font-size:10px; color:#666; line-height:1.3; }
+  </style>
+</head>
+<body>
+  <div class="receipt-container">
+    <div class="header">
+      <h1>CIIS – Centre for International & Indian Studies</h1>
+      <h2>(Associate with multiple universities)</h2>
+      <h2>{{ title }}</h2>
+    </div>
+
+    <table class="compact-table">
+      <tr>
+        <td style="width:50%"><strong>Receipt No.:</strong> {{ receipt.transactionID|default:"-" }}</td>
+        <td style="width:50%"><strong>Receipt Date:</strong> {{ receipt_date }}</td>
+      </tr>
+    </table>
+
+    <table class="compact-table">
+      <tr>
+        <td style="width:50%"><strong>Candidate's Name:</strong> {{ student.name|default:"-" }}</td>
+        <td style="width:50%"><strong>Email ID:</strong> {{ student.email|default:"-" }}</td>
+      </tr>
+      <tr>
+        <td><strong>Mobile No.:</strong> {{ student.mobile|default:"-" }}</td>
+        <td><strong>Semester & Session:</strong> {{ receipt.semyear|default:"-" }} | {{ receipt.session|default:"-" }}</td>
+      </tr>
+      <tr>
+        <td colspan="2"><strong>Program Name:</strong> {{ program_name|default:"-" }}</td>
+      </tr>
+    </table>
+
+    <div class="amount-section">
+      <table class="compact-table">
+        <tr>
+          <td style="width:30%"><strong>Receipt Amount:</strong></td>
+          <td style="width:70%" class="total-amount">INR {{ receipt.paidamount|default:"0.00" }}</td>
+        </tr>
+        <tr>
+          <td><strong>Amount in Words:</strong></td>
+          <td>{{ amount_in_words }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <table class="compact-table">
+      <thead>
+        <tr>
+          <th>Paid (INR)</th><th>Pending (INR)</th><th>Advance (INR)</th>
+          <th>Mode</th><th>Cheque No</th><th>Bank</th><th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ receipt.paidamount|default:"0.00" }}</td>
+          <td>{{ receipt.pendingamount|default:"0.00" }}</td>
+          <td>{{ receipt.advanceamount|default:"0.00" }}</td>
+          <td>{{ receipt.paymentmode|default:"-" }}</td>
+          <td>{{ receipt.cheque_no|default:"-" }}</td>
+          <td>{{ receipt.bank_name|default:"-" }}</td>
+          <td>{{ receipt.remarks|default:"-" }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="narration">
+      <strong>Narration:</strong><br>
+      Instrument Type: {{ receipt.paymentmode|default:"-" }} |
+      Instrument No: {{ receipt.cheque_no|default:"-" }} |
+      Txn ID: {{ receipt.transactionID|default:"-" }}
+    </div>
+
+    <div class="conditions">
+      <h3>Conditions:</h3>
+      <ol>
+        <li>The payment of fees does not guarantee admission unless eligibility criteria and document verification are completed.</li>
+        <li>Any dispute will fall under the jurisdiction of courts in Mumbai, India.</li>
+        <li>This original receipt must be produced for any refund claim or adjustment of fees.</li>
+      </ol>
+      <p><strong>Disclaimer:</strong> Payment is subject to realization.</p>
+    </div>
+
+    <div class="footer">
+      <p><strong>Printing Date & Time:</strong> {{ now|date:"d/m/Y H:i" }}</p>
+      <p><strong>Authorized Signatory:</strong></p>
+      <p>(Seal/Stamp of CIIS)</p>
+    </div>
+  </div>
+</body>
+</html>
