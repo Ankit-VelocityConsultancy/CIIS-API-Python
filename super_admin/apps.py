@@ -13,5 +13,5 @@ class SuperAdminConfig(AppConfig):
         # Only start scheduler in the main runserver process
         if os.environ.get("RUN_MAIN") == "true":
             from super_admin.services.internal_scheduler import start_drive_sync_scheduler
-            print("🚀 Starting internal Google Drive scheduler...")
-            start_drive_sync_scheduler()
+            # print("🚀 Starting internal Google Drive scheduler...")
+            # start_drive_sync_scheduler()

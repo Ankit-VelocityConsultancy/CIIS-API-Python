@@ -170,6 +170,7 @@ class User(AbstractUser):
 class Countries(models.Model):
     shortname = models.CharField(max_length=5)
     name = models.CharField(max_length=150)
+    phonecode = models.IntegerField(null=True,blank=True)
     class Meta:
         db_table = "countries"
 
